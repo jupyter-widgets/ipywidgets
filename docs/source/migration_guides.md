@@ -15,6 +15,7 @@ For example migrations, see these PRs:
 - [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet/pull/968)
 - [bqscales](https://github.com/bqplot/bqscales/pull/49)
 - [sidecar](https://github.com/jupyter-widgets/jupyterlab-sidecar/pull/86)
+- [pythreejs](https://github.com/jupyter-widgets/pythreejs/pull/378)
 
 To avoid tying your development cycle to ipywidgets, we recommend starting
 the migration on a branch and keeping that branch open until ipywidgets 8.0
