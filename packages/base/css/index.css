@@ -3,13 +3,13 @@
  */
 
 .jupyter-widgets-disconnected::before {
-  content: '\f127'; /* chain-broken */
+  content: "\f127"; /* chain-broken */
   display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
+  font: normal normal 900 14px/1px "Font Awesome 5 Free";
   font-size: inherit;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale; 
   color: #d9534f;
   padding: 3px;
   align-self: flex-start;
