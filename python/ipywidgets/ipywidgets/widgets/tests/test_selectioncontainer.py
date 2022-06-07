@@ -26,3 +26,17 @@ class TestAccordion(TestCase):
     def test_selected_index_out_of_bounds(self):
         with self.assertRaises(TraitError):
             Accordion(self.children, selected_index=-1)
+
+
+    def test_titles(self):
+        accordion = Accordion(self.children, selected_index=None)
+        assert accordion.get_state()['titles'] == (None, None)
+        assert accordion.titles == (None, None)
+        accordion.set_title(1, 'Title 1')
+        assert accordion.get_state()['titles'] == (None, 'Title 1')
+        assert accordion.titles[1] == 'Title 1'
+        assert accordion.get_title(1) == 'Title 1'
+        with self.assertRaises(IndexError):
+            accordion.set_title(2, 'out of bounds')
+        with self.assertRaises(IndexError):
+            accordion.get_title(2)
