@@ -57,6 +57,9 @@ class _SelectionContainer(Box, CoreWidget):
             New title
         """
         titles = list(self.titles)
+        # for backwards compatibility with ipywidgets 7.x
+        if title is None:
+            title = ''
         titles[index]=title
         self.titles = tuple(titles)
 

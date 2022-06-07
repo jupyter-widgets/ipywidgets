@@ -38,6 +38,12 @@ class TestAccordion(TestCase):
         assert accordion.titles[1] == 'Title 1'
         assert accordion.get_title(1) == 'Title 1'
 
+        # Backwards compatible with 7.x api
+        accordion.set_title(1, None)
+        assert accordion.get_state()['titles'] == ('', '')
+        assert accordion.titles[1] == ''
+        assert accordion.get_title(1) == ''
+
         with self.assertRaises(IndexError):
             accordion.set_title(2, 'out of bounds')
         with self.assertRaises(IndexError):
