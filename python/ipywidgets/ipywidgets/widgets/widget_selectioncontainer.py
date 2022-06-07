@@ -21,7 +21,7 @@ def pad(iterable, padding=None, length=None):
 
 class _SelectionContainer(Box, CoreWidget):
     """Base class used to display multiple child widgets."""
-    titles = TypedTuple(trait=Unicode(allow_none=True), help="Titles of the pages").tag(sync=True)
+    titles = TypedTuple(trait=Unicode(), help="Titles of the pages").tag(sync=True)
     selected_index = CInt(
         help="""The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.""",
         allow_none=True,
@@ -37,7 +37,7 @@ class _SelectionContainer(Box, CoreWidget):
 
     @validate('titles')
     def _validate_titles(self, proposal):
-        return tuple(pad(proposal.value, None, len(self.children)))
+        return tuple(pad(proposal.value, '', len(self.children)))
 
     @observe('children')
     def _observe_children(self, change):
@@ -61,7 +61,7 @@ class _SelectionContainer(Box, CoreWidget):
         self.titles = tuple(titles)
 
     def get_title(self, index):
-        """Gets the title of a container pages.
+        """Gets the title of a container page.
         Parameters
         ----------
         index : int
