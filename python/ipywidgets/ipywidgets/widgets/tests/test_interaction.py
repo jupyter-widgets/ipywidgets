@@ -578,7 +578,7 @@ def test_multiple_selection():
 
 def test_interact_noinspect():
     a = 'hello'
-    c = interactive(print, a=a)
+    c = interactive(dict, a=a)
     w = c.children[0]
     check_widget(w,
         cls=widgets.Text,
