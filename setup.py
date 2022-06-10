@@ -113,9 +113,6 @@ install_requires = setuptools_args['install_requires'] = [
     'ipykernel>=4.5.1',
     'ipython_genutils~=0.2.0',
     'traitlets>=4.3.1',
-    # Requiring nbformat to specify bugfix version which is not required by
-    # notebook.
-    'nbformat>=4.2.0',
     # TODO: Dynamically add this dependency
     # only if notebook 4.x is installed in this
     # interpreter, to allow ipywidgets to be
