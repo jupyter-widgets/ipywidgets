@@ -421,7 +421,6 @@ export class WidgetManager extends LabWidgetManager {
     this._context = context;
 
     context.sessionContext.kernelChanged.connect((sender, args) => {
-      console.log('kernel changed');
       this._handleKernelChanged(args);
     });
 
