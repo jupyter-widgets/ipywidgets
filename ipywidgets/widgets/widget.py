@@ -602,8 +602,8 @@ class Widget(LoggingHasTraits):
         # Send an echo update message immediately
         if JUPYTER_WIDGETS_ECHO:
             echo_state = {}
-            for attr,value in sync_data.items():
-                if self.trait_metadata(attr, 'echo_update', default=True):
+            for attr, value in sync_data.items():
+                if attr in self.keys and self.trait_metadata(attr, 'echo_update', default=True):
                     echo_state[attr] = value
             if echo_state:
                 echo_state, echo_buffer_paths, echo_buffers = _remove_buffers(echo_state)
