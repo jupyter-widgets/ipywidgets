@@ -308,8 +308,8 @@ def test_echo(echo):
     assert widget.value == 1
 
     widget._send = mock.MagicMock()
-    # this mimics a value coming from the front end
-    widget.set_state({'value': 42})
+    # this mimics a state coming from the front end
+    widget.set_state({'value': 42, 'unexpected_field': 43})
     assert widget.value == 42
 
     # we expect this to be echoed
