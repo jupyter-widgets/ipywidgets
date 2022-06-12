@@ -1,22 +1,67 @@
-ipywidgets
-==========
+Jupyter Widgets
+===============
 
 .. only:: html
 
     :Release: |release|
     :Date: |today|
 
-**ipywidgets**, also known as jupyter-widgets or simply widgets, are
-`interactive HTML widgets <https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb>`_
-for Jupyter notebooks and the IPython kernel.
+Jupyter Widgets are `interactive browser controls
+<https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb>`_
+for Jupyter notebooks. Examples include:
+- Basic form controls like sliders, checkboxes, text inputs
+- Container controls like tabs, accordions, horizontal and vertical layout boxes, grid layouts
+- Advanced controls like maps, 2d and 3d visualizations, datagrids, and more
 
-Notebooks come alive when interactive widgets are used. Users gain control of
-their data and can visualize changes in the data.
+Notebooks come alive when interactive widgets are used. Users can visualize and
+manipulate their data in intuitive  and easy ways.  Researchers can easily see
+how changing inputs to a model impact the results. Scientists can share
+interactive results with graphical user interfaces that others can play with
+without seeing code. Exploring, learning, and sharing becomes a fun immersive
+experience.
 
-Learning becomes an immersive, fun experience. Researchers can easily see
-how changing inputs to a model impact the results. We hope you will add
-ipywidgets to your notebooks, and we're here to help you get started.
+.. todo: Add screenshot
 
+Core Jupyter Widgets
+--------------------
+
+Jupyter Widgets is primarily a framework to provide interactive controls (see
+:doc:`examples/Widget Basics` for more information). The ``ipywidgets`` package
+also provides a basic, lightweight set of core form controls that *use* this
+framework. These included controls include a text area, text box, select and
+multiselect controls, checkbox, sliders, tab panels, grid layout, etc.
+
+The framework for building rich interactive objects is the foremost purpose of
+the Jupyter Widgets project, and the set of included core form controls is
+purposefully kept small and self-contained. We encourage and support a robust
+ecosystem of packages built on top of the Jupyter Widgets framework to provide
+more complicated interactive objects, such as maps, 2d and 3d visualizations, or
+other form control systems built on a variety of popular Javascript frameworks
+such as Material or Vue.
+
+See the `Jupyter Widgets wiki page
+<https://github.com/jupyter/jupyter/wiki/Jupyter-Widgets>`_ for more information
+about custom widget packages built on top of the Jupyter Widgets framework.
+
+Jupyter Widgets components
+--------------------------
+
+The Jupyter Widgets framework has several components:
+
+1. A package in the kernel to provide an interface for widgets. The
+   ``ipywidgets`` Python package provides Jupyter Widgets for the IPython
+   kernel. Other kernels may also provide Jupyter Widgets support.
+2. An extension for the browser Jupyter frontend to manage Jupyter Widgets.
+   Installing ``ipywidgets`` automatically installs extensions for JupyterLab
+   and Jupyter Notebook (the ``jupyterlab-widgets`` and ``widgetsnbextension``
+   packages). The Jupyter Widgets project also maintains a plain HTML interface
+   for embedding Jupyter Widgets on a webpage, and many other frontends support
+   Jupyter Widgets.
+
+See the `Jupyter Widgets wiki
+page <https://github.com/jupyter/jupyter/wiki/Jupyter-Widgets>`_ for more
+information from the community about kernels and frontends that support Jupyter Widgets, as well as 
+some custom widget packages built on top of the Jupyter Widgets framework.
 
 .. toctree::
     :caption: User Guide
@@ -46,7 +91,6 @@ ipywidgets to your notebooks, and we're here to help you get started.
    :caption: Developer Guide
    :maxdepth: 1
 
-   developer_docs
    dev_install.md
    dev_testing.md
    dev_docs.md
