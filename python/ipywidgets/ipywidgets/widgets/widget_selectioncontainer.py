@@ -12,6 +12,12 @@ from .widget import register
 from .widget_core import CoreWidget
 from traitlets import Unicode, Dict, CInt, TraitError, validate, observe
 from .trait_types import TypedTuple
+from itertools import chain, repeat, islice
+
+# Inspired by an itertools recipe: https://docs.python.org/3/library/itertools.html#itertools-recipes
+def pad(iterable, padding=None, length=None):
+    """Returns the sequence elements and then returns None up to the given size (or indefinitely if size is None)."""
+    return islice(chain(iterable, repeat(padding)), length)
 
 class _SelectionContainer(Box, CoreWidget):
     """Base class used to display multiple child widgets."""
@@ -29,10 +35,42 @@ class _SelectionContainer(Box, CoreWidget):
         else:
             raise TraitError('Invalid selection: index out of bounds')
 
+    @validate('titles')
+    def _validate_titles(self, proposal):
+        return tuple(pad(proposal.value, '', len(self.children)))
+
     @observe('children')
     def _observe_children(self, change):
         if self.selected_index is not None and len(change.new) < self.selected_index:
             self.selected_index = None
+        if len(self.titles) != len(change.new):
+            # Run validation function
+            self.titles = tuple(self.titles)
+
+    def set_title(self, index, title):
+        """Sets the title of a container page.
+        Parameters
+        ----------
+        index : int
+            Index of the container page
+        title : unicode
+            New title
+        """
+        titles = list(self.titles)
+        # for backwards compatibility with ipywidgets 7.x
+        if title is None:
+            title = ''
+        titles[index]=title
+        self.titles = tuple(titles)
+
+    def get_title(self, index):
+        """Gets the title of a container page.
+        Parameters
+        ----------
+        index : int
+            Index of the container page
+        """
+        return self.titles[index]
 
 @register
 class Accordion(_SelectionContainer):
