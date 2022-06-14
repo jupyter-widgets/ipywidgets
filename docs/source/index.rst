@@ -9,12 +9,13 @@ Jupyter Widgets
 Jupyter Widgets are `interactive browser controls
 <https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb>`_
 for Jupyter notebooks. Examples include:
-- Basic form controls like sliders, checkboxes, text inputs
-- Container controls like tabs, accordions, horizontal and vertical layout boxes, grid layouts
-- Advanced controls like maps, 2d and 3d visualizations, datagrids, and more
+
+* Basic form controls like sliders, checkboxes, text inputs
+* Container controls like tabs, accordions, horizontal and vertical layout boxes, grid layouts
+* Advanced controls like maps, 2d and 3d visualizations, datagrids, and more
 
 Notebooks come alive when interactive widgets are used. Users can visualize and
-manipulate their data in intuitive  and easy ways.  Researchers can easily see
+manipulate their data in intuitive and easy ways.  Researchers can easily see
 how changing inputs to a model impact the results. Scientists can share
 interactive results with graphical user interfaces that others can play with
 without seeing code. Exploring, learning, and sharing becomes a fun immersive
