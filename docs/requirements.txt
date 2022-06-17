@@ -1,6 +1,7 @@
 bqplot
 ipykernel
 jupyter_client
+jupyterlite-sphinx
 matplotlib
 nbsphinx>=0.5
 numpy

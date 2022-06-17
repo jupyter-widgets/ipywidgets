@@ -23,6 +23,10 @@ experience.
 
 .. todo: Add screenshot
 
+.. retrolite:: examples/Widget List.ipynb
+
+`Try it fullscreen <lite/lab/?path=Widget%20List.ipynb>`_
+
 Core Jupyter Widgets
 --------------------
 
@@ -68,6 +72,7 @@ some custom widget packages built on top of the Jupyter Widgets framework.
     :caption: User Guide
     :maxdepth: 1
 
+    examples.md
     user_install.md
     examples/Widget Basics.ipynb
     examples/Widget List.ipynb

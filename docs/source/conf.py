@@ -7,6 +7,7 @@
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
+    '.ipynb': 'jupyter_notebook',
 }
 
 
@@ -18,9 +19,12 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
+    'jupyterlite_sphinx',
     'IPython.sphinxext.ipython_console_highlighting',
     'recommonmark',
 ]
+
+jupyterlite_config = "jupyterlite_config.json"
 
 intersphinx_mapping = {
     'ipython': ('http://ipython.org/ipython-doc/dev/', None),
