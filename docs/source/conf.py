@@ -56,6 +56,13 @@ nbsphinx_prolog = r"""
 """
 
 nbsphinx_execute = 'always'
+nbsphinx_allow_errors = True
+nbsphinx_nbconvert_config = {
+                 'HighlightMagicsPreprocessor': {'enabled': True},
+                 # Work around https://github.com/jupyter/nbconvert/issues/720:
+                 #'RegexRemovePreprocessor': {'enabled': True, 'patterns': ['JUPYTERLITE']},
+                 'TagRemovePreprocessor': {'enabled': True, 'remove_cell_tags': ['jupyterlite']}
+}
 
 # -- General information -------
 
