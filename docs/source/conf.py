@@ -25,13 +25,15 @@ extensions = [
 ]
 
 jupyterlite_config = "jupyterlite_config.json"
+jupyterlite_dir = "."
+jupyterlite_contents = "examples"
 
-intersphinx_mapping = {
-    'ipython': ('http://ipython.org/ipython-doc/dev/', None),
-    'nbconvert': ('https://nbconvert.readthedocs.io/en/latest/', None),
-    'nbformat': ('https://nbformat.readthedocs.io/en/latest/', None),
-    'jupyter': ('https://jupyter.readthedocs.io/en/latest/', None),
-}
+# intersphinx_mapping = {
+#     'ipython': ('http://ipython.org/ipython-doc/dev/', None),
+#     'nbconvert': ('https://nbconvert.readthedocs.io/en/latest/', None),
+#     'nbformat': ('https://nbformat.readthedocs.io/en/latest/', None),
+#     'jupyter': ('https://jupyter.readthedocs.io/en/latest/', None),
+# }
 
 
 # prolog based on https://github.com/spatialaudio/nbsphinx/blob/98005a9d6b331b7d6d14221539154df69f7ae51a/doc/conf.py#L38
@@ -89,6 +91,7 @@ exclude_patterns = [
     'examples/Media widgets.ipynb',
     'examples/Variable Inspector.ipynb',
     'examples/Widget Alignment.ipynb',
+    '_contents'
 ]
 pygments_style = 'sphinx'
 todo_include_todos = False

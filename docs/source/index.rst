@@ -23,9 +23,16 @@ experience.
 
 .. todo: Add screenshot
 
+`Try it fullscreen <lite/lab/?path=Widget%20List.ipynb>`_
+
+.. image:: https://jupyterlite.rtfd.io/en/latest/_static/badge.svg
+   :target: ./lite/lab
+
+You can try ipywidgets below, or open many other live examples in a new browser tab with
+`JupyterLite <./lite/lab>`_ or `RetroLite <./lite/retro/tree>`_.
+
 .. retrolite:: examples/Widget List.ipynb
 
-`Try it fullscreen <lite/lab/?path=Widget%20List.ipynb>`_
 
 Core Jupyter Widgets
 --------------------
