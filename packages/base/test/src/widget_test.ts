@@ -615,7 +615,7 @@ describe('WidgetModel', function() {
           });
           expect(this.widget._msg_buffer_callbacks).to.not.equals(null);
           // have the comm send a status idle message
-          callbacks.iopub.status({
+          this.comm.send.lastCall.args[1].iopub.status({
             content: {
               execution_state: 'idle',
             },
@@ -634,7 +634,7 @@ describe('WidgetModel', function() {
             },
             buffer_paths: [],
           });
-          callbacks.iopub.status({
+          this.comm.send.lastCall.args[1].iopub.status({
             content: {
               execution_state: 'idle',
             },
@@ -659,7 +659,7 @@ describe('WidgetModel', function() {
             state: { a: 'sync test - 2' },
             buffer_paths: [],
           });
-          callbacks.iopub.status({
+          this.comm.send.lastCall.args[1].iopub.status({
             content: {
               execution_state: 'idle',
             },
@@ -675,7 +675,7 @@ describe('WidgetModel', function() {
             },
             buffer_paths: [],
           });
-          callbacks.iopub.status({
+          this.comm.send.lastCall.args[1].iopub.status({
             content: {
               execution_state: 'idle',
             },
