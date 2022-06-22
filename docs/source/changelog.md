@@ -3,6 +3,19 @@ ipywidgets changelog
 
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
+7.7.1
+-----
+
+To see the full list of pull requests, see the [7.7.1 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/36?closed=1) on GitHub.
+
+Highlights include:
+
+- Fix broken link icon for FontAwesome 4 and 5 [#3495](https://github.com/jupyter-widgets/ipywidgets/pull/3495)
+- Fix message throttling bug [#3494](https://github.com/jupyter-widgets/ipywidgets/pull/3494)
+- Fix state message parsing to be more permissive [#3486](https://github.com/jupyter-widgets/ipywidgets/pull/3486)
+- Fix tests on Python 3.11 [#3480](https://github.com/jupyter-widgets/ipywidgets/pull/3480)
+- Add better front-page docs [#3496](https://github.com/jupyter-widgets/ipywidgets/pull/3496)
+
 7.7
 ---
 
