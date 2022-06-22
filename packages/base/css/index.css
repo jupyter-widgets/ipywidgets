@@ -5,7 +5,7 @@
  .jupyter-widgets-disconnected::before {
     content: "\f127"; /* chain-broken */
     display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
+    font: normal normal 900 14px/1 'Font Awesome 5 Free', 'FontAwesome';
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;

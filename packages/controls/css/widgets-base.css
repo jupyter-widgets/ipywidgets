@@ -60,11 +60,6 @@
     overflow: visible;
 }
 
-.jupyter-widgets.jupyter-widgets-disconnected::before {
-    line-height: var(--jp-widgets-inline-height);
-    height: var(--jp-widgets-inline-height);
-}
-
 .jp-Output-result > .jupyter-widgets {
     margin-left: 0;
     margin-right: 0;
