@@ -71,59 +71,61 @@ function set(key: string|{}, val: any, options: any) {
     let changes    = [];
     let changing   = this._changing;
     this._changing = true;
-
-    if (!changing) {
-        // EDIT: changed to use object spread instead of _.clone
-        this._previousAttributes = {...this.attributes};
-        this.changed = {};
-    }
-
-    let current = this.attributes;
-    let changed = this.changed;
-    let prev    = this._previousAttributes;
-
-    // For each `set` attribute, update or delete the current value.
-    for (let attr in attrs) {
-        val = attrs[attr];
-        // EDIT: the following two lines use our isEqual instead of _.isEqual
-        if (!utils.isEqual(current[attr], val)) {
-            changes.push(attr);
+    try {
+        if (!changing) {
+            // EDIT: changed to use object spread instead of _.clone
+            this._previousAttributes = {...this.attributes};
+            this.changed = {};
         }
-        if (!utils.isEqual(prev[attr], val)) {
-            changed[attr] = val;
-        } else {
-            delete changed[attr];
-        }
-        unset ? delete current[attr] : current[attr] = val;
-    }
 
-    // Update the `id`.
-    this.id = this.get(this.idAttribute);
+        let current = this.attributes;
+        let changed = this.changed;
+        let prev    = this._previousAttributes;
 
-    // Trigger all relevant attribute changes.
-    if (!silent) {
-        if (changes.length) {
-            this._pending = options;
+        // For each `set` attribute, update or delete the current value.
+        for (let attr in attrs) {
+            val = attrs[attr];
+            // EDIT: the following two lines use our isEqual instead of _.isEqual
+            if (!utils.isEqual(current[attr], val)) {
+                changes.push(attr);
+            }
+            if (!utils.isEqual(prev[attr], val)) {
+                changed[attr] = val;
+            } else {
+                delete changed[attr];
+            }
+            unset ? delete current[attr] : current[attr] = val;
         }
-        for (let i = 0; i < changes.length; i++) {
-            this.trigger('change:' + changes[i], this, current[changes[i]], options);
-        }
-    }
 
-    // You might be wondering why there's a `while` loop here. Changes can
-    // be recursively nested within `"change"` events.
-    if (changing) {
-        return this;
-    }
-    if (!silent) {
-        while (this._pending) {
-            options = this._pending;
-            this._pending = false;
-            this.trigger('change', this, options);
+        // Update the `id`.
+        this.id = this.get(this.idAttribute);
+
+        // Trigger all relevant attribute changes.
+        if (!silent) {
+            if (changes.length) {
+                this._pending = options;
+            }
+            for (let i = 0; i < changes.length; i++) {
+                this.trigger('change:' + changes[i], this, current[changes[i]], options);
+            }
         }
+
+        // You might be wondering why there's a `while` loop here. Changes can
+        // be recursively nested within `"change"` events.
+        if (changing) {
+            return this;
+        }
+        if (!silent) {
+            while (this._pending) {
+                options = this._pending;
+                this._pending = false;
+                this.trigger('change', this, options);
+            }
+        }
+    } finally {
+      this._pending = false;
+      this._changing = false;
     }
-    this._pending = false;
-    this._changing = false;
     return this;
     /* tslint:enable:no-invalid-this */
 }
