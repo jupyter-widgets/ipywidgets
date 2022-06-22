@@ -1,5 +1,9 @@
 # Developer Install
 
+The core Jupyter Widgets packages are developed in the
+[https://github.com/jupyter-widgets/ipywidgets](https://github.com/jupyter-widgets/ipywidgets) git repository.
+
+
 ## Prerequisites
 
 To install ipywidgets from git, you will need:
