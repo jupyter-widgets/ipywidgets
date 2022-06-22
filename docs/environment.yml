@@ -1,0 +1,24 @@
+name: docs
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - bqplot
+  - empack
+  - ipykernel
+  - jupyter_client
+  - matplotlib
+  - nbsphinx
+  - numpy
+  - packaging
+  - pip
+  - python=3.10
+  - recommonmark
+  - scikit-image
+  - scikit-learn
+  - sphinx
+  - sphinx_rtd_theme
+  - pip:
+    - jupyterlite==0.1.0b9
+    - jupyterlite-sphinx
+    - jupyterlite-xeus-python
