@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/example-web4",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "private": true,
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "license": "BSD-3-Clause",
@@ -13,7 +13,7 @@
     "test:default": "echo \"No test specified\""
   },
   "dependencies": {
-    "@jupyter-widgets/html-manager": "^0.20.1",
+    "@jupyter-widgets/html-manager": "^0.20.2",
     "font-awesome": "^4.7.0"
   },
   "devDependencies": {
