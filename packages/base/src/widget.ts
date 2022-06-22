@@ -321,6 +321,12 @@ class WidgetModel extends Backbone.Model {
         if (this.comm !== void 0) {
             if (msg.content.execution_state === 'idle') {
                 this._pending_msgs--;
+                if (this._pending_msgs < 0) {
+                    console.error(
+                      `Pending messages < 0 (=${this._pending_msgs}), which is unexpected`
+                    );
+                    this._pending_msgs = 0; // do not break message throttling in case of unexpected errors
+                }
                 // Send buffer if one is waiting and we are below the throttle.
                 if (this._msg_buffer !== null
                     && this._pending_msgs < 1 ) {
@@ -515,11 +521,16 @@ class WidgetModel extends Backbone.Model {
 
         try {
             callbacks.iopub = callbacks.iopub || {};
-            let statuscb = callbacks.iopub.status;
+            if (callbacks.iopub.previouslyUsedByJupyterWidgets === undefined) {
+                // Do not break other code that also wants to listen to status updates
+                callbacks.iopub.statusPrevious = callbacks.iopub.status;
+            }
+            // else callbacks.iopub.status is the old handler, that we should not reuse
+            callbacks.iopub.previouslyUsedByJupyterWidgets = true;
             callbacks.iopub.status = (msg: KernelMessage.IStatusMsg) => {
                 this._handle_status(msg);
-                if (statuscb) {
-                    statuscb(msg);
+                if (callbacks.iopub.statusPrevious) {
+                    callbacks.iopub.statusPrevious(msg);
                 }
             };
 
