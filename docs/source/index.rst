@@ -21,6 +21,15 @@ interactive results with graphical user interfaces that others can play with
 without seeing code. Exploring, learning, and sharing becomes a fun immersive
 experience.
 
+Learning widgets
+----------------
+
+This documentation contains a thorough description of the core Jupyter widgets
+package and several examples.
+
+There is a `video tutorial <https://youtu.be/QAtKtVcm11I>`_ that takes a more step-by-step approach. The
+Jupyter notebooks for that tutorial are `also available <https://github.com/jupyter-widgets/tutorial>`_.
+
 .. todo: Add screenshot
 
 Core Jupyter Widgets
