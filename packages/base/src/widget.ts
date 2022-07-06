@@ -334,6 +334,13 @@ export class WidgetModel extends Backbone.Model {
     if (this.comm !== void 0) {
       if (msg.content.execution_state === 'idle') {
         this._pending_msgs--;
+        // Sanity check for logic errors that may push this below zero.
+        if (this._pending_msgs < 0) {
+          console.error(
+            `Jupyter Widgets message throttle: Pending messages < 0 (=${this._pending_msgs}), which is unexpected. Resetting to 0 to continue.`
+          );
+          this._pending_msgs = 0; // do not break message throttling in case of unexpected errors
+        }
         // Send buffer if one is waiting and we are below the throttle.
         if (this._msg_buffer !== null && this._pending_msgs < 1) {
           const msgId = this.send_sync_message(
@@ -547,7 +554,13 @@ export class WidgetModel extends Backbone.Model {
       return '';
     }
     try {
-      callbacks.iopub = callbacks.iopub || {};
+      // Make a 2-deep copy so we don't modify the caller's callbacks object.
+      callbacks = {
+        shell: { ...callbacks.shell },
+        iopub: { ...callbacks.iopub },
+        input: callbacks.input,
+      };
+      // Save the caller's status callback so we can call it after we handle the message.
       const statuscb = callbacks.iopub.status;
       callbacks.iopub.status = (msg: KernelMessage.IStatusMsg): void => {
         this._handle_status(msg);

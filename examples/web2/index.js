@@ -7,7 +7,7 @@ require('@jupyter-widgets/controls/css/widgets.css');
 require('font-awesome/css/font-awesome.css');
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  var code = require('./widget_code.py').default;
+  var code = require('./widget_code.py');
   var inputarea = document.getElementsByClassName('inputarea')[0];
   new CodeMirror(inputarea, {
     value: code,

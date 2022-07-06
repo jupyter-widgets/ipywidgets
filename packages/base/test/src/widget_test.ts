@@ -534,6 +534,33 @@ describe('WidgetModel', function () {
       expect(changeA).to.be.calledBefore(change);
       expect(change).to.be.calledWith(this.widget);
     });
+    it('triggers change events after exception', async function () {
+      const changeA = sinon.spy(function changeA() {
+        return;
+      });
+      const changeB = sinon.spy(function changeB() {
+        throw 'error';
+      });
+      const change = sinon.spy(function change() {
+        return;
+      });
+      this.widget.on('change:a', changeA);
+      this.widget.on('change:b', changeB);
+      this.widget.on('change', change);
+      // first we trigger a set that causes an exception
+      try {
+        this.widget.set('b', 42);
+      } catch {
+        // empty
+      }
+      expect(change).to.not.be.called;
+      // from now on this test is similar to 'triggers change events'
+      this.widget.set('a', 100);
+      expect(changeA).to.be.calledOnce;
+      expect(changeA).to.be.calledWith(this.widget, 100);
+      expect(changeA).to.be.calledBefore(change);
+      expect(change).to.be.calledWith(this.widget);
+    });
     it('handles multiple values to set', function () {
       expect(this.widget.get('a')).to.be.undefined;
       expect(this.widget.get('b')).to.be.undefined;
@@ -616,31 +643,99 @@ describe('WidgetModel', function () {
     });
 
     it('respects the message throttle', function () {
-      const send = sinon.spy(this.widget, 'send_sync_message');
+      // reuse the callback, similar to .touch in views, which will
+      // expose an bug of calling onstatus multiple times
+      const callbacks = this.widget.callbacks();
       this.widget.set('a', 'sync test');
-      this.widget.save_changes();
+      expect(this.widget._pending_msgs).to.equal(0);
+      this.widget.save_changes(callbacks);
+      expect(this.widget._pending_msgs).to.equal(1);
       this.widget.set('a', 'another sync test');
       this.widget.set('b', 'change b');
-      this.widget.save_changes();
+      this.widget.save_changes(callbacks);
       this.widget.set('b', 'change b again');
-      this.widget.save_changes();
+      this.widget.save_changes(callbacks);
+      expect(this.widget._pending_msgs).to.equal(1);
 
       // check that one sync message went through
-      expect(send).to.be.calledOnce;
-      expect(send).to.be.calledWith({
-        a: 'sync test',
+      expect(this.comm.send).to.be.calledOnce;
+      expect(this.comm.send).to.be.calledWith({
+        method: 'update',
+        state: { a: 'sync test' },
+        buffer_paths: [],
       });
+      expect(this.widget._msg_buffer).to.deep.equal({
+        a: 'another sync test',
+        b: 'change b again',
+      });
+      expect(this.widget._msg_buffer_callbacks).to.not.equals(null);
       // have the comm send a status idle message
-      this.widget._handle_status({
+      this.comm.send.lastCall.args[1].iopub.status({
         content: {
           execution_state: 'idle',
         },
       });
+      // we directly get a new pending message
+      expect(this.widget._pending_msgs).to.equal(1);
+      expect(this.widget._msg_buffer).to.equal(null);
+      expect(this.widget._msg_buffer_callbacks).to.equals(null);
+
       // check that the other sync message went through with the updated values
-      expect(send.secondCall).to.be.calledWith({
-        a: 'another sync test',
-        b: 'change b again',
+      expect(this.comm.send.secondCall).to.be.calledWith({
+        method: 'update',
+        state: {
+          a: 'another sync test',
+          b: 'change b again',
+        },
+        buffer_paths: [],
       });
+      this.comm.send.lastCall.args[1].iopub.status({
+        content: {
+          execution_state: 'idle',
+        },
+      });
+      expect(this.widget._pending_msgs).to.equal(0);
+
+      // repeat again
+      this.comm.send.resetHistory();
+
+      this.widget.set('a', 'sync test - 2');
+      this.widget.save_changes(callbacks);
+      expect(this.widget._pending_msgs).to.equal(1);
+      this.widget.set('a', 'another sync test - 2');
+      this.widget.set('b', 'change b - 2');
+      this.widget.save_changes(callbacks);
+      this.widget.set('b', 'change b again - 2');
+      this.widget.save_changes(callbacks);
+      expect(this.widget._pending_msgs).to.equal(1);
+      expect(this.comm.send).to.be.calledOnce;
+      expect(this.comm.send).to.be.calledWith({
+        method: 'update',
+        state: { a: 'sync test - 2' },
+        buffer_paths: [],
+      });
+      this.comm.send.lastCall.args[1].iopub.status({
+        content: {
+          execution_state: 'idle',
+        },
+      });
+      // again, directly a new message
+      expect(this.widget._pending_msgs).to.equal(1);
+
+      expect(this.comm.send.secondCall).to.be.calledWith({
+        method: 'update',
+        state: {
+          a: 'another sync test - 2',
+          b: 'change b again - 2',
+        },
+        buffer_paths: [],
+      });
+      this.comm.send.lastCall.args[1].iopub.status({
+        content: {
+          execution_state: 'idle',
+        },
+      });
+      expect(this.widget._pending_msgs).to.equal(0);
     });
 
     it('Initial values are *not* sent on creation', function () {

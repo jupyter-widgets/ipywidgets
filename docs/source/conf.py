@@ -67,10 +67,10 @@ release = _release['__version__']
 
 master_doc = 'index'
 project = 'Jupyter Widgets'
-copyright = '2017-2021 Project Jupyter'
+copyright = '2017-2022 Project Jupyter'
 author = 'Jupyter Team'
 
-language = None
+language = "en"
 exclude_patterns = [
     '**.ipynb_checkpoints',
     'examples.md',
