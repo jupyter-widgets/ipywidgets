@@ -1,7 +1,7 @@
 Migrating custom widget libraries
 =================================
 
-These are migration guides aimed specifically at developers of third-party
+These are migration guides specifically for developers of third-party
 widgets.
 
 Migrating from 7.x to 8.0

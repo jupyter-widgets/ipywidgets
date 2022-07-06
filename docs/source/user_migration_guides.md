@@ -1,7 +1,7 @@
 Migrating user code
 ===================
 
-These are migration guides aimed specifically at user of ipywidgets.
+These are migration guides specifically for ipywidgets users.
 
 Migrating from 7.x to 8.0
 -------------------------
@@ -30,12 +30,10 @@ to wrap reads from the widget.
 
 As part of an effort to make it possible to
 [set tooltips for all widgets](https://github.com/jupyter-widgets/ipywidgets/pull/2680),
-the old `description_tooltip` attribute for certain widgets was removed. Now all widgets
+the old `description_tooltip` attribute for certain widgets was deprecated. Now all widgets
 that inherit `DOMWidget` have the attribute `tooltip` instead.
 
 Suggested migration: Search and replace `description_tooltip` to `tooltip`.
-TBD: ipywidgets should add a `description_tooltip` keyword argument to `DescriptionWidget`s, with
-a deprecation warning.
 
 #### Selection Widgets
 
@@ -87,6 +85,7 @@ attribute `data-jupyter-widgets-cdn` on the HTML manager script tag. See
 
 #### widgetsnbextension
 
-The `widgetsnbextension` package is no longer a dependency of `ipywidgets`. Consequently,
-neither is the `notebook` package. If you need to keep `notebook` and widget support for it
-you will need to ensure they are explicitly stated in any environment bootstrapping.
+The `notebook` package is no longer a dependency of the `widgetsnbextension`
+package (therefore `notebook` is no longer a dependency of `ipywidgets`). If you
+need to install `notebook` with `ipywidgets`, you will need to install
+`notebook` explicitly.
