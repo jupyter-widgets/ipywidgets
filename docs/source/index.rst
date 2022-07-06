@@ -95,6 +95,7 @@ some custom widget packages built on top of the Jupyter Widgets framework.
    :maxdepth: 1
 
    changelog.md
+   user_migration_guides.md
    migration_guides.md
 
 .. toctree::

@@ -2,7 +2,7 @@
 
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
-## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/v8.0) (not released yet)
+## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/v8.0)
 
 To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub.
 See also the 

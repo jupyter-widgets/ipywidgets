@@ -24,6 +24,9 @@ is released.
 We also recommend testing the migration in a completely new notebook, rather
 than one that contains widgets that you instantiated with ipywidgets 7.x.
 
+For a summarized list of relevant changes, please consult the "Developers" section of the
+[changelog](./changelog).
+
 ### Updating setup.py
 
 Start by updating the dependency in your `setup.py` or `setup.cfg` to support 8.x.
