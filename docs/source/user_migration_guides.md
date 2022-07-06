@@ -30,12 +30,10 @@ to wrap reads from the widget.
 
 As part of an effort to make it possible to
 [set tooltips for all widgets](https://github.com/jupyter-widgets/ipywidgets/pull/2680),
-the old `description_tooltip` attribute for certain widgets was removed. Now all widgets
+the old `description_tooltip` attribute for certain widgets was deprecated. Now all widgets
 that inherit `DOMWidget` have the attribute `tooltip` instead.
 
 Suggested migration: Search and replace `description_tooltip` to `tooltip`.
-TBD: ipywidgets should add a `description_tooltip` keyword argument to `DescriptionWidget`s, with
-a deprecation warning.
 
 #### Selection Widgets
 
