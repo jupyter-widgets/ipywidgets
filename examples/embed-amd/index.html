@@ -1,0 +1,167 @@
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF8">
+        <style>
+        .jupyter-widgetarea {
+            margin: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 900px;
+        }
+        </style>
+    </head>
+    <body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+        <script>
+            require.config({
+                bundles: {
+                    '@jupyter-widgets/html-manager/dist/embed-amd': [
+                        '@jupyter-widgets/html-manager', 
+                        '@jupyter-widgets/base', 
+                        '@jupyter-widgets/controls'
+                    ]
+                },
+                paths: {
+                    '@jupyter-widgets/html-manager': [
+                        // 'html-manager', // if a symbolic link is set up to the html-manager package for local dev
+                        'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager',
+                    ]
+                },
+            })
+            require(["@jupyter-widgets/html-manager/dist/embed-amd"], () => {
+                console.log('Processing widgets on page');
+            });
+        </script>
+        <script type="application/vnd.jupyter.widget-state+json">
+            {
+                "version_major": 2,
+                "version_minor": 0,
+                "state": {
+                    "1d915e54eff54fd89e505a46ccabdabd": {
+                        "model_name": "LayoutModel",
+                        "model_module": "@jupyter-widgets/base",
+                        "model_module_version": "2.0.0",
+                        "state": {}
+                    },
+                    "48a42260652f4b7eb7851c65cd155604": {
+                        "model_name": "SliderStyleModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "description_width": ""
+                        }
+                    },
+                    "105655a5e8dc4b7bb19d824cc3ff7770": {
+                        "model_name": "IntSliderModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "value": 100,
+                            "max": 200,
+                            "style": "IPY_MODEL_48a42260652f4b7eb7851c65cd155604",
+                            "behavior": "drag-tap",
+                            "layout": "IPY_MODEL_1d915e54eff54fd89e505a46ccabdabd"
+                        }
+                    },
+                    "cb13b25cf84542ba882ab2a9c6e57c6d": {
+                        "model_name": "LayoutModel",
+                        "model_module": "@jupyter-widgets/base",
+                        "model_module_version": "2.0.0",
+                        "state": {}
+                    },
+                    "f0479b348e2441cd87e1bd856fac5c22": {
+                        "model_name": "SliderStyleModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "description_width": ""
+                        }
+                    },
+                    "2182c1a3fe4a410f9b0a5306ae05c530": {
+                        "model_name": "IntSliderModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "value": 40,
+                            "style": "IPY_MODEL_f0479b348e2441cd87e1bd856fac5c22",
+                            "behavior": "drag-tap",
+                            "layout": "IPY_MODEL_cb13b25cf84542ba882ab2a9c6e57c6d"
+                        }
+                    },
+                    "5f2da4ad981b467cb2d4f07efe5141f4": {
+                        "model_name": "LayoutModel",
+                        "model_module": "@jupyter-widgets/base",
+                        "model_module_version": "2.0.0",
+                        "state": {}
+                    },
+                    "e5f63e1e06af400aac8135ff3394b856": {
+                        "model_name": "ButtonStyleModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "font_family": null,
+                            "font_size": null,
+                            "font_style": null,
+                            "font_variant": null,
+                            "font_weight": null,
+                            "text_color": null,
+                            "text_decoration": null
+                        }
+                    },
+                    "891a12a9856949b4be2e520f732dcca9": {
+                        "model_name": "ButtonModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "tooltip": null,
+                            "icon": "legal",
+                            "style": "IPY_MODEL_e5f63e1e06af400aac8135ff3394b856",
+                            "layout": "IPY_MODEL_5f2da4ad981b467cb2d4f07efe5141f4"
+                        }
+                    },
+                    "e8a6db8ff7bd4645b5b23ccb797dee9c": {
+                        "model_name": "DirectionalLinkModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "target": [
+                                "IPY_MODEL_2182c1a3fe4a410f9b0a5306ae05c530",
+                                "max"
+                            ],
+                            "source": [
+                                "IPY_MODEL_105655a5e8dc4b7bb19d824cc3ff7770",
+                                "value"
+                            ]
+                        }
+                    },
+                    "b9445ea442bc4a5aae73c1e2241c3922": {
+                        "model_name": "LayoutModel",
+                        "model_module": "@jupyter-widgets/base",
+                        "model_module_version": "2.0.0",
+                        "state": {}
+                    },
+                    "a08a1974ba01461c8d9b91b8bfa0f6ce": {
+                        "model_name": "VBoxModel",
+                        "model_module": "@jupyter-widgets/controls",
+                        "model_module_version": "2.0.0",
+                        "state": {
+                            "children": [
+                                "IPY_MODEL_105655a5e8dc4b7bb19d824cc3ff7770",
+                                "IPY_MODEL_2182c1a3fe4a410f9b0a5306ae05c530",
+                                "IPY_MODEL_891a12a9856949b4be2e520f732dcca9"
+                            ],
+                            "layout": "IPY_MODEL_b9445ea442bc4a5aae73c1e2241c3922"
+                        }
+                    }
+                }
+            }
+            </script>
+            <script type="application/vnd.jupyter.widget-view+json">
+            {
+                "version_major": 2,
+                "version_minor": 0,
+                "model_id": "a08a1974ba01461c8d9b91b8bfa0f6ce"
+            }
+            </script>
+    </body>
+</html>
