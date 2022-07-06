@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/notebook-manager",
-  "version": "8.0.0-rc.0",
+  "version": "8.0.0-rc.1",
   "private": true,
   "description": "Jupyter Widgets nbextension",
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
@@ -21,11 +21,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^6.0.0-rc.0",
-    "@jupyter-widgets/base-manager": "^1.0.0-rc.0",
-    "@jupyter-widgets/controls": "^5.0.0-rc.0",
-    "@jupyter-widgets/html-manager": "^1.0.0-rc.0",
-    "@jupyter-widgets/output": "^6.0.0-rc.0",
+    "@jupyter-widgets/base": "^6.0.0-rc.1",
+    "@jupyter-widgets/base-manager": "^1.0.0-rc.1",
+    "@jupyter-widgets/controls": "^5.0.0-rc.1",
+    "@jupyter-widgets/html-manager": "^1.0.0-rc.1",
+    "@jupyter-widgets/output": "^6.0.0-rc.1",
     "@jupyterlab/services": "^6.0.0",
     "@lumino/messaging": "^1.10.1",
     "@lumino/widgets": "^1.30.0",

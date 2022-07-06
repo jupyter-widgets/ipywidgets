@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/output",
-  "version": "6.0.0-rc.0",
+  "version": "6.0.0-rc.1",
   "description": "Jupyter widget wrapping cell output",
   "bugs": {
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
@@ -25,7 +25,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^6.0.0-rc.0"
+    "@jupyter-widgets/base": "^6.0.0-rc.1"
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
