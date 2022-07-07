@@ -26,12 +26,32 @@ extensions = [
 
 jupyterlite_config = "jupyterlite_config.json"
 jupyterlite_dir = "."
-jupyterlite_contents = "examples"
-
-# Except
-# - Variable inspector.ipynb
-# - Building a custom widget - turn into an md file?
-# - the label widget widgets.HBox([widgets.Label(value="The $m$ in $E=mc^2$:"), widgets.FloatSlider()]) has bad spacing
+jupyterlite_contents = [
+"examples/Beat Frequencies.ipynb",
+"examples/Controller.ipynb",
+"examples/Exploring Graphs.ipynb",
+"examples/Factoring.ipynb",
+"examples/Image Browser.ipynb",
+"examples/Image Processing.ipynb",
+"examples/Index.ipynb",
+# "examples/Layout Example.ipynb", # bqplot/ipyleaflet dependencies require ipywidgets 7
+# "examples/Layout Templates.ipynb", # bqplot/ipyleaflet dependencies require ipywidgets 7
+"examples/Lorenz Differential Equations.ipynb",
+"examples/Media widgets.ipynb",
+"examples/Output Widget.ipynb",
+"examples/Using Interact.ipynb",
+# "examples/Variable Inspector.ipynb", # uses ipykernel-specific features
+"examples/Widget Alignment.ipynb",
+"examples/Widget Asynchronous.ipynb",
+"examples/Widget Basics.ipynb",
+"examples/Widget Custom.ipynb",
+"examples/Widget Events.ipynb",
+"examples/Widget List.ipynb",
+"examples/Widget Low Level.ipynb",
+"examples/Widget Styling.ipynb",
+"examples/Widget TagsInput.ipynb",
+"examples/images",
+]
 
 # intersphinx_mapping = {
 #     'ipython': ('http://ipython.org/ipython-doc/dev/', None),
