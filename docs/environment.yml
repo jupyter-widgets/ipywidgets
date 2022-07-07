@@ -19,6 +19,7 @@ dependencies:
   - scikit-learn
   - sphinx
   - sphinx_rtd_theme
+  - sympy
   - pip:
     - jupyterlite==0.1.0b10
     - jupyterlite-sphinx>=0.6.0
