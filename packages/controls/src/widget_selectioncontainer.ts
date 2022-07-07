@@ -439,18 +439,20 @@ export class StackedView extends BoxView {
   }
 
   update_children(): void {
-    const selected_child =
-      this.model.get('children')[this.model.get('selected_index')];
-    this.children_views
-      ?.update([selected_child])
-      .then((views: DOMWidgetView[]) => {
-        // Notify all children that their sizes may have changed.
-        views.forEach((view) => {
-          MessageLoop.postMessage(
-            view.luminoWidget,
-            Widget.ResizeMessage.UnknownSize
-          );
-        });
+    let child: any[];
+    if (this.model.get('selected_index') === null) {
+      child = [];
+    } else {
+      child = [this.model.get('children')[this.model.get('selected_index')]];
+    }
+    this.children_views?.update(child).then((views: DOMWidgetView[]) => {
+      // Notify all children that their sizes may have changed.
+      views.forEach((view) => {
+        MessageLoop.postMessage(
+          view.luminoWidget,
+          Widget.ResizeMessage.UnknownSize
+        );
       });
+    });
   }
 }
