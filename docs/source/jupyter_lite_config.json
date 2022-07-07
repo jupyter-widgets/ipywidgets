@@ -1,5 +1,10 @@
 {
   "LiteBuildConfig": {
+    "ignore_contents": [
+      "examples/Layout Example.ipynb",
+      "examples/Layout Templates.ipynb",
+      "examples/Variable Inspector.ipynb"
+    ],
     "federated_extensions": [
       "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.17.0-py2.py3-none-any.whl",
