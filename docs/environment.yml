@@ -19,6 +19,5 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - pip:
-    - jupyterlite==0.1.0b9
-    - jupyterlite-xeus-python
+    - jupyterlite==0.1.0b10
     - jupyterlite-sphinx>=0.6.0

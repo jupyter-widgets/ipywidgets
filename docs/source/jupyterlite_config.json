@@ -2,7 +2,7 @@
   "LiteBuildConfig": {
     "federated_extensions": [
       "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.15.0-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.17.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/p/plotly/plotly-5.6.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jupyterlab-widgets/jupyterlab_widgets-1.1.1-py3-none-any.whl"
     ],
@@ -15,7 +15,7 @@
       "https://files.pythonhosted.org/packages/py2.py3/d/defusedxml/defusedxml-0.7.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/e/executing/executing-0.8.2-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/f/folium/folium-0.12.1.post1-py2.py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.15.0-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.17.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipython-genutils/ipython_genutils-0.2.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipywidgets/ipywidgets-7.7.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/m/mistune/mistune-0.8.4-py2.py3-none-any.whl",
@@ -65,8 +65,5 @@
       "https://files.pythonhosted.org/packages/py3/v/vega-datasets/vega_datasets-0.9.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/x/xyzservices/xyzservices-2022.2.0-py3-none-any.whl"
     ]
-  },
-  "XeusPythonEnv": {
-    "packages": ["numpy", "matplotlib", "ipyleaflet", "ipywidgets", "bqplot"]
   }
 }
