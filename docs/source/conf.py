@@ -28,6 +28,11 @@ jupyterlite_config = "jupyterlite_config.json"
 jupyterlite_dir = "."
 jupyterlite_contents = "examples"
 
+# Except
+# - Variable inspector.ipynb
+# - Building a custom widget - turn into an md file?
+# - the label widget widgets.HBox([widgets.Label(value="The $m$ in $E=mc^2$:"), widgets.FloatSlider()]) has bad spacing
+
 # intersphinx_mapping = {
 #     'ipython': ('http://ipython.org/ipython-doc/dev/', None),
 #     'nbconvert': ('https://nbconvert.readthedocs.io/en/latest/', None),
