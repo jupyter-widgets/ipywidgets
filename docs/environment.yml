@@ -11,6 +11,7 @@ dependencies:
   - nbsphinx
   - numpy
   - packaging
+  - pandoc
   - pip
   - python=3.10
   - recommonmark
