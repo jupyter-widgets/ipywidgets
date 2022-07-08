@@ -21,15 +21,17 @@ interactive results with graphical user interfaces that others can play with
 without seeing code. Exploring, learning, and sharing becomes a fun immersive
 experience.
 
-.. todo: Add screenshot
+.. image:: interact.gif
 
-`Try it fullscreen <lite/lab/?path=Widget%20List.ipynb>`_
+Try it online
+-------------
 
 .. image:: https://jupyterlite.rtfd.io/en/latest/_static/badge.svg
    :target: ./lite/lab
 
-You can try ipywidgets below, or open many other live examples in a new browser tab with
-`JupyterLite <./lite/lab>`_ or `RetroLite <./lite/retro/tree>`_.
+You can try ipywidgets below, or open many other live examples in a new browser
+tab with the `JupyterLab <lite/lab/?path=Widget%20List.ipynb>`_ or `Jupyter
+Notebook <./lite/retro/tree>`_ interfaces (provided by JupyterLite).
 
 .. retrolite:: examples/Widget List.ipynb
 
