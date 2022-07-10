@@ -11,7 +11,7 @@ dependencies:
   - jupyter-packaging
   - matplotlib
   - nbsphinx
-  - nodejs=16
+  - nodejs=14
   - numpy
   - packaging
   - pandoc
