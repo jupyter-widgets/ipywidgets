@@ -1,4 +1,5 @@
 bqplot
+build
 ipykernel
 jupyter_client
 jupyterlab>=3,<4

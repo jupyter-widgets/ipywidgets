@@ -158,7 +158,7 @@ def on_config_inited(*args):
     subprocess.check_call(["jlpm", "build"], cwd=str(ROOT))
 
     IPYW = ROOT / "python/ipywidgets"
-    subprocess.check_call([sys.executable, "setup.py", "bdist_wheel"], cwd=str(IPYW))
+    subprocess.check_call([sys.executable, "-m", "build"], cwd=str(IPYW))
 
     JLW = ROOT / "python/jupyterlab_widgets"
     subprocess.check_call(["jupyter", "labextension", "build", "."], cwd=str(JLW))
