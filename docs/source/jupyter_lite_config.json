@@ -1,18 +1,19 @@
 {
   "LiteBuildConfig": {
     "ignore_contents": [
-      "examples/Layout Example.ipynb",
-      "examples/Layout Templates.ipynb",
-      "examples/Variable Inspector.ipynb"
+      "Layout Example\\.ipynb",
+      "Layout Templates\\.ipynb",
+      "Variable Inspector\\.ipynb"
     ],
     "federated_extensions": [
       "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.17.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/p/plotly/plotly-5.6.0-py2.py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/j/jupyterlab-widgets/jupyterlab_widgets-3.0.0rc1-py3-none-any.whl"
+      "../../python/jupyterlab_widgets/jupyterlab_widgets/labextension"
     ],
     "ignore_sys_prefix": true,
     "piplite_urls": [
+      "../../python/ipywidgets/dist",
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.0.5-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/backcall/backcall-0.2.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
@@ -43,12 +44,10 @@
       "https://files.pythonhosted.org/packages/py3/e/entrypoints/entrypoints-0.4-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/i/idna/idna-3.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/i/ipython/ipython-8.0.1-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/i/ipywidgets/ipywidgets-8.0.0rc1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/J/Jinja2/Jinja2-3.0.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jsonschema/jsonschema-4.4.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jupyter-client/jupyter_client-7.1.2-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jupyter-core/jupyter_core-4.9.2-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/j/jupyterlab-widgets/jupyterlab_widgets-3.0.0rc1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/m/matplotlib-inline/matplotlib_inline-0.1.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/n/nbclient/nbclient-0.5.11-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/n/nbconvert/nbconvert-6.4.2-py3-none-any.whl",

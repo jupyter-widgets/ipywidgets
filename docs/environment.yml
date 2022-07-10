@@ -7,8 +7,11 @@ dependencies:
   - empack
   - ipykernel
   - jupyter_client
+  - jupyterlab >=3,<4
+  - jupyter-packaging
   - matplotlib
   - nbsphinx
+  - nodejs=16
   - numpy
   - packaging
   - pandoc

@@ -8,6 +8,8 @@ python:
   install:
     - method: pip
       path: ./python/ipywidgets
+    - method: pip
+      path: ./python/jupyterlab_widgets
 conda:
   environment: docs/environment.yml
 

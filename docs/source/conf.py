@@ -40,7 +40,6 @@ jupyterlite_contents = "examples"
 #     'jupyter': ('https://jupyter.readthedocs.io/en/latest/', None),
 # }
 
-
 # prolog based on https://github.com/spatialaudio/nbsphinx/blob/98005a9d6b331b7d6d14221539154df69f7ae51a/doc/conf.py#L38
 nbsphinx_prolog = r"""
 {% set docname_link = env.doc2path(env.docname, base=None).replace(' ', '%20') %}
@@ -147,3 +146,22 @@ html_theme_options = {
     'includehidden': True,
     'titles_only': False
 }
+
+
+def on_config_inited(*args):
+    import sys
+    import subprocess
+    from pathlib import Path
+    HERE = Path(__file__)
+    ROOT = HERE.parent.parent.parent
+    subprocess.check_call(["jlpm"], cwd=str(ROOT))
+    subprocess.check_call(["jlpm", "build"], cwd=str(ROOT))
+
+    IPYW = ROOT / "python/ipywidgets"
+    subprocess.check_call([sys.executable, "setup.py", "bdist_wheel"], cwd=str(IPYW))
+
+    JLW = ROOT / "python/jupyterlab_widgets"
+    subprocess.check_call(["jupyter", "labextension", "build", "."], cwd=str(JLW))
+
+def setup(app):
+    app.connect("config-inited", on_config_inited)
