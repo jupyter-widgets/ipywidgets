@@ -16,6 +16,14 @@ jobs:
         cache-dependency-path: |
           **/setup.cfg
           **/requirements*.txt
+    - name: Install node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+        cache: 'yarn'
+        cache-dependency-path: |
+          yarn.lock
+          ui-tests/yarn.lock
     - name: Install dependencies
       run: |
         sudo apt-get install -y pandoc
