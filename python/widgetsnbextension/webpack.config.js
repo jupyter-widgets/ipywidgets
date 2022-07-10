@@ -1,10 +1,11 @@
 var path = require('path');
 module.exports = {
-  entry: './src/extension.js',
+  entry: ['./amd-public-path.js', './src/extension.js'],
   output: {
     filename: 'extension.js',
     path: path.resolve(__dirname, 'widgetsnbextension', 'static'),
     libraryTarget: 'amd',
+    publicPath: '', // Set in amd-public-path.js
   },
   devtool: 'source-map',
   module: {
@@ -15,4 +16,6 @@ module.exports = {
       { test: /\.svg$/i, type: 'asset' },
     ],
   },
+  // 'module' is the magic requirejs dependency used to set the publicPath
+  externals: ['module'],
 };

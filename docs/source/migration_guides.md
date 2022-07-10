@@ -1,7 +1,7 @@
 Migrating custom widget libraries
 =================================
 
-These are migration guides aimed specifically at developers of third-party
+These are migration guides specifically for developers of third-party
 widgets.
 
 Migrating from 7.x to 8.0
@@ -23,6 +23,9 @@ is released.
 
 We also recommend testing the migration in a completely new notebook, rather
 than one that contains widgets that you instantiated with ipywidgets 7.x.
+
+For a summarized list of relevant changes, please consult the "Developers" section of the
+[changelog](./changelog).
 
 ### Updating setup.py
 

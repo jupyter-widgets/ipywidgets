@@ -35,6 +35,16 @@ Notebook <./lite/retro/tree>`_ interfaces (provided by JupyterLite).
 
 .. retrolite:: examples/Widget List.ipynb
 
+Learning widgets
+----------------
+
+This documentation contains a thorough description of the core Jupyter widgets
+package and several examples.
+
+There is a `video tutorial <https://youtu.be/QAtKtVcm11I>`_ that takes a more step-by-step approach. The
+Jupyter notebooks for that tutorial are `also available <https://github.com/jupyter-widgets/tutorial>`_.
+
+.. todo: Add screenshot
 
 Core Jupyter Widgets
 --------------------
@@ -74,7 +84,7 @@ The Jupyter Widgets framework has several components:
 
 See the `Jupyter Widgets wiki
 page <https://github.com/jupyter/jupyter/wiki/Jupyter-Widgets>`_ for more
-information from the community about kernels and frontends that support Jupyter Widgets, as well as 
+information from the community about kernels and frontends that support Jupyter Widgets, as well as
 some custom widget packages built on top of the Jupyter Widgets framework.
 
 .. toctree::
@@ -100,6 +110,7 @@ some custom widget packages built on top of the Jupyter Widgets framework.
    :maxdepth: 1
 
    changelog.md
+   user_migration_guides.md
    migration_guides.md
 
 .. toctree::

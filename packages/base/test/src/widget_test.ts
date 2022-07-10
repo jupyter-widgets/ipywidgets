@@ -534,6 +534,33 @@ describe('WidgetModel', function () {
       expect(changeA).to.be.calledBefore(change);
       expect(change).to.be.calledWith(this.widget);
     });
+    it('triggers change events after exception', async function () {
+      const changeA = sinon.spy(function changeA() {
+        return;
+      });
+      const changeB = sinon.spy(function changeB() {
+        throw 'error';
+      });
+      const change = sinon.spy(function change() {
+        return;
+      });
+      this.widget.on('change:a', changeA);
+      this.widget.on('change:b', changeB);
+      this.widget.on('change', change);
+      // first we trigger a set that causes an exception
+      try {
+        this.widget.set('b', 42);
+      } catch {
+        // empty
+      }
+      expect(change).to.not.be.called;
+      // from now on this test is similar to 'triggers change events'
+      this.widget.set('a', 100);
+      expect(changeA).to.be.calledOnce;
+      expect(changeA).to.be.calledWith(this.widget, 100);
+      expect(changeA).to.be.calledBefore(change);
+      expect(change).to.be.calledWith(this.widget);
+    });
     it('handles multiple values to set', function () {
       expect(this.widget.get('a')).to.be.undefined;
       expect(this.widget.get('b')).to.be.undefined;
@@ -643,7 +670,7 @@ describe('WidgetModel', function () {
       });
       expect(this.widget._msg_buffer_callbacks).to.not.equals(null);
       // have the comm send a status idle message
-      callbacks.iopub.status({
+      this.comm.send.lastCall.args[1].iopub.status({
         content: {
           execution_state: 'idle',
         },
@@ -662,7 +689,7 @@ describe('WidgetModel', function () {
         },
         buffer_paths: [],
       });
-      callbacks.iopub.status({
+      this.comm.send.lastCall.args[1].iopub.status({
         content: {
           execution_state: 'idle',
         },
@@ -687,7 +714,7 @@ describe('WidgetModel', function () {
         state: { a: 'sync test - 2' },
         buffer_paths: [],
       });
-      callbacks.iopub.status({
+      this.comm.send.lastCall.args[1].iopub.status({
         content: {
           execution_state: 'idle',
         },
@@ -703,7 +730,7 @@ describe('WidgetModel', function () {
         },
         buffer_paths: [],
       });
-      callbacks.iopub.status({
+      this.comm.send.lastCall.args[1].iopub.status({
         content: {
           execution_state: 'idle',
         },
