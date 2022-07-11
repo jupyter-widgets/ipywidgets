@@ -4,6 +4,9 @@ dist
 _build
 docs/man/*.gz
 docs/source/api/generated
+docs/source/.cache
+*.doit.db
+_contents
 node_modules
 *.py[co]
 __pycache__

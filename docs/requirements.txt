@@ -1,6 +1,9 @@
 bqplot
+build
 ipykernel
 jupyter_client
+jupyterlab>=3,<4
+jupyterlite-sphinx
 matplotlib
 nbsphinx>=0.5
 numpy
@@ -10,3 +13,6 @@ sphinx_rtd_theme
 packaging
 scikit-image
 scikit-learn
+sympy
+jupyterlite==0.1.0b10
+jupyterlite-sphinx>=0.6.0

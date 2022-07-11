@@ -21,6 +21,20 @@ interactive results with graphical user interfaces that others can play with
 without seeing code. Exploring, learning, and sharing becomes a fun immersive
 experience.
 
+.. image:: interact.gif
+
+Try it online
+-------------
+
+.. image:: https://jupyterlite.rtfd.io/en/latest/_static/badge.svg
+   :target: ./lite/lab
+
+You can try ipywidgets below, or open many other live examples in a new browser
+tab with the `JupyterLab <lite/lab/?path=Widget%20List.ipynb>`_ or `Jupyter
+Notebook <./lite/retro/tree>`_ interfaces (provided by JupyterLite).
+
+.. retrolite:: examples/Widget List.ipynb
+
 Learning widgets
 ----------------
 
@@ -70,13 +84,14 @@ The Jupyter Widgets framework has several components:
 
 See the `Jupyter Widgets wiki
 page <https://github.com/jupyter/jupyter/wiki/Jupyter-Widgets>`_ for more
-information from the community about kernels and frontends that support Jupyter Widgets, as well as 
+information from the community about kernels and frontends that support Jupyter Widgets, as well as
 some custom widget packages built on top of the Jupyter Widgets framework.
 
 .. toctree::
     :caption: User Guide
     :maxdepth: 1
 
+    examples.md
     user_install.md
     examples/Widget Basics.ipynb
     examples/Widget List.ipynb
