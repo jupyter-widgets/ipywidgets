@@ -9,6 +9,7 @@
       "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.17.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/p/plotly/plotly-5.6.0-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py3/j/jupyterlab_github/jupyterlab_github-3.0.1-py3-none-any.whl",
       "../../python/jupyterlab_widgets/jupyterlab_widgets/labextension"
     ],
     "ignore_sys_prefix": true,
