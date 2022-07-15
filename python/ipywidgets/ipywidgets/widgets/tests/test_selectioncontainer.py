@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from traitlets import TraitError
 
-from ipywidgets.widgets import Accordion, HTML
+from ipywidgets.widgets import Accordion, Tab, Stack, HTML
 
 
 class TestAccordion(TestCase):
@@ -26,6 +26,11 @@ class TestAccordion(TestCase):
     def test_selected_index_out_of_bounds(self):
         with self.assertRaises(TraitError):
             Accordion(self.children, selected_index=-1)
+
+    def test_children_position_argument(self):
+        Accordion(self.children)
+        Tab(self.children)
+        Stack(self.children)
 
 
     def test_titles(self):
