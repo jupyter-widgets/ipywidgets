@@ -91,10 +91,10 @@ class Tab(_SelectionContainer):
     _view_name = Unicode('TabView').tag(sync=True)
     _model_name = Unicode('TabModel').tag(sync=True)
 
-    def __init__(self, **kwargs):
-        if 'children' in kwargs and 'selected_index' not in kwargs and len(kwargs['children']) > 0:
+    def __init__(self, children=(), **kwargs):
+        if len(children) > 0 and 'selected_index' not in kwargs:
             kwargs['selected_index'] = 0
-        super(Tab, self).__init__(**kwargs)
+        super().__init__(children=children, **kwargs)
 
     def _reset_selected_index(self):
         # if there are no tabs, then none should be selected
