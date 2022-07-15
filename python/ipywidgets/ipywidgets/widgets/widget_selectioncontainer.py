@@ -41,9 +41,15 @@ class _SelectionContainer(Box, CoreWidget):
 
     @observe('children')
     def _observe_children(self, change):
-        if self.selected_index is not None and len(change.new) < self.selected_index:
+        self._reset_selected_index()
+        self._reset_titles()
+
+    def _reset_selected_index(self):
+        if self.selected_index is not None and len(self.children) < self.selected_index:
             self.selected_index = None
-        if len(self.titles) != len(change.new):
+
+    def _reset_titles(self):
+        if len(self.titles) != len(self.children):
             # Run validation function
             self.titles = tuple(self.titles)
 
@@ -90,10 +96,10 @@ class Tab(_SelectionContainer):
             kwargs['selected_index'] = 0
         super(Tab, self).__init__(**kwargs)
 
-    @observe('children')
-    def _observe_children(self, change):
+    def _reset_selected_index(self):
         # if there are no tabs, then none should be selected
-        if len(change.new) == 0:
+        num_children = len(self.children)
+        if num_children == 0:
             self.selected_index = None
 
         # if there are tabs, but none is selected, select the first one
@@ -102,8 +108,9 @@ class Tab(_SelectionContainer):
 
         # if there are tabs and a selection, but the selection is no longer
         # valid, select the last tab.
-        elif len(change.new) < self.selected_index:
-            self.selected_index = len(change.new) - 1
+        elif num_children < self.selected_index:
+            self.selected_index = num_children - 1
+
 
 
 @register
