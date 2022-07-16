@@ -88,7 +88,7 @@ The ``DOMWidgetView.pWidget`` property has been renamed ``DOMWidgetView.luminoWi
 + this.luminoWidget
 ```
 
-The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidgetView.processLuminoMessage``. If you want to support both ipywidgets 7.x and 8.x, you should implement both methods:
+The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidgetView.processLuminoMessage``. If you want to support both ipywidgets 7.x and 8.x, you should implement both methods and call the correct super method:
 
 ```diff
 - processPhosphorMessage(msg: Message): void {
@@ -109,15 +109,15 @@ The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidget
 + }
 +
 + processPhosphorMessage(msg: Message): void {
-+     this._processLuminoMessage(msg, (DOMWidgetView as any).processPhosphorMessage);
++     this._processLuminoMessage(msg, super.processPhosphorMessage);
 + }
 +
 + processLuminoMessage(msg: Message): void {
-+     this._processLuminoMessage(msg, (DOMWidgetView as any).processLuminoMessage);
++     this._processLuminoMessage(msg, super.processLuminoMessage);
 + }
 ```
 
-If you're dropping ipywidgets 7.x support, you can simply rename the `processPhosphorMessage` method into `processLuminoMessage`.
+If you're dropping ipywidgets 7.x support, you can simply rename the `processPhosphorMessage` method to `processLuminoMessage`.
 
 #### Widget manager import
 
