@@ -93,4 +93,49 @@ module.exports = [
     externals: ['@jupyter-widgets/base', 'module'],
     ...options,
   },
+  {
+    // @jupyter-widgets/base
+    entry: ['./amd-public-path.js', '@jupyter-widgets/base/lib/index'],
+    output: {
+      filename: '@jupyter-widgets/base.js',
+      path: path.resolve(__dirname, 'dist'),
+      library: {
+        type: 'amd',
+      },
+      publicPath: '', // Set in amd-public-path.js
+    },
+    // 'module' is the magic requirejs dependency used to set the publicPath
+    externals: ['module'],
+    ...options,
+  },
+  {
+    // @jupyter-widgets/controls, but versioned so we can load it beside other versions of controls
+    entry: ['./amd-public-path.js', '@jupyter-widgets/controls/lib/index'],
+    output: {
+      filename: '@jupyter-widgets/controls.js',
+      path: path.resolve(__dirname, 'dist'),
+      library: {
+        type: 'amd',
+      },
+      publicPath: '', // Set in amd-public-path.js
+    },
+    // 'module' is the magic requirejs dependency used to set the publicPath
+    externals: ['@jupyter-widgets/base', 'module'],
+    ...options,
+  },
+  {
+    // @jupyter-widgets/html-manager
+    entry: ['./amd-public-path.js', './lib/index.js'],
+    output: {
+      filename: '@jupyter-widgets/html-manager.js',
+      path: path.resolve(__dirname, 'dist'),
+      library: {
+        type: 'amd',
+      },
+      publicPath: '', // Set in amd-public-path.js
+    },
+    // 'module' is the magic requirejs dependency used to set the publicPath
+    externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls', 'module'],
+    ...options,
+  },
 ];
