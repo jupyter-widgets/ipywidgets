@@ -23,7 +23,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/${PR_HEAD_USERREPO}/${PR_HEAD_REF}?urlpath=lab/tree/docs/source/examples/) :point_left: Launch a binder notebook on branch _${PR_HEAD_USERREPO}/${PR_HEAD_REF}_`
+            body: `[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/${PR_HEAD_USERREPO}/${PR_HEAD_REF}?urlpath=lab/tree/docs/source/examples/) :point_left: Launch a binder notebook on branch _${PR_HEAD_USERREPO}/${PR_HEAD_REF}_. You can also try out changes using JupyterLite in the documentation that is built in the docs/readthedocs.org check below.`
           })
       env:
         PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
