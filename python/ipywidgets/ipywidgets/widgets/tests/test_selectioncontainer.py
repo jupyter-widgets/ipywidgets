@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from traitlets import TraitError
 
-from ipywidgets.widgets import Accordion, Tab, Stacked, HTML
+from ipywidgets.widgets import Accordion, Tab, Stack, HTML
 
 class TestTab(TestCase):
 
@@ -113,11 +113,11 @@ class TestAccordion(TestCase):
         assert len(widget.children) == 1
         assert widget.titles == ('',)
 
-class TestStacked(TestCase):
+class TestStack(TestCase):
 
     def setUp(self):
         self.children = [HTML('0'), HTML('1')]
-        self.widget = Stacked
+        self.widget = Stack
 
     def test_selected_index_none(self):
         widget = self.widget(self.children, selected_index=None)

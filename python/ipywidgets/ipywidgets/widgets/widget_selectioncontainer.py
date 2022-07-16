@@ -114,7 +114,7 @@ class Tab(_SelectionContainer):
 
 
 @register
-class Stacked(_SelectionContainer):
+class Stack(_SelectionContainer):
     """Displays only the selected child."""
-    _view_name = Unicode('StackedView').tag(sync=True)
-    _model_name = Unicode('StackedModel').tag(sync=True)
+    _view_name = Unicode('StackView').tag(sync=True)
+    _model_name = Unicode('StackModel').tag(sync=True)
