@@ -345,7 +345,32 @@ class Widget(LoggingHasTraits):
                 states=full_state,
                 buffer_paths=buffer_paths
             ), buffers=buffers)
-
+        elif method == 'request_registered':
+            # Send back registered widgets
+            registered = []
+            filter = data.get('filter', {})
+            filter_list = (
+                filter.get('model_module', None),
+                filter.get('model_version', None),
+                filter.get('model_name', None),
+                filter.get('view_module', None),
+                filter.get('view_version', None),
+                filter.get('view_name', None)
+            )
+            for info, _ in cls._widget_types.items():
+                if all(f is None or f == v for f, v in zip(filter, info)):
+                    registered.append(dict(
+                        model_module=info[0],
+                        model_version=info[1],
+                        model_name=info[2],
+                        view_module=info[3],
+                        view_version=info[4],
+                        view_name=info[5]
+                    ))
+            cls._control_comm.send(dict(
+                method='reply_registered',
+                registered=registered
+            ))
         else:
             raise RuntimeError('Unknown front-end to back-end widget control msg with method "%s"' % method)
 
