@@ -1,6 +1,10 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import * as controls from '@jupyter-widgets/controls';
+import * as base from '@jupyter-widgets/base';
+import * as outputWidgets from './output';
+
 import { createErrorWidgetModel, ErrorWidgetView } from '@jupyter-widgets/base';
 import { ManagerBase } from '@jupyter-widgets/base-manager';
 import { MessageLoop } from '@lumino/messaging';
@@ -109,26 +113,42 @@ export class HTMLManager extends ManagerBase {
   /**
    * Load a class and return a promise to the loaded object.
    */
-  protected loadClass(
+  protected async loadClass(
     className: string,
     moduleName: string,
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
-    return new Promise((resolve, reject) => {
-      if (this.loader !== undefined) {
-        resolve(this.loader(moduleName, moduleVersion));
-      } else {
-        reject(`Could not load module ${moduleName}@${moduleVersion}`);
-      }
-    }).then((module) => {
-      if ((module as any)[className]) {
-        return (module as any)[className];
-      } else {
-        return Promise.reject(
-          `Class ${className} not found in module ${moduleName}@${moduleVersion}`
-        );
-      }
-    });
+    let module: any;
+    if (
+      moduleName === '@jupyter-widgets/base' &&
+      moduleVersion /* Some semver test??? */ === base.JUPYTER_WIDGETS_VERSION
+    ) {
+      module = base;
+    } else if (
+      moduleName === '@jupyter-widgets/controls' &&
+      moduleVersion /* Some semver test??? */ ===
+        controls.JUPYTER_CONTROLS_VERSION
+    ) {
+      module = controls;
+    } else if (
+      moduleName === '@jupyter-widgets/output' &&
+      moduleVersion /* Some semver test??? */ ===
+        outputWidgets.OUTPUT_WIDGET_VERSION
+    ) {
+      module = outputWidgets;
+    } else if (this.loader !== undefined) {
+      module = await this.loader(moduleName, moduleVersion);
+    } else {
+      throw new Error(`Could not load module ${moduleName}@${moduleVersion}`);
+    }
+
+    if ((module as any)[className]) {
+      return (module as any)[className];
+    } else {
+      throw Error(
+        `Class ${className} not found in module ${moduleName}@${moduleVersion}`
+      );
+    }
   }
 
   /**
