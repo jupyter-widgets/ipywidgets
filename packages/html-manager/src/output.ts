@@ -13,6 +13,8 @@ import $ from 'jquery';
 
 import '../css/output.css';
 
+export const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
+
 export class OutputModel extends outputBase.OutputModel {
   defaults(): Backbone.ObjectHash {
     return {

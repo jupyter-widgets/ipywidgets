@@ -1,9 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as widgets from '@jupyter-widgets/controls';
-import * as base from '@jupyter-widgets/base';
-import * as outputWidgets from './output';
+import { createErrorWidgetModel, ErrorWidgetView } from '@jupyter-widgets/base';
 import { ManagerBase } from '@jupyter-widgets/base-manager';
 import { MessageLoop } from '@lumino/messaging';
 
@@ -14,7 +12,12 @@ import {
 } from '@jupyterlab/rendermime';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
-import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
+
+import type {
+  WidgetModel,
+  WidgetView,
+  DOMWidgetView,
+} from '@jupyter-widgets/base';
 
 export class HTMLManager extends ManagerBase {
   constructor(options?: {
@@ -58,9 +61,9 @@ export class HTMLManager extends ManagerBase {
     } catch (error) {
       const msg = `Could not create a view for ${view}`;
       console.error(msg);
-      const ModelCls = base.createErrorWidgetModel(error, msg);
+      const ModelCls = createErrorWidgetModel(error, msg);
       const errorModel = new ModelCls();
-      v = new base.ErrorWidgetView({
+      v = new ErrorWidgetView({
         model: errorModel,
       });
       v.render();
@@ -112,13 +115,7 @@ export class HTMLManager extends ManagerBase {
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
     return new Promise((resolve, reject) => {
-      if (moduleName === '@jupyter-widgets/base') {
-        resolve(base);
-      } else if (moduleName === '@jupyter-widgets/controls') {
-        resolve(widgets);
-      } else if (moduleName === '@jupyter-widgets/output') {
-        resolve(outputWidgets);
-      } else if (this.loader !== undefined) {
+      if (this.loader !== undefined) {
         resolve(this.loader(moduleName, moduleVersion));
       } else {
         reject(`Could not load module ${moduleName}@${moduleVersion}`);

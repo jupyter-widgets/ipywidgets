@@ -67,6 +67,7 @@ export async function renderWidgets(
  *
  * @param element The DOM element to search for widget view state script tags
  * @param widgetState The widget manager state
+ * @param managerFactory A function that returns a new HTMLManager
  *
  * #### Notes
  *

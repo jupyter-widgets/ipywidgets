@@ -3,6 +3,10 @@
 
 import * as libembed from './libembed';
 
+import * as controls from '@jupyter-widgets/controls';
+import * as base from '@jupyter-widgets/base';
+import * as outputWidgets from './output';
+
 let cdn = 'https://cdn.jsdelivr.net/npm/';
 let onlyCDN = false;
 
@@ -60,10 +64,29 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
  *
  * The semver range is only used with the CDN.
  */
-export function requireLoader(
+export async function requireLoader(
   moduleName: string,
   moduleVersion: string
 ): Promise<any> {
+  // First, try to load from the default packages if the version number matches
+  if (
+    moduleName === '@jupyter-widgets/base' &&
+    moduleVersion /* Some semver test??? */ === base.JUPYTER_WIDGETS_VERSION
+  ) {
+    return base;
+  } else if (
+    moduleName === '@jupyter-widgets/controls' &&
+    moduleVersion /* Some semver test??? */ ===
+      controls.JUPYTER_CONTROLS_VERSION
+  ) {
+    return controls;
+  } else if (
+    moduleName === '@jupyter-widgets/output' &&
+    moduleVersion /* Some semver test??? */ ===
+      outputWidgets.OUTPUT_WIDGET_VERSION
+  ) {
+    return outputWidgets;
+  }
   const require = (window as any).requirejs;
   if (require === undefined) {
     throw new Error(
