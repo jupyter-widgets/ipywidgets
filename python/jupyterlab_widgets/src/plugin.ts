@@ -208,7 +208,7 @@ function activateWidgetExtension(
   };
   if (settingRegistry !== null) {
     settingRegistry
-      .load(plugin.id)
+      .load(managerPlugin.id)
       .then((settings: ISettingRegistry.ISettings) => {
         settings.changed.connect(updateSettings);
         updateSettings(settings);
@@ -261,9 +261,11 @@ function activateWidgetExtension(
       label: trans.__('Save Widget State Automatically'),
       execute: (args) => {
         return settingRegistry
-          .set(plugin.id, 'saveState', !SETTINGS.saveState)
+          .set(managerPlugin.id, 'saveState', !SETTINGS.saveState)
           .catch((reason: Error) => {
-            console.error(`Failed to set ${plugin.id}: ${reason.message}`);
+            console.error(
+              `Failed to set ${managerPlugin.id}: ${reason.message}`
+            );
           });
       },
       isToggled: () => SETTINGS.saveState,
