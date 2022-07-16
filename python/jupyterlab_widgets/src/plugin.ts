@@ -144,21 +144,21 @@ export function registerWidgetManager(
 /**
  * The widget manager provider.
  */
-export const managerPlugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
-  id: '@jupyter-widgets/jupyterlab-manager:plugin',
-  requires: [IRenderMimeRegistry],
-  optional: [
-    INotebookTracker,
-    ISettingRegistry,
-    IMainMenu,
-    ILoggerRegistry,
-    ITranslator,
-  ],
-  provides: base.IJupyterWidgetRegistry,
-  activate: activateWidgetExtension,
-  autoStart: true,
-};
-
+export const managerPlugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> =
+  {
+    id: '@jupyter-widgets/jupyterlab-manager:plugin',
+    requires: [IRenderMimeRegistry],
+    optional: [
+      INotebookTracker,
+      ISettingRegistry,
+      IMainMenu,
+      ILoggerRegistry,
+      ITranslator,
+    ],
+    provides: base.IJupyterWidgetRegistry,
+    activate: activateWidgetExtension,
+    autoStart: true,
+  };
 
 function updateSettings(settings: ISettingRegistry.ISettings): void {
   SETTINGS.saveState = settings.get('saveState').composite as boolean;
@@ -276,14 +276,12 @@ function activateWidgetExtension(
     ]);
   }
 
-
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
       WIDGET_REGISTRY.push(data);
     },
   };
 }
-
 
 /**
  * The base widgets.
@@ -292,7 +290,10 @@ export const baseWidgetsPlugin: JupyterFrontEndPlugin<void> = {
   id: `@jupyter-widgets/jupyterlab-manager:base-${base.JUPYTER_WIDGETS_VERSION}`,
   requires: [base.IJupyterWidgetRegistry],
   autoStart: true,
-  activate: (app: JupyterFrontEnd, registry: base.IJupyterWidgetRegistry): void => {
+  activate: (
+    app: JupyterFrontEnd,
+    registry: base.IJupyterWidgetRegistry
+  ): void => {
     registry.registerWidget({
       name: '@jupyter-widgets/base',
       version: base.JUPYTER_WIDGETS_VERSION,
@@ -308,9 +309,8 @@ export const baseWidgetsPlugin: JupyterFrontEndPlugin<void> = {
         ErrorWidgetView: base.ErrorWidgetView,
       },
     });
-  }
+  },
 };
-
 
 /**
  * The control widgets.
@@ -319,7 +319,10 @@ export const controlWidgetsPlugin: JupyterFrontEndPlugin<void> = {
   id: `@jupyter-widgets/jupyterlab-manager:controls-${JUPYTER_CONTROLS_VERSION}`,
   requires: [base.IJupyterWidgetRegistry],
   autoStart: true,
-  activate: (app: JupyterFrontEnd, registry: base.IJupyterWidgetRegistry): void => {
+  activate: (
+    app: JupyterFrontEnd,
+    registry: base.IJupyterWidgetRegistry
+  ): void => {
     registry.registerWidget({
       name: '@jupyter-widgets/controls',
       version: JUPYTER_CONTROLS_VERSION,
@@ -337,9 +340,9 @@ export const controlWidgetsPlugin: JupyterFrontEndPlugin<void> = {
             '@jupyter-widgets/controls'
           );
         });
-      }
+      },
     });
-  }
+  },
 };
 
 /**
@@ -349,16 +352,24 @@ export const outputWidgetPlugin: JupyterFrontEndPlugin<void> = {
   id: `@jupyter-widgets/jupyterlab-manager:output-${OUTPUT_WIDGET_VERSION}`,
   requires: [base.IJupyterWidgetRegistry],
   autoStart: true,
-  activate: (app: JupyterFrontEnd, registry: base.IJupyterWidgetRegistry): void => {
+  activate: (
+    app: JupyterFrontEnd,
+    registry: base.IJupyterWidgetRegistry
+  ): void => {
     registry.registerWidget({
       name: '@jupyter-widgets/output',
       version: OUTPUT_WIDGET_VERSION,
-      exports: { OutputModel, OutputView }
+      exports: { OutputModel, OutputView },
     });
-  }
+  },
 };
 
-export default [managerPlugin, baseWidgetsPlugin, controlWidgetsPlugin, outputWidgetPlugin];
+export default [
+  managerPlugin,
+  baseWidgetsPlugin,
+  controlWidgetsPlugin,
+  outputWidgetPlugin,
+];
 namespace Private {
   /**
    * A private attached property for a widget manager.
