@@ -168,7 +168,7 @@ Note: If you were relying on setting certain instance attributes via the `extend
 
 #### Custom tag names
 
-If you were changing the base HTML tag by defining the `tagName` property, this can now be done in the `preinitialize` method (see https://github.com/jupyter-widgets/ipywidgets/commit/a342e0dbc7c779bb668e5a21c097d7cec9a6ac44 for example changes in core widgets):
+If you were changing the base HTML tag for your widget by defining the `tagName` property, this can now be done in ipywidgets 8 in the `preinitialize` method (see https://github.com/jupyter-widgets/ipywidgets/commit/a342e0dbc7c779bb668e5a21c097d7cec9a6ac44 for example changes in core widgets):
 
 ```diff
 - get tagName() {
@@ -177,6 +177,15 @@ If you were changing the base HTML tag by defining the `tagName` property, this 
 + preinitialize() {
 +   this.tagName = 'button';
 + }
+```
+
+If you need compatibility with ipywidgets 7, continue using the `get tagName` accessor instead of `preinitialize`. However, newer versions of Typescript will complain that you are overriding a property with a function. If you want to maintain compatibility with both ipywidgets 7 and ipywidgets 8, and you are using Typescript, you can add a `ts-ignore` directive to mollify Typescript, like is done in [ipydatawidgets](https://github.com/vidartf/ipydatawidgets/blob/489586982c375c03d5ffd3089dd4f427c8266443/packages/jupyter-datawidgets/src/media.ts#L131):
+
+```diff
++ // @ts-ignore: 2611
+  get tagName() {
+    return 'button';
+  }
 ```
 
 Migrating from 6.0 to 7.0
