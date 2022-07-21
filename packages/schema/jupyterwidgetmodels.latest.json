@@ -6554,7 +6554,7 @@
         "type": "string"
       },
       {
-        "default": "StackedModel",
+        "default": "StackModel",
         "help": "",
         "name": "_model_name",
         "type": "string"
@@ -6572,7 +6572,7 @@
         "type": "string"
       },
       {
-        "default": "StackedView",
+        "default": "StackView",
         "help": "",
         "name": "_view_name",
         "type": "string"
@@ -6634,12 +6634,12 @@
     ],
     "model": {
       "module": "@jupyter-widgets/controls",
-      "name": "StackedModel",
+      "name": "StackModel",
       "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
-      "name": "StackedView",
+      "name": "StackView",
       "version": "2.0.0"
     }
   },

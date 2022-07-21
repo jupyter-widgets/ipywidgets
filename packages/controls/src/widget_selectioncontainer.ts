@@ -422,17 +422,17 @@ export class TabView extends DOMWidgetView {
   luminoWidget: JupyterLuminoTabPanelWidget;
 }
 
-export class StackedModel extends SelectionContainerModel {
+export class StackModel extends SelectionContainerModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      _model_name: 'StackedModel',
-      _view_name: 'StackedView',
+      _model_name: 'StackModel',
+      _view_name: 'StackView',
     };
   }
 }
 
-export class StackedView extends BoxView {
+export class StackView extends BoxView {
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:selected_index', this.update_children);
