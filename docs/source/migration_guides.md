@@ -164,8 +164,6 @@ The version of [Backbone.js](https://backbonejs.org/) that ipywidgets depends on
 + }
 ```
 
-Note: If you were relying on setting certain instance attributes via the `extend` method, you might now need override the `preinitialize` method in order for their values to be set in time.
-
 #### Custom tag names
 
 If you were changing the base HTML tag for your widget by defining the `tagName` property, this can now be done in ipywidgets 8 in the `preinitialize` method (see https://github.com/jupyter-widgets/ipywidgets/commit/a342e0dbc7c779bb668e5a21c097d7cec9a6ac44 for example changes in core widgets):

@@ -33,7 +33,8 @@ As part of an effort to make it possible to
 the old `description_tooltip` attribute for certain widgets was deprecated. Now all widgets
 that inherit `DOMWidget` have the attribute `tooltip` instead.
 
-Suggested migration: Search and replace `description_tooltip` to `tooltip`.
+Suggested migration: Search and replace `description_tooltip` to `tooltip` when you no longer
+need to support ipywidgets 7.
 
 #### Selection Widgets
 
