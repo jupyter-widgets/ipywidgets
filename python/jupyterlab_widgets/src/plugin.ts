@@ -144,22 +144,21 @@ export function registerWidgetManager(
 /**
  * The widget manager provider.
  */
-const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
-  id: '@jupyter-widgets/jupyterlab-manager:plugin',
-  requires: [IRenderMimeRegistry],
-  optional: [
-    INotebookTracker,
-    ISettingRegistry,
-    IMainMenu,
-    ILoggerRegistry,
-    ITranslator,
-  ],
-  provides: base.IJupyterWidgetRegistry,
-  activate: activateWidgetExtension,
-  autoStart: true,
-};
-
-export default plugin;
+export const managerPlugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> =
+  {
+    id: '@jupyter-widgets/jupyterlab-manager:plugin',
+    requires: [IRenderMimeRegistry],
+    optional: [
+      INotebookTracker,
+      ISettingRegistry,
+      IMainMenu,
+      ILoggerRegistry,
+      ITranslator,
+    ],
+    provides: base.IJupyterWidgetRegistry,
+    activate: activateWidgetExtension,
+    autoStart: true,
+  };
 
 function updateSettings(settings: ISettingRegistry.ISettings): void {
   SETTINGS.saveState = settings.get('saveState').composite as boolean;
@@ -209,7 +208,7 @@ function activateWidgetExtension(
   };
   if (settingRegistry !== null) {
     settingRegistry
-      .load(plugin.id)
+      .load(managerPlugin.id)
       .then((settings: ISettingRegistry.ISettings) => {
         settings.changed.connect(updateSettings);
         updateSettings(settings);
@@ -262,9 +261,11 @@ function activateWidgetExtension(
       label: trans.__('Save Widget State Automatically'),
       execute: (args) => {
         return settingRegistry
-          .set(plugin.id, 'saveState', !SETTINGS.saveState)
+          .set(managerPlugin.id, 'saveState', !SETTINGS.saveState)
           .catch((reason: Error) => {
-            console.error(`Failed to set ${plugin.id}: ${reason.message}`);
+            console.error(
+              `Failed to set ${managerPlugin.id}: ${reason.message}`
+            );
           });
       },
       isToggled: () => SETTINGS.saveState,
@@ -277,48 +278,6 @@ function activateWidgetExtension(
     ]);
   }
 
-  WIDGET_REGISTRY.push({
-    name: '@jupyter-widgets/base',
-    version: base.JUPYTER_WIDGETS_VERSION,
-    exports: {
-      WidgetModel: base.WidgetModel,
-      WidgetView: base.WidgetView,
-      DOMWidgetView: base.DOMWidgetView,
-      DOMWidgetModel: base.DOMWidgetModel,
-      LayoutModel: base.LayoutModel,
-      LayoutView: base.LayoutView,
-      StyleModel: base.StyleModel,
-      StyleView: base.StyleView,
-      ErrorWidgetView: base.ErrorWidgetView,
-    },
-  });
-
-  WIDGET_REGISTRY.push({
-    name: '@jupyter-widgets/controls',
-    version: JUPYTER_CONTROLS_VERSION,
-    exports: () => {
-      return new Promise((resolve, reject) => {
-        (require as any).ensure(
-          ['@jupyter-widgets/controls'],
-          (require: NodeRequire) => {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            resolve(require('@jupyter-widgets/controls'));
-          },
-          (err: any) => {
-            reject(err);
-          },
-          '@jupyter-widgets/controls'
-        );
-      });
-    },
-  });
-
-  WIDGET_REGISTRY.push({
-    name: '@jupyter-widgets/output',
-    version: OUTPUT_WIDGET_VERSION,
-    exports: { OutputModel, OutputView },
-  });
-
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
       WIDGET_REGISTRY.push(data);
@@ -326,6 +285,93 @@ function activateWidgetExtension(
   };
 }
 
+/**
+ * The base widgets.
+ */
+export const baseWidgetsPlugin: JupyterFrontEndPlugin<void> = {
+  id: `@jupyter-widgets/jupyterlab-manager:base-${base.JUPYTER_WIDGETS_VERSION}`,
+  requires: [base.IJupyterWidgetRegistry],
+  autoStart: true,
+  activate: (
+    app: JupyterFrontEnd,
+    registry: base.IJupyterWidgetRegistry
+  ): void => {
+    registry.registerWidget({
+      name: '@jupyter-widgets/base',
+      version: base.JUPYTER_WIDGETS_VERSION,
+      exports: {
+        WidgetModel: base.WidgetModel,
+        WidgetView: base.WidgetView,
+        DOMWidgetView: base.DOMWidgetView,
+        DOMWidgetModel: base.DOMWidgetModel,
+        LayoutModel: base.LayoutModel,
+        LayoutView: base.LayoutView,
+        StyleModel: base.StyleModel,
+        StyleView: base.StyleView,
+        ErrorWidgetView: base.ErrorWidgetView,
+      },
+    });
+  },
+};
+
+/**
+ * The control widgets.
+ */
+export const controlWidgetsPlugin: JupyterFrontEndPlugin<void> = {
+  id: `@jupyter-widgets/jupyterlab-manager:controls-${JUPYTER_CONTROLS_VERSION}`,
+  requires: [base.IJupyterWidgetRegistry],
+  autoStart: true,
+  activate: (
+    app: JupyterFrontEnd,
+    registry: base.IJupyterWidgetRegistry
+  ): void => {
+    registry.registerWidget({
+      name: '@jupyter-widgets/controls',
+      version: JUPYTER_CONTROLS_VERSION,
+      exports: () => {
+        return new Promise((resolve, reject) => {
+          (require as any).ensure(
+            ['@jupyter-widgets/controls'],
+            (require: NodeRequire) => {
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
+              resolve(require('@jupyter-widgets/controls'));
+            },
+            (err: any) => {
+              reject(err);
+            },
+            '@jupyter-widgets/controls'
+          );
+        });
+      },
+    });
+  },
+};
+
+/**
+ * The output widget.
+ */
+export const outputWidgetPlugin: JupyterFrontEndPlugin<void> = {
+  id: `@jupyter-widgets/jupyterlab-manager:output-${OUTPUT_WIDGET_VERSION}`,
+  requires: [base.IJupyterWidgetRegistry],
+  autoStart: true,
+  activate: (
+    app: JupyterFrontEnd,
+    registry: base.IJupyterWidgetRegistry
+  ): void => {
+    registry.registerWidget({
+      name: '@jupyter-widgets/output',
+      version: OUTPUT_WIDGET_VERSION,
+      exports: { OutputModel, OutputView },
+    });
+  },
+};
+
+export default [
+  managerPlugin,
+  baseWidgetsPlugin,
+  controlWidgetsPlugin,
+  outputWidgetPlugin,
+];
 namespace Private {
   /**
    * A private attached property for a widget manager.
