@@ -91,6 +91,8 @@ We have made it easier to load widgets from content delivery networks.
 
 ### Developers
 
+To see an overview of the changes to the Widgets model spec, see [#3455](https://github.com/jupyter-widgets/ipywidgets/issues/3455).
+
 #### Python
 
 - `Widget.widgets` and `Widget.widget_types` are now private variables ([#3122](https://github.com/jupyter-widgets/ipywidgets/pull/3122), [#3173](https://github.com/jupyter-widgets/ipywidgets/pull/3173))
