@@ -21,28 +21,39 @@ accessible as a `value` attribute.
 from ._version import __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
 
 import os
-from IPython import get_ipython
-from .widgets import *
+
 from traitlets import link, dlink
+from IPython import get_ipython
+try:
+    from comm import get_comm_manager
+except ImportError:
+    def get_comm_manager():
+        ip = get_ipython()
+
+        if ip is not None and ip.kernel is not None:
+            return get_ipython().kernel.comm_manager
+
+from .widgets import *
+
 
 def load_ipython_extension(ip):
     """Set up Jupyter to work with widgets"""
     if not hasattr(ip, 'kernel'):
         return
-    register_comm_target(ip.kernel)
+    register_comm_target()
 
 def register_comm_target(kernel=None):
     """Register the jupyter.widget comm target"""
-    if kernel is None:
-        kernel = get_ipython().kernel
-    kernel.comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
-    kernel.comm_manager.register_target('jupyter.widget.control', Widget.handle_control_comm_opened)
+    comm_manager = get_comm_manager()
+
+    comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
+    comm_manager.register_target('jupyter.widget.control', Widget.handle_control_comm_opened)
 
 def _handle_ipython():
     """Register with the comm target at import if running in Jupyter"""
     ip = get_ipython()
     if ip is None:
         return
-    load_ipython_extension(ip)
+    register_comm_target()
 
 _handle_ipython()
