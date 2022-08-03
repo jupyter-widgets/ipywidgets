@@ -1,12 +1,11 @@
 # ipywidgets Changelog
 
-A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
+This is a summary of changes in ipywidgets releases. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
 ## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/v8.0)
 
-To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub.
-See also the 
-([full list of changes since 7.x](https://github.com/jupyter-widgets/ipywidgets/compare/7.x...master)).
+To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub, or the 
+[full list of changes since 7.x](https://github.com/jupyter-widgets/ipywidgets/compare/7.x...master).
 
 ### Users
 
