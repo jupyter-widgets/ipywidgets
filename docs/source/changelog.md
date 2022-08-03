@@ -98,13 +98,18 @@ Many style and layout options have been added to core widgets:
 
 The Accordion, Tab, and Stack widgets now have a `.titles` attribute that you can use to get and set titles from the constructor or as an attribute.  ([#2746](https://github.com/jupyter-widgets/ipywidgets/pull/2746), [#3296](https://github.com/jupyter-widgets/ipywidgets/pull/3296), [#3477](https://github.com/jupyter-widgets/ipywidgets/pull/3477))
 
+```python
+from ipywidgets import Tab, IntSlider, Text
+Tab([IntSlider(), Text()], titles=('Slider', 'Text'))
+```
+
 #### Slider implementation
 
 The slider implementation in the core widgets now uses [nouislider](https://refreshless.com/nouislider/). This enables us to fix long-standing bugs and introduce new features, like dragging the range in a RangeSlider. ([#2712](https://github.com/jupyter-widgets/ipywidgets/pull/2712), [#630](https://github.com/jupyter-widgets/ipywidgets/issues/630), [#3216](https://github.com/jupyter-widgets/ipywidgets/pull/3216), [#2834](https://github.com/jupyter-widgets/ipywidgets/pull/2834))
 
 #### Collaboration
 
-By default, ipywidgets 8 enables a collaboration mode, where widget updates from one frontend are reflected back to other frontends, enabling a consistent state between multiple users and fixing synchronization race conditions for a more robust synchronization between kernel and frontend. You may want to disable these update echo messages if they are using too much bandwidth or causing slower interactivity. To disable echo update messages across ipywidgets, set the environment variable `JUPYTER_WIDGETS_ECHO` to `0`. For widget authors, to opt a specific attribute of custom widget out of echo updates (for example, if the attribute contains a lot of data that does not need to be synchronized), tag the attribute with `echo_update=False` metadata (we do this in core for the FileUpload widget's `data` attribute). ([#3195](https://github.com/jupyter-widgets/ipywidgets/pull/3195), [#3343](https://github.com/jupyter-widgets/ipywidgets/pull/3343), [#3394](https://github.com/jupyter-widgets/ipywidgets/pull/3394), [#3407](https://github.com/jupyter-widgets/ipywidgets/pull/3407))
+By default, ipywidgets 8 enables a collaboration mode, where widget updates from one frontend are reflected back to other frontends, enabling a consistent state between multiple users and fixing synchronization between the kernel and frontend. You may want to disable these update echo messages if they are using too much bandwidth or causing slower interactivity. To disable echo update messages across ipywidgets, set the environment variable `JUPYTER_WIDGETS_ECHO` to `0`. For widget authors, to opt a specific attribute of custom widget out of echo updates (for example, if the attribute contains a lot of data that does not need to be synchronized), tag the attribute with `echo_update=False` metadata (we do this in core for the FileUpload widget's `data` attribute). ([#3195](https://github.com/jupyter-widgets/ipywidgets/pull/3195), [#3343](https://github.com/jupyter-widgets/ipywidgets/pull/3343), [#3394](https://github.com/jupyter-widgets/ipywidgets/pull/3394), [#3407](https://github.com/jupyter-widgets/ipywidgets/pull/3407))
 
 
 #### CDN for html manager
@@ -118,7 +123,9 @@ We have made it easier to load widgets from content delivery networks.
 
 #### Other changes
 
-- Add a cookiecutter based tutorial to build a custom widget ([#2919](https://github.com/jupyter-widgets/ipywidgets/pull/2919))
+Here is a short list of some of the other changes in ipywidgets 8.0.
+
+- Add a cookiecutter-based tutorial to build a custom widget ([#2919](https://github.com/jupyter-widgets/ipywidgets/pull/2919))
 - Change media widgets to use memory views. ([#2723](https://github.com/jupyter-widgets/ipywidgets/pull/2723))
 - Upgrade to FontAwesome 5 in html-manager ([#2713](https://github.com/jupyter-widgets/ipywidgets/pull/2713))
 - Play widget now toggles between play and pause button as needed ([#2703](https://github.com/jupyter-widgets/ipywidgets/pull/2703), [#2671](https://github.com/jupyter-widgets/ipywidgets/issues/2671))
@@ -136,7 +143,7 @@ We have made it easier to load widgets from content delivery networks.
 - Drop support for Python 2.7, 3.4, and 3.5 ([#2558](https://github.com/jupyter-widgets/ipywidgets/pull/2558), [#2655](https://github.com/jupyter-widgets/ipywidgets/pull/2655), [#3131](https://github.com/jupyter-widgets/ipywidgets/pull/3131), [#3120](https://github.com/jupyter-widgets/ipywidgets/pull/3120))
 - Fix character escapes in combobox options ([#2972](https://github.com/jupyter-widgets/ipywidgets/pull/2972))
 - Modify outputs to use a comm if IPython is not available ([#2954](https://github.com/jupyter-widgets/ipywidgets/pull/2954))
-- Bugfix/parameters in the from file method to be passed along in the media class ([#3074](https://github.com/jupyter-widgets/ipywidgets/pull/3074))
+- Bugfix/parameters in the from_file method to be passed along in the media class ([#3074](https://github.com/jupyter-widgets/ipywidgets/pull/3074))
 - Widgetsnbextension: throw error on failure to render ([#3280](https://github.com/jupyter-widgets/ipywidgets/pull/3280))
 - Fix memory leak from Image widget not releasing object urls ([#3171](https://github.com/jupyter-widgets/ipywidgets/pull/3171), [#3170](https://github.com/jupyter-widgets/ipywidgets/pull/3170))
 - ErrorWidget as fallback when widgets models or views fail - Following up ([#3304](https://github.com/jupyter-widgets/ipywidgets/pull/3304))
