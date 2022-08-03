@@ -100,7 +100,6 @@ some custom widget packages built on top of the Jupyter Widgets framework.
     examples/Widget Layout.ipynb
     examples/Widget Styling.ipynb
     examples/Layout Templates.ipynb
-    examples/Widget TagsInput.ipynb
     examples/Widget Custom.ipynb
     examples/Using Interact.ipynb
     examples/Widget Low Level.ipynb
