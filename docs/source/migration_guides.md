@@ -88,7 +88,7 @@ The ``DOMWidgetView.pWidget`` property has been renamed ``DOMWidgetView.luminoWi
 + this.luminoWidget
 ```
 
-The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidgetView.processLuminoMessage``. If you want to support both ipywidgets 7.x and 8.x, you should implement both methods:
+The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidgetView.processLuminoMessage``. If you want to support both ipywidgets 7.x and 8.x, you should implement both methods and call the correct super method:
 
 ```diff
 - processPhosphorMessage(msg: Message): void {
@@ -109,15 +109,15 @@ The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidget
 + }
 +
 + processPhosphorMessage(msg: Message): void {
-+     this._processLuminoMessage(msg, (DOMWidgetView as any).processPhosphorMessage);
++     this._processLuminoMessage(msg, super.processPhosphorMessage);
 + }
 +
 + processLuminoMessage(msg: Message): void {
-+     this._processLuminoMessage(msg, (DOMWidgetView as any).processLuminoMessage);
++     this._processLuminoMessage(msg, super.processLuminoMessage);
 + }
 ```
 
-I you're dropping ipywidgets 7.x support, you can simply rename the `processPhosphorMessage` method into `processLuminoMessage`.
+If you're dropping ipywidgets 7.x support, you can simply rename the `processPhosphorMessage` method to `processLuminoMessage`.
 
 #### Widget manager import
 
@@ -128,7 +128,7 @@ As mentioned before, if you depend on the ``ManagerBase`` class, you will **eith
 + import { ManagerBase } from '@jupyter-widgets/base-manager';
 ```
 
-**or**, siwtch to using the new `IWidgetManager` interface in the `base` package:
+**or**, switch to using the new `IWidgetManager` interface in the `base` package:
 
 ```diff
 - import { ManagerBase } from '@jupyter-widgets/base';
@@ -153,7 +153,7 @@ export async function myDeserializer(
 
 #### Backbone extend
 
-The version of backbone that ipywidgets depend on has changed from 1.2.3 to 1.4.0. If you were extending the base widget model with `var CustomWidgetModel = Widget.extend({ ... });` you will need to update the class definition using the ES6 notation:
+The version of [Backbone.js](https://backbonejs.org/) that ipywidgets depends on has changed from 1.2.3 to 1.4.0. If you were extending the base widget model with `var CustomWidgetModel = Widget.extend({ ... });` you will need to update the class definition using the ES6 notation:
 
 ```diff
 - var CustomWidgetModel = Widget.extend({
@@ -164,8 +164,27 @@ The version of backbone that ipywidgets depend on has changed from 1.2.3 to 1.4.
 + }
 ```
 
-Note: If you were relying on setting certain instance attributes via the `extend` method, you might now need override the `preinitialize` method in order for their values to be set in time.
+#### Custom tag names
 
+If you were changing the base HTML tag for your widget by defining the `tagName` property, this can now be done in ipywidgets 8 in the `preinitialize` method (see https://github.com/jupyter-widgets/ipywidgets/commit/a342e0dbc7c779bb668e5a21c097d7cec9a6ac44 for example changes in core widgets):
+
+```diff
+- get tagName() {
+-   return 'button';
+- }
++ preinitialize() {
++   this.tagName = 'button';
++ }
+```
+
+If you need compatibility with ipywidgets 7, continue using the `get tagName` accessor instead of `preinitialize`. However, newer versions of Typescript will complain that you are overriding a property with a function. If you want to maintain compatibility with both ipywidgets 7 and ipywidgets 8, and you are using Typescript, you can add a `ts-ignore` directive to mollify Typescript, like is done in [ipydatawidgets](https://github.com/vidartf/ipydatawidgets/blob/489586982c375c03d5ffd3089dd4f427c8266443/packages/jupyter-datawidgets/src/media.ts#L131):
+
+```diff
++ // @ts-ignore: 2611
+  get tagName() {
+    return 'button';
+  }
+```
 
 Migrating from 6.0 to 7.0
 -------------------------

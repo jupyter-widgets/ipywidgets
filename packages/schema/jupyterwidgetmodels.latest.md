@@ -1168,17 +1168,17 @@ Attribute        | Type             | Default          | Help
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `handle_color`   | `null` or string | `null`           | Color of the slider handle.
 
-### StackedModel (@jupyter-widgets/controls, 2.0.0); StackedView (@jupyter-widgets/controls, 2.0.0)
+### StackModel (@jupyter-widgets/controls, 2.0.0); StackView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'2.0.0'`        | 
-`_model_name`    | string           | `'StackedModel'` | 
+`_model_name`    | string           | `'StackModel'`   | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
-`_view_name`     | string           | `'StackedView'`  | 
+`_view_name`     | string           | `'StackView'`    | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
