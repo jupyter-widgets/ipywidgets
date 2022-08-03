@@ -10,46 +10,101 @@ See also the
 
 ### Users
 
-#### File upload widget
-
-The file upload widget has been overhauled and the `.value` attribute now is structured better.
-
-- Revamp file upload widget `.value` attribute ([#2767](https://github.com/jupyter-widgets/ipywidgets/pull/2767), [#2724](https://github.com/jupyter-widgets/ipywidgets/pull/2724), [#2666](https://github.com/jupyter-widgets/ipywidgets/pull/2666), [#2480](https://github.com/jupyter-widgets/ipywidgets/issues/2480))
-
-#### More styling options
-
-Many widgets style and layout options have been added:
-
-- Borders can be styled independently with the layout's `border_top`, `border_right`, `border_bottom`, `border_left` attributes ([#2757](https://github.com/jupyter-widgets/ipywidgets/pull/2757), [#3269](https://github.com/jupyter-widgets/ipywidgets/pull/3269))
-- Tooltips are now supported for many core widgets, rather than just a few description tooltips ([#2680](https://github.com/jupyter-widgets/ipywidgets/pull/2680))
-- The SelectionSlider now has a `handle_color` style attribute ([#3142](https://github.com/jupyter-widgets/ipywidgets/pull/3142))
-- To control keyboard navigation, widgets can be set to be tabbable or not (i.e., that the tab key will traverse to the widget) ([#2640](https://github.com/jupyter-widgets/ipywidgets/pull/2640))
-- Descriptions are now plain text by default, but you can set them to allow HTML (which is still sanitized). ([#2785](https://github.com/jupyter-widgets/ipywidgets/pull/2785))
-- Many other styling attributes can be set on core widgets. See the table in the documentation for a reference. ([#2728](https://github.com/jupyter-widgets/ipywidgets/pull/2728))
-
-#### Slider implementation
-
-The slider implementation in the core widgets now uses [nouislider](https://refreshless.com/nouislider/). This enables us to fix long-standing bugs and introduce new features, like dragging the range in a RangeSlider.
-
-- Slider implementation now uses [nouislider](https://refreshless.com/nouislider/) instead of jquery-ui ([#2712](https://github.com/jupyter-widgets/ipywidgets/pull/2712), [#630](https://github.com/jupyter-widgets/ipywidgets/issues/630), [#3216](https://github.com/jupyter-widgets/ipywidgets/pull/3216))
-- Add dragging behaviour properties to sliders, so a user can drag a range in a range slider ([#2834](https://github.com/jupyter-widgets/ipywidgets/pull/2834))
-
-
-#### Tags input widget
-
-The tags input widget provides an easy way to collect and manage tags in a widget.
-
-- Tagsinput widget ([#2591](https://github.com/jupyter-widgets/ipywidgets/pull/2591), [#3272](https://github.com/jupyter-widgets/ipywidgets/pull/3272))
+Here are some highlights of user-visible changes in ipywidgets 8.0.
 
 #### Date and time pickers
 
-A new date/time and time picker has been added
+In addition to the existing DatePicker widget, we now have new DatetimePicker and TimePicker widgets. ([#2715](https://github.com/jupyter-widgets/ipywidgets/pull/2715))
 
-- Add datetime and time pickers ([#2715](https://github.com/jupyter-widgets/ipywidgets/pull/2715))
+```python
+from ipywidgets import VBox, TimePicker, DatetimePicker
+VBox([
+  TimePicker(description='Time'),
+  DatetimePicker(description='Date/Time')
+])
+```
+
+#### Tags input widget
+
+The new TagsInput widget provides an easy way to collect and manage tags in a widget. You can drag and drop tags to reorder them, limit them to a set of allowed values, or even prevent making duplicate tags. ([#2591](https://github.com/jupyter-widgets/ipywidgets/pull/2591), [#3272](https://github.com/jupyter-widgets/ipywidgets/pull/3272))
+
+```python
+from ipywidgets import TagsInput
+TagsInput(
+    value=['pizza', 'fries'],
+    allowed_tags=['pizza', 'fries', 'tomatoes', 'steak'],
+    allow_duplicates=False
+)
+```
+
+Similarly, the new ColorsInput widget provides a way to select colors as tags
+
+```python
+from ipywidgets import ColorsInput
+ColorsInput(
+    value=['red', '#2f6d30'],
+    # allowed_tags=['red', 'blue', 'green'],
+    # allow_duplicates=False
+)
+```
+
+#### Stack widget
+
+The new Stack container widget shows only the selected child widget, while other child widgets remain hidden. This can be useful if you want to have a area that displays different widgets depending on some other interaction.
+
+```python
+from ipywidgets import Stack, Button, IntSlider, Dropdown, VBox, link
+s = Stack([Button(description='Click here'), IntSlider()], selected_index=0)
+d = Dropdown(options=['button', 'slider'])
+link((dropdown, 'index'), (stacked, 'selected_index'))
+VBox([d, s])
+```
+
+#### File upload widget
+
+The file upload widget has been overhauled to handle multiple files in a more useful format:
+
+- The `.value` attribute is now a list of dictionaries, rather than a dictionary mapping the uploaded name to the content. To retrieve the original form, use `{f["name"]: f.content.tobytes() for f in uploader.value}`.
+- The contents of each uploaded file is a [memory view](https://docs.python.org/3/library/stdtypes.html#memory-views) in the `.content` key, e.g., `uploader.value[0].content`.
+- The `.data` attribute has been removed. To retrieve it, use `[f.content.tobytes() for f in uploader.value]`.
+- The `.metadata` attribute has been removed. To retrieve it, use `[{k: v for k, v in f.items() if k != "content"} for f in w.value]`.
+
+ ([#2767](https://github.com/jupyter-widgets/ipywidgets/pull/2767), [#2724](https://github.com/jupyter-widgets/ipywidgets/pull/2724), [#2666](https://github.com/jupyter-widgets/ipywidgets/pull/2666), [#2480](https://github.com/jupyter-widgets/ipywidgets/issues/2480))
+
+#### More styling options
+
+Many style and layout options have been added to core widgets:
+
+- Tooltips are now supported for many core widgets, rather than just a few description tooltips ([#2680](https://github.com/jupyter-widgets/ipywidgets/pull/2680))
+  ```python
+  from ipywidgets import Button
+  Button(description="Click me", tooltip='An action')
+  ```
+- Borders can be styled independently with the layout's `border_top`, `border_right`, `border_bottom`, `border_left` attributes ([#2757](https://github.com/jupyter-widgets/ipywidgets/pull/2757), [#3269](https://github.com/jupyter-widgets/ipywidgets/pull/3269))
+  ```python
+  from ipywidgets import Button
+  Button(description="Click me", layout={'border_bottom': '3px solid blue'})
+  ```
+- Descriptions are now plain text by default for security, but you can set them to allow HTML with the `description_allow_html` attribute (HTML content is still sanitized for security). ([#2785](https://github.com/jupyter-widgets/ipywidgets/pull/2785))
+  ```python
+  from ipywidgets import Text
+  Text(description="<b>Name</b>", description_allow_html=True)
+  ```
+- Many other styling attributes can be set on core widgets, such as font family, size, style, weight, text color, and text decoration. See the table in the documentation for a reference. ([#2728](https://github.com/jupyter-widgets/ipywidgets/pull/2728))
+- The SelectionSlider now has a `handle_color` style attribute ([#3142](https://github.com/jupyter-widgets/ipywidgets/pull/3142))
+- To control keyboard navigation, widgets can be set to be tabbable or not (i.e., that the tab key will traverse to the widget) ([#2640](https://github.com/jupyter-widgets/ipywidgets/pull/2640))
+
+### Selection container titles
+
+The Accordion, Tab, and Stack widgets now have a `.titles` attribute that you can use to get and set titles from the constructor or as an attribute.  ([#2746](https://github.com/jupyter-widgets/ipywidgets/pull/2746), [#3296](https://github.com/jupyter-widgets/ipywidgets/pull/3296), [#3477](https://github.com/jupyter-widgets/ipywidgets/pull/3477))
+
+#### Slider implementation
+
+The slider implementation in the core widgets now uses [nouislider](https://refreshless.com/nouislider/). This enables us to fix long-standing bugs and introduce new features, like dragging the range in a RangeSlider. ([#2712](https://github.com/jupyter-widgets/ipywidgets/pull/2712), [#630](https://github.com/jupyter-widgets/ipywidgets/issues/630), [#3216](https://github.com/jupyter-widgets/ipywidgets/pull/3216), [#2834](https://github.com/jupyter-widgets/ipywidgets/pull/2834))
 
 #### Collaboration
 
-By default, ipywidgets 8 enables a collaboration mode, where widget updates from one frontend are reflected back to other frontends, enabling a consistent state between multiple users and fixing synchronization race conditions for a more robust synchronization between kernel and frontend. To disable echo update messages across ipywidgets, set the environment variable `JUPYTER_WIDGETS_ECHO` to `0`. To opt a specific attribute of custom widget out of echo updates, tag the attribute with `echo_update=False` metadata (we do this in core for the FileUpload widget's `data` attribute). [#3195](https://github.com/jupyter-widgets/ipywidgets/pull/3195), [#3343](https://github.com/jupyter-widgets/ipywidgets/pull/3343), [#3394](https://github.com/jupyter-widgets/ipywidgets/pull/3394), [#3407](https://github.com/jupyter-widgets/ipywidgets/pull/3407)
+By default, ipywidgets 8 enables a collaboration mode, where widget updates from one frontend are reflected back to other frontends, enabling a consistent state between multiple users and fixing synchronization race conditions for a more robust synchronization between kernel and frontend. You may want to disable these update echo messages if they are using too much bandwidth or causing slower interactivity. To disable echo update messages across ipywidgets, set the environment variable `JUPYTER_WIDGETS_ECHO` to `0`. For widget authors, to opt a specific attribute of custom widget out of echo updates (for example, if the attribute contains a lot of data that does not need to be synchronized), tag the attribute with `echo_update=False` metadata (we do this in core for the FileUpload widget's `data` attribute). ([#3195](https://github.com/jupyter-widgets/ipywidgets/pull/3195), [#3343](https://github.com/jupyter-widgets/ipywidgets/pull/3343), [#3394](https://github.com/jupyter-widgets/ipywidgets/pull/3394), [#3407](https://github.com/jupyter-widgets/ipywidgets/pull/3407))
 
 
 #### CDN for html manager
@@ -57,13 +112,13 @@ By default, ipywidgets 8 enables a collaboration mode, where widget updates from
 We have made it easier to load widgets from content delivery networks.
 
 - The default CDN is changed from unpkg to jsDelivr ([#3121](https://github.com/jupyter-widgets/ipywidgets/pull/3121), [#1627](https://github.com/jupyter-widgets/ipywidgets/issues/1627))
-- Use `data-jupyter-widgets-cdn-only` attribute to load modules only from cdn ([#2792](https://github.com/jupyter-widgets/ipywidgets/pull/2792), [#2786](https://github.com/jupyter-widgets/ipywidgets/issues/2786))
-- Update public path settings so HTMLManager and the Jupyter Notebook extensions pull assets from wherever they are loaded, rather than only from CDN. [#3464](https://github.com/jupyter-widgets/ipywidgets/pull/3464), [#3508](https://github.com/jupyter-widgets/ipywidgets/pull/3508)
+- You can use the `data-jupyter-widgets-cdn-only` attribute to load modules only from CDN ([#2792](https://github.com/jupyter-widgets/ipywidgets/pull/2792), [#2786](https://github.com/jupyter-widgets/ipywidgets/issues/2786))
+- We have updated the webpack public path settings so the HTMLManager and the Jupyter Notebook extensions pull assets from wherever they are loaded, rather than only from CDN. [#3464](https://github.com/jupyter-widgets/ipywidgets/pull/3464), [#3508](https://github.com/jupyter-widgets/ipywidgets/pull/3508)
+
 
 #### Other changes
 
 - Add a cookiecutter based tutorial to build a custom widget ([#2919](https://github.com/jupyter-widgets/ipywidgets/pull/2919))
-- Make selection container titles a tuple of strings ([#2746](https://github.com/jupyter-widgets/ipywidgets/pull/2746), [#3296](https://github.com/jupyter-widgets/ipywidgets/pull/3296), [#3477](https://github.com/jupyter-widgets/ipywidgets/pull/3477))
 - Change media widgets to use memory views. ([#2723](https://github.com/jupyter-widgets/ipywidgets/pull/2723))
 - Upgrade to FontAwesome 5 in html-manager ([#2713](https://github.com/jupyter-widgets/ipywidgets/pull/2713))
 - Play widget now toggles between play and pause button as needed ([#2703](https://github.com/jupyter-widgets/ipywidgets/pull/2703), [#2671](https://github.com/jupyter-widgets/ipywidgets/issues/2671))
@@ -71,7 +126,6 @@ We have made it easier to load widgets from content delivery networks.
 - Focus or blur a widget. ([#2664](https://github.com/jupyter-widgets/ipywidgets/pull/2664), [#2692](https://github.com/jupyter-widgets/ipywidgets/pull/2692), [#2691](https://github.com/jupyter-widgets/ipywidgets/pull/2691), [#2690](https://github.com/jupyter-widgets/ipywidgets/pull/2690))
 - Drop notebook dependency from widgetsnbextension ([#2590](https://github.com/jupyter-widgets/ipywidgets/pull/2590))
 - Cast 'value' in range sliders to a tuple ([#2441](https://github.com/jupyter-widgets/ipywidgets/pull/2441))
-- Added a layout widget for 'stacked' layout ([#2376](https://github.com/jupyter-widgets/ipywidgets/pull/2376))
 - Play widget: expose playing and repeat ([#2283](https://github.com/jupyter-widgets/ipywidgets/pull/2283), [#1897](https://github.com/jupyter-widgets/ipywidgets/issues/1897))
 - Fix debouncing and throttling code ([#3060](https://github.com/jupyter-widgets/ipywidgets/pull/3060))
 - Fix regression on spinning icons ([#2685](https://github.com/jupyter-widgets/ipywidgets/pull/2685), [#2477](https://github.com/jupyter-widgets/ipywidgets/issues/2477))
@@ -91,7 +145,7 @@ We have made it easier to load widgets from content delivery networks.
 
 ### Developers
 
-To see an overview of the changes to the Widgets model spec, see [#3455](https://github.com/jupyter-widgets/ipywidgets/issues/3455).
+To see an overview of the changes to the core widget model specification, see [#3455](https://github.com/jupyter-widgets/ipywidgets/issues/3455).
 
 #### Python
 
@@ -109,7 +163,7 @@ To see an overview of the changes to the Widgets model spec, see [#3455](https:/
 - Drop underscore usage ([#2742](https://github.com/jupyter-widgets/ipywidgets/pull/2742))
 - Upgrade to es2017 javascript ([#2725](https://github.com/jupyter-widgets/ipywidgets/pull/2725))
 - Split base manager into separate packages ([#2710](https://github.com/jupyter-widgets/ipywidgets/pull/2710), [#2561](https://github.com/jupyter-widgets/ipywidgets/issues/2561))
-- Change phosphor to lumino ([#2681](https://github.com/jupyter-widgets/ipywidgets/pull/2681), [#3267](https://github.com/jupyter-widgets/ipywidgets/pull/3267))
+- Change Phosphor to Lumino ([#2681](https://github.com/jupyter-widgets/ipywidgets/pull/2681), [#3267](https://github.com/jupyter-widgets/ipywidgets/pull/3267))
 - Widgetmanagerbase: improve create_view return type ([#2662](https://github.com/jupyter-widgets/ipywidgets/pull/2662))
 - Refactor the JupyterLab widget manager so it can be reused ([#2532](https://github.com/jupyter-widgets/ipywidgets/pull/2532))
 - Make more of lab manager dependencies optional ([#2528](https://github.com/jupyter-widgets/ipywidgets/pull/2528))
