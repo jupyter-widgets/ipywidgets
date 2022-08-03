@@ -101,6 +101,6 @@ class IntsInput(NumbersInputBase):
     _view_name = Unicode('IntsInputView').tag(sync=True)
 
     value = List(CInt(), help='List of int tags').tag(sync=True)
-    format = NumberFormat('.3g').tag(sync=True)
+    format = NumberFormat('d').tag(sync=True)
     min = CInt(default_value=None, allow_none=True).tag(sync=True)
     max = CInt(default_value=None, allow_none=True).tag(sync=True)

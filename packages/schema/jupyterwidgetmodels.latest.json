@@ -4983,7 +4983,7 @@
         "type": "bool"
       },
       {
-        "default": ".3g",
+        "default": "d",
         "help": "",
         "name": "format",
         "type": "string"
