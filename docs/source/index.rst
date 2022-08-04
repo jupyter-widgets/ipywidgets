@@ -34,6 +34,9 @@ tab with the `JupyterLab <lite/lab/?path=Widget%20List.ipynb>`_ or `Jupyter
 Notebook <./lite/retro/tree>`_ interfaces (provided by JupyterLite).
 
 .. retrolite:: examples/Widget List.ipynb
+   :width: 100%
+   :height: 600px
+   :prompt: Try ipywidgets!
 
 Learning widgets
 ----------------
