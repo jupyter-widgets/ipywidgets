@@ -3,9 +3,7 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import { DOMWidgetView, JupyterLuminoWidget } from '@jupyter-widgets/base';
-
-import { Message } from '@lumino/messaging';
+import { JupyterLuminoPanelWidget } from '@jupyter-widgets/base';
 
 import { Panel } from '@lumino/widgets';
 
@@ -120,44 +118,6 @@ export class OutputModel extends outputBase.OutputModel {
 
   private _msgHook: (msg: KernelMessage.IIOPubMessage) => boolean;
   private _outputs: OutputAreaModel;
-}
-
-export class JupyterLuminoPanelWidget extends Panel {
-  constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
-    const view = options.view;
-    delete (options as any).view;
-    super(options);
-    this._view = view;
-  }
-
-  /**
-   * Process the Lumino message.
-   *
-   * Any custom Lumino widget used inside a Jupyter widget should override
-   * the processMessage function like this.
-   */
-  processMessage(msg: Message): void {
-    super.processMessage(msg);
-    this._view.processLuminoMessage(msg);
-  }
-
-  /**
-   * Dispose the widget.
-   *
-   * This causes the view to be destroyed as well with 'remove'
-   */
-  dispose(): void {
-    if (this.isDisposed) {
-      return;
-    }
-    super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
-    this._view = null!;
-  }
-
-  private _view: DOMWidgetView;
 }
 
 export class OutputView extends outputBase.OutputView {

@@ -3,7 +3,7 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import { Panel } from '@lumino/widgets';
+import { JupyterLuminoPanelWidget } from '@jupyter-widgets/base';
 
 import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
 
@@ -52,7 +52,7 @@ export class OutputModel extends outputBase.OutputModel {
 
 export class OutputView extends outputBase.OutputView {
   _createElement(tagName: string): HTMLElement {
-    this.luminoWidget = new Panel();
+    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
     return this.luminoWidget.node;
   }
 
@@ -66,10 +66,9 @@ export class OutputView extends outputBase.OutputView {
   }
 
   render(): void {
-    const manager = this.model.widget_manager;
-    const rendermime = manager.renderMime;
+    super.render();
     this._outputView = new OutputArea({
-      rendermime: rendermime,
+      rendermime: this.model.widget_manager.renderMime,
       model: this.model.outputs,
     });
     this.luminoWidget.insertWidget(0, this._outputView);
@@ -78,7 +77,12 @@ export class OutputView extends outputBase.OutputView {
     this.update();
   }
 
+  remove(): any {
+    this._outputView.dispose();
+    return super.remove();
+  }
+
   model: OutputModel;
   private _outputView: OutputArea;
-  luminoWidget: Panel;
+  luminoWidget: JupyterLuminoPanelWidget;
 }

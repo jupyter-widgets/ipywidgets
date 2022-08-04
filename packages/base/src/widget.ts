@@ -936,7 +936,7 @@ export class JupyterLuminoPanelWidget extends Panel {
       return;
     }
     super.dispose();
-    this._view.remove();
+    this._view?.remove();
     this._view = null!;
   }
 
