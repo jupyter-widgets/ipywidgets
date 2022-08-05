@@ -892,7 +892,7 @@ Attribute        | Type             | Default          | Help
 `allowed_tags`   | array            | `[]`             | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`format`         | string           | `'.3g'`          | 
+`format`         | string           | `'d'`            | 
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or number (integer) | `null`           | 
 `min`            | `null` or number (integer) | `null`           | 

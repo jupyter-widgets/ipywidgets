@@ -853,7 +853,7 @@ export class IntsInputModel extends NumbersInputModel {
       ...super.defaults(),
       _view_name: 'IntsInputView',
       _model_name: 'IntsInputModel',
-      format: '.3g',
+      format: 'd',
     };
   }
 }
