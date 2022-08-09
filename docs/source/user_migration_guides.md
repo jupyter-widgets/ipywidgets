@@ -79,7 +79,7 @@ use the `overflow` trait instead.
 
 #### Embedded CDN
 
-Please note that the default CDN of ipywidgets have changed from unpkg to jsDelivr. If
+Please note that the default CDN of ipywidgets has changed from unpkg to jsDelivr. If
 you rely on the CDN being unpkg, this can be overridden by specifying the data
 attribute `data-jupyter-widgets-cdn` on the HTML manager script tag. See
 [embedding](./embedding) for details.
