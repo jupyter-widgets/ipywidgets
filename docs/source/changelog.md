@@ -67,12 +67,16 @@ VBox([d, s])
 
 The file upload widget has been overhauled to handle multiple files in a more useful format:
 
-- The `.value` attribute is now a list of dictionaries, rather than a dictionary mapping the uploaded name to the content. To retrieve the original form, use `{f["name"]: f.content.tobytes() for f in uploader.value}`.
+- The `.value` attribute is now a list of dictionaries, rather than a dictionary mapping the uploaded name to the content.
 - The contents of each uploaded file is a [memory view](https://docs.python.org/3/library/stdtypes.html#memory-views) in the `.content` key, e.g., `uploader.value[0].content`.
-- The `.data` attribute has been removed. To retrieve it, use `[f.content.tobytes() for f in uploader.value]`.
-- The `.metadata` attribute has been removed. To retrieve it, use `[{k: v for k, v in f.items() if k != "content"} for f in w.value]`.
+- The `.data` attribute has been removed.
+- The `.metadata` attribute has been removed.
+
+See the [user migration guide](./user_migration_guides.md#FileUpload) for details on how to migrate your code.
 
  ([#2767](https://github.com/jupyter-widgets/ipywidgets/pull/2767), [#2724](https://github.com/jupyter-widgets/ipywidgets/pull/2724), [#2666](https://github.com/jupyter-widgets/ipywidgets/pull/2666), [#2480](https://github.com/jupyter-widgets/ipywidgets/issues/2480))
+
+
 
 #### More styling options
 

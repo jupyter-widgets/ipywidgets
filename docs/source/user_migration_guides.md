@@ -24,7 +24,11 @@ be a list of dicts containing the file information. The keys of these dicts are:
 
 Suggested migration: Rewrite all usage of `FileUpload` to use the new structure.
 If you need to support both 7.x and 8.x, you can e.g. write functions `get_file_buffer` and similar
-to wrap reads from the widget.
+to wrap reads from the widget:
+
+- For the `.value` attribute, to retrieve it in the original form, use `{f["name"]: f.content.tobytes() for f in uploader.value}`.
+- For the `.data` attribute, use `[f.content.tobytes() for f in uploader.value]`.
+- For the `.metadata` attribute, use `[{k: v for k, v in f.items() if k != "content"} for f in w.value]`.
 
 #### Tooltips
 
