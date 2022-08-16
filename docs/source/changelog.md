@@ -7,6 +7,10 @@ This is a summary of changes in ipywidgets releases. For more detailed informati
 To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub, or the 
 [full list of changes since 7.x](https://github.com/jupyter-widgets/ipywidgets/compare/7.x...master).
 
+See the [user migration guide](./user_migration_guides.md) for suggestions about migrating your code that uses ipywidgets to 8.0.
+
+If you author a custom widget, please see the [migration guide](./migration_guides.md) for suggestions about migrating your widget to support ipywidgets 8.
+
 ### Users
 
 Here are some highlights of user-visible changes in ipywidgets 8.0.
@@ -63,12 +67,16 @@ VBox([d, s])
 
 The file upload widget has been overhauled to handle multiple files in a more useful format:
 
-- The `.value` attribute is now a list of dictionaries, rather than a dictionary mapping the uploaded name to the content. To retrieve the original form, use `{f["name"]: f.content.tobytes() for f in uploader.value}`.
+- The `.value` attribute is now a list of dictionaries, rather than a dictionary mapping the uploaded name to the content.
 - The contents of each uploaded file is a [memory view](https://docs.python.org/3/library/stdtypes.html#memory-views) in the `.content` key, e.g., `uploader.value[0].content`.
-- The `.data` attribute has been removed. To retrieve it, use `[f.content.tobytes() for f in uploader.value]`.
-- The `.metadata` attribute has been removed. To retrieve it, use `[{k: v for k, v in f.items() if k != "content"} for f in w.value]`.
+- The `.data` attribute has been removed.
+- The `.metadata` attribute has been removed.
+
+See the [user migration guide](./user_migration_guides.md#FileUpload) for details on how to migrate your code.
 
  ([#2767](https://github.com/jupyter-widgets/ipywidgets/pull/2767), [#2724](https://github.com/jupyter-widgets/ipywidgets/pull/2724), [#2666](https://github.com/jupyter-widgets/ipywidgets/pull/2666), [#2480](https://github.com/jupyter-widgets/ipywidgets/issues/2480))
+
+
 
 #### More styling options
 
@@ -117,7 +125,7 @@ We have made it easier to load widgets from content delivery networks.
 
 - The default CDN is changed from unpkg to jsDelivr ([#3121](https://github.com/jupyter-widgets/ipywidgets/pull/3121), [#1627](https://github.com/jupyter-widgets/ipywidgets/issues/1627))
 - You can use the `data-jupyter-widgets-cdn-only` attribute to load modules only from CDN ([#2792](https://github.com/jupyter-widgets/ipywidgets/pull/2792), [#2786](https://github.com/jupyter-widgets/ipywidgets/issues/2786))
-- We have updated the webpack public path settings so the HTMLManager and the Jupyter Notebook extensions pull assets from wherever they are loaded, rather than only from CDN. [#3464](https://github.com/jupyter-widgets/ipywidgets/pull/3464), [#3508](https://github.com/jupyter-widgets/ipywidgets/pull/3508)
+- We have updated the webpack public path settings so the HTMLManager and the Jupyter Notebook extensions pull assets from wherever they are loaded, rather than only from CDN. If you author a custom widget, we highly encourage you to apply similar changes to your widget by adapting the changes at https://github.com/jupyter-widgets/widget-cookiecutter/pull/103/files. [#3464](https://github.com/jupyter-widgets/ipywidgets/pull/3464), [#3508](https://github.com/jupyter-widgets/ipywidgets/pull/3508)
 
 
 #### Other changes

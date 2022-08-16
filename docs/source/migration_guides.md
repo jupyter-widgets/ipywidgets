@@ -27,6 +27,8 @@ than one that contains widgets that you instantiated with ipywidgets 7.x.
 For a summarized list of relevant changes, please consult the "Developers" section of the
 [changelog](./changelog).
 
+You may consider updating your widget by generating a new widget from the cookiecutter at https://github.com/jupyter-widgets/widget-cookiecutter and adapting the changes to your widget. The widget cookiecutter has been updated to use best practices in Python packaging and Jupyter Widget infrastructure.
+
 ### Updating setup.py
 
 Start by updating the dependency in your `setup.py` or `setup.cfg` to support 8.x.
@@ -67,6 +69,10 @@ The ``ManagerBase`` class has been split into an interface type `IWidgetManager`
 ```diff
 + "@jupyter-widgets/base-manager": "^1",
 ```
+
+### Updating the AMD module logic
+
+We highly encourage you to update your widget's logic around generating AMD modules for the CDN with changes similar to those at https://github.com/jupyter-widgets/widget-cookiecutter/pull/103/files. These changes allow your AMD module to be hosted anywhere, rather than hardcoding the `unpkg.com` CDN, and they remove the differences between the AMD module generated for the notebook extension and the AMD module generated for the CDN.
 
 ### Updating the client-side code
 

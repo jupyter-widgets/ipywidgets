@@ -5,7 +5,7 @@ To build the ipywidgets documentation:
 1. Install the development version of ipywidgets with the `dev-install.sh` script in the repo root directory.
 2. Install the Python packages for building documentation with either mamba or conda:
    ```sh
-   conda update --file docs/environment.yml 
+   conda env update --file docs/environment.yml 
    ```
 
    or with `pip`:

@@ -24,7 +24,11 @@ be a list of dicts containing the file information. The keys of these dicts are:
 
 Suggested migration: Rewrite all usage of `FileUpload` to use the new structure.
 If you need to support both 7.x and 8.x, you can e.g. write functions `get_file_buffer` and similar
-to wrap reads from the widget.
+to wrap reads from the widget:
+
+- For the `.value` attribute, to retrieve it in the original form, use `{f["name"]: f.content.tobytes() for f in uploader.value}`.
+- For the `.data` attribute, use `[f.content.tobytes() for f in uploader.value]`.
+- For the `.metadata` attribute, use `[{k: v for k, v in f.items() if k != "content"} for f in w.value]`.
 
 #### Tooltips
 
@@ -79,7 +83,7 @@ use the `overflow` trait instead.
 
 #### Embedded CDN
 
-Please note that the default CDN of ipywidgets have changed from unpkg to jsDelivr. If
+Please note that the default CDN of ipywidgets has changed from unpkg to jsDelivr. If
 you rely on the CDN being unpkg, this can be overridden by specifying the data
 attribute `data-jupyter-widgets-cdn` on the HTML manager script tag. See
 [embedding](./embedding) for details.
