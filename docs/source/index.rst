@@ -6,6 +6,11 @@ Jupyter Widgets
     :Release: |release|
     :Date: |today|
 
+.. note::
+   This documentation is for ipywidgets 8. See the `changelog <changelog.md>`_ for what is new and the `user migration guide <user_migration_guides.md>`_ for suggestions about migrating from ipywidgets 7. For custom widget authors, see the `authoring migration guide <migration_guides.md>`_ for suggestions about how to update custom widgets to support ipywidgets 8.
+
+   The documentation for ipywidgets 7 is available at `ipywidgets 7 documentation <https://ipywidgets.readthedocs.io/en/7.x/>`_.
+
 Jupyter Widgets are `interactive browser controls
 <https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb>`_
 for Jupyter notebooks. Examples include:
