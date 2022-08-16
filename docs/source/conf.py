@@ -31,7 +31,7 @@ jupyterlite_dir = "."
 # "examples/Layout Example.ipynb", # bqplot/ipyleaflet dependencies require ipywidgets 7
 # "examples/Layout Templates.ipynb", # bqplot/ipyleaflet dependencies require ipywidgets 7
 # "examples/Variable Inspector.ipynb", # uses ipykernel-specific features
-jupyterlite_contents = "examples"
+jupyterlite_contents = ["examples"]
 
 # intersphinx_mapping = {
 #     'ipython': ('http://ipython.org/ipython-doc/dev/', None),
