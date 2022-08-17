@@ -156,6 +156,7 @@ Here is a short list of some of the other changes in ipywidgets 8.0.
 - ErrorWidget as fallback when widgets models or views fail - Following up ([#3304](https://github.com/jupyter-widgets/ipywidgets/pull/3304))
 - Fix matplotlib plots in interact ([#3277](https://github.com/jupyter-widgets/ipywidgets/pull/3277))
 - Fix selection equality checking ([#2897](https://github.com/jupyter-widgets/ipywidgets/pull/2897))
+- Remove the `on_displayed` Python callback mechanism ([#2021](https://github.com/jupyter-widgets/ipywidgets/pull/2021))
 
 ### Developers
 
