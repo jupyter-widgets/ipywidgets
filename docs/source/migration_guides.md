@@ -14,7 +14,7 @@ codebase.
 For a summarized list of changes affecting custom widget authors, please see the "Developers" section of the
 [changelog](./changelog) for 8.0.
 
-Please consider updating your widget by generating a new widget from the cookiecutter at https://github.com/jupyter-widgets/widget-cookiecutter and adapting the changes to your widget. The widget cookiecutter has been updated to use best practices in Python packaging and Jupyter Widget infrastructure.
+Please consider updating your widget by generating a new widget from the [JavaScript widget cookiecutter](https://github.com/jupyter-widgets/widget-cookiecutter) and adapting the code to your widget, since the cookiecutter has been updated to use best practices in Python packaging and Jupyter Widget infrastructure.
 
 For example migrations, see these PRs:
 
@@ -69,13 +69,13 @@ The ``ManagerBase`` class has been split into an interface type `IWidgetManager`
 
 ### Updating the webpack `publicPath` configuration
 
-We highly encourage you to update your widget's webpack configuration for `publicPath`, which is used in generating AMD modules, with changes similar to those at https://github.com/jupyter-widgets/widget-cookiecutter/pull/103/files. These changes allow your AMD module to be hosted anywhere, rather than hardcoding the a particular CDN like `unpkg.com`, and they simplify things by removing the differences between the AMD module generated for the notebook extension and the AMD module generated for the CDN.
+We highly encourage you to update your widget's webpack configuration for `publicPath`, which is used in generating AMD modules, with changes similar to [these changes](https://github.com/jupyter-widgets/widget-cookiecutter/pull/103/files). These changes allow your AMD module to be hosted anywhere, rather than hardcoding the a particular CDN like `unpkg.com`, and they simplify things by removing the differences between the AMD module generated for the notebook extension and the AMD module generated for the CDN.
 
 ### Updating the browser code
 
 #### Phosphor -> Lumino
 
-The Phosphor library has been archived. It has been forked and renamed "Lumino", and the maintenance is now done under the JupyterLab governance: https://github.com/jupyterlab/lumino
+The Phosphor library has been archived. It has been forked and renamed [Lumino](https://github.com/jupyterlab/lumino), and the maintenance is now done under the JupyterLab governance.
 
 If you used to import classes like ``JupyterPhosphorPanelWidget`` and ``JupyterPhosphorWidget`` from the ``@jupyter-widgets/base`` library, you will need to update them:
 
@@ -169,7 +169,7 @@ The version of [Backbone.js](https://backbonejs.org/) that ipywidgets depends on
 
 #### Custom tag names
 
-If you were changing the base HTML tag for your widget by defining the `tagName` property, this can now be done in ipywidgets 8 in the `preinitialize` method (see https://github.com/jupyter-widgets/ipywidgets/commit/a342e0dbc7c779bb668e5a21c097d7cec9a6ac44 for example changes in core widgets):
+If you were changing the base HTML tag for your widget by defining the `tagName` property, this can now be done in ipywidgets 8 in the `preinitialize` method (see [here](https://github.com/jupyter-widgets/ipywidgets/commit/a342e0dbc7c779bb668e5a21c097d7cec9a6ac44) for example changes in core widgets):
 
 ```diff
 - get tagName() {
