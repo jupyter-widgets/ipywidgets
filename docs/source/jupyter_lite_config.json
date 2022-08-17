@@ -15,6 +15,8 @@
     "ignore_sys_prefix": true,
     "piplite_urls": [
       "../../python/ipywidgets/dist",
+      "../../python/widgetsnbextension/dist",
+      "../../python/jupyterlab_widgets/dist",
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.0.5-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/backcall/backcall-0.2.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
@@ -68,7 +70,6 @@
       "https://files.pythonhosted.org/packages/py3/t/traitlets/traitlets-5.1.1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/t/typing_extensions/typing_extensions-4.1.1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/v/vega-datasets/vega_datasets-0.9.0-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/w/widgetsnbextension/widgetsnbextension-4.0.0rc2-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/x/xyzservices/xyzservices-2022.2.0-py3-none-any.whl"
     ]
   }
