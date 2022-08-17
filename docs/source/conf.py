@@ -160,8 +160,12 @@ def on_config_inited(*args):
     IPYW = ROOT / "python/ipywidgets"
     subprocess.check_call([sys.executable, "-m", "build"], cwd=str(IPYW))
 
+    WIDG = ROOT / "python/widgetsnbextension"
+    subprocess.check_call([sys.executable, "-m", "build"], cwd=str(WIDG))
+
     JLW = ROOT / "python/jupyterlab_widgets"
     subprocess.check_call(["jupyter", "labextension", "build", "."], cwd=str(JLW))
+    subprocess.check_call([sys.executable, "-m", "build"], cwd=str(JLW))
 
 def setup(app):
     app.connect("config-inited", on_config_inited)

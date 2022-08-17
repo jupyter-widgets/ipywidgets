@@ -15,4 +15,4 @@ scikit-image
 scikit-learn
 sympy
 jupyterlite==0.1.0b11
-jupyterlite-sphinx>=0.7.0
+jupyterlite-sphinx~=0.7.2
