@@ -37,8 +37,7 @@ widget is using. A reference to a widget is serialized to JSON as a string of
 the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a
 previously created widget of the specified type.
 
-This model specification is for ipywidgets 7.4.*, @jupyter-widgets/base 1.1.*,
-and @jupyter-widgets/controls 1.4.*.
+This model specification is for ipywidgets 8.
 
 ## Model attributes
 

@@ -2852,6 +2852,13 @@
         "type": "float"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is holding the slider.",
         "name": "continuous_update",
@@ -3139,6 +3146,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is sliding the slider.",
         "name": "continuous_update",
@@ -3291,6 +3305,13 @@
         "default": "FloatSliderView",
         "help": "",
         "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
         "type": "string"
       },
       {
@@ -4528,6 +4549,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is sliding the slider.",
         "name": "continuous_update",
@@ -4679,6 +4707,13 @@
         "default": "IntSliderView",
         "help": "",
         "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
         "type": "string"
       },
       {
@@ -6246,6 +6281,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is holding the slider.",
         "name": "continuous_update",
@@ -6382,6 +6424,13 @@
         "default": "SelectionSliderView",
         "help": "",
         "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
         "type": "string"
       },
       {
