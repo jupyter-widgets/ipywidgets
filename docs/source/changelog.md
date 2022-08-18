@@ -2,14 +2,10 @@
 
 This is a summary of changes in ipywidgets releases. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
-## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/v8.0)
+## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/8.0.0)
 
 To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub, or the 
-[full list of changes since 7.x](https://github.com/jupyter-widgets/ipywidgets/compare/7.x...master).
-
-See the [user migration guide](./user_migration_guides.md) for suggestions about migrating your code that uses ipywidgets to 8.0.
-
-If you author a custom widget, please see the [migration guide](./migration_guides.md) for suggestions about migrating your widget to support ipywidgets 8.
+[full list of changes since 7.x](https://github.com/jupyter-widgets/ipywidgets/compare/7.x...8.0.0). See the [user migration guide](./user_migration_guides.md) for suggestions about migrating your code that uses ipywidgets to 8.0. If you author a custom widget, please see the [custom widget migration guide](./migration_guides.md) for suggestions about migrating your widget to support ipywidgets 8.
 
 ### Users
 
