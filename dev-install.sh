@@ -48,11 +48,11 @@ fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
 cd ..
 
-echo -n "ipywidgets"
-pip install -v -e .
-
 if test "$skip_jupyter_lab" != yes; then
     pip install jupyter_packaging~=0.7.9
     pip install -ve ./jupyterlab_widgets
     jupyter labextension develop ./jupyterlab_widgets --overwrite
 fi
+
+echo -n "ipywidgets"
+pip install -v -e .
