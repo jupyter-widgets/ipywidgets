@@ -47,12 +47,11 @@ jobs:
         python -m pip install jupyter_packaging~=0.7.9
     - name: Build the extension
       run: |
-        pip install -e .[test]
-
         yarn install --frozen-lockfile
         yarn run build
         yarn run build:examples
 
+        # First install the dev jupyterlab_widgets, since it is a dependency
         pushd jupyterlab_widgets
         pwd
         pip install -e .
@@ -60,6 +59,10 @@ jobs:
         jupyter labextension list
         python -m jupyterlab.browser_check
         popd
+
+        # Finally, install the base ipywidgets package now that we have the jupyterlab_widgets dependency
+        pip install -e .[test]
+
     - name: Run Python tests
       run: pytest .
     - name: Run JS tests
