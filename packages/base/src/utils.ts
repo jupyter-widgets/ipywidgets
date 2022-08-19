@@ -57,10 +57,10 @@ export type Dict<T> = { [keys: string]: T };
  * Returns a single Promise.
  */
 export function resolvePromisesDict<V>(
-  d: Dict<PromiseLike<V>>
+  d: Dict<PromiseLike<V> | V>
 ): Promise<Dict<V>> {
   const keys = Object.keys(d);
-  const values: PromiseLike<V>[] = [];
+  const values: (PromiseLike<V> | V)[] = [];
   keys.forEach(function (key) {
     values.push(d[key]);
   });
