@@ -15,7 +15,7 @@ jobs:
     - name: Install node
       uses: actions/setup-node@v1
       with:
-       node-version: '12.x'
+       node-version: '14.x'
     - name: Install Python
       uses: actions/setup-python@v1
       with:
@@ -47,7 +47,6 @@ jobs:
         python -m pip install jupyter_packaging
     - name: Build the extension
       run: |
-        pip install .
         jlpm install
         jlpm run build
         cd jupyterlab_widgets
@@ -55,5 +54,7 @@ jobs:
         pip install -e .
         jupyter labextension develop . --overwrite
         jupyter labextension list
+
+        pip install .
 
         python -m jupyterlab.browser_check
