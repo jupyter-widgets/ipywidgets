@@ -24,9 +24,10 @@ _doc_snippets = {}
 _doc_snippets['selection_params'] = """
     options: list
         The options for the dropdown. This can either be a list of values, e.g.
-        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, or a list of
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
         (label, value) pairs, e.g.
-        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``, or a Mapping between
+        labels and values, e.g., ``{'Galileo': 0, 'Brahe': 1, 'Hubble': 2}``.
 
     index: int
         The index of the current selection.
@@ -55,7 +56,8 @@ _doc_snippets['multiple_selection_params'] = """
         The options for the dropdown. This can either be a list of values, e.g.
         ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, or a list of
         (label, value) pairs, e.g.
-        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``, or a Mapping between
+        labels and values, e.g., ``{'Galileo': 0, 'Brahe': 1, 'Hubble': 2}``.
         The labels are the strings that will be displayed in the UI,
         representing the actual Python choices, and should be unique.
 
@@ -110,9 +112,10 @@ def _make_options(x):
     The input can be
     * an iterable of (label, value) pairs
     * an iterable of values, and labels will be generated
+    * a Mapping between labels and values
     """
     if isinstance(x, Mapping):
-        raise TypeError("options must be a list of values or a list of (label, value) tuples")
+        x = x.items()
 
     # only iterate once through the options.
     xlist = tuple(x)
@@ -151,7 +154,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
 
     options = Any((),
-    help="""Iterable of values or (label, value) pairs that the user can select.
+    help="""Iterable of values, (label, value) pairs, or Mapping between labels and values that the user can select.
 
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique.
@@ -298,7 +301,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     index = TypedTuple(trait=Int(), help="Selected indices").tag(sync=True)
 
     options = Any((),
-    help="""Iterable of values or (label, value) pairs that the user can select.
+    help="""Iterable of values, (label, value) pairs, or Mapping between labels and values that the user can select.
 
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique.
