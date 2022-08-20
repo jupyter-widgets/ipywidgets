@@ -112,7 +112,7 @@ def _make_options(x):
     * an iterable of values, and labels will be generated
     """
     if isinstance(x, Mapping):
-        raise TypeError("options must be a list of values or a list of (label, value) tuples")
+        raise TypeError("options must be a iterable of values or of (label, value) pairs. If x is your Mapping, use x.items() for the options.")
 
     # only iterate once through the options.
     xlist = tuple(x)
