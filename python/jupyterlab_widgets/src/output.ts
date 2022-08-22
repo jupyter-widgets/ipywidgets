@@ -7,7 +7,7 @@ import { JupyterLuminoPanelWidget } from '@jupyter-widgets/base';
 
 import { Panel } from '@lumino/widgets';
 
-import { KernelWidgetManager, WidgetManager } from './manager';
+import { LabWidgetManager, WidgetManager } from './manager';
 
 import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
 
@@ -63,12 +63,7 @@ export class OutputModel extends outputBase.OutputModel {
    * Reset the message id.
    */
   reset_msg_id(): void {
-    let kernel;
-    if (this.widget_manager instanceof WidgetManager) {
-      kernel = this.widget_manager.context.sessionContext?.session?.kernel;
-    } else if (this.widget_manager instanceof KernelWidgetManager) {
-      kernel = this.widget_manager.kernel;
-    }
+    const kernel = this.widget_manager.kernel;
     const msgId = this.get('msg_id');
     const oldMsgId = this.previous('msg_id');
 
@@ -122,7 +117,7 @@ export class OutputModel extends outputBase.OutputModel {
     }
   }
 
-  widget_manager: WidgetManager | KernelWidgetManager;
+  widget_manager: LabWidgetManager;
 
   private _msgHook: (msg: KernelMessage.IIOPubMessage) => boolean;
   private _outputs: OutputAreaModel;
