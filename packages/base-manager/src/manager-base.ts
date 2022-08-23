@@ -70,7 +70,7 @@ function default_inline_sanitize(s: string): string {
     'ul',
   ];
   const allowedAttributes = {
-    '*': ['aria-*', 'style', 'title'],
+    '*': ['aria-*', 'class', 'style', 'title'],
     a: ['href'],
     img: ['src'],
     style: ['media', 'type'],
