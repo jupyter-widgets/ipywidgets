@@ -59,15 +59,6 @@ repos:
           ]
         stages: [manual]
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.971
-    hooks:
-      - id: mypy
-        exclude: jupyter_client/tests
-        args: ['--config-file', 'pyproject.toml']
-        additional_dependencies: [pytest]
-        stages: [manual]
-
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 0.17.1
     hooks:
