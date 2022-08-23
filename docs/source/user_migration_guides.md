@@ -48,8 +48,7 @@ For these, it is no longer possible to use `dict`s or other mapping types as val
 `options` trait. Using mapping types in this way has been deprecated since version 7.4, and
 will now raise a `TypeError`.
 
-Suggested migration: Clean up the `options` use. The following snippet can be used to convert
-a `dict` to the new format: `w.options = tuple((str(k), v) for k, v in your_dict.items())`.
+Suggested migration: Instead of using a dict `my_dict` as options, use `my_dict.items()`, which returns the items in `my_dict` as key-value pairs. For example, `Select(options=my_dict.items())`.
 
 #### Description Sanitization
 
