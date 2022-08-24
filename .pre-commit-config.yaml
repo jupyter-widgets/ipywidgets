@@ -71,3 +71,9 @@ repos:
         types: [yaml]
         args: ['--schemafile', 'https://json.schemastore.org/github-workflow']
         stages: [manual]
+  - repo: local
+    hooks:
+      - id: integrity
+        name: integrity
+        entry: yarn run integrity
+        language: system
