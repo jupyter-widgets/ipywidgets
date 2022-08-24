@@ -9,6 +9,7 @@ import shutil
 
 import traitlets
 
+import ipywidgets.widgets.widget
 from ..widgets import IntSlider, IntText, Text, Widget, jslink, HBox, widget_serialization
 from ..embed import embed_data, embed_snippet, embed_minimal_html, dependency_state
 
@@ -29,7 +30,7 @@ class CaseWidget(Widget):
 class TestEmbed:
 
     def teardown(self):
-        for w in tuple(Widget._active_widgets.values()):
+        for w in tuple(ipywidgets.widgets.widget.instances.values()):
             w.close()
 
     def test_embed_data_simple(self):
