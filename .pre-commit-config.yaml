@@ -33,7 +33,7 @@ repos:
         args: [--profile=black]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.7.1
+    rev: v3.0.0-alpha.0
     hooks:
       - id: prettier
 
@@ -77,7 +77,15 @@ repos:
         name: integrity
         entry: yarn run integrity
         language: system
-      - id: lint
-        name: lint
-        entry: ./node_modules/.bin/lint-staged
-        language: script
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: 'v8.22.0'
+    hooks:
+    -   id: eslint
+        files: \.[jt]sx?$  # *.js, *.jsx, *.ts and *.tsx
+        types: [file] 
+        additional_dependencies:
+        -   eslint@4.15.0
+        -   eslint-config-google@0.7.1
+        -   eslint-loader@1.6.1
+        -   eslint-plugin-react@6.10.3
+        -   babel-eslint@6.1.2
