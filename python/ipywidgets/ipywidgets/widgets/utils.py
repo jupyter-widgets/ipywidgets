@@ -12,7 +12,7 @@ import warnings
 # __init__ below, the appropriate stacklevel will change depending on how deep
 # the inheritance hierarchy is.
 def external_stacklevel(internal):
-    """Find the first frame that doesn't any of the given internal strings
+    """Find the first frame that doesn't contain any of the given internal strings
 
     The depth will be 2 at minimum in order to start checking at the caller of
     the function that called this utility method.
