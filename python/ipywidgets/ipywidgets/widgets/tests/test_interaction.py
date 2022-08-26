@@ -187,17 +187,33 @@ def test_dict():
         dict(a=5),
         dict(a=5, b='b', c=dict),
     ]:
-        with pytest.raises(TypeError):
-            c = interactive(f, d=d)
-
+        c = interactive(f, d=d)
+        w = c.children[0]
+        check = dict(
+            cls=widgets.Dropdown,
+            description='d',
+            value=next(iter(d.values())),
+            options=d,
+            _options_labels=tuple(d.keys()),
+            _options_values=tuple(d.values()),
+        )
+        check_widget(w, **check)
 
 def test_ordereddict():
     from collections import OrderedDict
     items = [(3, 300), (1, 100), (2, 200)]
     first = items[0][1]
     values = OrderedDict(items)
-    with pytest.raises(TypeError):
-        c = interactive(f, lis=values)
+    c = interactive(f, lis=values)
+    assert len(c.children) == 2
+    d = dict(
+        cls=widgets.Dropdown,
+        value=first,
+        options=values,
+        _options_labels=("3", "1", "2"),
+        _options_values=(300, 100, 200),
+    )
+    check_widgets(c, lis=d)
 
 def test_iterable():
     def yield_values():
@@ -566,15 +582,14 @@ def test_multiple_selection():
     check_widget(w, value=(1, 2))
 
     # dict style
-    with pytest.raises(TypeError):
-        w = smw(options={1: 1})
+    w.options = {1: 1}
+    check_widget(w, options={1:1})
 
     # updating
     w.options = (1,)
     with pytest.raises(TraitError):
         w.value = (2,)
-    check_widget(w, options=(1,))
-
+    check_widget(w, options=(1,) )
 
 def test_interact_noinspect():
     a = 'hello'
