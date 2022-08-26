@@ -34,7 +34,7 @@ import { KernelMessage } from '@jupyterlab/services';
  */
 export function unpack_models(
   value: any | Dict<unknown> | string | (Dict<unknown> | string)[],
-  manager: IWidgetManager
+  manager?: IWidgetManager // actually required, but typed to be compatible with ISerializers
 ): Promise<WidgetModel | Dict<WidgetModel> | WidgetModel[] | any> {
   if (Array.isArray(value)) {
     const unpacked: any[] = [];
@@ -50,7 +50,7 @@ export function unpack_models(
     return utils.resolvePromisesDict(unpacked);
   } else if (typeof value === 'string' && value.slice(0, 10) === 'IPY_MODEL_') {
     // get_model returns a promise already
-    return manager.get_model(value.slice(10, value.length));
+    return manager!.get_model(value.slice(10, value.length));
   } else {
     return Promise.resolve(value);
   }

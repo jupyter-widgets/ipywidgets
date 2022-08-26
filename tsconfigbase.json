@@ -18,7 +18,6 @@
     "strict": true,
     "noImplicitThis": false,
     "strictPropertyInitialization": false,
-    "strictFunctionTypes": false,
     "target": "es2017"
   }
 }

@@ -317,8 +317,8 @@ export class RadioButtonsView extends DescriptionView {
   update(options?: any): void {
     const items: string[] = this.model.get('_options_labels');
     const radios = Array.from(
-      this.container.querySelectorAll('input[type="radio"]')
-    ).map((x: HTMLInputElement) => x.value);
+      this.container.querySelectorAll<HTMLInputElement>('input[type="radio"]')
+    ).map((x) => x.value);
     let stale = items.length !== radios.length;
 
     if (!stale) {
