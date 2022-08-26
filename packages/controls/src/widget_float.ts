@@ -215,7 +215,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
 
       if (value !== this.model.get('value')) {
         this.readout.textContent = this.valueToString(value);
-        this.model.set('value', value, { updated_view: this });
+        this.model.set('value', value);
         this.touch();
       } else {
         this.readout.textContent = this.valueToString(this.model.get('value'));
