@@ -25,7 +25,7 @@ import { IClassicComm, ICallbacks } from './services-shim';
 
 import { JUPYTER_WIDGETS_VERSION } from './version';
 
-import { Dict } from './utils';
+import { BufferJSON, Dict } from './utils';
 
 import { KernelMessage } from '@jupyterlab/services';
 
@@ -227,7 +227,7 @@ export class WidgetModel extends Backbone.Model {
       case 'echo_update':
         this.state_change = this.state_change
           .then(() => {
-            const state = data.state;
+            const state: Dict<BufferJSON> = data.state;
             const buffer_paths = data.buffer_paths ?? [];
             const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
             utils.put_buffers(state, buffer_paths, buffers);
@@ -651,11 +651,11 @@ export class WidgetModel extends Backbone.Model {
    * deserialization of widget models.
    */
   static _deserialize_state(
-    state: JSONObject,
+    state: Dict<BufferJSON>,
     manager: IWidgetManager
-  ): Promise<utils.Dict<unknown>> {
+  ): Promise<utils.Dict<BufferJSON>> {
     const serializers = this.serializers;
-    let deserialized: Dict<any>;
+    let deserialized: Dict<PromiseLike<BufferJSON> | BufferJSON>;
     if (serializers) {
       deserialized = {};
       for (const k in state) {
