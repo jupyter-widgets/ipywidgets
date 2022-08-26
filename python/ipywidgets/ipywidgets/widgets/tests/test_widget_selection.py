@@ -4,8 +4,6 @@
 import inspect
 from unittest import TestCase
 
-import pytest
-
 from traitlets import TraitError
 
 from ipywidgets import Dropdown, SelectionSlider, Select
