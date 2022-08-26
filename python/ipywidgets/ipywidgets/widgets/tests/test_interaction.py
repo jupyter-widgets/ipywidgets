@@ -52,7 +52,7 @@ def check_widget(w, **d):
                 te = type(expected)
                 assert tv is te, "type({}.{}) = {!r} != {!r}".format(w.__class__.__name__, attr, tv, te)
 
-def check_widgets(container, **to_check):
+def check_widget_children(container, **to_check):
     """Check that widgets are created as expected"""
     # build a widget dictionary, so it matches
     widgets = {}
@@ -144,7 +144,7 @@ def test_list_str():
         _options_labels=tuple(values),
         _options_values=tuple(values),
     )
-    check_widgets(c, lis=d)
+    check_widget_children(c, lis=d)
 
 def test_list_int():
     values = [3, 1, 2]
@@ -158,7 +158,7 @@ def test_list_int():
         _options_labels=tuple(str(v) for v in values),
         _options_values=tuple(values),
     )
-    check_widgets(c, lis=d)
+    check_widget_children(c, lis=d)
 
 def test_list_tuple():
     values = [(3, 300), (1, 100), (2, 200)]
@@ -172,7 +172,7 @@ def test_list_tuple():
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    check_widgets(c, lis=d)
+    check_widget_children(c, lis=d)
 
 def test_list_tuple_invalid():
     for bad in [
@@ -213,7 +213,7 @@ def test_ordereddict():
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    check_widgets(c, lis=d)
+    check_widget_children(c, lis=d)
 
 def test_iterable():
     def yield_values():
@@ -230,7 +230,7 @@ def test_iterable():
         _options_labels=("3", "1", "2"),
         _options_values=(3, 1, 2),
     )
-    check_widgets(c, lis=d)
+    check_widget_children(c, lis=d)
 
 def test_iterable_tuple():
     values = [(3, 300), (1, 100), (2, 200)]
@@ -244,7 +244,7 @@ def test_iterable_tuple():
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    check_widgets(c, lis=d)
+    check_widget_children(c, lis=d)
 
 def test_mapping():
     from collections.abc import Mapping
@@ -273,7 +273,7 @@ def test_mapping():
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    check_widgets(c, lis=d)
+    check_widget_children(c, lis=d)
 
 def test_decorator_kwarg(clear_display):
     with patch.object(interaction, 'display', record_display):
