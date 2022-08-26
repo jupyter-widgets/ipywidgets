@@ -9,6 +9,8 @@ from .trait_types import InstanceDict
 from .widget_style import Style
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
+from .utils import deprecation
+
 import warnings
 
 @register
@@ -27,7 +29,7 @@ class DescriptionWidget(DOMWidget, CoreWidget):
 
     def __init__(self, *args, **kwargs):
         if 'description_tooltip' in kwargs:
-            warnings.warn("the description_tooltip argument is deprecated, use tooltip instead", DeprecationWarning)
+            deprecation("the description_tooltip argument is deprecated, use tooltip instead")
             kwargs.setdefault('tooltip', kwargs['description_tooltip'])
             del kwargs['description_tooltip']
         super().__init__(*args, **kwargs)
@@ -47,10 +49,10 @@ class DescriptionWidget(DOMWidget, CoreWidget):
         .. deprecated :: 8.0.0
            Use tooltip attribute instead.
         """
-        warnings.warn(".description_tooltip is deprecated, use .tooltip instead", DeprecationWarning)
+        deprecation(".description_tooltip is deprecated, use .tooltip instead")
         return self.tooltip
 
     @description_tooltip.setter
     def description_tooltip(self, tooltip):
-        warnings.warn(".description_tooltip is deprecated, use .tooltip instead", DeprecationWarning)
+        deprecation(".description_tooltip is deprecated, use .tooltip instead")
         self.tooltip = tooltip
