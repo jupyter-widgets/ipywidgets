@@ -3,7 +3,7 @@
 
 """Contains the Layout class"""
 
-from traitlets import Unicode, Instance, CaselessStrEnum, validate
+from traitlets import Unicode, Instance, CaselessStrEnum, validate, observe
 from .widget import Widget, register
 from .._version import __jupyter_widgets_base_version__
 
@@ -40,6 +40,7 @@ class Layout(Widget):
     border_right = Unicode(None, allow_none=True, help="The border right CSS attribute.").tag(sync=True)
     border_bottom = Unicode(None, allow_none=True, help="The border bottom CSS attribute.").tag(sync=True)
     border_left = Unicode(None, allow_none=True, help="The border left CSS attribute.").tag(sync=True)
+    border = Unicode(None, allow_none=True, help="The border.")
     bottom = Unicode(None, allow_none=True, help="The bottom CSS attribute.").tag(sync=True)
     display = Unicode(None, allow_none=True, help="The display CSS attribute.").tag(sync=True)
     flex = Unicode(None, allow_none=True, help="The flex CSS attribute.").tag(sync=True)
@@ -77,28 +78,15 @@ class Layout(Widget):
     grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
     grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
 
-    def __init__(self, **kwargs):
-        if 'border' in kwargs:
-            border = kwargs.pop('border')
-            for side in ['top', 'right', 'bottom', 'left']:
-                kwargs.setdefault(f'border_{side}', border)
+    @observe("border")
+    def _validate_border(self, proposal):
+        
+        self.border_bottom = proposal.value
+        return self.border_bottom
 
-        super().__init__(**kwargs)
-
-    def _get_border(self):
-        """
-        `border` property getter. Return the common value of all side
-        borders if they are identical. Otherwise return None.
-
-        """
-        found = None
-        for side in ['top', 'right', 'bottom', 'left']:
-            if not hasattr(self, "border_" + side):
-                return
-            old, found = found, getattr(self, "border_" + side)
-            if found is None or (old is not None and found != old):
-                return
-        return found
+    @validate("border")
+    def _observe_border(self, change):
+        self._set_border(change.new)
 
     def _set_border(self, border):
         """
@@ -107,7 +95,7 @@ class Layout(Widget):
         for side in ['top', 'right', 'bottom', 'left']:
             setattr(self, "border_" + side, border)
 
-    border = property(_get_border, _set_border)
+    
 
 
 class LayoutTraitType(Instance):
@@ -119,3 +107,4 @@ class LayoutTraitType(Instance):
             return super().validate(obj, self.klass(**value))
         else:
             return super().validate(obj, value)
+
