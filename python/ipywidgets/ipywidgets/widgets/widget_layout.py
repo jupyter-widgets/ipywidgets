@@ -78,13 +78,13 @@ class Layout(Widget):
     grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
     grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
 
-    @observe("border")
+    @validate("border")
     def _validate_border(self, proposal):
         
         self.border_bottom = proposal.value
         return self.border_bottom
 
-    @validate("border")
+    @observe("border")
     def _observe_border(self, change):
         self._set_border(change.new)
 
