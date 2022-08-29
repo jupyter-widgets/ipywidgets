@@ -167,7 +167,7 @@ function updateSettings(settings: ISettingRegistry.ISettings): void {
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(
+async function activateWidgetExtension(
   app: JupyterFrontEnd,
   rendermime: IRenderMimeRegistry,
   tracker: INotebookTracker | null,
@@ -175,7 +175,7 @@ function activateWidgetExtension(
   menu: IMainMenu | null,
   loggerRegistry: ILoggerRegistry | null,
   translator: ITranslator | null
-): base.IJupyterWidgetRegistry {
+): Promise<base.IJupyterWidgetRegistry> {
   const { commands } = app;
   const trans = (translator ?? nullTranslator).load('jupyterlab_widgets');
 
@@ -207,15 +207,15 @@ function activateWidgetExtension(
     }
   };
   if (settingRegistry !== null) {
-    settingRegistry
-      .load(managerPlugin.id)
-      .then((settings: ISettingRegistry.ISettings) => {
-        settings.changed.connect(updateSettings);
-        updateSettings(settings);
-      })
-      .catch((reason: Error) => {
-        console.error(reason.message);
-      });
+    try {
+      const settings: ISettingRegistry.ISettings = await settingRegistry.load(
+        managerPlugin.id
+      );
+      settings.changed.connect(updateSettings);
+      updateSettings(settings);
+    } catch (reason) {
+      console.error(reason.message);
+    }
   }
 
   // Add a placeholder widget renderer.
