@@ -268,12 +268,12 @@ class WidgetRegistry:
 
 # a registry of widgets by module, version, and name so we can create a Python model from widgets
 # that are constructed from the frontend.
-registry = WidgetRegistry()
+_registry = WidgetRegistry()
 
 def register(widget):
     """A decorator registering a widget class in the widget registry."""
     w = widget.class_traits()
-    registry.register(w['_model_module'].default_value,
+    _registry.register(w['_model_module'].default_value,
                                  w['_model_module_version'].default_value,
                                  w['_model_name'].default_value,
                                  w['_view_module'].default_value,
@@ -312,13 +312,13 @@ class Widget(LoggingHasTraits):
 
     @_staticproperty
     def _widget_types():
-        warnings.warn("Widget._widget_types is deprecated, use ipywidgets.widgets.widget.registry", DeprecationWarning)
-        return registry
+        warnings.warn("Widget._widget_types is deprecated, use ipywidgets.widgets.widget._registry", DeprecationWarning)
+        return _registry
 
     @_staticproperty
     def widget_types():
-        warnings.warn("Widget.widget_types is deprecated, use ipywidgets.widgets.widget.registry", DeprecationWarning)
-        return registry
+        warnings.warn("Widget.widget_types is deprecated, use ipywidgets.widgets.widget._registry", DeprecationWarning)
+        return _registry
 
     @classmethod
     def close_all(cls):

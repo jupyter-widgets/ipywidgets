@@ -67,5 +67,5 @@ def test_compatibility():
     assert not widget.Widget.widgets
     assert not widget.Widget._active_widgets
 
-    assert widget.Widget.widget_types is widget.registry
-    assert widget.Widget._widget_types is widget.registry
+    assert widget.Widget.widget_types is widget._registry
+    assert widget.Widget._widget_types is widget._registry
