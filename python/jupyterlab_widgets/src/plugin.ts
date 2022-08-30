@@ -130,7 +130,7 @@ export function registerWidgetManager(
       mimeTypes: [WIDGET_VIEW_MIMETYPE],
       createRenderer: (options) => new WidgetRenderer(options, wManager),
     },
-    0
+    -10
   );
 
   return new DisposableDelegate(() => {
@@ -225,7 +225,7 @@ function activateWidgetExtension(
       mimeTypes: [WIDGET_VIEW_MIMETYPE],
       createRenderer: (options) => new WidgetRenderer(options),
     },
-    0
+    -10
   );
 
   if (tracker !== null) {
