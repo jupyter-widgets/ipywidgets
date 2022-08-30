@@ -50,19 +50,19 @@ def test_close_all():
     # create a couple of widgets
     widgets = [Button() for i in range(10)]
 
-    assert len(widget.instances) > 0, "expect active widgets"
+    assert len(widget._instances) > 0, "expect active widgets"
 
     # close all the widgets
     Widget.close_all()
 
-    assert len(widget.instances) == 0, "active widgets should be cleared"
+    assert len(widget._instances) == 0, "active widgets should be cleared"
 
 
 def test_compatibility():
     button = Button()
     assert button in widget.Widget.widgets.values()
-    assert widget.instances is widget.Widget.widgets
-    assert widget.instances is widget.Widget._active_widgets
+    assert widget._instances is widget.Widget.widgets
+    assert widget._instances is widget.Widget._active_widgets
     Widget.close_all()
     assert not widget.Widget.widgets
     assert not widget.Widget._active_widgets

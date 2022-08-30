@@ -30,7 +30,7 @@ class CaseWidget(Widget):
 class TestEmbed:
 
     def teardown(self):
-        for w in tuple(ipywidgets.widgets.widget.instances.values()):
+        for w in tuple(ipywidgets.widgets.widget._instances.values()):
             w.close()
 
     def test_embed_data_simple(self):

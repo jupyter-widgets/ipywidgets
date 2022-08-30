@@ -38,7 +38,7 @@ CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
 JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 # we keep a strong reference for every widget created, for a discussion on using weak references see:
 #  https://github.com/jupyter-widgets/ipywidgets/issues/1345
-instances : typing.MutableMapping[str, "Widget"] = {}
+_instances : typing.MutableMapping[str, "Widget"] = {}
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -55,8 +55,8 @@ def _json_to_widget(x, obj):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_json_to_widget(v, obj) for v in x]
-    elif isinstance(x, str) and x.startswith('IPY_MODEL_') and x[10:] in instances:
-        return instances[x[10:]]
+    elif isinstance(x, str) and x.startswith('IPY_MODEL_') and x[10:] in _instances:
+        return _instances[x[10:]]
     else:
         return x
 
@@ -302,13 +302,13 @@ class Widget(LoggingHasTraits):
 
     @_staticproperty
     def widgets():
-        warnings.warn("Widget.widgets is deprecated, use ipywidgets.widgets.widget.instances", DeprecationWarning)
-        return instances
+        warnings.warn("Widget.widgets is deprecated, use ipywidgets.widgets.widget._instances", DeprecationWarning)
+        return _instances
 
     @_staticproperty
     def _active_widgets():
-        warnings.warn("Widget._active_widgets is deprecated, use ipywidgets.widgets.widget.instances", DeprecationWarning)
-        return instances
+        warnings.warn("Widget._active_widgets is deprecated, use ipywidgets.widgets.widget._instances", DeprecationWarning)
+        return _instances
 
     @_staticproperty
     def _widget_types():
@@ -322,7 +322,7 @@ class Widget(LoggingHasTraits):
 
     @classmethod
     def close_all(cls):
-        for widget in list(instances.values()):
+        for widget in list(_instances.values()):
             widget.close()
 
     @staticmethod
@@ -364,7 +364,7 @@ class Widget(LoggingHasTraits):
         if method == 'request_states':
             # Send back the full widgets state
             cls.get_manager_state()
-            widgets = instances.values()
+            widgets = _instances.values()
             full_state = {}
             drop_defaults = False
             for widget in widgets:
@@ -415,7 +415,7 @@ class Widget(LoggingHasTraits):
         """
         state = {}
         if widgets is None:
-            widgets = instances.values()
+            widgets = _instances.values()
         for widget in widgets:
             state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
         return {'version_major': 2, 'version_minor': 0, 'state': state}
@@ -511,7 +511,7 @@ class Widget(LoggingHasTraits):
         self._model_id = self.model_id
 
         self.comm.on_msg(self._handle_msg)
-        instances[self.model_id] = self
+        _instances[self.model_id] = self
 
     @property
     def model_id(self):
@@ -531,7 +531,7 @@ class Widget(LoggingHasTraits):
         When the comm is closed, all of the widget views are automatically
         removed from the front-end."""
         if self.comm is not None:
-            instances.pop(self.model_id, None)
+            _instances.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
             self._repr_mimebundle_ = None
