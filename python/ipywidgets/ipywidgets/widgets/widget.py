@@ -312,7 +312,7 @@ class Widget(LoggingHasTraits):
 
     @_staticproperty
     def _widget_types():
-        warnings.warn("Widget._widget_types is deprecated, use ipywidgets.widgets.widget.register", DeprecationWarning)
+        warnings.warn("Widget._widget_types is deprecated, use ipywidgets.widgets.widget.registry", DeprecationWarning)
         return registry
 
     @_staticproperty
