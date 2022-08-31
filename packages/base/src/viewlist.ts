@@ -45,7 +45,7 @@ export class ViewList<T> {
    * if you want to perform some action on the list of views, do something like
    * `Promise.all(myviewlist.views).then(function(views) {...});`
    */
-  update(
+  async update(
     new_models: any[],
     create_view?: (model: any, index: any) => T | Promise<T>,
     remove_view?: (view: T) => void,
@@ -68,9 +68,8 @@ export class ViewList<T> {
       this.views.length - first_removed
     );
     for (let j = 0; j < removed.length; j++) {
-      removed[j].then(function (view) {
-        remove.call(context, view);
-      });
+      const view = await removed[j];
+      remove.call(context, view)
     }
 
     // Add the rest of the new list items.
@@ -88,14 +87,13 @@ export class ViewList<T> {
    * that should be faster
    * returns a promise that resolves after this removal is done
    */
-  remove(): Promise<void> {
-    return Promise.all(this.views).then((views) => {
-      views.forEach((value) =>
+  async remove(): Promise<void> {
+    const views = await Promise.all(this.views);
+    views.forEach((value) => {
         this._remove_view.call(this._handler_context, value)
-      );
-      this.views = [];
-      this._models = [];
     });
+    this.views = [];
+    this._models = [];
   }
 
   /**
