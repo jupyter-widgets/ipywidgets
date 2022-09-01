@@ -14,98 +14,104 @@ from traitlets import TraitError
 from ..widget_datetime import DatetimePicker
 
 
+dt_1442 = datetime.datetime(1442, 1, 1, tzinfo=pytz.utc)
+dt_1664 = datetime.datetime(1664, 1, 1, tzinfo=pytz.utc)
+dt_1994 = datetime.datetime(1994, 1, 1, tzinfo=pytz.utc)
+dt_2002 = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
+dt_2056 = datetime.datetime(2056, 1, 1, tzinfo=pytz.utc)
+
 def test_time_creation_blank():
     w = DatetimePicker()
     assert w.value is None
 
 
 def test_time_creation_value():
-    t = datetime.datetime.now(pytz.utc)
-    w = DatetimePicker(value=t)
-    assert w.value is t
+    dt = datetime.datetime.now(pytz.utc)
+    w = DatetimePicker(value=dt)
+    assert w.value is dt
 
 
-def test_time_validate_value_none():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(1442, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(2056, 1, 1, tzinfo=pytz.utc)
-    w = DatetimePicker(value=t, min=t_min, max=t_max)
+def test_datetime_validate_value_none():
+    dt = dt_2002
+    dt_min = dt_1442
+    dt_max = dt_2056
+    w = DatetimePicker(value=dt, min=dt_min, max=dt_max)
     w.value = None
     assert w.value is None
 
 
-def test_time_validate_value_vs_min():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(2019, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(2056, 1, 1, tzinfo=pytz.utc)
-    w = DatetimePicker(min=t_min, max=t_max)
-    w.value = t
+def test_datetime_validate_value_vs_min():
+    dt = dt_2002
+    dt_min = datetime.datetime(2019, 1, 1, tzinfo=pytz.utc)
+    dt_max = dt_2056
+    w = DatetimePicker(min=dt_min, max=dt_max)
+    w.value = dt
     assert w.value.year == 2019
 
 
-def test_time_validate_value_vs_max():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(1664, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(1994, 1, 1, tzinfo=pytz.utc)
-    w = DatetimePicker(min=t_min, max=t_max)
-    w.value = t
+def test_datetime_validate_value_vs_max():
+    dt = dt_2002
+    dt_min = dt_1664
+    dt_max = dt_1994
+    w = DatetimePicker(min=dt_min, max=dt_max)
+    w.value = dt
     assert w.value.year == 1994
 
 
-def test_time_validate_min_vs_value():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(2019, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(2056, 1, 1, tzinfo=pytz.utc)
-    w = DatetimePicker(value=t, max=t_max)
-    w.min = t_min
+def test_datetime_validate_min_vs_value():
+    dt = dt_2002
+    dt_min = datetime.datetime(2019, 1, 1, tzinfo=pytz.utc)
+    dt_max = dt_2056
+    w = DatetimePicker(value=dt, max=dt_max)
+    w.min = dt_min
     assert w.value.year == 2019
 
 
-def test_time_validate_min_vs_max():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(2112, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(2056, 1, 1, tzinfo=pytz.utc)
-    w = DatetimePicker(value=t, max=t_max)
+def test_datetime_validate_min_vs_max():
+    dt = dt_2002
+    dt_min = datetime.datetime(2112, 1, 1, tzinfo=pytz.utc)
+    dt_max = dt_2056
+    w = DatetimePicker(value=dt, max=dt_max)
     with pytest.raises(TraitError):
-        w.min = t_min
+        w.min = dt_min
 
 
-def test_time_validate_max_vs_value():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(1664, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(1994, 1, 1, tzinfo=pytz.utc)
-    w = DatetimePicker(value=t, min=t_min)
-    w.max = t_max
+def test_datetime_validate_max_vs_value():
+    dt = dt_2002
+    dt_min = dt_1664
+    dt_max = dt_1994
+    w = DatetimePicker(value=dt, min=dt_min)
+    w.max = dt_max
     assert w.value.year == 1994
 
 
-def test_time_validate_max_vs_min():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(1664, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(1337, 1, 1, tzinfo=pytz.utc)
-    w = DatetimePicker(value=t, min=t_min)
+def test_datetime_validate_max_vs_min():
+    dt = dt_2002
+    dt_min = dt_1664
+    dt_max = datetime.datetime(1337, 1, 1, tzinfo=pytz.utc)
+    w = DatetimePicker(value=dt, min=dt_min)
     with pytest.raises(TraitError):
-        w.max = t_max
+        w.max = dt_max
 
 
-def test_time_validate_naive():
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
-    t_min = datetime.datetime(1442, 1, 1, tzinfo=pytz.utc)
-    t_max = datetime.datetime(2056, 1, 1, tzinfo=pytz.utc)
+def test_datetime_validate_naive():
+    dt = dt_2002
+    dt_min = dt_1442
+    dt_max = dt_2056
 
-    w = DatetimePicker(value=t, min=t_min, max=t_max)
+    w = DatetimePicker(value=dt, min=dt_min, max=dt_max)
     with pytest.raises(TraitError):
-        w.max = t_max.replace(tzinfo=None)
+        w.max = dt_max.replace(tzinfo=None)
     with pytest.raises(TraitError):
-        w.min = t_min.replace(tzinfo=None)
+        w.min = dt_min.replace(tzinfo=None)
     with pytest.raises(TraitError):
-        w.value = t.replace(tzinfo=None)
+        w.value = dt.replace(tzinfo=None)
 
 
 def test_datetime_tzinfo():
     tz = pytz.timezone('Australia/Sydney')
-    t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=tz)
-    w = DatetimePicker(value=t)
-    assert w.value == t
+    dt = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=tz)
+    w = DatetimePicker(value=dt)
+    assert w.value == dt
     # tzinfo only changes upon input from user
     assert w.value.tzinfo == tz
