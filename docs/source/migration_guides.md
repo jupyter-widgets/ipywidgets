@@ -167,6 +167,26 @@ The version of [Backbone.js](https://backbonejs.org/) that ipywidgets depends on
 + }
 ```
 
+If you were using `.extend()`, you will also need to change how your model attribute defaults are defined. The model defaults are now given by a function that returns the defaults and includes the superclass defaults. For example, the Output widget model [looks like this](https://github.com/jupyter-widgets/ipywidgets/blob/8.0.0/packages/output/src/output.ts):
+
+```typescript
+export const OUTPUT_WIDGET_VERSION = '1.0.0';
+
+export class OutputModel extends DOMWidgetModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'OutputModel',
+      _view_name: 'OutputView',
+      _model_module: '@jupyter-widgets/output',
+      _view_module: '@jupyter-widgets/output',
+      _model_module_version: OUTPUT_WIDGET_VERSION,
+      _view_module_version: OUTPUT_WIDGET_VERSION,
+    };
+  }
+}
+```
+
 #### Custom tag names
 
 If you were changing the base HTML tag for your widget by defining the `tagName` property, this can now be done in ipywidgets 8 in the `preinitialize` method (see [here](https://github.com/jupyter-widgets/ipywidgets/commit/a342e0dbc7c779bb668e5a21c097d7cec9a6ac44) for example changes in core widgets):
