@@ -40,16 +40,6 @@ that inherit `DOMWidget` have the attribute `tooltip` instead.
 Suggested migration: Search and replace `description_tooltip` to `tooltip` when you no longer
 need to support ipywidgets 7.
 
-#### Selection Widgets
-
-These widgets include: `ToggleButtons`, `Dropdown`, `RadioButtons`, `Select`, `SelectMultiple` `Selection`, `SelectionSlider`, and `SelectionRangeSlider`.
-
-For these, it is no longer possible to use `dict`s or other mapping types as values for the
-`options` trait. Using mapping types in this way has been deprecated since version 7.4, and
-will now raise a `TypeError`.
-
-Suggested migration: Instead of using a dict `my_dict` as options, use `my_dict.items()`, which returns the items in `my_dict` as key-value pairs. For example, `Select(options=my_dict.items())`.
-
 #### Description Sanitization
 
 The value of the `description` field of any widget that inherits `DescriptionWidget`

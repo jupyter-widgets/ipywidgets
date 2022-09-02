@@ -169,11 +169,11 @@ The version of [Backbone.js](https://backbonejs.org/) that ipywidgets depends on
 
 If you were using `.extend()`, you will also need to change how your model attribute defaults are defined. The model defaults are now given by a function that returns the defaults and includes the superclass defaults. For example, the Output widget model [looks like this](https://github.com/jupyter-widgets/ipywidgets/blob/8.0.0/packages/output/src/output.ts):
 
-```typescript
+```javascript
 export const OUTPUT_WIDGET_VERSION = '1.0.0';
 
 export class OutputModel extends DOMWidgetModel {
-  defaults(): Backbone.ObjectHash {
+  defaults() {
     return {
       ...super.defaults(),
       _model_name: 'OutputModel',
