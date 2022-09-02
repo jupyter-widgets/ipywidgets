@@ -11,25 +11,28 @@ import warnings
 # added in the process. For example, with the deprecation warning in the
 # __init__ below, the appropriate stacklevel will change depending on how deep
 # the inheritance hierarchy is.
-def external_stacklevel(internal):
-    """Find the first frame that doesn't contain any of the given internal strings
+def _external_stacklevel(internal):
+    """Find the stacklevel of the first frame that doesn't contain any of the given internal strings
 
-    The depth will be 2 at minimum in order to start checking at the caller of
-    the function that called this utility method.
+    The stacklevel will be from the perspective of the caller, and will start checking at the caller
+    of the function that called this function. Thus, the minimum stacklevel will be 1.
     """
+    # Get the level of my caller's caller
     level = 2
     frame = sys._getframe(level)
     while frame and any(s in frame.f_code.co_filename for s in internal):
         level +=1
         frame = frame.f_back
-    return level
+    # the returned value will be used one level up from here, so subtract one
+    return level-1
 
 def deprecation(message, internal=None):
-    """Generate a deprecation warning targeting the first external frame
+    """Generate a deprecation warning targeting the first frame outside the ipywidgets library.
     
     internal is a list of strings, which if they appear in filenames in the
-    frames, the frames will also be considered internal.
+    frames, the frames will also be considered internal. This can be useful if we know that ipywidgets
+    is calling out to, for example, traitlets internally.
     """
     if internal is None:
         internal = []
-    warnings.warn(message, DeprecationWarning, stacklevel=external_stacklevel(internal+['ipywidgets/widgets/']))
+    warnings.warn(message, DeprecationWarning, stacklevel=_external_stacklevel(internal+['ipywidgets/widgets/']))
