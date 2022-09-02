@@ -15,7 +15,7 @@ from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgres
 from .widget_int import IntText, BoundedIntText, IntSlider, IntProgress, IntRangeSlider, Play, SliderStyle
 from .widget_color import ColorPicker
 from .widget_date import DatePicker
-from .widget_datetime import DatetimePicker
+from .widget_datetime import DatetimePicker, NaiveDatetimePicker
 from .widget_time import TimePicker
 from .widget_output import Output
 from .widget_selection import RadioButtons, ToggleButtons, ToggleButtonsStyle, Dropdown, Select, SelectionSlider, SelectMultiple, SelectionRangeSlider
