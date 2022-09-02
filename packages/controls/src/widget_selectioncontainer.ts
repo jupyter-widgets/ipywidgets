@@ -102,7 +102,7 @@ export class AccordionView extends DOMWidgetView {
     this.$el = $(this.luminoWidget.node);
   }
 
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
     super.initialize(parameters);
     this.children_views = new ViewList(
       this.add_child_view,
@@ -182,23 +182,25 @@ export class AccordionView extends DOMWidgetView {
   /**
    * Called when a child is added to children list.
    */
-  add_child_view(model: WidgetModel, index: number): Promise<DOMWidgetView> {
+  async add_child_view(model: WidgetModel, index: number): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
     const accordion = this.luminoWidget;
     const placeholder = new Widget();
     placeholder.title.label = this.model.get('titles')[index] || '';
     accordion.addWidget(placeholder);
-    return this.create_child_view(model)
-      .then((view: DOMWidgetView) => {
-        const widget = view.luminoWidget;
-        widget.title.label = placeholder.title.label;
-        const collapse =
-          accordion.collapseWidgets[accordion.indexOf(placeholder)];
-        collapse.widget = widget;
-        placeholder.dispose();
-        return view;
-      })
-      .catch(reject('Could not add child view to box', true));
+    const view = await this.create_child_view(model);
+
+    try {
+      const widget = view.luminoWidget;
+      widget.title.label = placeholder.title.label;
+      const collapse =
+        accordion.collapseWidgets[accordion.indexOf(placeholder)];
+      collapse.widget = widget;
+      placeholder.dispose();
+    } catch {
+      reject('Could not add child view to box', true);
+    }
+    return view;
   }
 
   remove(): void {
@@ -279,7 +281,7 @@ export class TabView extends DOMWidgetView {
   /**
    * Public constructor.
    */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
     super.initialize(parameters);
     this.childrenViews = new ViewList(
       this.addChildView,
@@ -333,15 +335,16 @@ export class TabView extends DOMWidgetView {
   /**
    * Called when a child is added to children list.
    */
-  addChildView(model: WidgetModel, index: number): Promise<DOMWidgetView> {
+  async addChildView(model: WidgetModel, index: number): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
     const label = this.model.get('titles')[index] || '';
     const tabs = this.luminoWidget;
     const placeholder = new Widget();
     placeholder.title.label = label;
     tabs.addWidget(placeholder);
-    return this.create_child_view(model)
-      .then((view: DOMWidgetView) => {
+    const view = await this.create_child_view(model);
+
+    try {
         const widget = view.luminoWidget;
         widget.title.label = placeholder.title.label;
         widget.title.closable = false;
@@ -352,9 +355,10 @@ export class TabView extends DOMWidgetView {
         // insert behavior)
         tabs.insertWidget(i + 1, widget);
         placeholder.dispose();
-        return view;
-      })
-      .catch(reject('Could not add child view to box', true));
+    } catch {
+      reject('Could not add child view to box', true);
+    }
+    return view;
   }
 
   /**
@@ -433,26 +437,25 @@ export class StackModel extends SelectionContainerModel {
 }
 
 export class StackView extends BoxView {
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:selected_index', this.update_children);
   }
 
-  update_children(): void {
+  async update_children(): Promise<void> {
     let child: any[];
     if (this.model.get('selected_index') === null) {
       child = [];
     } else {
       child = [this.model.get('children')[this.model.get('selected_index')]];
     }
-    this.children_views?.update(child).then((views: DOMWidgetView[]) => {
-      // Notify all children that their sizes may have changed.
-      views.forEach((view) => {
-        MessageLoop.postMessage(
-          view.luminoWidget,
-          Widget.ResizeMessage.UnknownSize
-        );
-      });
+    const views = await this.children_views?.update(child)
+    // Notify all children that their sizes may have changed.
+    views?.forEach((view) => {
+      MessageLoop.postMessage(
+        view.luminoWidget,
+        Widget.ResizeMessage.UnknownSize
+      );
     });
   }
 }

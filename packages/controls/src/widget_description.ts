@@ -65,8 +65,9 @@ export class DescriptionView extends DOMWidgetView {
     this.updateTooltip();
   }
 
-  typeset(element: HTMLElement, text?: string): void {
-    this.displayed.then(() => typeset(element, text));
+  async typeset(element: HTMLElement, text?: string): Promise<void> {
+    await this.displayed;
+    typeset(element, text);
   }
 
   updateDescription(): void {

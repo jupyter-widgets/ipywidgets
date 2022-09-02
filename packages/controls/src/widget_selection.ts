@@ -190,7 +190,7 @@ export class SelectView extends SelectionView {
   /**
    * Public constructor.
    */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
     super.initialize(parameters);
     // Create listbox here so that subclasses can modify it before it is populated in render()
     this.listbox = document.createElement('select');
@@ -465,7 +465,7 @@ export class ToggleButtonsModel extends SelectionModel {
 }
 
 export class ToggleButtonsView extends DescriptionView {
-  initialize(options: WidgetView.IInitializeParameters): void {
+  async initialize(options: WidgetView.IInitializeParameters): Promise<void> {
     this._css_state = {};
     super.initialize(options);
     this.listenTo(this.model, 'change:button_style', this.update_button_style);
@@ -492,7 +492,7 @@ export class ToggleButtonsView extends DescriptionView {
    * Called when the model is changed.  The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update(options?: any): void {
+  async update(options?: any): Promise<void> {
     const items: string[] = this.model.get('_options_labels');
     const icons = this.model.get('icons') || [];
     const previous_icons = this.model.previous('icons') || [];
@@ -561,11 +561,11 @@ export class ToggleButtonsView extends DescriptionView {
       }
     });
 
-    this.stylePromise.then(function (style) {
-      if (style) {
-        style.style();
-      }
-    });
+    const style = await this.stylePromise;
+    if (style) {
+      style.style();
+    }
+
     return super.update(options);
   }
 
@@ -876,7 +876,7 @@ export class SelectMultipleView extends SelectView {
   /**
    * Public constructor.
    */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
     super.initialize(parameters);
     this.listbox.multiple = true;
   }

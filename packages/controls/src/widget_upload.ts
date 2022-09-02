@@ -65,7 +65,7 @@ export class FileUploadView extends DOMWidgetView {
       this.fileInput.value = '';
     });
 
-    this.fileInput.addEventListener('change', () => {
+    this.fileInput.addEventListener('change', async () => {
       const promisesFile: Array<Promise<IFileUploaded>> = [];
 
       Array.from(this.fileInput.files ?? []).forEach((file: File) => {
@@ -93,21 +93,20 @@ export class FileUploadView extends DOMWidgetView {
         );
       });
 
-      Promise.all(promisesFile)
-        .then((files: Array<IFileUploaded>) => {
+      const files: Array<IFileUploaded> = await Promise.all(promisesFile);
+      try {
           this.model.set({
             value: files,
             error: '',
           });
           this.touch();
-        })
-        .catch((err) => {
+      } catch (err: any) {
           console.error('error in file upload: %o', err);
           this.model.set({
             error: err,
           });
           this.touch();
-        });
+      }
     });
 
     this.listenTo(this.model, 'change:button_style', this.update_button_style);
