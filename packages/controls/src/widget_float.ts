@@ -118,7 +118,7 @@ export class FloatSliderView extends IntSliderView {
 }
 
 export class FloatLogSliderView extends BaseIntSliderView {
-  update(options?: any): void {
+  async update(options?: any): Promise<void> {
     super.update(options);
     const value = this.model.get('value');
     this.readout.textContent = this.valueToString(value);
