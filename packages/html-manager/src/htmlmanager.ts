@@ -111,7 +111,7 @@ export class HTMLManager extends ManagerBase {
     moduleName: string,
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
-     const module = await new Promise((resolve, reject) => {
+    const module = await new Promise((resolve, reject) => {
       if (moduleName === '@jupyter-widgets/base') {
         resolve(base);
       } else if (moduleName === '@jupyter-widgets/controls') {
@@ -122,7 +122,8 @@ export class HTMLManager extends ManagerBase {
         resolve(this.loader(moduleName, moduleVersion));
       } else {
         reject(`Could not load module ${moduleName}@${moduleVersion}`);
-      }})
+      }
+    });
     if ((module as any)[className]) {
       return (module as any)[className];
     } else {

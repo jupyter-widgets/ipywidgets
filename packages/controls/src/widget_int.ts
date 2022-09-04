@@ -715,7 +715,9 @@ export class IntProgressModel extends BoundedIntModel {
 }
 
 export class ProgressView extends DescriptionView {
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
     this.luminoWidget.addClass('jupyter-widgets');

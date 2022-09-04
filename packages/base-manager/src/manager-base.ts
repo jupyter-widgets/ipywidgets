@@ -177,9 +177,7 @@ export abstract class ManagerBase implements IWidgetManager {
 
       viewPromise = Promise.resolve(view);
     } catch (e) {
-      console.error(
-        `Could not create a view for model id ${model.model_id}`
-      );
+      console.error(`Could not create a view for model id ${model.model_id}`);
       const msg = `Failed to create view for '${_view_name}' from module '${_view_module}' with model '${model.name}' from module '${model.module}'`;
       const ModelCls = widgets.createErrorWidgetModel(e, msg);
       const errorModel = new ModelCls();
@@ -325,9 +323,12 @@ export abstract class ManagerBase implements IWidgetManager {
     );
   }
 
-  async register_model(model_id: string, modelPromise: Promise<WidgetModel>): Promise<void> {
+  async register_model(
+    model_id: string,
+    modelPromise: Promise<WidgetModel>
+  ): Promise<void> {
     this._models[model_id] = modelPromise;
-    const model = await modelPromise
+    const model = await modelPromise;
     model.once('comm:close', () => {
       delete this._models[model_id];
     });
@@ -628,7 +629,7 @@ export abstract class ManagerBase implements IWidgetManager {
    * @return Promise that resolves when the widget state is cleared.
    */
   async clear_state(): Promise<void> {
-    const models = await resolvePromisesDict(this._models)
+    const models = await resolvePromisesDict(this._models);
     Object.keys(models).forEach((id) => models[id].close());
     this._models = Object.create(null);
   }
@@ -700,8 +701,9 @@ export abstract class ManagerBase implements IWidgetManager {
       if (this.has_model(model_id)) {
         const model = await this.get_model(model_id);
         // deserialize state
-        const attributes = await (model.constructor as typeof WidgetModel)
-          ._deserialize_state(modelState || {}, this);
+        const attributes = await (
+          model.constructor as typeof WidgetModel
+        )._deserialize_state(modelState || {}, this);
         model.set_state(attributes); // case 2
         return model;
       }
@@ -722,7 +724,7 @@ export abstract class ManagerBase implements IWidgetManager {
       } else {
         return this.new_model(modelCreate, modelState); // case 1
       }
-    })
+    });
 
     return Promise.all(all_models);
   }

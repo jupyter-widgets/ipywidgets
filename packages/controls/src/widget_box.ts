@@ -74,7 +74,9 @@ export class BoxView extends DOMWidgetView {
     this.$el = $(this.luminoWidget.node);
   }
 
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.children_views = new ViewList(this.add_child_model, null, this);
     this.listenTo(this.model, 'change:children', this.update_children);
@@ -95,7 +97,10 @@ export class BoxView extends DOMWidgetView {
     const views = await this.children_views?.update(this.model.get('children'));
     // Notify all children that their sizes may have changed.
     views?.forEach((view) => {
-      MessageLoop.postMessage(view.luminoWidget, Widget.ResizeMessage.UnknownSize);
+      MessageLoop.postMessage(
+        view.luminoWidget,
+        Widget.ResizeMessage.UnknownSize
+      );
     });
   }
 
@@ -145,7 +150,9 @@ export class HBoxView extends BoxView {
   /**
    * Public constructor
    */
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.luminoWidget.addClass('widget-hbox');
   }
@@ -155,7 +162,9 @@ export class VBoxView extends BoxView {
   /**
    * Public constructor
    */
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.luminoWidget.addClass('widget-vbox');
   }
@@ -165,7 +174,9 @@ export class GridBoxView extends BoxView {
   /**
    * Public constructor
    */
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.luminoWidget.addClass('widget-gridbox');
     // display needn't be set to flex and grid

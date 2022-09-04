@@ -263,18 +263,20 @@ export class WidgetModel extends Backbone.Model {
             });
           }
 
-          this.state_change = (this.constructor as typeof WidgetModel)._deserialize_state(
+          this.state_change = (
+            this.constructor as typeof WidgetModel
+          )._deserialize_state(
             // Combine the state updates, with preference for kernel updates
             state,
             this.widget_manager
           );
-        
+
           this.set_state(await this.state_change);
         } catch {
           utils.reject(
             `Could not process update msg for model id: ${this.model_id}`,
             true
-          )
+          );
         }
         return this.state_change;
       case 'custom':
@@ -946,7 +948,9 @@ export class DOMWidgetView extends WidgetView {
   /**
    * Public constructor
    */
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
 
     this.listenTo(
@@ -1004,8 +1008,8 @@ export class DOMWidgetView extends WidgetView {
         await this.displayed;
         view.trigger('displayed');
         this.listenTo(view.model, 'change', () => {
-        // Post (asynchronous) so layout changes can take
-        // effect first.
+          // Post (asynchronous) so layout changes can take
+          // effect first.
           MessageLoop.postMessage(
             this.luminoWidget,
             Widget.ResizeMessage.UnknownSize
@@ -1018,7 +1022,7 @@ export class DOMWidgetView extends WidgetView {
         this.trigger('layout-changed');
         this.layoutPromise = Promise.resolve(view);
       } catch {
-        utils.reject('Could not add LayoutView to DOMWidgetView', true)
+        utils.reject('Could not add LayoutView to DOMWidgetView', true);
       }
     }
   }
@@ -1026,25 +1030,24 @@ export class DOMWidgetView extends WidgetView {
   async setStyle(style: StyleModel, oldStyle?: StyleModel): Promise<void> {
     if (style) {
       const oldStyleView = await this.stylePromise;
-        if (oldStyleView) {
-          oldStyleView.unstyle();
-          this.stopListening(oldStyleView.model);
-          oldStyleView.remove();
-        }
+      if (oldStyleView) {
+        oldStyleView.unstyle();
+        this.stopListening(oldStyleView.model);
+        oldStyleView.remove();
+      }
 
       try {
-      const view = await this.create_child_view(style);
-      // Trigger the displayed event of the child view.
-      await this.displayed
-      view.trigger('displayed');
-      this.trigger('style-changed');
-      // Unlike for the layout attribute, style changes don't
-      // trigger Lumino resize messages.
-      this.stylePromise = Promise.resolve(view);
+        const view = await this.create_child_view(style);
+        // Trigger the displayed event of the child view.
+        await this.displayed;
+        view.trigger('displayed');
+        this.trigger('style-changed');
+        // Unlike for the layout attribute, style changes don't
+        // trigger Lumino resize messages.
+        this.stylePromise = Promise.resolve(view);
       } catch {
         utils.reject('Could not add styleView to DOMWidgetView', true);
       }
-
     }
   }
 

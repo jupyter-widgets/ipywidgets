@@ -190,7 +190,9 @@ export class SelectView extends SelectionView {
   /**
    * Public constructor.
    */
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     // Create listbox here so that subclasses can modify it before it is populated in render()
     this.listbox = document.createElement('select');
@@ -876,7 +878,9 @@ export class SelectMultipleView extends SelectView {
   /**
    * Public constructor.
    */
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.listbox.multiple = true;
   }

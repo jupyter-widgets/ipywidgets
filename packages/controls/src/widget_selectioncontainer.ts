@@ -102,7 +102,9 @@ export class AccordionView extends DOMWidgetView {
     this.$el = $(this.luminoWidget.node);
   }
 
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.children_views = new ViewList(
       this.add_child_view,
@@ -182,7 +184,10 @@ export class AccordionView extends DOMWidgetView {
   /**
    * Called when a child is added to children list.
    */
-  async add_child_view(model: WidgetModel, index: number): Promise<DOMWidgetView> {
+  async add_child_view(
+    model: WidgetModel,
+    index: number
+  ): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
     const accordion = this.luminoWidget;
     const placeholder = new Widget();
@@ -281,7 +286,9 @@ export class TabView extends DOMWidgetView {
   /**
    * Public constructor.
    */
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.childrenViews = new ViewList(
       this.addChildView,
@@ -335,7 +342,10 @@ export class TabView extends DOMWidgetView {
   /**
    * Called when a child is added to children list.
    */
-  async addChildView(model: WidgetModel, index: number): Promise<DOMWidgetView> {
+  async addChildView(
+    model: WidgetModel,
+    index: number
+  ): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
     const label = this.model.get('titles')[index] || '';
     const tabs = this.luminoWidget;
@@ -345,16 +355,16 @@ export class TabView extends DOMWidgetView {
     const view = await this.create_child_view(model);
 
     try {
-        const widget = view.luminoWidget;
-        widget.title.label = placeholder.title.label;
-        widget.title.closable = false;
+      const widget = view.luminoWidget;
+      widget.title.label = placeholder.title.label;
+      widget.title.closable = false;
 
-        const i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
-        // insert after placeholder so that if placeholder is selected, the
-        // real widget will be selected now (this depends on the tab bar
-        // insert behavior)
-        tabs.insertWidget(i + 1, widget);
-        placeholder.dispose();
+      const i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
+      // insert after placeholder so that if placeholder is selected, the
+      // real widget will be selected now (this depends on the tab bar
+      // insert behavior)
+      tabs.insertWidget(i + 1, widget);
+      placeholder.dispose();
     } catch {
       reject('Could not add child view to box', true);
     }
@@ -437,7 +447,9 @@ export class StackModel extends SelectionContainerModel {
 }
 
 export class StackView extends BoxView {
-  async initialize(parameters: WidgetView.IInitializeParameters): Promise<void> {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:selected_index', this.update_children);
   }
@@ -449,7 +461,7 @@ export class StackView extends BoxView {
     } else {
       child = [this.model.get('children')[this.model.get('selected_index')]];
     }
-    const views = await this.children_views?.update(child)
+    const views = await this.children_views?.update(child);
     // Notify all children that their sizes may have changed.
     views?.forEach((view) => {
       MessageLoop.postMessage(

@@ -95,17 +95,17 @@ export class FileUploadView extends DOMWidgetView {
 
       const files: Array<IFileUploaded> = await Promise.all(promisesFile);
       try {
-          this.model.set({
-            value: files,
-            error: '',
-          });
-          this.touch();
+        this.model.set({
+          value: files,
+          error: '',
+        });
+        this.touch();
       } catch (err: any) {
-          console.error('error in file upload: %o', err);
-          this.model.set({
-            error: err,
-          });
-          this.touch();
+        console.error('error in file upload: %o', err);
+        this.model.set({
+          error: err,
+        });
+        this.touch();
       }
     });
 

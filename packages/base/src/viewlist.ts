@@ -69,7 +69,7 @@ export class ViewList<T> {
     );
     for (let j = 0; j < removed.length; j++) {
       const view = await removed[j];
-      remove.call(context, view)
+      remove.call(context, view);
     }
 
     // Add the rest of the new list items.
@@ -90,7 +90,7 @@ export class ViewList<T> {
   async remove(): Promise<void> {
     const views = await Promise.all(this.views);
     views.forEach((value) => {
-        this._remove_view.call(this._handler_context, value)
+      this._remove_view.call(this._handler_context, value);
     });
     this.views = [];
     this._models = [];
