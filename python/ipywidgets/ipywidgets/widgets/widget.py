@@ -302,22 +302,22 @@ class Widget(LoggingHasTraits):
 
     @_staticproperty
     def widgets():
-        warnings.warn("Widget.widgets is deprecated, use ipywidgets.widgets.widget._instances", DeprecationWarning)
+        warnings.warn("Widget.widgets is deprecated.", DeprecationWarning)
         return _instances
 
     @_staticproperty
     def _active_widgets():
-        warnings.warn("Widget._active_widgets is deprecated, use ipywidgets.widgets.widget._instances", DeprecationWarning)
+        warnings.warn("Widget._active_widgets is deprecated.", DeprecationWarning)
         return _instances
 
     @_staticproperty
     def _widget_types():
-        warnings.warn("Widget._widget_types is deprecated, use ipywidgets.widgets.widget._registry", DeprecationWarning)
+        warnings.warn("Widget._widget_types is deprecated.", DeprecationWarning)
         return _registry
 
     @_staticproperty
     def widget_types():
-        warnings.warn("Widget.widget_types is deprecated, use ipywidgets.widgets.widget._registry", DeprecationWarning)
+        warnings.warn("Widget.widget_types is deprecated.", DeprecationWarning)
         return _registry
 
     @classmethod
