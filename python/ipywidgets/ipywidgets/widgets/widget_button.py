@@ -72,7 +72,7 @@ class Button(DOMWidget, CoreWidget):
         if 'fa-' in value:
             deprecation("icons names no longer need 'fa-', "
             "just use the class names themselves (for example, 'gear spin' instead of 'fa-gear fa-spin')",
-            internal=['traitlets/traitlets.py', '/contextlib.py'])
+            internal=['ipywidgets/widgets/', 'traitlets/traitlets.py', '/contextlib.py'])
             value = value.replace('fa-', '')
         return value
 

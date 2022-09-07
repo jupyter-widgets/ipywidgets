@@ -2,6 +2,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 import sys
+import inspect
 import warnings
 
 # This function is from https://github.com/python/cpython/issues/67998
@@ -19,20 +20,34 @@ def _external_stacklevel(internal):
     """
     # Get the level of my caller's caller
     level = 2
-    frame = sys._getframe(level)
+
+    # sys._getframe is much faster than inspect.stack, but isn't guaranteed to
+    # exist in all python implementations, so we fall back to inspect.stack()
+    if hasattr(sys, '_getframe'):
+        frame = sys._getframe(level)
+    else:
+        frame = inspect.stack(context=0)[level].frame
+
+    # climb the stack frames while we see internal frames
     while frame and any(s in frame.f_code.co_filename for s in internal):
         level +=1
         frame = frame.f_back
-    # the returned value will be used one level up from here, so subtract one
+
+    # Return the stack level from the perspective of whoever called us (i.e., one level up)
     return level-1
 
-def deprecation(message, internal=None):
-    """Generate a deprecation warning targeting the first frame outside the ipywidgets library.
+def deprecation(message, internal='ipywidgets/widgets/'):
+    """Generate a deprecation warning targeting the first frame that is not 'internal'
     
-    internal is a list of strings, which if they appear in filenames in the
-    frames, the frames will also be considered internal. This can be useful if we know that ipywidgets
-    is calling out to, for example, traitlets internally.
+    internal is a string or list of strings, which if they appear in filenames in the
+    frames, the frames will be considered internal. Changing this can be useful if, for examnple,
+    we know that ipywidgets is calling out to traitlets internally.
     """
-    if internal is None:
-        internal = []
-    warnings.warn(message, DeprecationWarning, stacklevel=_external_stacklevel(internal+['ipywidgets/widgets/']))
+    if isinstance(internal, str):
+        internal = [internal]
+
+    # stack level of the first external frame from here
+    stacklevel = _external_stacklevel(internal)
+
+    # The call to .warn adds one frame, so bump the stacklevel up by one
+    warnings.warn(message, DeprecationWarning, stacklevel=stacklevel+1)

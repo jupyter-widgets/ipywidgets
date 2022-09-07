@@ -15,3 +15,8 @@ def test_deprecation():
         deprecation('Deprecated call', ['ipywidgets/widgets/tests'])
         # Make sure the deprecation pointed to the external function calling this test function
         assert w[0].filename.endswith('_pytest/python.py')
+
+    with pytest.deprecated_call() as w:
+        deprecation('Deprecated call', 'ipywidgets/widgets/tests')
+        # Make sure the deprecation pointed to the external function calling this test function
+        assert w[0].filename.endswith('_pytest/python.py')
