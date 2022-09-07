@@ -1,4 +1,5 @@
 
+import inspect
 from pathlib import Path
 from unittest.mock import patch
 
@@ -6,6 +7,9 @@ import pytest
 
 from ipywidgets.widgets.utils import deprecation
 from ipywidgets.widgets.tests.utils import call_method
+
+
+CALL_PATH = inspect.getfile(call_method)
 
 @patch("ipywidgets.widgets.utils._IPYWIDGETS_INTERNAL", [])
 def test_deprecation_direct():
@@ -20,9 +24,9 @@ def test_deprecation_indirect():
     with pytest.warns(DeprecationWarning) as record:
         call_method(deprecation, "test message")
     assert len(record) == 1
-    assert Path(record[0].filename) == Path(__file__, '..', 'utils.py').resolve()
+    assert record[0].filename == CALL_PATH
 
-@patch("ipywidgets.widgets.utils._IPYWIDGETS_INTERNAL", [str(Path(__file__, '..', 'utils.py').resolve())])
+@patch("ipywidgets.widgets.utils._IPYWIDGETS_INTERNAL", [CALL_PATH])
 def test_deprecation_indirect_internal():
     # If the line that calls "deprecation" is internal, it is not considered the source:
     with pytest.warns(DeprecationWarning) as record:
