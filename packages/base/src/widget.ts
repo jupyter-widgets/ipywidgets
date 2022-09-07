@@ -225,55 +225,57 @@ export class WidgetModel extends Backbone.Model {
       case 'update':
       case 'echo_update':
         try {
-        await this.state_change;
+          await this.state_change;
 
-        const state: Dict<BufferJSON> = data.state;
-        const buffer_paths = data.buffer_paths ?? [];
-        const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
-        utils.put_buffers(state, buffer_paths, buffers);
+          const state: Dict<BufferJSON> = data.state;
+          const buffer_paths = data.buffer_paths ?? [];
+          const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
+          utils.put_buffers(state, buffer_paths, buffers);
 
-        if (msg.parent_header && method === 'echo_update') {
-          const msgId = (msg.parent_header as any).msg_id;
-          // we may have echos coming from other clients, we only care about
-          // dropping echos for which we expected a reply
-          const expectedEcho = Object.keys(state).filter((attrName) =>
-            this._expectedEchoMsgIds.has(attrName)
-          );
-          expectedEcho.forEach((attrName: string) => {
-            // Skip echo messages until we get the reply we are expecting.
-            const isOldMessage =
-              this._expectedEchoMsgIds.get(attrName) !== msgId;
-            if (isOldMessage) {
-              // Ignore an echo update that comes before our echo.
-              delete state[attrName];
-            } else {
-              // we got our echo confirmation, so stop looking for it
-              this._expectedEchoMsgIds.delete(attrName);
-              // Start accepting echo updates unless we plan to send out a new state soon
-              if (
-                this._msg_buffer !== null &&
-                Object.prototype.hasOwnProperty.call(
-                  this._msg_buffer,
-                  attrName
-                )
-              ) {
+          if (msg.parent_header && method === 'echo_update') {
+            const msgId = (msg.parent_header as any).msg_id;
+            // we may have echos coming from other clients, we only care about
+            // dropping echos for which we expected a reply
+            const expectedEcho = Object.keys(state).filter((attrName) =>
+              this._expectedEchoMsgIds.has(attrName)
+            );
+            expectedEcho.forEach((attrName: string) => {
+              // Skip echo messages until we get the reply we are expecting.
+              const isOldMessage =
+                this._expectedEchoMsgIds.get(attrName) !== msgId;
+              if (isOldMessage) {
+                // Ignore an echo update that comes before our echo.
                 delete state[attrName];
+              } else {
+                // we got our echo confirmation, so stop looking for it
+                this._expectedEchoMsgIds.delete(attrName);
+                // Start accepting echo updates unless we plan to send out a new state soon
+                if (
+                  this._msg_buffer !== null &&
+                  Object.prototype.hasOwnProperty.call(
+                    this._msg_buffer,
+                    attrName
+                  )
+                ) {
+                  delete state[attrName];
+                }
               }
-            }
-          });
-        }
-        const deserialized_state = await (this.constructor as typeof WidgetModel)._deserialize_state(
-          // Combine the state updates, with preference for kernel updates
-          state,
-          this.widget_manager
-        );
+            });
+          }
+          const deserialized_state = await (
+            this.constructor as typeof WidgetModel
+          )._deserialize_state(
+            // Combine the state updates, with preference for kernel updates
+            state,
+            this.widget_manager
+          );
 
-        this.set_state(deserialized_state);
+          this.set_state(deserialized_state);
         } catch {
           utils.reject(
             `Could not process update msg for model id: ${this.model_id}`,
             true
-          )
+          );
         }
         return this.state_change;
       case 'custom':
