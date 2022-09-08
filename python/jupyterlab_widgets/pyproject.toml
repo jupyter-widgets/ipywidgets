@@ -52,11 +52,8 @@ file = "LICENSE"
 Homepage = "https://github.com/jupyter-widgets/ipywidgets"
 
 [tool.hatch.build.targets.wheel.shared-data]
-"jupyterlab_widgets/labextension/static" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/static"
+"jupyterlab_widgets/labextension" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager"
 "install.json" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/install.json"
-"jupyterlab_widgets/labextension/build_log.json" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/build_log.json"
-"jupyterlab_widgets/labextension/package.json" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/package.json"
-"jupyterlab_widgets/labextension/schemas/@jupyter-widgets/jupyterlab-manager" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/schemas/@jupyter-widgets/jupyterlab-manager"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
