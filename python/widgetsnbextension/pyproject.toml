@@ -1,18 +1,101 @@
 [build-system]
-# These are the assumed default build requirements from pip:
-# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
-requires = ["jupyter_packaging~=0.10,<2"]
+requires = [
+    "hatchling>=1.8.1",
+]
+build-backend = "hatchling.build"
 
-[tool.jupyter-packaging.options]
-skip-if-exists = ["widgetnbextension/static/extension.js"]
-ensured-targets = ["widgetnbextension/static/extension.js"]
+[project]
+name = "widgetsnbextension"
+description = "Jupyter interactive widgets for Jupyter Notebook"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [
+    { name = "Jupyter Development Team", email = "jupyter@googlegroups.com" },
+]
+keywords = [
+    "Interactive",
+    "Interpreter",
+    "Jupyter",
+    "Shell",
+    "Web",
+    "notebook",
+    "widgets",
+]
+classifiers = [
+    "Framework :: Jupyter",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+version = "4.0.3"
 
-[tool.jupyter-packaging.builder]
-factory = "jupyter_packaging.npm_builder"
+[project.license]
+file = "LICENSE"
 
-[tool.jupyter-packaging.build-args]
+[project.urls]
+Homepage = "http://jupyter.org"
+
+[tool.hatch.build.targets.wheel.shared-data]
+"widgetsnbextension/static" = "share/jupyter/nbextensions/jupyter-js-widgets"
+"widgetsnbextension.json" = "etc/jupyter/nbconfig/notebook.d/widgetsnbextension.json"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    ".github",
+]
+
+[tool.hatch.build.hooks.jupyter-builder]
+dependencies = [
+    "hatch-jupyter-builder>=0.5.3",
+]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = [
+    "widgetnbextension/static/extension.js",
+]
+skip-if-exists = [
+    "widgetnbextension/static/extension.js",
+]
+
+[tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
+build_dir = "src"
+source_dir = "src"
+build_cmd = "yarn"
+npm = [
+    "yarn",
+]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 build_cmd = "build"
-npm = ["yarn"]
+npm = [
+    "yarn",
+]
 
-[tool.check-manifest]
-ignore = ["widgetnbextension/static/**", "yarn.lock", ".*", "package-lock.json"]
+[tool.tbump]
+field = [
+    { name = "channel", default = "" },
+    { name = "release", default = "" },
+]
+
+[tool.tbump.version]
+current = "4.0.3"
+regex = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)((?P<channel>a|b|rc|.dev)(?P<release>\\d+))?"
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
+version_template = "version = \"{major}.{minor}.{patch}{channel}{release}\""
+
+[[tool.tbump.file]]
+src = "widgetsnbextension/_version.py"
