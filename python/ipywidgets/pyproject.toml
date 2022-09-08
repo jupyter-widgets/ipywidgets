@@ -1,5 +1,92 @@
 [build-system]
-# These are the assumed default build requirements from pip:
-# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
-requires = ["setuptools>=40.8.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = [
+    "hatchling>=1.8.1",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "ipywidgets"
+description = "Jupyter interactive widgets"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [
+    { name = "Jupyter Development Team", email = "jupyter@googlegroups.com" },
+]
+keywords = [
+    "Interactive",
+    "Interpreter",
+    "Jupyter",
+    "Shell",
+    "Web",
+    "ipython",
+    "widgets",
+]
+classifiers = [
+    "Framework :: Jupyter",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "ipykernel>=4.5.1",
+    "ipython>=6.1.0",
+    "jupyterlab_widgets~=3.0",
+    "traitlets>=4.3.1",
+    "widgetsnbextension~=4.0",
+]
+version = "8.0.2"
+
+[project.license]
+file = "LICENSE"
+
+[project.optional-dependencies]
+test = [
+    "jsonschema",
+    "pytest-cov",
+    "pytest>=3.6.0",
+    "pytz",
+]
+
+[project.urls]
+Homepage = "http://jupyter.org"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    ".github",
+]
+
+[tool.hatch.build.hooks.jupyter-builder]
+dependencies = [
+    "hatch-jupyter-builder>=0.5.3",
+]
+build-function = "hatch_jupyter_builder.npm_builder"
+
+[tool.tbump]
+field = [
+    { name = "channel", default = "" },
+    { name = "release", default = "" },
+]
+
+[tool.tbump.version]
+current = "8.0.2"
+regex = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)((?P<channel>a|b|rc|.dev)(?P<release>\\d+))?"
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
+version_template = "version = \"{major}.{minor}.{patch}{channel}{release}\""
+
+[[tool.tbump.file]]
+src = "ipywidgets/_version.py"
