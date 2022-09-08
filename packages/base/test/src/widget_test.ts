@@ -299,7 +299,8 @@ describe('WidgetModel', function () {
           },
         },
       });
-      expect(await this.widget.state_change).to.equal(await state_change);
+      expect(this.widget.state_change).to.equal(state_change);
+      await state_change;
       expect(deserialize).to.be.calledOnce;
       expect(setState).to.be.calledOnce;
       expect(deserialize).to.be.calledBefore(setState);
