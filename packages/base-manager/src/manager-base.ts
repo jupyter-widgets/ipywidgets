@@ -138,58 +138,61 @@ export abstract class ManagerBase implements IWidgetManager {
    * any state updates.
    *
    */
-  async create_view<VT extends DOMWidgetView = DOMWidgetView>(
+  create_view<VT extends DOMWidgetView = DOMWidgetView>(
     model: DOMWidgetModel,
     options?: any
   ): Promise<VT>;
-  async create_view<VT extends WidgetView = WidgetView>(
+  create_view<VT extends WidgetView = WidgetView>(
     model: WidgetModel,
     options?: any
   ): Promise<VT>;
-  async create_view<VT extends WidgetView = WidgetView>(
+  create_view<VT extends WidgetView = WidgetView>(
     model: WidgetModel,
     options = {}
   ): Promise<VT> {
     const id = uuid();
-    await model.state_change;
-    const _view_name = model.get('_view_name');
-    const _view_module = model.get('_view_module');
-    let viewPromise: Promise<any>;
-    try {
-      const ViewType = (await this.loadViewClass(
-        _view_name,
-        _view_module,
-        model.get('_view_module_version')
-      )) as typeof WidgetView;
-      const view = new ViewType({
-        model: model,
-        options: this.setViewOptions(options),
-      });
-      view.listenTo(model, 'destroy', view.remove);
-      await view.render();
+    const viewPromise = (model.state_change = model.state_change.then(
+      async () => {
+        const _view_name = model.get('_view_name');
+        const _view_module = model.get('_view_module');
+        try {
+          const ViewType = (await this.loadViewClass(
+            _view_name,
+            _view_module,
+            model.get('_view_module_version')
+          )) as typeof WidgetView;
+          const view = new ViewType({
+            model: model,
+            options: this.setViewOptions(options),
+          });
+          view.listenTo(model, 'destroy', view.remove);
+          await view.render();
 
-      // This presumes the view is added to the list of model views below
-      view.once('remove', () => {
-        if (model.views) {
-          delete model.views[id];
+          // This presumes the view is added to the list of model views below
+          view.once('remove', () => {
+            if (model.views) {
+              delete model.views[id];
+            }
+          });
+
+          return view;
+        } catch (e) {
+          console.error(
+            `Could not create a view for model id ${model.model_id}`
+          );
+          const msg = `Failed to create view for '${_view_name}' from module '${_view_module}' with model '${model.name}' from module '${model.module}'`;
+          const ModelCls = widgets.createErrorWidgetModel(e, msg);
+          const errorModel = new ModelCls();
+          const view = new widgets.ErrorWidgetView({
+            model: errorModel,
+            options: this.setViewOptions(options),
+          });
+          await view.render();
+
+          return view;
         }
-      });
-
-      viewPromise = Promise.resolve(view);
-    } catch (e) {
-      console.error(`Could not create a view for model id ${model.model_id}`);
-      const msg = `Failed to create view for '${_view_name}' from module '${_view_module}' with model '${model.name}' from module '${model.module}'`;
-      const ModelCls = widgets.createErrorWidgetModel(e, msg);
-      const errorModel = new ModelCls();
-      const view = new widgets.ErrorWidgetView({
-        model: errorModel,
-        options: this.setViewOptions(options),
-      });
-      await view.render();
-
-      viewPromise = Promise.reject(view);
-    }
-
+      }
+    ));
     if (model.views) {
       model.views[id] = viewPromise;
     }

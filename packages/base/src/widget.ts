@@ -218,7 +218,7 @@ export class WidgetModel extends Backbone.Model {
   /**
    * Handle incoming comm msg.
    */
-   _handle_comm_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
+  _handle_comm_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
     const data = msg.content.data as any;
     const method = data.method;
     switch (method) {
@@ -226,46 +226,7 @@ export class WidgetModel extends Backbone.Model {
       case 'echo_update':
         this.state_change = this.state_change
           .then(() => {
-            const state: Dict<BufferJSON> = data.state;
-            const buffer_paths = data.buffer_paths ?? [];
-            const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
-            utils.put_buffers(state, buffer_paths, buffers);
-
-            if (msg.parent_header && method === 'echo_update') {
-              const msgId = (msg.parent_header as any).msg_id;
-              // we may have echos coming from other clients, we only care about
-              // dropping echos for which we expected a reply
-              const expectedEcho = Object.keys(state).filter((attrName) =>
-                this._expectedEchoMsgIds.has(attrName)
-              );
-              expectedEcho.forEach((attrName: string) => {
-                // Skip echo messages until we get the reply we are expecting.
-                const isOldMessage =
-                  this._expectedEchoMsgIds.get(attrName) !== msgId;
-                if (isOldMessage) {
-                  // Ignore an echo update that comes before our echo.
-                  delete state[attrName];
-                } else {
-                  // we got our echo confirmation, so stop looking for it
-                  this._expectedEchoMsgIds.delete(attrName);
-                  // Start accepting echo updates unless we plan to send out a new state soon
-                  if (
-                    this._msg_buffer !== null &&
-                    Object.prototype.hasOwnProperty.call(
-                      this._msg_buffer,
-                      attrName
-                    )
-                  ) {
-                    delete state[attrName];
-                  }
-                }
-              });
-            }
-            return (this.constructor as typeof WidgetModel)._deserialize_state(
-              // Combine the state updates, with preference for kernel updates
-              state,
-              this.widget_manager
-            );
+            return this._create_state_promise(msg);
           })
           .then((state) => {
             this.set_state(state);
@@ -282,6 +243,54 @@ export class WidgetModel extends Backbone.Model {
         return Promise.resolve();
     }
     return Promise.resolve();
+  }
+
+  /**
+   * Handles echo update and returns deserialized state as a promise
+   * which we use to update this.state_change
+   */
+  async _create_state_promise(
+    msg: KernelMessage.ICommMsgMsg
+  ): Promise<utils.Dict<utils.BufferJSON>> {
+    const data = msg.content.data as any;
+    const method = data.method;
+
+    const state: Dict<BufferJSON> = data.state;
+    const buffer_paths = data.buffer_paths ?? [];
+    const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
+    utils.put_buffers(state, buffer_paths, buffers);
+
+    if (msg.parent_header && method === 'echo_update') {
+      const msgId = (msg.parent_header as any).msg_id;
+      // we may have echos coming from other clients, we only care about
+      // dropping echos for which we expected a reply
+      const expectedEcho = Object.keys(state).filter((attrName) =>
+        this._expectedEchoMsgIds.has(attrName)
+      );
+      expectedEcho.forEach((attrName: string) => {
+        // Skip echo messages until we get the reply we are expecting.
+        const isOldMessage = this._expectedEchoMsgIds.get(attrName) !== msgId;
+        if (isOldMessage) {
+          // Ignore an echo update that comes before our echo.
+          delete state[attrName];
+        } else {
+          // we got our echo confirmation, so stop looking for it
+          this._expectedEchoMsgIds.delete(attrName);
+          // Start accepting echo updates unless we plan to send out a new state soon
+          if (
+            this._msg_buffer !== null &&
+            Object.prototype.hasOwnProperty.call(this._msg_buffer, attrName)
+          ) {
+            delete state[attrName];
+          }
+        }
+      });
+    }
+    return await (this.constructor as typeof WidgetModel)._deserialize_state(
+      // Combine the state updates, with preference for kernel updates
+      state,
+      this.widget_manager
+    );
   }
 
   /**
