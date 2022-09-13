@@ -68,6 +68,10 @@ The previously deprecated traits `overflow_x` and `overflow_y`
 [have been removed](https://github.com/jupyter-widgets/ipywidgets/pull/2688). Please
 use the `overflow` trait instead.
 
+#### `Widget.widgets` and `Widget.widget_types` attributes
+
+The `Widget` class attributes `.widgets` and `.widget_types` are now deprecated and relocated to internal module-level private variables, opening up these attribute names on the `Widget` class for future uses.
+
 ### Deployments
 
 #### Embedded CDN
