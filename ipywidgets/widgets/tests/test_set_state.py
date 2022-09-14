@@ -64,14 +64,14 @@ def deserializer(json_data, widget):
     return DataInstance( memoryview(json_data['data']).tobytes() if json_data else None )
 
 class DataWidget(SimpleWidget):
-    d = Instance(DataInstance).tag(sync=True, to_json=mview_serializer, from_json=deserializer)
+    d = Instance(DataInstance, args=()).tag(sync=True, to_json=mview_serializer, from_json=deserializer)
 
 # A widget that has a buffer that might be changed on reception:
 def truncate_deserializer(json_data, widget):
     return DataInstance( json_data['data'][:20].tobytes() if json_data else None )
 
 class TruncateDataWidget(SimpleWidget):
-    d = Instance(DataInstance).tag(sync=True, to_json=bytes_serializer, from_json=truncate_deserializer)
+    d = Instance(DataInstance, args=()).tag(sync=True, to_json=bytes_serializer, from_json=truncate_deserializer)
 
 
 #
