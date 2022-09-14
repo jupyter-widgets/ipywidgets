@@ -101,10 +101,15 @@ export class ButtonView extends DOMWidgetView {
   update(): void {
     this.el.disabled = this.model.get('disabled');
     this.updateTabindex();
-    this.el.setAttribute('title', this.model.get('tooltip'));
 
+    const tooltip = this.model.get('tooltip');
     const description = this.model.get('description');
     const icon = this.model.get('icon');
+
+    tooltip
+      ? this.el.setAttribute('title', tooltip)
+      : this.el.setAttribute('title', description);
+
     if (description.length || icon.length) {
       this.el.textContent = '';
       if (icon.length) {
