@@ -78,7 +78,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'AccordionView'` | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `null`           | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `titles`         | array of string  | `[]`             | Titles of the pages
@@ -98,7 +98,7 @@ Attribute        | Type             | Default          | Help
 `autoplay`       | boolean          | `true`           | When true, the audio starts when it's displayed
 `controls`       | boolean          | `true`           | Specifies that audio controls should be displayed (such as a play/pause button etc)
 `format`         | string           | `'mp3'`          | The format of the audio.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `loop`           | boolean          | `true`           | When true, the audio will start from the beginning after finishing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -119,7 +119,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
 `step`           | `null` or number (float) | `null`           | Minimum step to increment the value
@@ -143,7 +143,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
 `step`           | number (integer) | `1`              | Minimum step to increment the value
@@ -165,7 +165,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'BoxView'`      | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
@@ -184,7 +184,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Button label.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `icon`           | string           | `''`             | Font-awesome icon names, without the 'fa-' prefix.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -223,7 +223,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `indent`         | boolean          | `true`           | Indent the control to align with other controls with a description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `style`          | reference to CheckboxStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -257,7 +257,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -278,7 +278,7 @@ Attribute        | Type             | Default          | Help
 `allowed_tags`   | array            | `[]`             | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -301,7 +301,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `ensure_option`  | boolean          | `false`          | If set, ensure value is in options. Implies continuous_update=False.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `options`        | array of string  | `[]`             | Dropdown options for the combobox
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to TextStyle widget | reference to new instance | 
@@ -320,7 +320,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'ControllerAxisView'` | 
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | The value of the axis.
@@ -336,7 +336,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'ControllerButtonView'` | 
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `pressed`        | boolean          | `false`          | Whether the button is pressed.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -357,7 +357,7 @@ Attribute        | Type             | Default          | Help
 `buttons`        | array of reference to Button widget | `[]`             | The buttons on the gamepad.
 `connected`      | boolean          | `false`          | Whether the gamepad is connected.
 `index`          | number (integer) | `0`              | The id number of the controller.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `mapping`        | string           | `''`             | The name of the control mapping.
 `name`           | string           | `''`             | The name of the controller.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -375,7 +375,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | `null` or string | `null`           | Name of the view.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
@@ -394,7 +394,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | `null` or Date   | `null`           | 
 `min`            | `null` or Date   | `null`           | 
 `step`           | number (integer) or string (one of `'any'`) | `1`              | The date step to use for the picker, in days, or "any".
@@ -417,7 +417,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | `null` or Datetime | `null`           | 
 `min`            | `null` or Datetime | `null`           | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -466,7 +466,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -489,7 +489,7 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable button
 `error`          | string           | `''`             | Error message
 `icon`           | string           | `'upload'`       | Font-awesome icon name, without the 'fa-' prefix.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `multiple`       | boolean          | `false`          | If True, allow for multiple files upload
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -513,7 +513,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `4.0`            | Max value for the exponent
 `min`            | number (float)   | `0.0`            | Min value for the exponent
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
@@ -539,7 +539,7 @@ Attribute        | Type             | Default          | Help
 `bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
@@ -564,7 +564,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
@@ -592,7 +592,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
@@ -619,7 +619,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `step`           | `null` or number (float) | `null`           | Minimum step to increment the value
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -642,7 +642,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `format`         | string           | `'.1f'`          | 
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | `null` or number (float) | `null`           | 
 `min`            | `null` or number (float) | `null`           | 
 `placeholder`    | string           | `'\u200b'`       | 
@@ -665,7 +665,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'GridBoxView'`  | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
@@ -682,7 +682,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'HBoxView'`     | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
@@ -699,7 +699,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'HTMLMathView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to HTMLMathStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -734,7 +734,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'HTMLView'`     | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to HTMLStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -769,7 +769,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ImageView'`    | 
 `format`         | string           | `'png'`          | The format of the image.
 `height`         | string           | `''`             | Height of the image in pixels. Use layout.height for styling the widget.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
@@ -789,7 +789,7 @@ Attribute        | Type             | Default          | Help
 `bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
@@ -814,7 +814,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
@@ -842,7 +842,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
@@ -869,7 +869,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `step`           | number (integer) | `1`              | Minimum step to increment the value
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -892,7 +892,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `format`         | string           | `'d'`            | 
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | `null` or number (integer) | `null`           | 
 `min`            | `null` or number (integer) | `null`           | 
 `placeholder`    | string           | `'\u200b'`       | 
@@ -915,7 +915,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'LabelView'`    | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to LabelStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -969,7 +969,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | `null` or Datetime | `null`           | 
 `min`            | `null` or Datetime | `null`           | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -992,7 +992,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to TextStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -1014,7 +1014,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `interval`       | number (integer) | `100`            | The time between two animation steps (ms).
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
 `playing`        | boolean          | `false`          | Whether the control is currently playing.
@@ -1055,7 +1055,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -1076,7 +1076,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `rows`           | number (integer) | `5`              | The number of rows to display.
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -1098,7 +1098,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | array of number (integer) | `[]`             | Selected indices
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `rows`           | number (integer) | `5`              | The number of rows to display.
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -1122,7 +1122,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | array            | `[0, 0]`         | Min and max selected indices
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current selected label next to the slider
 `style`          | reference to SliderStyle widget | reference to new instance | 
@@ -1147,7 +1147,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | number (integer) | `0`              | Selected index
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current selected label next to the slider
 `style`          | reference to SliderStyle widget | reference to new instance | 
@@ -1180,7 +1180,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'StackView'`    | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `null`           | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `titles`         | array of string  | `[]`             | Titles of the pages
@@ -1199,7 +1199,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'TabView'`      | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `null`           | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `titles`         | array of string  | `[]`             | Titles of the pages
@@ -1220,7 +1220,7 @@ Attribute        | Type             | Default          | Help
 `allowed_tags`   | array            | `[]`             | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -1243,7 +1243,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to TextStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -1280,7 +1280,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `rows`           | `null` or number (integer) | `null`           | The number of rows to display.
 `style`          | reference to TextStyle widget | reference to new instance | 
@@ -1302,7 +1302,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `max`            | `null` or Time   | `null`           | 
 `min`            | `null` or Time   | `null`           | 
 `step`           | number (float) or string (one of `'any'`) | `60`             | The time step to use for the picker, in seconds, or "any".
@@ -1327,7 +1327,7 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `icon`           | string           | `''`             | Font-awesome icon.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `style`          | reference to ToggleButtonStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -1370,7 +1370,7 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `icons`          | array of string  | `[]`             | Icons names for each button (FontAwesome names without the fa- prefix).
 `index`          | `null` or number (integer) | `null`           | Selected index
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `style`          | reference to ToggleButtonsStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -1403,7 +1403,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'VBoxView'`     | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
@@ -1421,7 +1421,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `readout`        | string           | `'Invalid'`      | Message displayed when the value is False
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -1443,7 +1443,7 @@ Attribute        | Type             | Default          | Help
 `controls`       | boolean          | `true`           | Specifies that video controls should be displayed (such as a play/pause button etc)
 `format`         | string           | `'mp4'`          | The format of the video.
 `height`         | string           | `''`             | Height of the video in pixels.
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `loop`           | boolean          | `true`           | When true, the video will start from the beginning after finishing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -1461,7 +1461,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/output'` | 
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'OutputView'`   | 
-`layout`         | reference to Layout widget | reference to new instance | 
+`layout`         | `null` or reference to Layout widget | reference to new instance | 
 `msg_id`         | string           | `''`             | Parent message id of messages to capture
 `outputs`        | array of object  | `[]`             | The output messages synced from the frontend.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
