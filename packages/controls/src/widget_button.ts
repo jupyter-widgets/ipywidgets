@@ -106,9 +106,7 @@ export class ButtonView extends DOMWidgetView {
     const description = this.model.get('description');
     const icon = this.model.get('icon');
 
-    tooltip
-      ? this.el.setAttribute('title', tooltip)
-      : this.el.setAttribute('title', description);
+    this.el.setAttribute('title', tooltip ?? description);
 
     if (description.length || icon.length) {
       this.el.textContent = '';
