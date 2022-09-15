@@ -3,6 +3,7 @@
 
 from ipykernel.comm import Comm
 from ipywidgets import Widget
+import ipywidgets.widgets.widget
 
 class DummyComm(Comm):
     comm_id = 'a-b-c-d'
@@ -25,14 +26,16 @@ _widget_attrs = {}
 undefined = object()
 
 def setup_test_comm():
-    _widget_attrs['_comm_default'] = getattr(Widget, '_comm_default', undefined)
-    Widget._comm_default = lambda self: DummyComm()
+    Widget.comm.klass = DummyComm
+    ipywidgets.widgets.widget.Comm = DummyComm
     _widget_attrs['_repr_mimebundle_'] = Widget._repr_mimebundle_
     def raise_not_implemented(*args, **kwargs):
         raise NotImplementedError()
     Widget._repr_mimebundle_ = raise_not_implemented
 
 def teardown_test_comm():
+    Widget.comm.klass = Comm
+    ipywidgets.widgets.widget.Comm = Comm
     for attr, value in _widget_attrs.items():
         if value is undefined:
             delattr(Widget, attr)
