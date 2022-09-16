@@ -1,6 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+from pathlib import Path
 import sys
 import inspect
 import warnings
@@ -13,7 +14,7 @@ import warnings
 # __init__ below, the appropriate stacklevel will change depending on how deep
 # the inheritance hierarchy is.
 def _external_stacklevel(internal):
-    """Find the first frame that doesn't any of the given internal strings
+    """Find the stacklevel of the first frame that doesn't contain any of the given internal strings
 
     The depth will be 1 at minimum in order to start checking at the caller of
     the function that called this utility method.
@@ -28,8 +29,11 @@ def _external_stacklevel(internal):
     else:
         frame = inspect.stack(context=0)[level].frame
 
+    # Normalize the path separators:
+    normalized_internal = [str(Path(s)) for s in internal]
+
     # climb the stack frames while we see internal frames
-    while frame and any(s in frame.f_code.co_filename for s in internal):
+    while frame and any(s in str(Path(frame.f_code.co_filename)) for s in normalized_internal):
         level +=1
         frame = frame.f_back
 
