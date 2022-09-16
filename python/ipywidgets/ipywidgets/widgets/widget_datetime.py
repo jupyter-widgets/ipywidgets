@@ -61,6 +61,8 @@ class DatetimePicker(DescriptionWidget, ValueWidget, CoreWidget):
     def _validate_value(self, proposal):
         """Cap and floor value"""
         value = proposal["value"]
+        if value is None:
+            return value
         value = self._validate_tz(value)
         if self.min and self.min > value:
             value = max(value, self.min)
@@ -72,6 +74,8 @@ class DatetimePicker(DescriptionWidget, ValueWidget, CoreWidget):
     def _validate_min(self, proposal):
         """Enforce min <= value <= max"""
         min = proposal["value"]
+        if min is None:
+            return min
         min = self._validate_tz(min)
         if self.max and min > self.max:
             raise TraitError("Setting min > max")
@@ -83,6 +87,8 @@ class DatetimePicker(DescriptionWidget, ValueWidget, CoreWidget):
     def _validate_max(self, proposal):
         """Enforce min <= value <= max"""
         max = proposal["value"]
+        if max is None:
+            return max
         max = self._validate_tz(max)
         if self.min and max < self.min:
             raise TraitError("setting max < min")

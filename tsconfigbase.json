@@ -15,7 +15,10 @@
     "noUnusedLocals": true,
     "preserveWatchOutput": true,
     "resolveJsonModule": true,
-    "strictNullChecks": true,
+    "strict": true,
+    "noImplicitThis": false,
+    "strictPropertyInitialization": false,
+    "strictFunctionTypes": false,
     "target": "es2017"
   }
 }
