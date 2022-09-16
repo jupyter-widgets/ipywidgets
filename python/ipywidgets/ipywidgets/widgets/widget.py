@@ -9,7 +9,6 @@ import os
 import typing
 from contextlib import contextmanager
 from collections.abc import Iterable
-import warnings
 from IPython import get_ipython
 from ipykernel.comm import Comm
 from traitlets import (
@@ -19,7 +18,12 @@ from json import loads as jsonloads, dumps as jsondumps
 
 from base64 import standard_b64encode
 
+from .utils import deprecation, _get_frame
+
 from .._version import __protocol_version__, __control_protocol_version__, __jupyter_widgets_base_version__
+
+import inspect
+TRAITLETS_FILE = inspect.getfile(HasTraits)
 
 # Based on jupyter_core.paths.envset
 def envset(name, default):
@@ -302,22 +306,42 @@ class Widget(LoggingHasTraits):
 
     @_staticproperty
     def widgets():
-        warnings.warn("Widget.widgets is deprecated.", DeprecationWarning)
+        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
+        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
+        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
+        frame = _get_frame(2)
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+            deprecation("Widget.widgets is deprecated.")
         return _instances
 
     @_staticproperty
     def _active_widgets():
-        warnings.warn("Widget._active_widgets is deprecated.", DeprecationWarning)
+        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
+        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
+        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
+        frame = _get_frame(2)
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+            deprecation("Widget._active_widgets is deprecated.")
         return _instances
 
     @_staticproperty
     def _widget_types():
-        warnings.warn("Widget._widget_types is deprecated.", DeprecationWarning)
+        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
+        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
+        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
+        frame = _get_frame(2)
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+            deprecation("Widget._widget_types is deprecated.")
         return _registry
 
     @_staticproperty
     def widget_types():
-        warnings.warn("Widget.widget_types is deprecated.", DeprecationWarning)
+        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
+        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
+        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
+        frame = _get_frame(2)
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+            deprecation("Widget.widget_types is deprecated.")
         return _registry
 
     @classmethod

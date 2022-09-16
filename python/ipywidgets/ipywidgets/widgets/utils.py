@@ -6,6 +6,19 @@ import sys
 import inspect
 import warnings
 
+def _get_frame(level):
+    """Get the frame at the given stack level."""
+    # sys._getframe is much faster than inspect.stack, but isn't guaranteed to
+    # exist in all python implementations, so we fall back to inspect.stack()
+
+    # We need to add one to level to account for this get_frame call.
+    if hasattr(sys, '_getframe'):
+        frame = sys._getframe(level+1)
+    else:
+        frame = inspect.stack(context=0)[level+1].frame
+    return frame
+
+
 # This function is from https://github.com/python/cpython/issues/67998
 # (https://bugs.python.org/file39550/deprecated_module_stacklevel.diff) and
 # calculates the appropriate stacklevel for deprecations to target the
@@ -21,13 +34,7 @@ def _external_stacklevel(internal):
     """
     # Get the level of my caller's caller
     level = 2
-
-    # sys._getframe is much faster than inspect.stack, but isn't guaranteed to
-    # exist in all python implementations, so we fall back to inspect.stack()
-    if hasattr(sys, '_getframe'):
-        frame = sys._getframe(level)
-    else:
-        frame = inspect.stack(context=0)[level].frame
+    frame = _get_frame(level)
 
     # Normalize the path separators:
     normalized_internal = [str(Path(s)) for s in internal]
