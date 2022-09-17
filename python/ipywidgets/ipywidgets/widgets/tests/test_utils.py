@@ -7,27 +7,27 @@ import pytest
 from ..utils import deprecation
 from .utils import call_method
 
-PYTEST_PATH = inspect.getfile(pytest.Function)
 CALL_PATH = inspect.getfile(call_method)
 
 def test_deprecation():
+    caller_path = inspect.stack(context=0)[1].filename
     with pytest.deprecated_call() as record:
         deprecation('Deprecated call')
     # Make sure the deprecation pointed to the external function calling this test function
     assert len(record) == 1
-    assert record[0].filename == PYTEST_PATH
+    assert record[0].filename == caller_path
 
     with pytest.deprecated_call() as record:
         deprecation('Deprecated call', ['ipywidgets/widgets/tests'])
     # Make sure the deprecation pointed to the external function calling this test function
     assert len(record) == 1
-    assert record[0].filename == PYTEST_PATH
+    assert record[0].filename == caller_path
 
     with pytest.deprecated_call() as record:
         deprecation('Deprecated call', 'ipywidgets/widgets/tests')
     # Make sure the deprecation pointed to the external function calling this test function
     assert len(record) == 1
-    assert record[0].filename == PYTEST_PATH
+    assert record[0].filename == caller_path
 
     with pytest.deprecated_call() as record:
         deprecation('Deprecated call', [])

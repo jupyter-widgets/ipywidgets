@@ -13,8 +13,6 @@ from .. import widget
 from ..widget import Widget
 from ..widget_button import Button
 
-PYTEST_PATH = inspect.getfile(pytest.Function)
-
 def test_no_widget_view():
     # ensure IPython shell is instantiated
     # otherwise display() just calls print
@@ -73,5 +71,6 @@ def test_compatibility():
         Widget.close_all()
         assert not widget.Widget.widgets
         assert not widget.Widget._active_widgets
-    assert all(x.filename == PYTEST_PATH for x in record)
+    caller_path = inspect.stack(context=0)[1].filename
+    assert all(x.filename == caller_path for x in record)
     assert len(record) == 6
