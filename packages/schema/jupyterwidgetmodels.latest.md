@@ -15,15 +15,15 @@ represents the model name, module, and version, view name, module, and version
 that the widget is registered with.
 
 
-### LayoutModel (@jupyter-widgets/base, 2.0.0); LayoutView (@jupyter-widgets/base, 2.0.0)
+### LayoutModel (@jupyter-widgets/base, 2.1.0); LayoutView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/base'` | The namespace for the model.
-`_model_module_version` | string           | `'2.0.0'`        | A semver requirement for namespace version containing the model.
+`_model_module_version` | string           | `'2.1.0'`        | A semver requirement for namespace version containing the model.
 `_model_name`    | string           | `'LayoutModel'`  | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'LayoutView'`   | 
 `align_content`  | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'space-evenly'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-content CSS attribute.
 `align_items`    | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-items CSS attribute.
@@ -65,16 +65,16 @@ Attribute        | Type             | Default          | Help
 `visibility`     | `null` or string (one of `'visible'`, `'hidden'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The visibility CSS attribute.
 `width`          | `null` or string | `null`           | The width CSS attribute.
 
-### AccordionModel (@jupyter-widgets/controls, 2.0.0); AccordionView (@jupyter-widgets/controls, 2.0.0)
+### AccordionModel (@jupyter-widgets/controls, 2.1.0); AccordionView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'AccordionModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'AccordionView'` | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
@@ -84,16 +84,16 @@ Attribute        | Type             | Default          | Help
 `titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### AudioModel (@jupyter-widgets/controls, 2.0.0); AudioView (@jupyter-widgets/controls, 2.0.0)
+### AudioModel (@jupyter-widgets/controls, 2.1.0); AudioView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'AudioModel'`   | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'AudioView'`    | 
 `autoplay`       | boolean          | `true`           | When true, the audio starts when it's displayed
 `controls`       | boolean          | `true`           | Specifies that audio controls should be displayed (such as a play/pause button etc)
@@ -104,16 +104,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 
-### BoundedFloatTextModel (@jupyter-widgets/controls, 2.0.0); FloatTextView (@jupyter-widgets/controls, 2.0.0)
+### BoundedFloatTextModel (@jupyter-widgets/controls, 2.1.0); FloatTextView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'BoundedFloatTextModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'FloatTextView'` | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -128,16 +128,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | Float value
 
-### BoundedIntTextModel (@jupyter-widgets/controls, 2.0.0); IntTextView (@jupyter-widgets/controls, 2.0.0)
+### BoundedIntTextModel (@jupyter-widgets/controls, 2.1.0); IntTextView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'BoundedIntTextModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'IntTextView'`  | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -152,16 +152,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (integer) | `0`              | Int value
 
-### BoxModel (@jupyter-widgets/controls, 2.0.0); BoxView (@jupyter-widgets/controls, 2.0.0)
+### BoxModel (@jupyter-widgets/controls, 2.1.0); BoxView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'BoxModel'`     | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'BoxView'`      | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
@@ -169,16 +169,16 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### ButtonModel (@jupyter-widgets/controls, 2.0.0); ButtonView (@jupyter-widgets/controls, 2.0.0)
+### ButtonModel (@jupyter-widgets/controls, 2.1.0); ButtonView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ButtonModel'`  | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ButtonView'`   | 
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
 `description`    | string           | `''`             | Button label.
@@ -189,15 +189,15 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### ButtonStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### ButtonStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ButtonStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `button_color`   | `null` or string | `null`           | Color of the button
 `font_family`    | `null` or string | `null`           | Button text font family.
@@ -208,16 +208,16 @@ Attribute        | Type             | Default          | Help
 `text_color`     | `null` or string | `null`           | Button text color.
 `text_decoration` | `null` or string | `null`           | Button text decoration.
 
-### CheckboxModel (@jupyter-widgets/controls, 2.0.0); CheckboxView (@jupyter-widgets/controls, 2.0.0)
+### CheckboxModel (@jupyter-widgets/controls, 2.1.0); CheckboxView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'CheckboxModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'CheckboxView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -229,29 +229,29 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
 
-### CheckboxStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### CheckboxStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'CheckboxStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 
-### ColorPickerModel (@jupyter-widgets/controls, 2.0.0); ColorPickerView (@jupyter-widgets/controls, 2.0.0)
+### ColorPickerModel (@jupyter-widgets/controls, 2.1.0); ColorPickerView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ColorPickerModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ColorPickerView'` | 
 `concise`        | boolean          | `false`          | Display short version with just a color selector.
 `description`    | string           | `''`             | Description of the control.
@@ -263,16 +263,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `'black'`        | The color value.
 
-### ColorsInputModel (@jupyter-widgets/controls, 2.0.0); ColorsInputView (@jupyter-widgets/controls, 2.0.0)
+### ColorsInputModel (@jupyter-widgets/controls, 2.1.0); ColorsInputView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ColorsInputModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ColorsInputView'` | 
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
@@ -285,16 +285,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | array            | `[]`             | List of string tags
 
-### ComboboxModel (@jupyter-widgets/controls, 2.0.0); ComboboxView (@jupyter-widgets/controls, 2.0.0)
+### ComboboxModel (@jupyter-widgets/controls, 2.1.0); ComboboxView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ComboboxModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ComboboxView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -309,32 +309,32 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### ControllerAxisModel (@jupyter-widgets/controls, 2.0.0); ControllerAxisView (@jupyter-widgets/controls, 2.0.0)
+### ControllerAxisModel (@jupyter-widgets/controls, 2.1.0); ControllerAxisView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ControllerAxisModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ControllerAxisView'` | 
 `layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | The value of the axis.
 
-### ControllerButtonModel (@jupyter-widgets/controls, 2.0.0); ControllerButtonView (@jupyter-widgets/controls, 2.0.0)
+### ControllerButtonModel (@jupyter-widgets/controls, 2.1.0); ControllerButtonView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ControllerButtonModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ControllerButtonView'` | 
 `layout`         | `null` or reference to Layout widget | reference to new instance | 
 `pressed`        | boolean          | `false`          | Whether the button is pressed.
@@ -342,16 +342,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | The value of the button.
 
-### ControllerModel (@jupyter-widgets/controls, 2.0.0); ControllerView (@jupyter-widgets/controls, 2.0.0)
+### ControllerModel (@jupyter-widgets/controls, 2.1.0); ControllerView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ControllerModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ControllerView'` | 
 `axes`           | array of reference to Axis widget | `[]`             | The axes on the gamepad.
 `buttons`        | array of reference to Button widget | `[]`             | The buttons on the gamepad.
@@ -364,32 +364,32 @@ Attribute        | Type             | Default          | Help
 `timestamp`      | number (float)   | `0.0`            | The last time the data from this gamepad was updated.
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### DOMWidgetModel (@jupyter-widgets/controls, 2.0.0); None (@jupyter-widgets/controls, 2.0.0)
+### DOMWidgetModel (@jupyter-widgets/controls, 2.1.0); None (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'DOMWidgetModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | `null` or string | `null`           | Name of the view.
 `layout`         | `null` or reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 
-### DatePickerModel (@jupyter-widgets/controls, 2.0.0); DatePickerView (@jupyter-widgets/controls, 2.0.0)
+### DatePickerModel (@jupyter-widgets/controls, 2.1.0); DatePickerView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'DatePickerModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'DatePickerView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -403,16 +403,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | `null` or Date   | `null`           | 
 
-### DatetimeModel (@jupyter-widgets/controls, 2.0.0); DatetimeView (@jupyter-widgets/controls, 2.0.0)
+### DatetimeModel (@jupyter-widgets/controls, 2.1.0); DatetimeView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'DatetimeModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'DatetimeView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -425,42 +425,42 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | `null` or Datetime | `null`           | 
 
-### DescriptionStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### DescriptionStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'DescriptionStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 
-### DirectionalLinkModel (@jupyter-widgets/controls, 2.0.0); None (@jupyter-widgets/controls, 2.0.0)
+### DirectionalLinkModel (@jupyter-widgets/controls, 2.1.0); None (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'DirectionalLinkModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | `null` or string | `null`           | Name of the view.
 `source`         | array            | `[]`             | The source (widget, 'trait_name') pair
 `target`         | array            | `[]`             | The target (widget, 'trait_name') pair
 
-### DropdownModel (@jupyter-widgets/controls, 2.0.0); DropdownView (@jupyter-widgets/controls, 2.0.0)
+### DropdownModel (@jupyter-widgets/controls, 2.1.0); DropdownView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'DropdownModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'DropdownView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -471,16 +471,16 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### FileUploadModel (@jupyter-widgets/controls, 2.0.0); FileUploadView (@jupyter-widgets/controls, 2.0.0)
+### FileUploadModel (@jupyter-widgets/controls, 2.1.0); FileUploadView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'FileUploadModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'FileUploadView'` | 
 `accept`         | string           | `''`             | File types to accept, empty string for all
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
@@ -496,16 +496,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | array of object  | `[]`             | The file upload value
 
-### FloatLogSliderModel (@jupyter-widgets/controls, 2.0.0); FloatLogSliderView (@jupyter-widgets/controls, 2.0.0)
+### FloatLogSliderModel (@jupyter-widgets/controls, 2.1.0); FloatLogSliderView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'FloatLogSliderModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'FloatLogSliderView'` | 
 `base`           | number (float)   | `10.0`           | Base for the logarithm
 `behavior`       | string (one of `'drag-tap'`, `'drag-snap'`, `'tap'`, `'drag'`, `'snap'`) | `'drag-tap'`     | Slider dragging behavior.
@@ -525,16 +525,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `1.0`            | Float value
 
-### FloatProgressModel (@jupyter-widgets/controls, 2.0.0); ProgressView (@jupyter-widgets/controls, 2.0.0)
+### FloatProgressModel (@jupyter-widgets/controls, 2.1.0); ProgressView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'FloatProgressModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
 `bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
@@ -548,16 +548,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | Float value
 
-### FloatRangeSliderModel (@jupyter-widgets/controls, 2.0.0); FloatRangeSliderView (@jupyter-widgets/controls, 2.0.0)
+### FloatRangeSliderModel (@jupyter-widgets/controls, 2.1.0); FloatRangeSliderView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'FloatRangeSliderModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'FloatRangeSliderView'` | 
 `behavior`       | string (one of `'drag-tap'`, `'drag-snap'`, `'tap'`, `'drag'`, `'snap'`) | `'drag-tap'`     | Slider dragging behavior.
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
@@ -576,16 +576,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | array            | `[0.0, 1.0]`     | Tuple of (lower, upper) bounds
 
-### FloatSliderModel (@jupyter-widgets/controls, 2.0.0); FloatSliderView (@jupyter-widgets/controls, 2.0.0)
+### FloatSliderModel (@jupyter-widgets/controls, 2.1.0); FloatSliderView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'FloatSliderModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'FloatSliderView'` | 
 `behavior`       | string (one of `'drag-tap'`, `'drag-snap'`, `'tap'`, `'drag'`, `'snap'`) | `'drag-tap'`     | Slider dragging behavior.
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
@@ -604,16 +604,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | Float value
 
-### FloatTextModel (@jupyter-widgets/controls, 2.0.0); FloatTextView (@jupyter-widgets/controls, 2.0.0)
+### FloatTextModel (@jupyter-widgets/controls, 2.1.0); FloatTextView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'FloatTextModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'FloatTextView'` | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -626,16 +626,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | Float value
 
-### FloatsInputModel (@jupyter-widgets/controls, 2.0.0); FloatsInputView (@jupyter-widgets/controls, 2.0.0)
+### FloatsInputModel (@jupyter-widgets/controls, 2.1.0); FloatsInputView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'FloatsInputModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'FloatsInputView'` | 
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
@@ -652,16 +652,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | array            | `[]`             | List of float tags
 
-### GridBoxModel (@jupyter-widgets/controls, 2.0.0); GridBoxView (@jupyter-widgets/controls, 2.0.0)
+### GridBoxModel (@jupyter-widgets/controls, 2.1.0); GridBoxView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'GridBoxModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'GridBoxView'`  | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
@@ -669,16 +669,16 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### HBoxModel (@jupyter-widgets/controls, 2.0.0); HBoxView (@jupyter-widgets/controls, 2.0.0)
+### HBoxModel (@jupyter-widgets/controls, 2.1.0); HBoxView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'HBoxModel'`    | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'HBoxView'`     | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
@@ -686,16 +686,16 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### HTMLMathModel (@jupyter-widgets/controls, 2.0.0); HTMLMathView (@jupyter-widgets/controls, 2.0.0)
+### HTMLMathModel (@jupyter-widgets/controls, 2.1.0); HTMLMathView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'HTMLMathModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'HTMLMathView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -706,31 +706,31 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### HTMLMathStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### HTMLMathStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'HTMLMathStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_size`      | `null` or string | `null`           | Text font size.
 `text_color`     | `null` or string | `null`           | Text color
 
-### HTMLModel (@jupyter-widgets/controls, 2.0.0); HTMLView (@jupyter-widgets/controls, 2.0.0)
+### HTMLModel (@jupyter-widgets/controls, 2.1.0); HTMLView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'HTMLModel'`    | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'HTMLView'`     | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -741,31 +741,31 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### HTMLStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### HTMLStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'HTMLStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_size`      | `null` or string | `null`           | Text font size.
 `text_color`     | `null` or string | `null`           | Text color
 
-### ImageModel (@jupyter-widgets/controls, 2.0.0); ImageView (@jupyter-widgets/controls, 2.0.0)
+### ImageModel (@jupyter-widgets/controls, 2.1.0); ImageView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ImageModel'`   | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ImageView'`    | 
 `format`         | string           | `'png'`          | The format of the image.
 `height`         | string           | `''`             | Height of the image in pixels. Use layout.height for styling the widget.
@@ -775,16 +775,16 @@ Attribute        | Type             | Default          | Help
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 `width`          | string           | `''`             | Width of the image in pixels. Use layout.width for styling the widget.
 
-### IntProgressModel (@jupyter-widgets/controls, 2.0.0); ProgressView (@jupyter-widgets/controls, 2.0.0)
+### IntProgressModel (@jupyter-widgets/controls, 2.1.0); ProgressView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'IntProgressModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
 `bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
@@ -798,16 +798,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (integer) | `0`              | Int value
 
-### IntRangeSliderModel (@jupyter-widgets/controls, 2.0.0); IntRangeSliderView (@jupyter-widgets/controls, 2.0.0)
+### IntRangeSliderModel (@jupyter-widgets/controls, 2.1.0); IntRangeSliderView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'IntRangeSliderModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'IntRangeSliderView'` | 
 `behavior`       | string (one of `'drag-tap'`, `'drag-snap'`, `'tap'`, `'drag'`, `'snap'`) | `'drag-tap'`     | Slider dragging behavior.
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
@@ -826,16 +826,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | array            | `[0, 1]`         | Tuple of (lower, upper) bounds
 
-### IntSliderModel (@jupyter-widgets/controls, 2.0.0); IntSliderView (@jupyter-widgets/controls, 2.0.0)
+### IntSliderModel (@jupyter-widgets/controls, 2.1.0); IntSliderView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'IntSliderModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'IntSliderView'` | 
 `behavior`       | string (one of `'drag-tap'`, `'drag-snap'`, `'tap'`, `'drag'`, `'snap'`) | `'drag-tap'`     | Slider dragging behavior.
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
@@ -854,16 +854,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (integer) | `0`              | Int value
 
-### IntTextModel (@jupyter-widgets/controls, 2.0.0); IntTextView (@jupyter-widgets/controls, 2.0.0)
+### IntTextModel (@jupyter-widgets/controls, 2.1.0); IntTextView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'IntTextModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'IntTextView'`  | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -876,16 +876,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (integer) | `0`              | Int value
 
-### IntsInputModel (@jupyter-widgets/controls, 2.0.0); IntsInputView (@jupyter-widgets/controls, 2.0.0)
+### IntsInputModel (@jupyter-widgets/controls, 2.1.0); IntsInputView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'IntsInputModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'IntsInputView'` | 
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
@@ -902,16 +902,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | array            | `[]`             | List of int tags
 
-### LabelModel (@jupyter-widgets/controls, 2.0.0); LabelView (@jupyter-widgets/controls, 2.0.0)
+### LabelModel (@jupyter-widgets/controls, 2.1.0); LabelView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'LabelModel'`   | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'LabelView'`    | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -922,15 +922,15 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### LabelStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### LabelStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'LabelStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
@@ -942,29 +942,29 @@ Attribute        | Type             | Default          | Help
 `text_color`     | `null` or string | `null`           | Text color
 `text_decoration` | `null` or string | `null`           | Label text decoration.
 
-### LinkModel (@jupyter-widgets/controls, 2.0.0); None (@jupyter-widgets/controls, 2.0.0)
+### LinkModel (@jupyter-widgets/controls, 2.1.0); None (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'LinkModel'`    | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | `null` or string | `null`           | Name of the view.
 `source`         | array            | `[]`             | The source (widget, 'trait_name') pair
 `target`         | array            | `[]`             | The target (widget, 'trait_name') pair
 
-### NaiveDatetimeModel (@jupyter-widgets/controls, 2.0.0); DatetimeView (@jupyter-widgets/controls, 2.0.0)
+### NaiveDatetimeModel (@jupyter-widgets/controls, 2.1.0); DatetimeView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'NaiveDatetimeModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'DatetimeView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -977,16 +977,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | `null` or Datetime | `null`           | 
 
-### PasswordModel (@jupyter-widgets/controls, 2.0.0); PasswordView (@jupyter-widgets/controls, 2.0.0)
+### PasswordModel (@jupyter-widgets/controls, 2.1.0); PasswordView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'PasswordModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'PasswordView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -999,16 +999,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### PlayModel (@jupyter-widgets/controls, 2.0.0); PlayView (@jupyter-widgets/controls, 2.0.0)
+### PlayModel (@jupyter-widgets/controls, 2.1.0); PlayView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'PlayModel'`    | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'PlayView'`     | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -1026,30 +1026,30 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (integer) | `0`              | Int value
 
-### ProgressStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### ProgressStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ProgressStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `bar_color`      | `null` or string | `null`           | Color of the progress bar.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 
-### RadioButtonsModel (@jupyter-widgets/controls, 2.0.0); RadioButtonsView (@jupyter-widgets/controls, 2.0.0)
+### RadioButtonsModel (@jupyter-widgets/controls, 2.1.0); RadioButtonsView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'RadioButtonsModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'RadioButtonsView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -1060,17 +1060,17 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### SelectModel (@jupyter-widgets/controls, 2.0.0); SelectView (@jupyter-widgets/controls, 2.0.0)
+### SelectModel (@jupyter-widgets/controls, 2.1.0); SelectView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'SelectModel'`  | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'SelectView'`   | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -1082,17 +1082,17 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### SelectMultipleModel (@jupyter-widgets/controls, 2.0.0); SelectMultipleView (@jupyter-widgets/controls, 2.0.0)
+### SelectMultipleModel (@jupyter-widgets/controls, 2.1.0); SelectMultipleView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'SelectMultipleModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'SelectMultipleView'` | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -1104,17 +1104,17 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### SelectionRangeSliderModel (@jupyter-widgets/controls, 2.0.0); SelectionRangeSliderView (@jupyter-widgets/controls, 2.0.0)
+### SelectionRangeSliderModel (@jupyter-widgets/controls, 2.1.0); SelectionRangeSliderView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'SelectionRangeSliderModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'SelectionRangeSliderView'` | 
 `behavior`       | string (one of `'drag-tap'`, `'drag-snap'`, `'tap'`, `'drag'`, `'snap'`) | `'drag-tap'`     | Slider dragging behavior.
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
@@ -1129,17 +1129,17 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### SelectionSliderModel (@jupyter-widgets/controls, 2.0.0); SelectionSliderView (@jupyter-widgets/controls, 2.0.0)
+### SelectionSliderModel (@jupyter-widgets/controls, 2.1.0); SelectionSliderView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'SelectionSliderModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'SelectionSliderView'` | 
 `behavior`       | string (one of `'drag-tap'`, `'drag-snap'`, `'tap'`, `'drag'`, `'snap'`) | `'drag-tap'`     | Slider dragging behavior.
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
@@ -1154,29 +1154,29 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### SliderStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### SliderStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'SliderStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `handle_color`   | `null` or string | `null`           | Color of the slider handle.
 
-### StackModel (@jupyter-widgets/controls, 2.0.0); StackView (@jupyter-widgets/controls, 2.0.0)
+### StackModel (@jupyter-widgets/controls, 2.1.0); StackView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'StackModel'`   | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StackView'`    | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
@@ -1186,16 +1186,16 @@ Attribute        | Type             | Default          | Help
 `titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### TabModel (@jupyter-widgets/controls, 2.0.0); TabView (@jupyter-widgets/controls, 2.0.0)
+### TabModel (@jupyter-widgets/controls, 2.1.0); TabView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'TabModel'`     | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'TabView'`      | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
@@ -1205,16 +1205,16 @@ Attribute        | Type             | Default          | Help
 `titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### TagsInputModel (@jupyter-widgets/controls, 2.0.0); TagsInputView (@jupyter-widgets/controls, 2.0.0)
+### TagsInputModel (@jupyter-widgets/controls, 2.1.0); TagsInputView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'TagsInputModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'TagsInputView'` | 
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
@@ -1228,16 +1228,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | array            | `[]`             | List of string tags
 
-### TextModel (@jupyter-widgets/controls, 2.0.0); TextView (@jupyter-widgets/controls, 2.0.0)
+### TextModel (@jupyter-widgets/controls, 2.1.0); TextView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'TextModel'`    | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'TextView'`     | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -1250,31 +1250,31 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### TextStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### TextStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'TextStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_size`      | `null` or string | `null`           | Text font size.
 `text_color`     | `null` or string | `null`           | Text color
 
-### TextareaModel (@jupyter-widgets/controls, 2.0.0); TextareaView (@jupyter-widgets/controls, 2.0.0)
+### TextareaModel (@jupyter-widgets/controls, 2.1.0); TextareaView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'TextareaModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'TextareaView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
@@ -1288,16 +1288,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### TimeModel (@jupyter-widgets/controls, 2.0.0); TimeView (@jupyter-widgets/controls, 2.0.0)
+### TimeModel (@jupyter-widgets/controls, 2.1.0); TimeView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'TimeModel'`    | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'TimeView'`     | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -1311,16 +1311,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | `null` or Time   | `null`           | 
 
-### ToggleButtonModel (@jupyter-widgets/controls, 2.0.0); ToggleButtonView (@jupyter-widgets/controls, 2.0.0)
+### ToggleButtonModel (@jupyter-widgets/controls, 2.1.0); ToggleButtonView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ToggleButtonModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ToggleButtonView'` | 
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
 `description`    | string           | `''`             | Description of the control.
@@ -1333,15 +1333,15 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
 
-### ToggleButtonStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### ToggleButtonStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ToggleButtonStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_family`    | `null` or string | `null`           | Toggle button text font family.
@@ -1352,17 +1352,17 @@ Attribute        | Type             | Default          | Help
 `text_color`     | `null` or string | `null`           | Toggle button text color
 `text_decoration` | `null` or string | `null`           | Toggle button text decoration.
 
-### ToggleButtonsModel (@jupyter-widgets/controls, 2.0.0); ToggleButtonsView (@jupyter-widgets/controls, 2.0.0)
+### ToggleButtonsModel (@jupyter-widgets/controls, 2.1.0); ToggleButtonsView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ToggleButtonsModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ToggleButtonsView'` | 
 `button_style`   | `null` or string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the buttons.
 `description`    | string           | `''`             | Description of the control.
@@ -1376,30 +1376,30 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `tooltips`       | array of string  | `[]`             | Tooltips for each button.
 
-### ToggleButtonsStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+### ToggleButtonsStyleModel (@jupyter-widgets/controls, 2.1.0); StyleView (@jupyter-widgets/base, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ToggleButtonsStyleModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `button_width`   | string           | `''`             | The width of each button.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_weight`    | string           | `''`             | Text font weight of each button.
 
-### VBoxModel (@jupyter-widgets/controls, 2.0.0); VBoxView (@jupyter-widgets/controls, 2.0.0)
+### VBoxModel (@jupyter-widgets/controls, 2.1.0); VBoxView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'VBoxModel'`    | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'VBoxView'`     | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
@@ -1407,16 +1407,16 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### ValidModel (@jupyter-widgets/controls, 2.0.0); ValidView (@jupyter-widgets/controls, 2.0.0)
+### ValidModel (@jupyter-widgets/controls, 2.1.0); ValidView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'ValidModel'`   | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'ValidView'`    | 
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
@@ -1428,16 +1428,16 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
 
-### VideoModel (@jupyter-widgets/controls, 2.0.0); VideoView (@jupyter-widgets/controls, 2.0.0)
+### VideoModel (@jupyter-widgets/controls, 2.1.0); VideoView (@jupyter-widgets/controls, 2.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_module_version` | string           | `'2.1.0'`        | 
 `_model_name`    | string           | `'VideoModel'`   | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_module_version` | string           | `'2.1.0'`        | 
 `_view_name`     | string           | `'VideoView'`    | 
 `autoplay`       | boolean          | `true`           | When true, the video starts when it's displayed
 `controls`       | boolean          | `true`           | Specifies that video controls should be displayed (such as a play/pause button etc)
@@ -1450,16 +1450,16 @@ Attribute        | Type             | Default          | Help
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 `width`          | string           | `''`             | Width of the video in pixels.
 
-### OutputModel (@jupyter-widgets/output, 1.0.0); OutputView (@jupyter-widgets/output, 1.0.0)
+### OutputModel (@jupyter-widgets/output, 1.1.0); OutputView (@jupyter-widgets/output, 1.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/output'` | 
-`_model_module_version` | string           | `'1.0.0'`        | 
+`_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'OutputModel'`  | 
 `_view_module`   | string           | `'@jupyter-widgets/output'` | 
-`_view_module_version` | string           | `'1.0.0'`        | 
+`_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'OutputView'`   | 
 `layout`         | `null` or reference to Layout widget | reference to new instance | 
 `msg_id`         | string           | `''`             | Parent message id of messages to capture
