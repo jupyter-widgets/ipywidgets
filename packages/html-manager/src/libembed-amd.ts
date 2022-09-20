@@ -97,17 +97,16 @@ export function requireLoader(
  * @param loader (default requireLoader) The function used to look up the modules containing
  * the widgets' models and views classes. (The default loader looks them up on jsDelivr)
  */
-export function renderWidgets(
+export async function renderWidgets(
   element = document.documentElement,
   loader: (
     moduleName: string,
     moduleVersion: string
   ) => Promise<any> = requireLoader
-): void {
-  requirePromise(['@jupyter-widgets/html-manager']).then((htmlmanager) => {
-    const managerFactory = (): any => {
-      return new htmlmanager.HTMLManager({ loader: loader });
-    };
-    libembed.renderWidgets(managerFactory, element);
-  });
+): Promise<void> {
+  const htmlmanager = await requirePromise(['@jupyter-widgets/html-manager']);
+  const managerFactory = (): any => {
+    return new htmlmanager.HTMLManager({ loader: loader });
+  };
+  libembed.renderWidgets(managerFactory, element);
 }

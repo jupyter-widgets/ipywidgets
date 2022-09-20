@@ -179,15 +179,14 @@ export class ControllerModel extends CoreDOMWidgetModel {
    * Once one is connected, it will start the update loop, which
    * populates the update of axes and button values.
    */
-  wait_loop(): void {
+  async wait_loop(): Promise<void> {
     const index = this.get('index');
     const pad = navigator.getGamepads()[index];
     if (pad) {
-      this.setup(pad).then((controls) => {
-        this.set(controls);
-        this.save_changes();
-        window.requestAnimationFrame(this.update_loop.bind(this));
-      });
+      const controls = await this.setup(pad);
+      this.set(controls);
+      this.save_changes();
+      window.requestAnimationFrame(this.update_loop.bind(this));
     } else {
       window.requestAnimationFrame(this.wait_loop.bind(this));
     }
@@ -286,39 +285,33 @@ export class ControllerModel extends CoreDOMWidgetModel {
   /**
    * Creates a gamepad button widget.
    */
-  _create_button_model(index: number): Promise<ControllerButtonModel> {
-    return this.widget_manager
-      .new_widget({
-        model_name: 'ControllerButtonModel',
-        model_module: '@jupyter-widgets/controls',
-        model_module_version: this.get('_model_module_version'),
-        view_name: 'ControllerButtonView',
-        view_module: '@jupyter-widgets/controls',
-        view_module_version: this.get('_view_module_version'),
-      })
-      .then(function (model) {
-        model.set('description', index);
-        return model;
-      });
+  async _create_button_model(index: number): Promise<ControllerButtonModel> {
+    const model = await this.widget_manager.new_widget({
+      model_name: 'ControllerButtonModel',
+      model_module: '@jupyter-widgets/controls',
+      model_module_version: this.get('_model_module_version'),
+      view_name: 'ControllerButtonView',
+      view_module: '@jupyter-widgets/controls',
+      view_module_version: this.get('_view_module_version'),
+    });
+    model.set('description', index);
+    return model;
   }
 
   /**
    * Creates a gamepad axis widget.
    */
-  _create_axis_model(index: number): Promise<ControllerAxisModel> {
-    return this.widget_manager
-      .new_widget({
-        model_name: 'ControllerAxisModel',
-        model_module: '@jupyter-widgets/controls',
-        model_module_version: this.get('_model_module_version'),
-        view_name: 'ControllerAxisView',
-        view_module: '@jupyter-widgets/controls',
-        view_module_version: this.get('_view_module_version'),
-      })
-      .then(function (model) {
-        model.set('description', index);
-        return model;
-      });
+  async _create_axis_model(index: number): Promise<ControllerAxisModel> {
+    const model = await this.widget_manager.new_widget({
+      model_name: 'ControllerAxisModel',
+      model_module: '@jupyter-widgets/controls',
+      model_module_version: this.get('_model_module_version'),
+      view_name: 'ControllerAxisView',
+      view_module: '@jupyter-widgets/controls',
+      view_module_version: this.get('_view_module_version'),
+    });
+    model.set('description', index);
+    return model;
   }
 
   readout: string;
@@ -343,7 +336,9 @@ export class ControllerView extends DOMWidgetView {
     this.$el = $(this.luminoWidget.node);
   }
 
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
 
     this.button_views = new ViewList(this.add_button, null, this);
@@ -383,38 +378,42 @@ export class ControllerView extends DOMWidgetView {
     this.label.textContent = this.model.get('name') || this.model.readout;
   }
 
-  add_button(model: ControllerButtonModel): Promise<ControllerButtonView> {
+  async add_button(
+    model: ControllerButtonModel
+  ): Promise<ControllerButtonView> {
     // we insert a dummy element so the order is preserved when we add
     // the rendered content later.
     const dummy = new Widget();
     this.button_box.addWidget(dummy);
+    const view: ControllerButtonView = await this.create_child_view(model);
 
-    return this.create_child_view(model)
-      .then((view: ControllerButtonView) => {
-        // replace the dummy widget with the new one.
-        const i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
-        this.button_box.insertWidget(i, view.luminoWidget);
-        dummy.dispose();
-        return view;
-      })
-      .catch(reject('Could not add child button view to controller', true));
+    try {
+      // replace the dummy widget with the new one.
+      const i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
+      this.button_box.insertWidget(i, view.luminoWidget);
+      dummy.dispose();
+    } catch {
+      reject('Could not add child button view to controller', true);
+    }
+    return view;
   }
 
-  add_axis(model: ControllerAxisModel): Promise<ControllerAxisView> {
+  async add_axis(model: ControllerAxisModel): Promise<ControllerAxisView> {
     // we insert a dummy element so the order is preserved when we add
     // the rendered content later.
     const dummy = new Widget();
     this.axis_box.addWidget(dummy);
+    const view: ControllerAxisView = await this.create_child_view(model);
 
-    return this.create_child_view(model)
-      .then((view: ControllerAxisView) => {
-        // replace the dummy widget with the new one.
-        const i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
-        this.axis_box.insertWidget(i, view.luminoWidget);
-        dummy.dispose();
-        return view;
-      })
-      .catch(reject('Could not add child axis view to controller', true));
+    try {
+      // replace the dummy widget with the new one.
+      const i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
+      this.axis_box.insertWidget(i, view.luminoWidget);
+      dummy.dispose();
+    } catch {
+      reject('Could not add child axis view to controller', true);
+    }
+    return view;
   }
 
   remove(): void {

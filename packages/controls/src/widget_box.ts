@@ -74,7 +74,9 @@ export class BoxView extends DOMWidgetView {
     this.$el = $(this.luminoWidget.node);
   }
 
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.children_views = new ViewList(this.add_child_model, null, this);
     this.listenTo(this.model, 'change:children', this.update_children);
@@ -91,18 +93,15 @@ export class BoxView extends DOMWidgetView {
     this.set_box_style();
   }
 
-  update_children(): void {
-    this.children_views
-      ?.update(this.model.get('children'))
-      .then((views: DOMWidgetView[]) => {
-        // Notify all children that their sizes may have changed.
-        views.forEach((view) => {
-          MessageLoop.postMessage(
-            view.luminoWidget,
-            Widget.ResizeMessage.UnknownSize
-          );
-        });
-      });
+  async update_children(): Promise<void> {
+    const views = await this.children_views?.update(this.model.get('children'));
+    // Notify all children that their sizes may have changed.
+    views?.forEach((view) => {
+      MessageLoop.postMessage(
+        view.luminoWidget,
+        Widget.ResizeMessage.UnknownSize
+      );
+    });
   }
 
   update_box_style(): void {
@@ -113,21 +112,22 @@ export class BoxView extends DOMWidgetView {
     this.set_mapped_classes(BoxView.class_map, 'box_style');
   }
 
-  add_child_model(model: WidgetModel): Promise<DOMWidgetView> {
+  async add_child_model(model: WidgetModel): Promise<DOMWidgetView> {
     // we insert a dummy element so the order is preserved when we add
     // the rendered content later.
     const dummy = new Widget();
     this.luminoWidget.addWidget(dummy);
+    const view = await this.create_child_view(model);
 
-    return this.create_child_view(model)
-      .then((view: DOMWidgetView) => {
-        // replace the dummy widget with the new one.
-        const i = ArrayExt.firstIndexOf(this.luminoWidget.widgets, dummy);
-        this.luminoWidget.insertWidget(i, view.luminoWidget);
-        dummy.dispose();
-        return view;
-      })
-      .catch(reject('Could not add child view to box', true));
+    try {
+      // replace the dummy widget with the new one.
+      const i = ArrayExt.firstIndexOf(this.luminoWidget.widgets, dummy);
+      this.luminoWidget.insertWidget(i, view.luminoWidget);
+      dummy.dispose();
+    } catch {
+      reject('Could not add child view to box', true);
+    }
+    return view;
   }
 
   remove(): void {
@@ -150,7 +150,9 @@ export class HBoxView extends BoxView {
   /**
    * Public constructor
    */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.luminoWidget.addClass('widget-hbox');
   }
@@ -160,7 +162,9 @@ export class VBoxView extends BoxView {
   /**
    * Public constructor
    */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.luminoWidget.addClass('widget-vbox');
   }
@@ -170,7 +174,9 @@ export class GridBoxView extends BoxView {
   /**
    * Public constructor
    */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.luminoWidget.addClass('widget-gridbox');
     // display needn't be set to flex and grid

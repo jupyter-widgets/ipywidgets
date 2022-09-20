@@ -181,7 +181,7 @@ export class WidgetModel extends Backbone.Model {
    *
    * @returns - a promise that is fulfilled when all the associated views have been removed.
    */
-  close(comm_closed = false): Promise<void> {
+  async close(comm_closed = false): Promise<void> {
     // can only be closed once.
     if (this._closed) {
       return Promise.resolve();
@@ -197,13 +197,12 @@ export class WidgetModel extends Backbone.Model {
     }
     // Delete all views of this model
     if (this.views) {
-      const views = Object.keys(this.views).map((id: string) => {
-        return this.views![id].then((view) => view.remove());
+      const views = Object.keys(this.views).map(async (id: string) => {
+        const view = await this.views![id];
+        view.remove();
       });
       delete this.views;
-      return Promise.all(views).then(() => {
-        return;
-      });
+      await Promise.all(views);
     }
     return Promise.resolve();
   }
@@ -227,46 +226,7 @@ export class WidgetModel extends Backbone.Model {
       case 'echo_update':
         this.state_change = this.state_change
           .then(() => {
-            const state: Dict<BufferJSON> = data.state;
-            const buffer_paths = data.buffer_paths ?? [];
-            const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
-            utils.put_buffers(state, buffer_paths, buffers);
-
-            if (msg.parent_header && method === 'echo_update') {
-              const msgId = (msg.parent_header as any).msg_id;
-              // we may have echos coming from other clients, we only care about
-              // dropping echos for which we expected a reply
-              const expectedEcho = Object.keys(state).filter((attrName) =>
-                this._expectedEchoMsgIds.has(attrName)
-              );
-              expectedEcho.forEach((attrName: string) => {
-                // Skip echo messages until we get the reply we are expecting.
-                const isOldMessage =
-                  this._expectedEchoMsgIds.get(attrName) !== msgId;
-                if (isOldMessage) {
-                  // Ignore an echo update that comes before our echo.
-                  delete state[attrName];
-                } else {
-                  // we got our echo confirmation, so stop looking for it
-                  this._expectedEchoMsgIds.delete(attrName);
-                  // Start accepting echo updates unless we plan to send out a new state soon
-                  if (
-                    this._msg_buffer !== null &&
-                    Object.prototype.hasOwnProperty.call(
-                      this._msg_buffer,
-                      attrName
-                    )
-                  ) {
-                    delete state[attrName];
-                  }
-                }
-              });
-            }
-            return (this.constructor as typeof WidgetModel)._deserialize_state(
-              // Combine the state updates, with preference for kernel updates
-              state,
-              this.widget_manager
-            );
+            return this._create_state_promise(msg);
           })
           .then((state) => {
             this.set_state(state);
@@ -283,6 +243,54 @@ export class WidgetModel extends Backbone.Model {
         return Promise.resolve();
     }
     return Promise.resolve();
+  }
+
+  /**
+   * Handles echo update and returns deserialized state as a promise
+   * which we use to update this.state_change
+   */
+  async _create_state_promise(
+    msg: KernelMessage.ICommMsgMsg
+  ): Promise<utils.Dict<utils.BufferJSON>> {
+    const data = msg.content.data as any;
+    const method = data.method;
+
+    const state: Dict<BufferJSON> = data.state;
+    const buffer_paths = data.buffer_paths ?? [];
+    const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
+    utils.put_buffers(state, buffer_paths, buffers);
+
+    if (msg.parent_header && method === 'echo_update') {
+      const msgId = (msg.parent_header as any).msg_id;
+      // we may have echos coming from other clients, we only care about
+      // dropping echos for which we expected a reply
+      const expectedEcho = Object.keys(state).filter((attrName) =>
+        this._expectedEchoMsgIds.has(attrName)
+      );
+      expectedEcho.forEach((attrName: string) => {
+        // Skip echo messages until we get the reply we are expecting.
+        const isOldMessage = this._expectedEchoMsgIds.get(attrName) !== msgId;
+        if (isOldMessage) {
+          // Ignore an echo update that comes before our echo.
+          delete state[attrName];
+        } else {
+          // we got our echo confirmation, so stop looking for it
+          this._expectedEchoMsgIds.delete(attrName);
+          // Start accepting echo updates unless we plan to send out a new state soon
+          if (
+            this._msg_buffer !== null &&
+            Object.prototype.hasOwnProperty.call(this._msg_buffer, attrName)
+          ) {
+            delete state[attrName];
+          }
+        }
+      });
+    }
+    return await (this.constructor as typeof WidgetModel)._deserialize_state(
+      // Combine the state updates, with preference for kernel updates
+      state,
+      this.widget_manager
+    );
   }
 
   /**
@@ -949,7 +957,9 @@ export class DOMWidgetView extends WidgetView {
   /**
    * Public constructor
    */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
 
     this.listenTo(
@@ -979,11 +989,10 @@ export class DOMWidgetView extends WidgetView {
       }
     );
 
-    this.displayed.then(() => {
-      this.update_classes([], this.model.get('_dom_classes'));
-      this.setLayout(this.model.get('layout'));
-      this.setStyle(this.model.get('style'));
-    });
+    await this.displayed;
+    this.update_classes([], this.model.get('_dom_classes'));
+    this.setLayout(this.model.get('layout'));
+    this.setStyle(this.model.get('style'));
 
     this._comm_live_update();
     this.listenTo(this.model, 'comm_live_update', () => {
@@ -993,67 +1002,61 @@ export class DOMWidgetView extends WidgetView {
     this.updateTooltip();
   }
 
-  setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {
+  async setLayout(layout: LayoutModel, oldLayout?: LayoutModel): Promise<void> {
     if (layout) {
-      this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
-        if (oldLayoutView) {
-          oldLayoutView.unlayout();
-          this.stopListening(oldLayoutView.model);
-          oldLayoutView.remove();
-        }
+      const oldLayoutView = await this.layoutPromise;
+      if (oldLayoutView) {
+        oldLayoutView.unlayout();
+        this.stopListening(oldLayoutView.model);
+        oldLayoutView.remove();
+      }
 
-        return this.create_child_view(layout)
-          .then((view) => {
-            // Trigger the displayed event of the child view.
-            return this.displayed.then(() => {
-              view.trigger('displayed');
-              this.listenTo(view.model, 'change', () => {
-                // Post (asynchronous) so layout changes can take
-                // effect first.
-                MessageLoop.postMessage(
-                  this.luminoWidget,
-                  Widget.ResizeMessage.UnknownSize
-                );
-              });
-              MessageLoop.postMessage(
-                this.luminoWidget,
-                Widget.ResizeMessage.UnknownSize
-              );
-              this.trigger('layout-changed');
-              return view;
-            });
-          })
-          .catch(
-            utils.reject('Could not add LayoutView to DOMWidgetView', true)
+      try {
+        const view = await this.create_child_view(layout);
+        // Trigger the displayed event of the child view.
+        await this.displayed;
+        view.trigger('displayed');
+        this.listenTo(view.model, 'change', () => {
+          // Post (asynchronous) so layout changes can take
+          // effect first.
+          MessageLoop.postMessage(
+            this.luminoWidget,
+            Widget.ResizeMessage.UnknownSize
           );
-      });
+        });
+        MessageLoop.postMessage(
+          this.luminoWidget,
+          Widget.ResizeMessage.UnknownSize
+        );
+        this.trigger('layout-changed');
+        this.layoutPromise = Promise.resolve(view);
+      } catch {
+        utils.reject('Could not add LayoutView to DOMWidgetView', true);
+      }
     }
   }
 
-  setStyle(style: StyleModel, oldStyle?: StyleModel): void {
+  async setStyle(style: StyleModel, oldStyle?: StyleModel): Promise<void> {
     if (style) {
-      this.stylePromise = this.stylePromise.then((oldStyleView) => {
-        if (oldStyleView) {
-          oldStyleView.unstyle();
-          this.stopListening(oldStyleView.model);
-          oldStyleView.remove();
-        }
+      const oldStyleView = await this.stylePromise;
+      if (oldStyleView) {
+        oldStyleView.unstyle();
+        this.stopListening(oldStyleView.model);
+        oldStyleView.remove();
+      }
 
-        return this.create_child_view(style)
-          .then((view) => {
-            // Trigger the displayed event of the child view.
-            return this.displayed.then(() => {
-              view.trigger('displayed');
-              this.trigger('style-changed');
-              // Unlike for the layout attribute, style changes don't
-              // trigger Lumino resize messages.
-              return view;
-            });
-          })
-          .catch(
-            utils.reject('Could not add styleView to DOMWidgetView', true)
-          );
-      });
+      try {
+        const view = await this.create_child_view(style);
+        // Trigger the displayed event of the child view.
+        await this.displayed;
+        view.trigger('displayed');
+        this.trigger('style-changed');
+        // Unlike for the layout attribute, style changes don't
+        // trigger Lumino resize messages.
+        this.stylePromise = Promise.resolve(view);
+      } catch {
+        utils.reject('Could not add styleView to DOMWidgetView', true);
+      }
     }
   }
 

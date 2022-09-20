@@ -265,15 +265,17 @@ export abstract class LabWidgetManager
   /**
    * Register a widget model.
    */
-  register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
+  async register_model(
+    model_id: string,
+    modelPromise: Promise<WidgetModel>
+  ): Promise<void> {
     super.register_model(model_id, modelPromise);
 
     // Update the synchronous model map
-    modelPromise.then((model) => {
-      this._modelsSync.set(model_id, model);
-      model.once('comm:close', () => {
-        this._modelsSync.delete(model_id);
-      });
+    const model = await modelPromise;
+    this._modelsSync.set(model_id, model);
+    model.once('comm:close', () => {
+      this._modelsSync.delete(model_id);
     });
   }
 
@@ -552,7 +554,10 @@ export class WidgetManager extends LabWidgetManager {
   /**
    * Register a widget model.
    */
-  register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
+  async register_model(
+    model_id: string,
+    modelPromise: Promise<WidgetModel>
+  ): Promise<void> {
     super.register_model(model_id, modelPromise);
     this.setDirty();
   }

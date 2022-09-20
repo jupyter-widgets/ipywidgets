@@ -123,7 +123,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
    * Called when the model is changed.  The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update(options?: any): void {
+  async update(options?: any): Promise<void> {
     if (options === undefined || options.updated_view !== this) {
       if (this.model.get('disabled')) {
         this.readout.contentEditable = 'false';
@@ -151,13 +151,12 @@ export abstract class BaseIntSliderView extends DescriptionView {
       const readout = this.model.get('readout');
       if (readout) {
         this.readout.style.display = '';
-        this.displayed.then(() => {
-          if (this.readout_overflow()) {
-            this.readout.classList.add('overflow');
-          } else {
-            this.readout.classList.remove('overflow');
-          }
-        });
+        await this.displayed;
+        if (this.readout_overflow()) {
+          this.readout.classList.add('overflow');
+        } else {
+          this.readout.classList.remove('overflow');
+        }
       } else {
         this.readout.style.display = 'none';
       }
@@ -296,7 +295,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
 }
 
 export class IntRangeSliderView extends BaseIntSliderView {
-  update(options?: any): void {
+  async update(options?: any): Promise<void> {
     super.update(options);
     const value = this.model.get('value');
     this.readout.textContent = this.valueToString(value);
@@ -412,7 +411,7 @@ export class IntRangeSliderView extends BaseIntSliderView {
 }
 
 export class IntSliderView extends BaseIntSliderView {
-  update(options?: any): void {
+  async update(options?: any): Promise<void> {
     super.update(options);
     const min = this.model.get('min');
     const max = this.model.get('max');
@@ -716,7 +715,9 @@ export class IntProgressModel extends BoundedIntModel {
 }
 
 export class ProgressView extends DescriptionView {
-  initialize(parameters: WidgetView.IInitializeParameters): void {
+  async initialize(
+    parameters: WidgetView.IInitializeParameters
+  ): Promise<void> {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
     this.luminoWidget.addClass('jupyter-widgets');

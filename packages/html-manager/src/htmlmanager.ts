@@ -106,12 +106,12 @@ export class HTMLManager extends ManagerBase {
   /**
    * Load a class and return a promise to the loaded object.
    */
-  protected loadClass(
+  protected async loadClass(
     className: string,
     moduleName: string,
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
-    return new Promise((resolve, reject) => {
+    const module = await new Promise((resolve, reject) => {
       if (moduleName === '@jupyter-widgets/base') {
         resolve(base);
       } else if (moduleName === '@jupyter-widgets/controls') {
@@ -123,15 +123,14 @@ export class HTMLManager extends ManagerBase {
       } else {
         reject(`Could not load module ${moduleName}@${moduleVersion}`);
       }
-    }).then((module) => {
-      if ((module as any)[className]) {
-        return (module as any)[className];
-      } else {
-        return Promise.reject(
-          `Class ${className} not found in module ${moduleName}@${moduleVersion}`
-        );
-      }
     });
+    if ((module as any)[className]) {
+      return (module as any)[className];
+    } else {
+      return Promise.reject(
+        `Class ${className} not found in module ${moduleName}@${moduleVersion}`
+      );
+    }
   }
 
   /**

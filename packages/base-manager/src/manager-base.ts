@@ -308,14 +308,13 @@ export abstract class ManagerBase implements IWidgetManager {
     // Create the model. In the case where the comm promise is rejected a
     // comm-less model is still created with the required model id.
     return commPromise.then(
-      (comm) => {
+      async (comm) => {
         // Comm Promise Resolved.
         options_clone.comm = comm;
         const widget_model = this.new_model(options_clone, serialized_state);
-        return widget_model.then((model) => {
-          model.sync('create', model);
-          return model;
-        });
+        const model = await widget_model;
+        model.sync('create', model);
+        return model;
       },
       () => {
         // Comm Promise Rejected.
@@ -327,12 +326,14 @@ export abstract class ManagerBase implements IWidgetManager {
     );
   }
 
-  register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
+  async register_model(
+    model_id: string,
+    modelPromise: Promise<WidgetModel>
+  ): Promise<void> {
     this._models[model_id] = modelPromise;
-    modelPromise.then((model) => {
-      model.once('comm:close', () => {
-        delete this._models[model_id];
-      });
+    const model = await modelPromise;
+    model.once('comm:close', () => {
+      delete this._models[model_id];
     });
   }
 
@@ -630,11 +631,10 @@ export abstract class ManagerBase implements IWidgetManager {
    * Close all widgets and empty the widget state.
    * @return Promise that resolves when the widget state is cleared.
    */
-  clear_state(): Promise<void> {
-    return resolvePromisesDict(this._models).then((models) => {
-      Object.keys(models).forEach((id) => models[id].close());
-      this._models = Object.create(null);
-    });
+  async clear_state(): Promise<void> {
+    const models = await resolvePromisesDict(this._models);
+    Object.keys(models).forEach((id) => models[id].close());
+    this._models = Object.create(null);
   }
 
   /**
@@ -646,13 +646,12 @@ export abstract class ManagerBase implements IWidgetManager {
    * @param options - The options for what state to return.
    * @returns Promise for a state dictionary
    */
-  get_state(options: IStateOptions = {}): Promise<IManagerState> {
+  async get_state(options: IStateOptions = {}): Promise<IManagerState> {
     const modelPromises = Object.keys(this._models).map(
       (id) => this._models[id]
     );
-    return Promise.all(modelPromises).then((models) => {
-      return serialize_state(models, options);
-    });
+    const models = await Promise.all(modelPromises);
+    return serialize_state(models, options);
   }
 
   /**
@@ -664,80 +663,73 @@ export abstract class ManagerBase implements IWidgetManager {
    * current manager state, and then attempts to redisplay the widgets in the
    * state.
    */
-  set_state(state: IManagerState): Promise<WidgetModel[]> {
+  async set_state(state: IManagerState): Promise<WidgetModel[]> {
     // Check to make sure that it's the same version we are parsing.
     if (!(state.version_major && state.version_major <= 2)) {
       throw 'Unsupported widget state format';
     }
     const models = state.state as any;
     // Recreate all the widget models for the given widget manager state.
-    const all_models = this._get_comm_info().then((live_comms) => {
-      /* Note: It is currently safe to just loop over the models in any order,
-               given that the following holds (does at the time of writing):
-               1: any call to `new_model` with state registers the model promise (e.g. with `register_model`)
-                  synchronously (before it's first `await` statement).
-               2: any calls to a model constructor or the `set_state` method on a model,
-                  happens asynchronously (in a `then` clause, or after an `await` statement).
+    const live_comms = await this._get_comm_info();
+    /* Note: It is currently safe to just loop over the models in any order,
+      given that the following holds (does at the time of writing):
+      1: any call to `new_model` with state registers the model promise (e.g. with `register_model`)
+        synchronously (before it's first `await` statement).
+      2: any calls to a model constructor or the `set_state` method on a model,
+        happens asynchronously (in a `then` clause, or after an `await` statement).
 
-              Without these assumptions, one risks trying to set model state with a reference
-              to another model that doesn't exist yet!
-            */
-      return Promise.all(
-        Object.keys(models).map((model_id) => {
-          // First put back the binary buffers
-          const decode: { [s: string]: (s: string) => ArrayBuffer } = {
-            base64: base64ToBuffer,
-            hex: hexToBuffer,
-          };
-          const model = models[model_id];
-          const modelState = model.state;
-          if (model.buffers) {
-            const bufferPaths = model.buffers.map((b: any) => b.path);
-            // put_buffers expects buffers to be DataViews
-            const buffers = model.buffers.map(
-              (b: any) => new DataView(decode[b.encoding](b.data))
-            );
-            put_buffers(model.state, bufferPaths, buffers);
-          }
+      Without these assumptions, one risks trying to set model state with a reference
+        to another model that doesn't exist yet!
+    */
 
-          // If the model has already been created, set its state and then
-          // return it.
-          if (this.has_model(model_id)) {
-            return this.get_model(model_id)!.then((model) => {
-              // deserialize state
-              return (model.constructor as typeof WidgetModel)
-                ._deserialize_state(modelState || {}, this)
-                .then((attributes) => {
-                  model.set_state(attributes); // case 2
-                  return model;
-                });
-            });
-          }
+    const all_models = await Object.keys(models).map(async (model_id) => {
+      // First put back the binary buffers
+      const decode: { [s: string]: (s: string) => ArrayBuffer } = {
+        base64: base64ToBuffer,
+        hex: hexToBuffer,
+      };
+      const model = models[model_id];
+      const modelState = model.state;
+      if (model.buffers) {
+        const bufferPaths = model.buffers.map((b: any) => b.path);
+        // put_buffers expects buffers to be DataViews
+        const buffers = model.buffers.map(
+          (b: any) => new DataView(decode[b.encoding](b.data))
+        );
+        put_buffers(model.state, bufferPaths, buffers);
+      }
 
-          const modelCreate: IModelOptions = {
-            model_id: model_id,
-            model_name: model.model_name,
-            model_module: model.model_module,
-            model_module_version: model.model_module_version,
-          };
-          if (Object.prototype.hasOwnProperty.call(live_comms, 'model_id')) {
-            // live comm
-            // This connects to an existing comm if it exists, and
-            // should *not* send a comm open message.
-            return this._create_comm(this.comm_target_name, model_id).then(
-              (comm) => {
-                modelCreate.comm = comm;
-                return this.new_model(modelCreate); // No state, so safe wrt. case 1
-              }
-            );
-          } else {
-            return this.new_model(modelCreate, modelState); // case 1
-          }
-        })
-      );
+      // If the model has already been created, set its state and then
+      // return it.
+      if (this.has_model(model_id)) {
+        const model = await this.get_model(model_id);
+        // deserialize state
+        const attributes = await (
+          model.constructor as typeof WidgetModel
+        )._deserialize_state(modelState || {}, this);
+        model.set_state(attributes); // case 2
+        return model;
+      }
+
+      const modelCreate: IModelOptions = {
+        model_id: model_id,
+        model_name: model.model_name,
+        model_module: model.model_module,
+        model_module_version: model.model_module_version,
+      };
+      if (Object.prototype.hasOwnProperty.call(live_comms, 'model_id')) {
+        // live comm
+        // This connects to an existing comm if it exists, and
+        // should *not* send a comm open message.
+        const comm = await this._create_comm(this.comm_target_name, model_id);
+        modelCreate.comm = comm;
+        return this.new_model(modelCreate); // No state, so safe wrt. case 1
+      } else {
+        return this.new_model(modelCreate, modelState); // case 1
+      }
     });
 
-    return all_models;
+    return Promise.all(all_models);
   }
 
   /**
@@ -745,10 +737,9 @@ export abstract class ManagerBase implements IWidgetManager {
    * as dead.
    */
   disconnect(): void {
-    Object.keys(this._models).forEach((i) => {
-      this._models[i].then((model) => {
-        model.comm_live = false;
-      });
+    Object.keys(this._models).forEach(async (i) => {
+      const model = await this._models[i];
+      model.comm_live = false;
     });
   }
 

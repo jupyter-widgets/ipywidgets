@@ -56,7 +56,7 @@ export type Dict<T> = { [keys: string]: T };
  * Resolve a promiseful dictionary.
  * Returns a single Promise.
  */
-export function resolvePromisesDict<V>(
+export async function resolvePromisesDict<V>(
   d: Dict<PromiseLike<V> | V>
 ): Promise<Dict<V>> {
   const keys = Object.keys(d);
@@ -64,13 +64,13 @@ export function resolvePromisesDict<V>(
   keys.forEach(function (key) {
     values.push(d[key]);
   });
-  return Promise.all(values).then((v) => {
-    const d: Dict<V> = {};
-    for (let i = 0; i < keys.length; i++) {
-      d[keys[i]] = v[i];
-    }
-    return d;
-  });
+
+  const v: any = await Promise.all(values);
+  const dict: Dict<V> = {};
+  for (let i = 0; i < keys.length; i++) {
+    dict[keys[i]] = v[i];
+  }
+  return dict;
 }
 
 /**
