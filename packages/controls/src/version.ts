@@ -5,4 +5,4 @@
  * The version of the Jupyter controls widget attribute spec that this package
  * implements.
  */
-export const JUPYTER_CONTROLS_VERSION = '2.0.0';
+export const JUPYTER_CONTROLS_VERSION = '2.1.0';
