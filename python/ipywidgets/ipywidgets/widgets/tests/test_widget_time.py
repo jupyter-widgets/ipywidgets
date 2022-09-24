@@ -24,6 +24,20 @@ def test_time_creation_value():
     assert w.value is t
 
 
+def test_time_cross_validate_value_min_max():
+    w = TimePicker(value=datetime.time(2), min=datetime.time(2), max=datetime.time(2))
+    with w.hold_trait_notifications():
+        w.value = None
+        w.min = datetime.time(4)
+        w.max = datetime.time(6)
+    assert w.value is None
+    with w.hold_trait_notifications():
+        w.value = datetime.time(4)
+        w.min = None
+        w.max = None
+    assert w.value == datetime.time(4)
+
+
 def test_time_validate_value_none():
     t = datetime.time(13, 37, 42, 7)
     t_min = datetime.time(2)

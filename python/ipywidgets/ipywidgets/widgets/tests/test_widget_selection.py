@@ -4,8 +4,6 @@
 import inspect
 from unittest import TestCase
 
-import pytest
-
 from traitlets import TraitError
 
 from ipywidgets import Dropdown, SelectionSlider, Select
@@ -16,9 +14,9 @@ class TestDropdown(TestCase):
     def test_construction(self):
         Dropdown()
 
-    def test_raise_mapping_options(self):
-        with pytest.raises(TypeError):
-            Dropdown(options={'One': 1, 'Two': 2, 'Three': 3})
+    def test_dict_mapping_options(self):
+        d = Dropdown(options={'One': 1, 'Two': 2, 'Three': 3})
+        assert d.get_state('_options_labels') == {'_options_labels': ('One', 'Two', 'Three')}
 
     def test_setting_options_from_list(self):
         d = Dropdown()
@@ -37,8 +35,10 @@ class TestDropdown(TestCase):
     def test_setting_options_from_dict(self):
         d = Dropdown()
         assert d.options == ()
-        with pytest.raises(TypeError):
-            d.options = {'One': 1}
+        d.options = {'One': 1, 'Two': 2, 'Three': 3}
+        assert d.get_state('_options_labels') == {'_options_labels': ('One', 'Two', 'Three')}
+
+
 
 
 class TestSelectionSlider(TestCase):

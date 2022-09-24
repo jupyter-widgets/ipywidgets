@@ -295,7 +295,9 @@ export class WidgetModel extends Backbone.Model {
     try {
       this.set(state);
     } catch (e) {
-      console.error(`Error setting state: ${e.message}`);
+      console.error(
+        `Error setting state: ${e instanceof Error ? e.message : e}`
+      );
     } finally {
       this._state_lock = null;
     }
@@ -653,9 +655,9 @@ export class WidgetModel extends Backbone.Model {
   static _deserialize_state(
     state: Dict<BufferJSON>,
     manager: IWidgetManager
-  ): Promise<utils.Dict<BufferJSON>> {
+  ): Promise<utils.Dict<unknown>> {
     const serializers = this.serializers;
-    let deserialized: Dict<PromiseLike<BufferJSON> | BufferJSON>;
+    let deserialized: Dict<unknown>;
     if (serializers) {
       deserialized = {};
       for (const k in state) {

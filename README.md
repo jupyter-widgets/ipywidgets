@@ -132,3 +132,9 @@ See the [LICENSE](LICENSE) file in this repository for details.
 - [Documentation for Project Jupyter](https://jupyter.readthedocs.io/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
 - [![Discourse](https://img.shields.io/badge/help_forum-discourse-blue?logo=discourse)](https://discourse.jupyter.org/)
   [![Google Group](https://img.shields.io/badge/-Google%20Group-lightgrey.svg)](https://groups.google.com/forum/#!forum/jupyter)
+
+## [Weekly Team Meetings](https://github.com/jupyter-widgets/team-compass/issues/1)
+
+Developer Meetings take place on [zoom](https://zoom.us/my/jovyan?pwd=c0JZTHlNdS9Sek9vdzR3aTJ4SzFTQT09), on Tuesdays at 9:30AM Pacific Time ([your time](https://www.thetimezoneconverter.com/?t=9%3A30%20am&tz=San%20Francisco)).
+
+Minutes are taken at [Hackmd.io](https://hackmd.io/5XWHyOoLTRqyXzEHsVmxXg).
