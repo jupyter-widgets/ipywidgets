@@ -13,9 +13,9 @@ import { Kernel, KernelMessage } from '@jupyterlab/services';
  * Callbacks for services shim comms.
  */
 export interface ICallbacks {
-  shell?: { [key: string]: (msg: KernelMessage.IMessage) => void };
-  iopub?: { [key: string]: (msg: KernelMessage.IMessage) => void };
-  input?: (msg: KernelMessage.IMessage) => void;
+  shell?: { [key: string]: (msg: KernelMessage.IShellMessage) => void };
+  iopub?: { [key: string]: (msg: KernelMessage.IIOPubMessage) => void };
+  input?: (msg: KernelMessage.IStdinMessage) => void;
 }
 
 export interface IClassicComm {

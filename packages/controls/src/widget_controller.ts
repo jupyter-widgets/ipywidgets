@@ -389,8 +389,8 @@ export class ControllerView extends DOMWidgetView {
     const dummy = new Widget();
     this.button_box.addWidget(dummy);
 
-    return this.create_child_view(model)
-      .then((view: ControllerButtonView) => {
+    return this.create_child_view<ControllerButtonView>(model)
+      .then((view) => {
         // replace the dummy widget with the new one.
         const i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
         this.button_box.insertWidget(i, view.luminoWidget);
@@ -406,8 +406,8 @@ export class ControllerView extends DOMWidgetView {
     const dummy = new Widget();
     this.axis_box.addWidget(dummy);
 
-    return this.create_child_view(model)
-      .then((view: ControllerAxisView) => {
+    return this.create_child_view<ControllerAxisView>(model)
+      .then((view) => {
         // replace the dummy widget with the new one.
         const i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
         this.axis_box.insertWidget(i, view.luminoWidget);
