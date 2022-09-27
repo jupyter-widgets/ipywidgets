@@ -20,19 +20,19 @@ describe('unpack_models', function() {
         this.widgetA = await this.manager.new_widget({
             model_name: 'WidgetModel',
             model_module: '@jupyter-widgets/base',
-            model_module_version: '1.2.0',
+            model_module_version: '1.3.0',
             view_name: 'WidgetView',
             view_module: '@jupyter-widgets/base',
-            view_module_version: '1.2.0',
+            view_module_version: '1.3.0',
             model_id: 'widgetA',
         });
         this.widgetB = await this.manager.new_widget({
             model_name: 'WidgetModel',
             model_module: '@jupyter-widgets/base',
-            model_module_version: '1.2.0',
+            model_module_version: '1.3.0',
             view_name: 'WidgetView',
             view_module: '@jupyter-widgets/base',
-            view_module_version: '1.2.0',
+            view_module_version: '1.3.0',
             model_id: 'widgetB',
         });
     });
@@ -582,10 +582,10 @@ describe('WidgetModel', function() {
             expect(this.widget.get_state()).to.deep.equal({
                 _model_module: '@jupyter-widgets/base',
                 _model_name: 'WidgetModel',
-                _model_module_version: '1.2.0',
+                _model_module_version: '1.3.0',
                 _view_module: '@jupyter-widgets/base',
                 _view_name: null,
-                _view_module_version: '1.2.0',
+                _view_module_version: '1.3.0',
                 _view_count: null,
                 a: 'get_state test'
             });
