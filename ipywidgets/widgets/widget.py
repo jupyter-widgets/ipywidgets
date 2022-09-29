@@ -304,6 +304,8 @@ def register(name=''):
     else:
         return reg(name)
 
+# speed up .keys generation at widget instance creation time
+_keys_cache = {}
 
 class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
@@ -460,7 +462,10 @@ class Widget(LoggingHasTraits):
 
     @default('keys')
     def _default_keys(self):
-        return [name for name in self.traits(sync=True)]
+        cls = type(self)
+        if cls not in _keys_cache:
+            _keys_cache[cls] = [name for name in self.traits(sync=True)]
+        return _keys_cache[cls].copy()
 
     _property_lock = Dict()
     _holding_sync = False
