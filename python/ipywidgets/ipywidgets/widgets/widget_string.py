@@ -11,8 +11,8 @@ from .valuewidget import ValueWidget
 from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
 from .trait_types import Color, InstanceDict, TypedTuple
+from .utils import deprecation
 from traitlets import Unicode, Bool, Int
-from warnings import warn
 
 
 class _StringStyle(DescriptionStyle, CoreWidget):
@@ -142,8 +142,7 @@ class Text(_String):
         remove: bool (optional)
             Whether to unregister the callback
         """
-        import warnings
-        warnings.warn("on_submit is deprecated. Instead, set the .continuous_update attribute to False and observe the value changing with: mywidget.observe(callback, 'value').", DeprecationWarning)
+        deprecation("on_submit is deprecated. Instead, set the .continuous_update attribute to False and observe the value changing with: mywidget.observe(callback, 'value').")
         self._submission_callbacks.register_callback(callback, remove=remove)
 
 

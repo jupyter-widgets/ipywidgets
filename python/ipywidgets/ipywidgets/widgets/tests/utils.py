@@ -48,3 +48,6 @@ def setup():
 
 def teardown():
     teardown_test_comm()
+
+def call_method(method, *args, **kwargs):
+    method(*args, **kwargs)

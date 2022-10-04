@@ -6,11 +6,12 @@
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import display
 from IPython.utils.capture import capture_output
+import inspect
+import pytest
 
 from .. import widget
 from ..widget import Widget
 from ..widget_button import Button
-
 
 def test_no_widget_view():
     # ensure IPython shell is instantiated
@@ -51,7 +52,7 @@ def test_close_all():
     widgets = [Button() for i in range(10)]
 
     assert len(widget._instances) > 0, "expect active widgets"
-
+    assert widget._instances[widgets[0].model_id] is widgets[0]
     # close all the widgets
     Widget.close_all()
 
@@ -60,12 +61,16 @@ def test_close_all():
 
 def test_compatibility():
     button = Button()
-    assert button in widget.Widget.widgets.values()
-    assert widget._instances is widget.Widget.widgets
-    assert widget._instances is widget.Widget._active_widgets
-    Widget.close_all()
-    assert not widget.Widget.widgets
-    assert not widget.Widget._active_widgets
+    assert widget._instances[button.model_id] is button
+    with pytest.deprecated_call() as record:
+        assert widget._instances is widget.Widget.widgets
+        assert widget._instances is widget.Widget._active_widgets
+        assert widget._registry is widget.Widget.widget_types
+        assert widget._registry is widget.Widget._widget_types
 
-    assert widget.Widget.widget_types is widget._registry
-    assert widget.Widget._widget_types is widget._registry
+        Widget.close_all()
+        assert not widget.Widget.widgets
+        assert not widget.Widget._active_widgets
+    caller_path = inspect.stack(context=0)[1].filename
+    assert all(x.filename == caller_path for x in record)
+    assert len(record) == 6
