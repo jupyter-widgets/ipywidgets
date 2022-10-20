@@ -111,6 +111,7 @@ some custom widget packages built on top of the Jupyter Widgets framework.
     examples/Using Interact.ipynb
     examples/Widget Low Level.ipynb
     examples/Widget Asynchronous.ipynb
+    examples/Widget Custom.ipynb
     embedding.md
 
 .. toctree::
