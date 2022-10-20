@@ -3,62 +3,47 @@
 To build the documentation you'll need [Sphinx](http://www.sphinx-doc.org/)
 and a few other packages.
 
-## Setup docs dev environment
+## Building ipywidgets documentation
 
-### Use pip
+### Install development version
 
-Alternatively, it is also possible to create a virtual environment and activate it with the following commands:
-
+Install the development version of ipywidgets with the `dev-install.sh` script in the repo root directory.
 ```bash
-# create the environment
-python -m venv .
-
-# activate the environment
-source bin/activate
+dev-install.sh
 ```
 
-In the environment, install the packages:
+### Install python packages for building documentation
 
+Install the Python packages for building documentation with `conda`:
+   ```bash
+   conda env update --file docs/environment.yml 
+   ```
+
+   or with `pip`:
+
+   ```bash
+   python -m pip install -r docs/requirements.txt
+   # Also install pandoc separately
+   ```
+
+### Build the HTML
+
+Build the HTML docs with sphinx:
+   ```bash
+   cd docs/source
+   python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
+   ```
+
+### View the HTML
+
+Generated HTML files will be available at `docs/build/html/index.html`. 
+
+You may view the docs in your browser by entering the following in the terminal: 
 ```bash
-python -m pip install -r docs/requirements.txt
+open docs/build/html/index.html
 ```
 
-### Use conda
-
-First create a [conda environment](http://conda.pydata.org/docs/using/envs.html#use-environment-from-file) named `ipywidgets_docs` to install all the necessary packages:
-
-```bash
-# create the environment
-conda create -n ipywidgets_docs -c conda-forge python pip
-```
-
-Use conda to install the packages listed in `docs/requirements.txt`.
-
-Then, activate the conda environment.
-
-```bash
-# activate the environment
-conda activate ipywidgets_docs   # Linux and OS X
-activate ipywidgets_docs         # Windows
-```
-
-## Build the documentation
-
-Once you have installed the required packages, you can build the docs with:
-
-```bash
-cd docs
-make clean
-make html
-```
-
-After that, the generated HTML files will be available at
-`build/html/index.html`. You may view the docs in your browser by entering
-the following in the terminal: `open build/html/index.html`. Alternatively,
-you can start a webserver using `python3 -m http.server` and navigate to
-<http://localhost:8000/build/html/index.html>.
-
-Windows users can find `make.bat` in the `docs` folder.
+Alternatively, you can start a webserver `python3 -m http.server` and navigate to <http://localhost:8000/build/html/index.html>.
 
 You should also have a look at the [Project Jupyter Documentation Guide](https://jupyter.readthedocs.io/en/latest/contrib_docs/index.html).
 
