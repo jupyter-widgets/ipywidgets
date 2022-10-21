@@ -737,13 +737,13 @@ export class WidgetView extends NativeView<WidgetModel> {
    * Initializer, called at the end of the constructor.
    */
   initialize(parameters: WidgetView.IInitializeParameters): void {
-    this.listenTo(this.model, 'change', () => {
+    this.listenTo(this.model, 'change', (model, options) => {
       const changed = Object.keys(this.model.changedAttributes() || {});
       if (changed[0] === '_view_count' && changed.length === 1) {
         // Just the view count was updated
         return;
       }
-      this.update();
+      this.update(options);
     });
 
     this.options = parameters.options;
