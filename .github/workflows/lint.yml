@@ -18,4 +18,5 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn run integrity
-          yarn run lint:check
+          pre-commit run --all-files --show-diff-on-failure
+          # yarn run lint:check
