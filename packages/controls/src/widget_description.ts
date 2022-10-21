@@ -57,7 +57,7 @@ export class DescriptionView extends DOMWidgetView {
     this.listenTo(
       this.model,
       'change:description_allow_html',
-      this.updateDescription
+      this.updateDescription,
     );
     this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
     this.updateDescription();

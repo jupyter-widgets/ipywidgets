@@ -5,23 +5,23 @@
 # -- source files and parsers -----------------------------------
 
 source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown',
-    '.ipynb': 'jupyter_notebook',
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+    ".ipynb": "jupyter_notebook",
 }
 
 
 # -- Sphinx extensions and configuration ------------------------
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.mathjax',
-    'nbsphinx',
-    'jupyterlite_sphinx',
-    'IPython.sphinxext.ipython_console_highlighting',
-    'recommonmark',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "nbsphinx",
+    "jupyterlite_sphinx",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "recommonmark",
 ]
 
 jupyterlite_config = "jupyter_lite_config.json"
@@ -61,68 +61,81 @@ nbsphinx_prolog = r"""
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
-nbsphinx_execute = 'always'
+nbsphinx_execute = "always"
 
 # -- General information -------
 
 _release = {}
-exec(compile(open('../../python/ipywidgets/ipywidgets/_version.py').read(), '../../python/ipywidgets/ipywidgets/_version.py', 'exec'), _release)
+exec(
+    compile(
+        open("../../python/ipywidgets/ipywidgets/_version.py").read(),
+        "../../python/ipywidgets/ipywidgets/_version.py",
+        "exec",
+    ),
+    _release,
+)
 from packaging.version import Version
-v = Version(_release['__version__'])
-version = f'{v.major}.{v.minor}'
-release = _release['__version__']
+
+v = Version(_release["__version__"])
+version = f"{v.major}.{v.minor}"
+release = _release["__version__"]
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
 
-master_doc = 'index'
-project = 'Jupyter Widgets'
-copyright = '2017-2022 Project Jupyter'
-author = 'Jupyter Team'
+master_doc = "index"
+project = "Jupyter Widgets"
+copyright = "2017-2022 Project Jupyter"
+author = "Jupyter Team"
 
 language = "en"
 exclude_patterns = [
-    '**.ipynb_checkpoints',
-    'examples.md',
-    'examples/Beat Frequencies.ipynb',
-    'examples/Controller.ipynb',
-    'examples/Exploring Graphs.ipynb',
-    'examples/Export As (nbconvert).ipynb',
-    'examples/Factoring.ipynb',
-    'examples/Imag*',
-    'examples/Index.ipynb',
-    'examples/Lorenz Differential Equations.ipynb',
-    'examples/Media widgets.ipynb',
-    'examples/Variable Inspector.ipynb',
-    'examples/Widget Alignment.ipynb',
-    '_contents'
+    "**.ipynb_checkpoints",
+    "examples.md",
+    "examples/Beat Frequencies.ipynb",
+    "examples/Controller.ipynb",
+    "examples/Exploring Graphs.ipynb",
+    "examples/Export As (nbconvert).ipynb",
+    "examples/Factoring.ipynb",
+    "examples/Imag*",
+    "examples/Index.ipynb",
+    "examples/Lorenz Differential Equations.ipynb",
+    "examples/Media widgets.ipynb",
+    "examples/Variable Inspector.ipynb",
+    "examples/Widget Alignment.ipynb",
+    "_contents",
 ]
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 todo_include_todos = False
 
 
 # -- html --------------------------
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # html_static_path = ['_static']
-htmlhelp_basename = 'ipywidgetsdoc'
+htmlhelp_basename = "ipywidgetsdoc"
 
 
 # -- latex -------------------------
 
 latex_elements = {}
 latex_documents = [
-  (master_doc, 'ipywidgets.tex', 'ipywidgets Documentation',
-   'https://jupyter.org', 'manual'),
+    (master_doc, "ipywidgets.tex", "ipywidgets Documentation", "https://jupyter.org", "manual"),
 ]
 
 
 # -- tex ---------------------------
 
 texinfo_documents = [
-  (master_doc, 'ipywidgets', 'ipywidgets Documentation',
-   author, 'ipywidgets', 'One line description of project.',
-   'Miscellaneous'),
+    (
+        master_doc,
+        "ipywidgets",
+        "ipywidgets Documentation",
+        author,
+        "ipywidgets",
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]
 
 
@@ -140,18 +153,19 @@ epub_copyright = copyright
 # Options are theme-specific and customize the look and feel of the theme.
 html_theme_options = {
     # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 2,
-    'includehidden': True,
-    'titles_only': False
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 2,
+    "includehidden": True,
+    "titles_only": False,
 }
 
 
 def on_config_inited(*args):
-    import sys
     import subprocess
+    import sys
     from pathlib import Path
+
     HERE = Path(__file__)
     ROOT = HERE.parent.parent.parent
     subprocess.check_call(["jlpm"], cwd=str(ROOT))
@@ -166,6 +180,7 @@ def on_config_inited(*args):
     JLW = ROOT / "python/jupyterlab_widgets"
     subprocess.check_call(["jupyter", "labextension", "build", "."], cwd=str(JLW))
     subprocess.check_call([sys.executable, "-m", "build"], cwd=str(JLW))
+
 
 def setup(app):
     app.connect("config-inited", on_config_inited)

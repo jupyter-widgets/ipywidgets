@@ -4,16 +4,13 @@
 """
 jupyterlab_widgets setup
 """
-from jupyter_packaging import (
-    wrap_installers,
-    npm_builder,
-    get_data_files
-)
 from pathlib import Path
+
+from jupyter_packaging import get_data_files, npm_builder, wrap_installers
 from setuptools import setup
 
 HERE = Path(__file__).parent.resolve()
-IS_REPO = (HERE.parent / '.git').exists()
+IS_REPO = (HERE.parent / ".git").exists()
 LAB_PATH = HERE / "jupyterlab_widgets" / "labextension"
 
 # The name of the project
@@ -25,9 +22,7 @@ data_files_spec = [
     (f"share/jupyter/labextensions/{labext_name}", HERE, "install.json"),
 ]
 
-post_develop = npm_builder(
-    build_cmd="install:extension", source_dir="src", build_dir=LAB_PATH
-)
+post_develop = npm_builder(build_cmd="install:extension", source_dir="src", build_dir=LAB_PATH)
 
 cmdclass = wrap_installers(post_develop=post_develop)
 

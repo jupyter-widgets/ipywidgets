@@ -60,7 +60,7 @@ const SETTINGS: WidgetManager.Settings = { saveState: false };
  * Iterate through all widget renderers in a notebook.
  */
 function* widgetRenderers(
-  nb: Notebook
+  nb: Notebook,
 ): Generator<WidgetRenderer, void, unknown> {
   for (const cell of nb.widgets) {
     if (cell.model.type === 'code') {
@@ -80,11 +80,11 @@ function* widgetRenderers(
  */
 function* outputViews(
   app: JupyterFrontEnd,
-  path: string
+  path: string,
 ): Generator<WidgetRenderer, void, unknown> {
   const linkedViews = filter(
     app.shell.widgets(),
-    (w) => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
+    (w) => w.id.startsWith('LinkedOutputView-') && (w as any).path === path,
   );
   for (const view of toArray(linkedViews)) {
     for (const outputs of toArray(view.children())) {
@@ -108,7 +108,7 @@ function* chain<T>(
 export function registerWidgetManager(
   context: DocumentRegistry.IContext<INotebookModel>,
   rendermime: IRenderMimeRegistry,
-  renderers: IterableIterator<WidgetRenderer>
+  renderers: IterableIterator<WidgetRenderer>,
 ): DisposableDelegate {
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
@@ -130,7 +130,7 @@ export function registerWidgetManager(
       mimeTypes: [WIDGET_VIEW_MIMETYPE],
       createRenderer: (options) => new WidgetRenderer(options, wManager),
     },
-    -10
+    -10,
   );
 
   return new DisposableDelegate(() => {
@@ -174,7 +174,7 @@ function activateWidgetExtension(
   settingRegistry: ISettingRegistry | null,
   menu: IMainMenu | null,
   loggerRegistry: ILoggerRegistry | null,
-  translator: ITranslator | null
+  translator: ITranslator | null,
 ): base.IJupyterWidgetRegistry {
   const { commands } = app;
   const trans = (translator ?? nullTranslator).load('jupyterlab_widgets');
@@ -202,7 +202,7 @@ function activateWidgetExtension(
           };
           logger.rendermime = nb.content.rendermime;
           logger.log({ type: 'output', data, level });
-        }
+        },
       );
     }
   };
@@ -225,7 +225,7 @@ function activateWidgetExtension(
       mimeTypes: [WIDGET_VIEW_MIMETYPE],
       createRenderer: (options) => new WidgetRenderer(options),
     },
-    -10
+    -10,
   );
 
   if (tracker !== null) {
@@ -235,8 +235,8 @@ function activateWidgetExtension(
         panel.content.rendermime,
         chain(
           widgetRenderers(panel.content),
-          outputViews(app, panel.context.path)
-        )
+          outputViews(app, panel.context.path),
+        ),
       );
 
       bindUnhandledIOPubMessageSignal(panel);
@@ -247,8 +247,8 @@ function activateWidgetExtension(
         panel.content.rendermime,
         chain(
           widgetRenderers(panel.content),
-          outputViews(app, panel.context.path)
-        )
+          outputViews(app, panel.context.path),
+        ),
       );
 
       bindUnhandledIOPubMessageSignal(panel);
@@ -264,7 +264,7 @@ function activateWidgetExtension(
           .set(managerPlugin.id, 'saveState', !SETTINGS.saveState)
           .catch((reason: Error) => {
             console.error(
-              `Failed to set ${managerPlugin.id}: ${reason.message}`
+              `Failed to set ${managerPlugin.id}: ${reason.message}`,
             );
           });
       },
@@ -294,7 +294,7 @@ export const baseWidgetsPlugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    registry: base.IJupyterWidgetRegistry
+    registry: base.IJupyterWidgetRegistry,
   ): void => {
     registry.registerWidget({
       name: '@jupyter-widgets/base',
@@ -323,7 +323,7 @@ export const controlWidgetsPlugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    registry: base.IJupyterWidgetRegistry
+    registry: base.IJupyterWidgetRegistry,
   ): void => {
     registry.registerWidget({
       name: '@jupyter-widgets/controls',
@@ -339,7 +339,7 @@ export const controlWidgetsPlugin: JupyterFrontEndPlugin<void> = {
             (err: any) => {
               reject(err);
             },
-            '@jupyter-widgets/controls'
+            '@jupyter-widgets/controls',
           );
         });
       },
@@ -356,7 +356,7 @@ export const outputWidgetPlugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    registry: base.IJupyterWidgetRegistry
+    registry: base.IJupyterWidgetRegistry,
   ): void => {
     registry.registerWidget({
       name: '@jupyter-widgets/output',

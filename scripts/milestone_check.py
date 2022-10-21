@@ -7,40 +7,52 @@
 
 # From the milestone_check.py script in JupyterLab
 
-import subprocess
-import requests
 import os
+import subprocess
 import sys
 
-REPO = 'jupyter-widgets/ipywidgets'
+import requests
+
+REPO = "jupyter-widgets/ipywidgets"
 
 ranges = {
-    '8.0': 'origin/master ^7.x',
+    "8.0": "origin/master ^7.x",
 }
 
 try:
-    api_token = os.environ['GITHUB_TOKEN']
+    api_token = os.environ["GITHUB_TOKEN"]
 except KeyError:
-    print('Error: set the environment variable GITHUB_TOKEN to a GitHub authentication token (see https://github.com/settings/tokens)')
+    print(
+        "Error: set the environment variable GITHUB_TOKEN to a GitHub authentication token (see https://github.com/settings/tokens)"
+    )
     exit(1)
 
 if len(sys.argv) != 2:
-    print('Error: exactly one argument expected, the milestone.')
+    print("Error: exactly one argument expected, the milestone.")
     exit(1)
 
-MILESTONE=sys.argv[1]
+MILESTONE = sys.argv[1]
 
 if MILESTONE not in ranges:
-    print('Error: I do not know about milestone %r. Possible milestones are %r'%(MILESTONE, list(ranges.keys())))
+    print(
+        "Error: I do not know about milestone %r. Possible milestones are %r"
+        % (MILESTONE, list(ranges.keys()))
+    )
     exit(1)
 
 
-out = subprocess.run("git log {} --format='%H,%cE,%s'".format(ranges[MILESTONE]), shell=True, encoding='utf8', stdout=subprocess.PIPE)
-commits = {i[0]: (i[1], i[2]) for i in (x.split(',',2) for x in out.stdout.splitlines())}
+out = subprocess.run(
+    f"git log {ranges[MILESTONE]} --format='%H,%cE,%s'",
+    shell=True,
+    encoding="utf8",
+    stdout=subprocess.PIPE,
+)
+commits = {i[0]: (i[1], i[2]) for i in (x.split(",", 2) for x in out.stdout.splitlines())}
 
 
-url = 'https://api.github.com/graphql'
-json = { 'query' : """
+url = "https://api.github.com/graphql"
+json = {
+    "query": """
 query test($cursor: String) {
   search(first: 50, after: $cursor, type: ISSUE, query: "repo:%(repo)s milestone:%(milestone)s is:pr is:merged ") {
     issueCount
@@ -67,41 +79,42 @@ query test($cursor: String) {
     }
   }
 }
-"""%{'milestone': MILESTONE, 'repo': REPO},
-    'variables': {
-        'cursor': None
-    }
+"""
+    % {"milestone": MILESTONE, "repo": REPO},
+    "variables": {"cursor": None},
 }
 
 
-
-headers = {'Authorization': 'token %s' % api_token}
+headers = {"Authorization": "token %s" % api_token}
 # construct a commit to PR dictionary
 prs = {}
 large_prs = []
 cursor = None
 while True:
-    json['variables']['cursor'] = cursor
+    json["variables"]["cursor"] = cursor
     r = requests.post(url=url, json=json, headers=headers)
-    results = r.json()['data']['search']
-    total_prs = results['issueCount']
+    results = r.json()["data"]["search"]
+    total_prs = results["issueCount"]
 
-    pr_list = results['nodes']
+    pr_list = results["nodes"]
     for pr in pr_list:
-        if pr['commits']['totalCount'] > 100:
-            large_prs.append(pr['number'])
+        if pr["commits"]["totalCount"] > 100:
+            large_prs.append(pr["number"])
             continue
             # TODO fetch commits
-        prs[pr['number']] = {'mergeCommit': pr['mergeCommit']['oid'],
-                            'commits': set(i['commit']['oid'] for i in pr['commits']['nodes'])}
+        prs[pr["number"]] = {
+            "mergeCommit": pr["mergeCommit"]["oid"],
+            "commits": {i["commit"]["oid"] for i in pr["commits"]["nodes"]},
+        }
 
-    has_next_page = results['pageInfo']['hasNextPage']
-    cursor = results['pageInfo']['endCursor']
+    has_next_page = results["pageInfo"]["hasNextPage"]
+    cursor = results["pageInfo"]["endCursor"]
 
     if not has_next_page:
         break
 
-prjson = {'query': """
+prjson = {
+    "query": """
 query test($pr:Int!, $cursor: String) {
   repository(owner: "%(repoowner)s", name: "%(reponame)s") {
     pullRequest(number: $pr) {
@@ -125,43 +138,44 @@ query test($pr:Int!, $cursor: String) {
     }
   }
 }
-"""%{'repoowner': REPO.split('/')[0], 'reponame': REPO.split('/')[1]}, 'variables': {
-    'pr': None,
-    'cursor': None
-}}
+"""
+    % {"repoowner": REPO.split("/")[0], "reponame": REPO.split("/")[1]},
+    "variables": {"pr": None, "cursor": None},
+}
 
 for prnumber in large_prs:
-    prjson['variables']['pr']=prnumber
+    prjson["variables"]["pr"] = prnumber
     pr_commits = set()
     while True:
         r = requests.post(url=url, json=prjson, headers=headers)
-        pr = r.json()['data']['repository']['pullRequest']
-        assert pr['number']==prnumber
-        total_commits = pr['commits']['totalCount']
-        pr_commits.update(i['commit']['oid'] for i in pr['commits']['nodes'])
-        has_next_page = results['pageInfo']['hasNextPage']
-        cursor = results['pageInfo']['endCursor']
+        pr = r.json()["data"]["repository"]["pullRequest"]
+        assert pr["number"] == prnumber
+        total_commits = pr["commits"]["totalCount"]
+        pr_commits.update(i["commit"]["oid"] for i in pr["commits"]["nodes"])
+        has_next_page = results["pageInfo"]["hasNextPage"]
+        cursor = results["pageInfo"]["endCursor"]
 
-        if not pr['commits']['pageInfo']['hasNextPage']:
+        if not pr["commits"]["pageInfo"]["hasNextPage"]:
             break
-        prjson['variables']['cursor'] = pr['commits']['pageInfo']['endCursor']
+        prjson["variables"]["cursor"] = pr["commits"]["pageInfo"]["endCursor"]
 
-    prs[prnumber] = {'mergeCommit': pr['mergeCommit']['oid'],
-                            'commits': pr_commits}
+    prs[prnumber] = {"mergeCommit": pr["mergeCommit"]["oid"], "commits": pr_commits}
     if total_commits > len(pr_commits):
-        print("WARNING: PR %d (merge %s) has %d commits, but GitHub is only giving us %d of them"%(prnumber, pr['mergeCommit']['oid'], total_commits, len(pr_commits)))
-
+        print(
+            "WARNING: PR %d (merge %s) has %d commits, but GitHub is only giving us %d of them"
+            % (prnumber, pr["mergeCommit"]["oid"], total_commits, len(pr_commits))
+        )
 
 
 # Check we got all PRs
 assert len(prs) == total_prs
 
 # Reverse dictionary
-commits_to_prs={}
-for key,value in prs.items():
-    commits_to_prs[value['mergeCommit']]=key
-    for c in value['commits']:
-        commits_to_prs[c]=key
+commits_to_prs = {}
+for key, value in prs.items():
+    commits_to_prs[value["mergeCommit"]] = key
+    for c in value["commits"]:
+        commits_to_prs[c] = key
 
 # Check to see if commits in the repo are represented in PRs
 good = set()
@@ -174,36 +188,50 @@ for c in commits:
 
 prs_not_represented = set(prs.keys()) - good
 
-print("Milestone: %s, %d merged PRs, %d commits in history"%(MILESTONE, total_prs, len(commits)))
+print("Milestone: %s, %d merged PRs, %d commits in history" % (MILESTONE, total_prs, len(commits)))
 
 print()
-print('-'*40)
+print("-" * 40)
 print()
 
 if len(prs_not_represented) > 0:
-    print("""
-PRs that are in the milestone, but have no commits in the version range. 
+    print(
+        """
+PRs that are in the milestone, but have no commits in the version range.
 These PRs probably belong in a different milestone.
-""")
-    print('\n'.join(f'https://github.com/{REPO}/pull/{i}' for i in prs_not_represented))
+"""
+    )
+    print("\n".join(f"https://github.com/{REPO}/pull/{i}" for i in prs_not_represented))
 else:
-    print('Congratulations! All PRs in this milestone have commits in the commit history for this version range, so they all probably belong in this milestone.')
+    print(
+        "Congratulations! All PRs in this milestone have commits in the commit history for this version range, so they all probably belong in this milestone."
+    )
 
 print()
-print('-'*40)
+print("-" * 40)
 print()
 
 if len(notfound):
-    print("""The following commits are not included in any PR on this milestone.
+    print(
+        """The following commits are not included in any PR on this milestone.
 This probably means the commit's PR needs to be assigned to this milestone,
 or the commit was pushed to master directly.
-""")
-    print('\n'.join('%s %s %s'%(c, commits[c][0], commits[c][1]) for c in notfound))
-    prs_to_check = [c for c in notfound if 'Merge pull request #' in commits[c][1] and commits[c][0] == 'noreply@github.com']
-    if len(prs_to_check)>0:
+"""
+    )
+    print("\n".join(f"{c} {commits[c][0]} {commits[c][1]}" for c in notfound))
+    prs_to_check = [
+        c
+        for c in notfound
+        if "Merge pull request #" in commits[c][1] and commits[c][0] == "noreply@github.com"
+    ]
+    if len(prs_to_check) > 0:
         print()
-        print("Try checking these PRs. They probably should be in the milestone, but probably aren't:")
+        print(
+            "Try checking these PRs. They probably should be in the milestone, but probably aren't:"
+        )
         print()
-        print('\n'.join('%s %s'%(c, commits[c][1]) for c in prs_to_check))
+        print("\n".join(f"{c} {commits[c][1]}" for c in prs_to_check))
 else:
-    print('Congratulations! All commits in the commit history are included in some PR in this milestone.')
+    print(
+        "Congratulations! All commits in the commit history are included in some PR in this milestone."
+    )

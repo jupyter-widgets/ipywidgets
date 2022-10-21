@@ -15,7 +15,7 @@ describe('ComboboxView', function () {
         model_module_version: '1.0.0',
         model_id: modelId,
       },
-      { description: 'test-combo-model' }
+      { description: 'test-combo-model' },
     );
   });
 
@@ -35,7 +35,7 @@ describe('ComboboxView', function () {
     const view = new widgets.ComboboxView(options);
     view.render();
     expect(
-      view.textbox.classList.contains('jpwidgets-invalidComboValue')
+      view.textbox.classList.contains('jpwidgets-invalidComboValue'),
     ).to.equal(false);
   });
 
@@ -49,7 +49,7 @@ describe('ComboboxView', function () {
     const view = new widgets.ComboboxView(options);
     view.render();
     expect(
-      view.textbox.classList.contains('jpwidgets-invalidComboValue')
+      view.textbox.classList.contains('jpwidgets-invalidComboValue'),
     ).to.equal(false);
   });
 
@@ -63,7 +63,7 @@ describe('ComboboxView', function () {
     const view = new widgets.ComboboxView(options);
     view.render();
     expect(
-      view.textbox.classList.contains('jpwidgets-invalidComboValue')
+      view.textbox.classList.contains('jpwidgets-invalidComboValue'),
     ).to.equal(true);
   });
 

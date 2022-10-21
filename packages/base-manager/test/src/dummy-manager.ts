@@ -71,7 +71,7 @@ const JSONToArray = function (obj: any): any {
 
 const arrayToJSON = function (obj: any): any {
   const dtype = Object.keys(typesToArray).filter(
-    (i) => typesToArray[i] === obj.constructor
+    (i) => typesToArray[i] === obj.constructor,
   )[0];
   return { dtype, buffer: obj };
 };
@@ -196,7 +196,7 @@ export class DummyManager extends ManagerBase {
   protected loadClass(
     className: string,
     moduleName: string,
-    moduleVersion: string
+    moduleVersion: string,
   ): Promise<any> {
     if (moduleName === '@jupyter-widgets/base') {
       if ((widgets as any)[className]) {

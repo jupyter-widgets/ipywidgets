@@ -1,13 +1,11 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # Copyright (c) Vidar Tonaas Fauske.
 # Distributed under the terms of the Modified BSD License.
 
-import pytest
-
 import datetime
 
+import pytest
 import pytz
 from traitlets import TraitError
 
@@ -89,7 +87,7 @@ def test_time_validate_max_vs_min():
 
 
 def test_datetime_tzinfo():
-    tz = pytz.timezone('Australia/Sydney')
+    tz = pytz.timezone("Australia/Sydney")
     t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=tz)
     with pytest.raises(TraitError):
         w = NaiveDatetimePicker(value=t)

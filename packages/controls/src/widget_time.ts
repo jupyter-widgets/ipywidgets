@@ -148,7 +148,7 @@ export class TimeView extends DescriptionView {
   private _update_value(
     model?: Backbone.Model,
     newValue?: any,
-    options?: any
+    options?: any,
   ): void {
     if (options === undefined || options.updated_view !== this) {
       this._timepicker!.value = this.model.get('value');

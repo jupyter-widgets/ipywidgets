@@ -7,20 +7,21 @@ Represents a button in the frontend using a widget.  Allows user to listen for
 click events on the button and trigger backend code when the clicks are fired.
 """
 
-from .utils import deprecation
+from traitlets import Bool, CaselessStrEnum, Instance, Unicode, default, validate
+
 from .domwidget import DOMWidget
+from .trait_types import Color, InstanceDict
+from .utils import deprecation
 from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import Color, InstanceDict
-
-from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
 
 
 @register
 class ButtonStyle(Style, CoreWidget):
     """Button style widget."""
-    _model_name = Unicode('ButtonStyleModel').tag(sync=True)
+
+    _model_name = Unicode("ButtonStyleModel").tag(sync=True)
     button_color = Color(None, allow_none=True, help="Color of the button").tag(sync=True)
     font_family = Unicode(None, allow_none=True, help="Button text font family.").tag(sync=True)
     font_size = Unicode(None, allow_none=True, help="Button text font size.").tag(sync=True)
@@ -47,16 +48,19 @@ class Button(DOMWidget, CoreWidget):
     disabled: bool
        whether user interaction is enabled
     """
-    _view_name = Unicode('ButtonView').tag(sync=True)
-    _model_name = Unicode('ButtonModel').tag(sync=True)
+
+    _view_name = Unicode("ButtonView").tag(sync=True)
+    _model_name = Unicode("ButtonModel").tag(sync=True)
 
     description = Unicode(help="Button label.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
-    icon = Unicode('', help="Font-awesome icon names, without the 'fa-' prefix.").tag(sync=True)
+    icon = Unicode("", help="Font-awesome icon names, without the 'fa-' prefix.").tag(sync=True)
 
     button_style = CaselessStrEnum(
-        values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
-        help="""Use a predefined styling for the button.""").tag(sync=True)
+        values=["primary", "success", "info", "warning", "danger", ""],
+        default_value="",
+        help="""Use a predefined styling for the button.""",
+    ).tag(sync=True)
 
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
 
@@ -65,15 +69,17 @@ class Button(DOMWidget, CoreWidget):
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
 
-    @validate('icon')
+    @validate("icon")
     def _validate_icon(self, proposal):
         """Strip 'fa-' if necessary'"""
-        value = proposal['value']
-        if 'fa-' in value:
-            deprecation("icons names no longer need 'fa-', "
-            "just use the class names themselves (for example, 'gear spin' instead of 'fa-gear fa-spin')",
-            internal=['ipywidgets/widgets/', 'traitlets/traitlets.py', '/contextlib.py'])
-            value = value.replace('fa-', '')
+        value = proposal["value"]
+        if "fa-" in value:
+            deprecation(
+                "icons names no longer need 'fa-', "
+                "just use the class names themselves (for example, 'gear spin' instead of 'fa-gear fa-spin')",
+                internal=["ipywidgets/widgets/", "traitlets/traitlets.py", "/contextlib.py"],
+            )
+            value = value.replace("fa-", "")
         return value
 
     def on_click(self, callback, remove=False):
@@ -105,5 +111,5 @@ class Button(DOMWidget, CoreWidget):
         content: dict
             Content of the msg.
         """
-        if content.get('event', '') == 'click':
+        if content.get("event", "") == "click":
             self.click()

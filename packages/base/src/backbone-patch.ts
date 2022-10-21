@@ -48,7 +48,7 @@ import { JSONExt } from '@lumino/coreutils';
 export function set(
   key: string | {},
   val: any,
-  options: ModelSetOptions & { unset?: boolean }
+  options: ModelSetOptions & { unset?: boolean },
 ): any {
   if (key == null) {
     return this;
@@ -115,7 +115,7 @@ export function set(
           'change:' + changes[i],
           this,
           current[changes[i]],
-          options
+          options,
         );
       }
     }

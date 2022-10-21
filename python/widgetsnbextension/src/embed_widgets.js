@@ -68,10 +68,10 @@ var embed_widgets = function () {
                         JSON.stringify(
                           output.data[VIEW_MIME_TYPE],
                           null,
-                          '    '
-                        )
+                          '    ',
+                        ),
                       ) +
-                      '\n</script>'
+                      '\n</script>',
                   );
                 }
               });
@@ -102,7 +102,7 @@ var embed_widgets = function () {
             },
           });
         });
-      }
+      },
     );
   });
 };
@@ -120,7 +120,7 @@ requirejs(['base/js/namespace'], function (Jupyter) {
   Jupyter.notebook.keyboard_manager.actions.register(
     action,
     action_name,
-    prefix
+    prefix,
   );
 });
 

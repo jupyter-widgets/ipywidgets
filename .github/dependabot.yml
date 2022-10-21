@@ -8,9 +8,9 @@ version: 2
 # Ref https://github.com/dependabot/dependabot-core/issues/2521#issuecomment-863261500
 updates:
   - package-ecosystem: npm
-    directory: "/"
+    directory: '/'
     schedule:
-      interval: "daily"
+      interval: 'daily'
     open-pull-requests-limit: 0 # in case you don't want to enable version updates
     allow:
-      - dependency-type: "production"
+      - dependency-type: 'production'

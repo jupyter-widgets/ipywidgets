@@ -3,12 +3,13 @@
 
 import mimetypes
 
-from .widget_core import CoreWidget
+from traitlets import Bool, CUnicode, Unicode
+
 from .domwidget import DOMWidget
+from .trait_types import CByteMemoryView
 from .valuewidget import ValueWidget
 from .widget import register
-from traitlets import Unicode, CUnicode, Bool
-from .trait_types import CByteMemoryView
+from .widget_core import CoreWidget
 
 
 @register
@@ -42,10 +43,10 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         """
         value = cls._load_file_value(filename)
 
-        if 'format' not in kwargs:
+        if "format" not in kwargs:
             format = cls._guess_format(tag, filename)
             if format is not None:
-                kwargs['format'] = format
+                kwargs["format"] = format
 
         return cls(value=value, **kwargs)
 
@@ -69,9 +70,9 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         """
         if isinstance(url, str):
             # If str, it needs to be encoded to bytes
-            url = url.encode('utf-8')
+            url = url.encode("utf-8")
 
-        return cls(value=url, format='url', **kwargs)
+        return cls(value=url, format="url", **kwargs)
 
     def set_value_from_file(self, filename):
         """
@@ -88,24 +89,24 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
 
     @classmethod
     def _load_file_value(cls, filename):
-        if getattr(filename, 'read', None) is not None:
+        if getattr(filename, "read", None) is not None:
             return filename.read()
         else:
-            with open(filename, 'rb') as f:
+            with open(filename, "rb") as f:
                 return f.read()
 
     @classmethod
     def _guess_format(cls, tag, filename):
         # file objects may have a .name parameter
-        name = getattr(filename, 'name', None)
+        name = getattr(filename, "name", None)
         name = name or filename
 
         try:
             mtype, _ = mimetypes.guess_type(name)
-            if not mtype.startswith('{}/'.format(tag)):
+            if not mtype.startswith(f"{tag}/"):
                 return None
 
-            return mtype[len('{}/'.format(tag)):]
+            return mtype[len(f"{tag}/") :]
         except Exception:
             return None
 
@@ -117,18 +118,18 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         # Return value first like a ValueWidget
         signature = []
 
-        sig_value = 'value={!r}'.format(self.value[:40].tobytes())
+        sig_value = f"value={self.value[:40].tobytes()!r}"
         if self.value.nbytes > 40:
-            sig_value = sig_value[:-1]+"..."+sig_value[-1]
+            sig_value = sig_value[:-1] + "..." + sig_value[-1]
         signature.append(sig_value)
 
         for key in super(cls, self)._repr_keys():
-            if key == 'value':
+            if key == "value":
                 continue
             value = str(getattr(self, key))
-            signature.append('{}={!r}'.format(key, value))
-        signature = ', '.join(signature)
-        return '{}({})'.format(class_name, signature)
+            signature.append(f"{key}={value!r}")
+        signature = ", ".join(signature)
+        return f"{class_name}({signature})"
 
 
 @register
@@ -143,22 +144,25 @@ class Image(_Media):
     If you pass `"url"` to the `"format"` trait, `value` will be interpreted
     as a URL as bytes encoded in UTF-8.
     """
-    _view_name = Unicode('ImageView').tag(sync=True)
-    _model_name = Unicode('ImageModel').tag(sync=True)
+
+    _view_name = Unicode("ImageView").tag(sync=True)
+    _model_name = Unicode("ImageModel").tag(sync=True)
 
     # Define the custom state properties to sync with the front-end
-    format = Unicode('png', help="The format of the image.").tag(sync=True)
-    width = CUnicode(help="Width of the image in pixels. Use layout.width "
-                          "for styling the widget.").tag(sync=True)
-    height = CUnicode(help="Height of the image in pixels. Use layout.height "
-                           "for styling the widget.").tag(sync=True)
+    format = Unicode("png", help="The format of the image.").tag(sync=True)
+    width = CUnicode(
+        help="Width of the image in pixels. Use layout.width " "for styling the widget."
+    ).tag(sync=True)
+    height = CUnicode(
+        help="Height of the image in pixels. Use layout.height " "for styling the widget."
+    ).tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     @classmethod
     def from_file(cls, filename, **kwargs):
-        return cls._from_file('image', filename, **kwargs)
+        return cls._from_file("image", filename, **kwargs)
 
     def __repr__(self):
         return self._get_repr(Image)
@@ -176,20 +180,26 @@ class Video(_Media):
     If you pass `"url"` to the `"format"` trait, `value` will be interpreted
     as a URL as bytes encoded in UTF-8.
     """
-    _view_name = Unicode('VideoView').tag(sync=True)
-    _model_name = Unicode('VideoModel').tag(sync=True)
+
+    _view_name = Unicode("VideoView").tag(sync=True)
+    _model_name = Unicode("VideoModel").tag(sync=True)
 
     # Define the custom state properties to sync with the front-end
-    format = Unicode('mp4', help="The format of the video.").tag(sync=True)
+    format = Unicode("mp4", help="The format of the video.").tag(sync=True)
     width = CUnicode(help="Width of the video in pixels.").tag(sync=True)
     height = CUnicode(help="Height of the video in pixels.").tag(sync=True)
     autoplay = Bool(True, help="When true, the video starts when it's displayed").tag(sync=True)
-    loop = Bool(True, help="When true, the video will start from the beginning after finishing").tag(sync=True)
-    controls = Bool(True, help="Specifies that video controls should be displayed (such as a play/pause button etc)").tag(sync=True)
+    loop = Bool(
+        True, help="When true, the video will start from the beginning after finishing"
+    ).tag(sync=True)
+    controls = Bool(
+        True,
+        help="Specifies that video controls should be displayed (such as a play/pause button etc)",
+    ).tag(sync=True)
 
     @classmethod
     def from_file(cls, filename, **kwargs):
-        return cls._from_file('video', filename, **kwargs)
+        return cls._from_file("video", filename, **kwargs)
 
     def __repr__(self):
         return self._get_repr(Video)
@@ -207,18 +217,24 @@ class Audio(_Media):
     If you pass `"url"` to the `"format"` trait, `value` will be interpreted
     as a URL as bytes encoded in UTF-8.
     """
-    _view_name = Unicode('AudioView').tag(sync=True)
-    _model_name = Unicode('AudioModel').tag(sync=True)
+
+    _view_name = Unicode("AudioView").tag(sync=True)
+    _model_name = Unicode("AudioModel").tag(sync=True)
 
     # Define the custom state properties to sync with the front-end
-    format = Unicode('mp3', help="The format of the audio.").tag(sync=True)
+    format = Unicode("mp3", help="The format of the audio.").tag(sync=True)
     autoplay = Bool(True, help="When true, the audio starts when it's displayed").tag(sync=True)
-    loop = Bool(True, help="When true, the audio will start from the beginning after finishing").tag(sync=True)
-    controls = Bool(True, help="Specifies that audio controls should be displayed (such as a play/pause button etc)").tag(sync=True)
+    loop = Bool(
+        True, help="When true, the audio will start from the beginning after finishing"
+    ).tag(sync=True)
+    controls = Bool(
+        True,
+        help="Specifies that audio controls should be displayed (such as a play/pause button etc)",
+    ).tag(sync=True)
 
     @classmethod
     def from_file(cls, filename, **kwargs):
-        return cls._from_file('audio', filename, **kwargs)
+        return cls._from_file("audio", filename, **kwargs)
 
     def __repr__(self):
         return self._get_repr(Audio)

@@ -24,7 +24,7 @@ function fileInputForModel(model: widgets.FileUploadModel): HTMLInputElement {
 }
 
 function proxyButtonForModel(
-  model: widgets.FileUploadModel
+  model: widgets.FileUploadModel,
 ): HTMLButtonElement {
   const options = { model };
   const view = new widgets.FileUploadView(options);
@@ -58,7 +58,7 @@ describe('FileUploadView', function () {
         model_module_version: '1.0.0',
         model_id: modelId,
       },
-      {}
+      {},
     );
   });
 
@@ -136,7 +136,7 @@ describe('FileUploadView', function () {
       expect(fileInModel.last_modified).to.equal(lastModified);
 
       const contentInModel = new TextDecoder('utf-8').decode(
-        fileInModel.content
+        fileInModel.content,
       );
       expect(contentInModel).to.equal('some file content');
       done();

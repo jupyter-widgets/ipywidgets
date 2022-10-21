@@ -11,5 +11,5 @@
         embed.renderWidgets();
       });
     }
-  }
+  },
 );

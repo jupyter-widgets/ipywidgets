@@ -46,7 +46,7 @@ const matchesSelector =
   ElementProto['oMatchesSelector'] ||
   function matches(selector: string): boolean {
     const matches = (this.document || this.ownerDocument).querySelectorAll(
-      selector
+      selector,
     );
     let i = matches.length;
     while (--i >= 0 && matches.item(i) !== this) {
@@ -104,7 +104,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
   delegate(
     eventName: string,
     selector: string | Function,
-    listener?: any
+    listener?: any,
   ): this {
     if (typeof selector !== 'string') {
       listener = selector;
@@ -147,7 +147,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
   undelegate(
     eventName: string,
     selector?: string | Function,
-    listener?: Function
+    listener?: Function,
   ): NativeView<T> {
     if (typeof selector === 'function') {
       listener = selector;

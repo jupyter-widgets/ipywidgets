@@ -65,7 +65,7 @@ function register_events(Jupyter, events, outputarea) {
     'kernel_created.Kernel kernel_created.Session',
     function (event, data) {
       handle_kernel(Jupyter, data.kernel);
-    }
+    },
   );
 
   // When a kernel dies, disconnect the widgets.
@@ -76,7 +76,7 @@ function register_events(Jupyter, events, outputarea) {
       if (kernel && kernel.widget_manager) {
         kernel.widget_manager.disconnect();
       }
-    }
+    },
   );
 
   /**
@@ -89,7 +89,7 @@ function register_events(Jupyter, events, outputarea) {
     Object.keys(views).forEach((viewKey) => {
       LuminoMessaging.MessageLoop.postMessage(
         views[viewKey].luminoWidget,
-        LuminoWidget.Widget.ResizeMessage.UnknownSize
+        LuminoWidget.Widget.ResizeMessage.UnknownSize,
       );
     });
   });
@@ -210,7 +210,7 @@ function load_ipython_extension() {
         require('@jupyter-widgets/controls/css/widgets.css');
         register_events(Jupyter, events, outputarea);
         resolve();
-      }
+      },
     );
   });
 }

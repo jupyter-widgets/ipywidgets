@@ -14,13 +14,17 @@ You can display widgets with IPython's display machinery::
 Moving the slider will change the value. Most widgets have a current value,
 accessible as a `value` attribute.
 """
-from ._version import __version__
 from warnings import warn
 
+from ._version import __version__
+
+
 def _jupyter_nbextension_paths():
-    return [{
-        'section': 'notebook',
-        'src': 'static',
-        'dest': 'jupyter-js-widgets',
-        'require': 'jupyter-js-widgets/extension'
-    }]
+    return [
+        {
+            "section": "notebook",
+            "src": "static",
+            "dest": "jupyter-js-widgets",
+            "require": "jupyter-js-widgets/extension",
+        }
+    ]

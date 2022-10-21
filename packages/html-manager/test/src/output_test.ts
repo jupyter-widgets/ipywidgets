@@ -170,7 +170,7 @@ describe('Output widget', function () {
         mimeTypes: ['text/plain'],
         createRenderer: (options) => new MockTextRenderer(options),
       },
-      0
+      0,
     );
 
     const modelId = 'u-u-i-d';

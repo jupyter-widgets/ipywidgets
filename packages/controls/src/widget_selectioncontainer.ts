@@ -107,11 +107,11 @@ export class AccordionView extends DOMWidgetView {
     this.children_views = new ViewList(
       this.add_child_view,
       this.remove_child_view,
-      this
+      this,
     );
     this.listenTo(this.model, 'change:children', () => this.updateChildren());
     this.listenTo(this.model, 'change:selected_index', () =>
-      this.update_selected_index()
+      this.update_selected_index(),
     );
     this.listenTo(this.model, 'change:titles', () => this.update_titles());
   }
@@ -286,7 +286,7 @@ export class TabView extends DOMWidgetView {
       (view) => {
         view.remove();
       },
-      this
+      this,
     );
     this.listenTo(this.model, 'change:children', () => this.updateTabs());
     this.listenTo(this.model, 'change:titles', () => this.updateTitles());
@@ -395,7 +395,7 @@ export class TabView extends DOMWidgetView {
 
   _onTabChanged(
     sender: TabBar<Widget>,
-    args: TabBar.ICurrentChangedArgs<Widget>
+    args: TabBar.ICurrentChangedArgs<Widget>,
   ): void {
     if (!this.updatingTabs) {
       const i = args.currentIndex;
@@ -409,7 +409,7 @@ export class TabView extends DOMWidgetView {
    */
   _onTabMoved(
     sender: TabBar<Widget>,
-    args: TabBar.ITabMovedArgs<Widget>
+    args: TabBar.ITabMovedArgs<Widget>,
   ): void {
     const children = this.model.get('children').slice();
     ArrayExt.move(children, args.fromIndex, args.toIndex);
@@ -450,7 +450,7 @@ export class StackView extends BoxView {
       views.forEach((view) => {
         MessageLoop.postMessage(
           view.luminoWidget,
-          Widget.ResizeMessage.UnknownSize
+          Widget.ResizeMessage.UnknownSize,
         );
       });
     });

@@ -42,14 +42,14 @@ describe('Time', () => {
       const model = await createTestModelFromSerialized(TimeModel, state_in);
       model.widget_manager.register_model(
         model.model_id,
-        Promise.resolve(model)
+        Promise.resolve(model),
       );
 
       const state_out = await (
         model.widget_manager as DummyManager
       ).get_state();
       const models = Object.keys(state_out.state).map(
-        (k) => state_out.state[k].state
+        (k) => state_out.state[k].state,
       );
       expect(models.length).to.equal(1);
       expect(models[0]._model_name).to.equal('TimeModel');
@@ -128,7 +128,7 @@ describe('Time', () => {
 
       model.set('value', timeString);
       const picker = view.el.querySelector(
-        'input[type="time"]'
+        'input[type="time"]',
       ) as HTMLInputElement;
       expect(picker.value).to.equal(timeString);
     });

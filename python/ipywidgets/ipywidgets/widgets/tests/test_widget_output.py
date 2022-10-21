@@ -1,16 +1,16 @@
 import sys
-from unittest import TestCase
 from contextlib import contextmanager
+from unittest import TestCase
 
-from IPython.display import Markdown, Image
+from IPython.display import Image, Markdown
+
 from ipywidgets import widget_output
 
 
 class TestOutputWidget(TestCase):
-
     @contextmanager
     def _mocked_ipython(self, get_ipython, clear_output):
-        """ Context manager that monkeypatches get_ipython and clear_output """
+        """Context manager that monkeypatches get_ipython and clear_output"""
         original_clear_output = widget_output.clear_output
         original_get_ipython = widget_output.get_ipython
         widget_output.get_ipython = get_ipython
@@ -22,12 +22,8 @@ class TestOutputWidget(TestCase):
             widget_output.get_ipython = original_get_ipython
 
     def _mock_get_ipython(self, msg_id):
-        """ Returns a mock IPython application with a mocked kernel """
-        kernel = type(
-            'mock_kernel',
-            (object, ),
-            {'_parent_header': {'header': {'msg_id': msg_id}}}
-        )
+        """Returns a mock IPython application with a mocked kernel"""
+        kernel = type("mock_kernel", (object,), {"_parent_header": {"header": {"msg_id": msg_id}}})
 
         # Specifically override this so the traceback
         # is still printed to screen
@@ -36,36 +32,35 @@ class TestOutputWidget(TestCase):
             raise etype(evalue)
 
         ipython = type(
-            'mock_ipython',
-            (object, ),
-            {'kernel': kernel, 'showtraceback': showtraceback}
+            "mock_ipython", (object,), {"kernel": kernel, "showtraceback": showtraceback}
         )
         return ipython
 
     def _mock_clear_output(self):
-        """ Mock function that records calls to it """
+        """Mock function that records calls to it"""
         calls = []
 
         def clear_output(*args, **kwargs):
             calls.append((args, kwargs))
+
         clear_output.calls = calls
 
         return clear_output
 
     def test_set_msg_id_when_capturing(self):
-        msg_id = 'msg-id'
+        msg_id = "msg-id"
         get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
         with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
-            assert widget.msg_id == ''
+            assert widget.msg_id == ""
             with widget:
                 assert widget.msg_id == msg_id
-            assert widget.msg_id == ''
+            assert widget.msg_id == ""
 
     def test_clear_output(self):
-        msg_id = 'msg-id'
+        msg_id = "msg-id"
         get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
@@ -74,19 +69,19 @@ class TestOutputWidget(TestCase):
             widget.clear_output(wait=True)
 
         assert len(clear_output.calls) == 1
-        assert clear_output.calls[0] == ((), {'wait': True})
+        assert clear_output.calls[0] == ((), {"wait": True})
 
     def test_capture_decorator(self):
-        msg_id = 'msg-id'
+        msg_id = "msg-id"
         get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
-        expected_argument = 'arg'
+        expected_argument = "arg"
         expected_keyword_argument = True
         captee_calls = []
 
         with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
-            assert widget.msg_id == ''
+            assert widget.msg_id == ""
 
             @widget.capture()
             def captee(*args, **kwargs):
@@ -96,20 +91,19 @@ class TestOutputWidget(TestCase):
                 # Check that arguments are passed correctly
                 captee_calls.append((args, kwargs))
 
-            captee(
-                expected_argument, keyword_argument=expected_keyword_argument)
-            assert widget.msg_id == ''
+            captee(expected_argument, keyword_argument=expected_keyword_argument)
+            assert widget.msg_id == ""
             captee()
 
         assert len(captee_calls) == 2
         assert captee_calls[0] == (
-            (expected_argument, ),
-            {'keyword_argument': expected_keyword_argument}
+            (expected_argument,),
+            {"keyword_argument": expected_keyword_argument},
         )
         assert captee_calls[1] == ((), {})
 
     def test_capture_decorator_clear_output(self):
-        msg_id = 'msg-id'
+        msg_id = "msg-id"
         get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
@@ -125,11 +119,10 @@ class TestOutputWidget(TestCase):
             captee()
 
         assert len(clear_output.calls) == 2
-        assert clear_output.calls[0] == clear_output.calls[1] == \
-            ((), {'wait': True})
+        assert clear_output.calls[0] == clear_output.calls[1] == ((), {"wait": True})
 
     def test_capture_decorator_no_clear_output(self):
-        msg_id = 'msg-id'
+        msg_id = "msg-id"
         get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
@@ -148,11 +141,7 @@ class TestOutputWidget(TestCase):
 
 
 def _make_stream_output(text, name):
-    return {
-        'output_type': 'stream',
-        'name': name,
-        'text': text
-    }
+    return {"output_type": "stream", "name": name, "text": text}
 
 
 def test_append_stdout():
@@ -190,34 +179,29 @@ def test_append_display_data():
     widget.append_display_data(Markdown("# snakes!"))
     expected = (
         {
-            'output_type': 'display_data',
-            'data': {
-                'text/plain': '<IPython.core.display.Markdown object>',
-                'text/markdown': '# snakes!'
+            "output_type": "display_data",
+            "data": {
+                "text/plain": "<IPython.core.display.Markdown object>",
+                "text/markdown": "# snakes!",
             },
-            'metadata': {}
+            "metadata": {},
         },
     )
     assert widget.outputs == expected, repr(widget.outputs)
 
     # Now try appending an Image.
     image_data = b"foobar"
-    image_data_b64 = 'Zm9vYmFy\n'
+    image_data_b64 = "Zm9vYmFy\n"
 
     widget.append_display_data(Image(image_data, width=123, height=456))
     expected += (
         {
-            'output_type': 'display_data',
-            'data': {
-                'image/png': image_data_b64,
-                'text/plain': '<IPython.core.display.Image object>'
+            "output_type": "display_data",
+            "data": {
+                "image/png": image_data_b64,
+                "text/plain": "<IPython.core.display.Image object>",
             },
-            'metadata': {
-                'image/png': {
-                    'width': 123,
-                    'height': 456
-                }
-            }
+            "metadata": {"image/png": {"width": 123, "height": 456}},
         },
     )
     assert widget.outputs == expected, repr(widget.outputs)

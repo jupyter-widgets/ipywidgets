@@ -73,7 +73,7 @@ const JSONToArray = function (obj: any): any {
 
 const arrayToJSON = function (obj: any): any {
   const dtype = Object.keys(typesToArray).filter(
-    (i) => typesToArray[i] === obj.constructor
+    (i) => typesToArray[i] === obj.constructor,
   )[0];
   return { dtype, buffer: obj };
 };
@@ -148,7 +148,7 @@ export class DummyManager implements widgets.IWidgetManager {
   protected loadClass(
     className: string,
     moduleName: string,
-    moduleVersion: string
+    moduleVersion: string,
   ): Promise<any> {
     if (moduleName === '@jupyter-widgets/base') {
       if ((widgets as any)[className]) {
@@ -177,11 +177,11 @@ export class DummyManager implements widgets.IWidgetManager {
    */
   create_view(
     model: widgets.DOMWidgetModel,
-    options?: any
+    options?: any,
   ): Promise<widgets.DOMWidgetView>;
   create_view(
     model: widgets.WidgetModel,
-    options?: any
+    options?: any,
   ): Promise<widgets.WidgetView> {
     throw new Error('Not implemented in dummy manager');
   }
@@ -227,14 +227,14 @@ export class DummyManager implements widgets.IWidgetManager {
    */
   new_widget(
     options: widgets.IWidgetOptions,
-    serialized_state: JSONObject = {}
+    serialized_state: JSONObject = {},
   ): Promise<widgets.WidgetModel> {
     return this.new_model(options, serialized_state);
   }
 
   register_model(
     model_id: string,
-    modelPromise: Promise<widgets.WidgetModel>
+    modelPromise: Promise<widgets.WidgetModel>,
   ): void {
     this._models[model_id] = modelPromise;
     modelPromise.then((model) => {
@@ -262,7 +262,7 @@ export class DummyManager implements widgets.IWidgetManager {
    */
   async new_model(
     options: widgets.IModelOptions,
-    serialized_state: any = {}
+    serialized_state: any = {},
   ): Promise<widgets.WidgetModel> {
     let model_id;
     if (options.model_id) {
@@ -271,7 +271,7 @@ export class DummyManager implements widgets.IWidgetManager {
       model_id = options.model_id = options.comm.comm_id;
     } else {
       throw new Error(
-        'Neither comm nor model_id provided in options object. At least one must exist.'
+        'Neither comm nor model_id provided in options object. At least one must exist.',
       );
     }
 
@@ -283,13 +283,13 @@ export class DummyManager implements widgets.IWidgetManager {
 
   async _make_model(
     options: any,
-    serialized_state: any = {}
+    serialized_state: any = {},
   ): Promise<widgets.WidgetModel> {
     const model_id = options.model_id;
     const model_promise = this.loadClass(
       options.model_name,
       options.model_module,
-      options.model_module_version
+      options.model_module_version,
     );
     let ModelType;
     try {
@@ -301,13 +301,13 @@ export class DummyManager implements widgets.IWidgetManager {
 
     if (!ModelType) {
       throw new Error(
-        `Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`
+        `Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`,
       );
     }
 
     const attributes = await ModelType._deserialize_state(
       serialized_state,
-      this
+      this,
     );
     const modelOptions = {
       widget_manager: this,

@@ -214,12 +214,12 @@ export class ControllerModel extends CoreDOMWidgetModel {
       buttons: Promise.all(
         pad.buttons.map((btn, index) => {
           return this._create_button_model(index);
-        })
+        }),
       ),
       axes: Promise.all(
         pad.axes.map((axis, index) => {
           return this._create_axis_model(index);
-        })
+        }),
       ),
     });
   }
@@ -240,7 +240,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
       this.save_changes();
       this.get('buttons').forEach(function (
         model: ControllerButtonModel,
-        index: number
+        index: number,
       ) {
         model.set({
           value: pad!.buttons[index].value,
@@ -250,7 +250,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
       });
       this.get('axes').forEach(function (
         model: ControllerAxisModel,
-        index: number
+        index: number,
       ) {
         model.set('value', pad!.axes[index]);
         model.save_changes();

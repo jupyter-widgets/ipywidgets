@@ -75,7 +75,7 @@ function validate(dname) {
       fileName,
       readFileSync(fileName).toString(),
       ts.ScriptTarget.ES6,
-      /*setParentNodes */ true
+      /*setParentNodes */ true,
     );
     imports = imports.concat(getImports(sourceFile));
     //console.log(fileName, getImports(sourceFile));

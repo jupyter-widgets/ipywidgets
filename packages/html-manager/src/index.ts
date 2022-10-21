@@ -8,10 +8,10 @@ export const version = require('../package.json').version;
 
 export function generateEmbedScript(
   widgetState: any,
-  imageDataUrl: string
+  imageDataUrl: string,
 ): string {
   return `<img src=${imageDataUrl} class="jupyter-widget">
 <script type="application/vnd.jupyter.widgets-state+json">${JSON.stringify(
-    widgetState
+    widgetState,
   )}</script>`;
 }

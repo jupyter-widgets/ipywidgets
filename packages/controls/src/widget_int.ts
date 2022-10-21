@@ -66,7 +66,7 @@ export class IntSliderModel extends BoundedIntModel {
   }
   initialize(
     attributes: Backbone.ObjectHash,
-    options: { model_id: string; comm: any; widget_manager: any }
+    options: { model_id: string; comm: any; widget_manager: any },
   ): void {
     super.initialize(attributes, options);
     this.on('change:readout_format', this.update_readout_format, this);
@@ -815,7 +815,7 @@ export class PlayModel extends BoundedIntModel {
   }
   initialize(
     attributes: any,
-    options: { model_id: string; comm: any; widget_manager: any }
+    options: { model_id: string; comm: any; widget_manager: any },
   ): void {
     super.initialize(attributes, options);
   }
@@ -842,7 +842,7 @@ export class PlayModel extends BoundedIntModel {
   schedule_next(): void {
     this._timerId = window.setTimeout(
       this.loop.bind(this),
-      this.get('interval')
+      this.get('interval'),
     );
   }
 

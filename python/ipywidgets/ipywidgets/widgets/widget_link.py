@@ -6,10 +6,10 @@
 Propagate changes between widgets on the javascript side.
 """
 
+from traitlets import Instance, TraitError, Tuple, Unicode
+
 from .widget import Widget, register, widget_serialization
 from .widget_core import CoreWidget
-
-from traitlets import Unicode, Tuple, Instance, TraitError
 
 
 class WidgetTraitTuple(Tuple):
@@ -30,12 +30,12 @@ class WidgetTraitTuple(Tuple):
         value = super().validate_elements(obj, value)
         widget, trait_name = value
         trait = widget.traits().get(trait_name)
-        trait_repr = "{}.{}".format(widget.__class__.__name__, trait_name)
+        trait_repr = f"{widget.__class__.__name__}.{trait_name}"
         # Can't raise TraitError because the parent will swallow the message
         # and throw it away in a new, less informative TraitError
         if trait is None:
             raise TypeError("No such trait: %s" % trait_repr)
-        elif not trait.metadata.get('sync'):
+        elif not trait.metadata.get("sync"):
             raise TypeError("%s cannot be synced" % trait_repr)
         return value
 
@@ -48,13 +48,17 @@ class Link(CoreWidget):
     target: a (Widget, 'trait_name') tuple that should be updated
     """
 
-    _model_name = Unicode('LinkModel').tag(sync=True)
-    target = WidgetTraitTuple(help="The target (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
-    source = WidgetTraitTuple(help="The source (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
+    _model_name = Unicode("LinkModel").tag(sync=True)
+    target = WidgetTraitTuple(help="The target (widget, 'trait_name') pair").tag(
+        sync=True, **widget_serialization
+    )
+    source = WidgetTraitTuple(help="The source (widget, 'trait_name') pair").tag(
+        sync=True, **widget_serialization
+    )
 
     def __init__(self, source, target, **kwargs):
-        kwargs['source'] = source
-        kwargs['target'] = target
+        kwargs["source"] = source
+        kwargs["target"] = target
         super().__init__(**kwargs)
 
     # for compatibility with traitlet links
@@ -89,7 +93,8 @@ class DirectionalLink(Link):
     target: a (Widget, 'trait_name') tuple that should be updated
     when the source trait changes.
     """
-    _model_name = Unicode('DirectionalLinkModel').tag(sync=True)
+
+    _model_name = Unicode("DirectionalLinkModel").tag(sync=True)
 
 
 def jsdlink(source, target):

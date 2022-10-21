@@ -57,7 +57,7 @@ export type Dict<T> = { [keys: string]: T };
  * Returns a single Promise.
  */
 export function resolvePromisesDict<V>(
-  d: Dict<PromiseLike<V> | V>
+  d: Dict<PromiseLike<V> | V>,
 ): Promise<Dict<V>> {
   const keys = Object.keys(d);
   const values: (PromiseLike<V> | V)[] = [];
@@ -105,7 +105,7 @@ export function put_buffers(
     | ArrayBuffer
     | ArrayBufferView
     | { buffer: ArrayBuffer }
-  )[]
+  )[],
 ): void {
   for (let i = 0; i < buffer_paths.length; i++) {
     const buffer_path = buffer_paths[i];
@@ -113,7 +113,7 @@ export function put_buffers(
     let buffer = buffers[i];
     if (!(buffer instanceof DataView)) {
       buffer = new DataView(
-        buffer instanceof ArrayBuffer ? buffer : buffer.buffer
+        buffer instanceof ArrayBuffer ? buffer : buffer.buffer,
       );
     }
     // say we want to set state[x][y][z] = buffer
@@ -164,7 +164,7 @@ export function isObject(data: BufferJSON): data is Dict<BufferJSON> {
  * and the buffers associated to those paths (.buffers).
  */
 export function remove_buffers(
-  state: BufferJSON | ISerializeable
+  state: BufferJSON | ISerializeable,
 ): ISerializedState {
   const buffers: ArrayBuffer[] = [];
   const buffer_paths: (string | number)[][] = [];
@@ -173,7 +173,7 @@ export function remove_buffers(
   // however, we do not want to clone everything, for performance
   function remove(
     obj: BufferJSON | ISerializeable,
-    path: (string | number)[]
+    path: (string | number)[],
   ): BufferJSON {
     if (isSerializable(obj)) {
       // We need to get the JSON form of the object before recursing.

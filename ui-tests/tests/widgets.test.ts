@@ -11,7 +11,7 @@ test.describe('Widget Visual Regression', () => {
   test.beforeEach(async ({ page, tmpPath }) => {
     await page.contents.uploadDirectory(
       path.resolve(__dirname, './notebooks'),
-      tmpPath
+      tmpPath,
     );
     await page.filebrowser.openDirectory(tmpPath);
   });

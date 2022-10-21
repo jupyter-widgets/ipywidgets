@@ -36,7 +36,7 @@ export class OutputModel extends outputBase.OutputModel {
     this.widget_manager.context.sessionContext.kernelChanged.connect(
       (sender, args) => {
         this._handleKernelChanged(args);
-      }
+      },
     );
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
     this.listenTo(this, 'change:outputs', this.setOutputs);

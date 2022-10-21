@@ -7,21 +7,20 @@ from ipywidgets.widgets.docutils import doc_subst
 
 
 class TestDocSubst(TestCase):
-
     def test_substitution(self):
-        snippets = {'key': '62'}
+        snippets = {"key": "62"}
 
         @doc_subst(snippets)
         def f():
-            """ Docstring with value {key} """
+            """Docstring with value {key}"""
 
         assert f.__doc__ == " Docstring with value 62 "
 
     def test_unused_keys(self):
-        snippets = {'key': '62', 'other-key': 'unused'}
+        snippets = {"key": "62", "other-key": "unused"}
 
         @doc_subst(snippets)
         def f():
-            """ Docstring with value {key} """
+            """Docstring with value {key}"""
 
         assert f.__doc__ == " Docstring with value 62 "

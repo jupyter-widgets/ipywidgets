@@ -127,14 +127,14 @@ describe('SelectMultiple', () => {
       model.set_state({ _options_labels: ['A', 'B', 'C'], index: [1, 2] });
       expect([...view.listbox.selectedOptions].map((o) => o.index)).to.eql(
         [1, 2],
-        'order 1 failed'
+        'order 1 failed',
       );
       model.set_state({ _options_labels: [], index: null });
       expect([...view.listbox.selectedOptions].map((o) => o.index)).to.eql([]);
       model.set_state({ index: [1, 2], _options_labels: ['A', 'B', 'C'] });
       expect([...view.listbox.selectedOptions].map((o) => o.index)).to.eql(
         [1, 2],
-        'order 2 failed'
+        'order 2 failed',
       );
     });
   });

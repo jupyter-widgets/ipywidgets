@@ -1,26 +1,24 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import pytest
-
-from contextlib import nullcontext
 import datetime
 import itertools
+from contextlib import nullcontext
 
+import pytest
 import pytz
 from traitlets import TraitError
 
 from ..widget_datetime import DatetimePicker
-
 
 dt_1442 = datetime.datetime(1442, 1, 1, tzinfo=pytz.utc)
 dt_1664 = datetime.datetime(1664, 1, 1, tzinfo=pytz.utc)
 dt_1994 = datetime.datetime(1994, 1, 1, tzinfo=pytz.utc)
 dt_2002 = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=pytz.utc)
 dt_2056 = datetime.datetime(2056, 1, 1, tzinfo=pytz.utc)
+
 
 def test_time_creation_blank():
     w = DatetimePicker()
@@ -59,10 +57,7 @@ def _permuted_dts():
     return ret
 
 
-@pytest.mark.parametrize(
-    "input_value,input_min,input_max,expected",
-    _permuted_dts()
-)
+@pytest.mark.parametrize("input_value,input_min,input_max,expected", _permuted_dts())
 def test_datetime_cross_validate_value_min_max(
     input_value,
     input_min,
@@ -149,7 +144,7 @@ def test_datetime_validate_naive():
 
 
 def test_datetime_tzinfo():
-    tz = pytz.timezone('Australia/Sydney')
+    tz = pytz.timezone("Australia/Sydney")
     dt = datetime.datetime(2002, 2, 20, 13, 37, 42, 7, tzinfo=tz)
     w = DatetimePicker(value=dt)
     assert w.value == dt

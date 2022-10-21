@@ -41,7 +41,7 @@ requirejs(['base/js/namespace'], function (Jupyter) {
   Jupyter.notebook.keyboard_manager.actions.register(
     action,
     action_name,
-    prefix
+    prefix,
   );
 });
 

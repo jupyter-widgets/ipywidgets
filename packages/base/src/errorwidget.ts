@@ -10,7 +10,7 @@ import { BROKEN_FILE_SVG_ICON } from './utils';
 // create a Widget Model that captures an error object
 export function createErrorWidgetModel(
   error: unknown,
-  msg?: string
+  msg?: string,
 ): typeof WidgetModel {
   class ErrorWidget extends DOMWidgetModel {
     constructor(attributes: any, options: any) {
@@ -79,7 +79,7 @@ export class ErrorWidgetView extends DOMWidgetView {
 
 export function createErrorWidgetView(
   error?: unknown,
-  msg?: string
+  msg?: string,
 ): typeof WidgetView {
   return class InnerErrorWidgetView extends ErrorWidgetView {
     generateErrorMessage(): { msg?: string; stack: string } {

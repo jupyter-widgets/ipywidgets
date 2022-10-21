@@ -62,12 +62,12 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
  */
 export function requireLoader(
   moduleName: string,
-  moduleVersion: string
+  moduleVersion: string,
 ): Promise<any> {
   const require = (window as any).requirejs;
   if (require === undefined) {
     throw new Error(
-      'Requirejs is needed, please ensure it is loaded on the page.'
+      'Requirejs is needed, please ensure it is loaded on the page.',
     );
   }
   function loadFromCDN(): Promise<any> {
@@ -101,8 +101,8 @@ export function renderWidgets(
   element = document.documentElement,
   loader: (
     moduleName: string,
-    moduleVersion: string
-  ) => Promise<any> = requireLoader
+    moduleVersion: string,
+  ) => Promise<any> = requireLoader,
 ): void {
   requirePromise(['@jupyter-widgets/html-manager']).then((htmlmanager) => {
     const managerFactory = (): any => {

@@ -9,7 +9,7 @@ import { WidgetModel, WidgetView } from './widget';
  * A runtime interface token for a widget registry.
  */
 export const IJupyterWidgetRegistry = new Token<IJupyterWidgetRegistry>(
-  'jupyter.extensions.jupyterWidgetRegistry'
+  'jupyter.extensions.jupyterWidgetRegistry',
 );
 
 /**

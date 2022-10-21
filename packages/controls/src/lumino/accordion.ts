@@ -228,7 +228,7 @@ export class Accordion extends Panel {
   indexOf(widget: Widget): number {
     return ArrayExt.findFirstIndex(
       this.collapseWidgets,
-      (w: Collapse) => w.widget === widget
+      (w: Collapse) => w.widget === widget,
     );
   }
 
@@ -294,7 +294,7 @@ export class Accordion extends Panel {
 
   private _onSelectionChanged(
     sender: Selection<Widget>,
-    change: Selection.ISelectionChangedArgs<Collapse>
+    change: Selection.ISelectionChangedArgs<Collapse>,
   ): void {
     // Collapse previous widget, open current widget
     const pv = change.previousValue;

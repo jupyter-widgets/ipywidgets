@@ -191,13 +191,13 @@ describe('WidgetModel', function () {
         { method: 'custom', content: data1 },
         callbacks,
         {},
-        buffers
+        buffers,
       );
       expect(send.getCall(1)).to.be.calledWithExactly(
         { method: 'custom', content: data2 },
         callbacks,
         {},
-        buffers
+        buffers,
       );
     });
   });
@@ -433,7 +433,7 @@ describe('WidgetModel', function () {
     it('deserializes simple JSON state', async function () {
       const state = await this.widget.constructor._deserialize_state(
         { a: 10, b: [{ c: 'test1', d: ['test2'] }, 20] },
-        this.manager
+        this.manager,
       );
       expect(state.a).to.equal(10);
       expect(state.b).to.deep.equal([{ c: 'test1', d: ['test2'] }, 20]);
@@ -442,7 +442,7 @@ describe('WidgetModel', function () {
     it('respects custom serializers', async function () {
       const state = await this.widget.constructor._deserialize_state(
         { times3: 2.0, halve: 2.0, c: 2.0 },
-        this.manager
+        this.manager,
       );
       expect(state.times3).to.equal(6.0);
       expect(state.halve).to.equal(1.0);
@@ -452,7 +452,7 @@ describe('WidgetModel', function () {
     it('calls the deserializer with appropriate arguments', async function () {
       await this.widget.constructor._deserialize_state(
         { spy: 'value' },
-        this.manager
+        this.manager,
       );
       const spy = this.widget.constructor.serializers.spy.deserialize;
       expect(spy).to.be.calledOnce;
@@ -754,7 +754,7 @@ describe('WidgetModel', function () {
           a: 'send sync message',
           b: 'b value',
         },
-        {}
+        {},
       );
       expect(this.comm.send).to.be.calledWith({
         method: 'update',
@@ -803,7 +803,7 @@ describe('WidgetModel', function () {
 
     it('encodes the widget', function () {
       expect(this.widget.toJSON()).to.equal(
-        `IPY_MODEL_${this.widget.model_id}`
+        `IPY_MODEL_${this.widget.model_id}`,
       );
     });
   });

@@ -89,7 +89,7 @@ export class FileUploadView extends DOMWidgetView {
             };
             fileReader.onabort = fileReader.onerror;
             fileReader.readAsArrayBuffer(file);
-          })
+          }),
         );
       });
 
@@ -147,7 +147,7 @@ export class FileUploadView extends DOMWidgetView {
     this.update_mapped_classes(
       FileUploadView.class_map,
       'button_style',
-      this.el
+      this.el,
     );
   }
 

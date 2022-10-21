@@ -45,18 +45,18 @@ describe('Datetime', () => {
 
       const model = await createTestModelFromSerialized(
         DatetimeModel,
-        state_in
+        state_in,
       );
       model.widget_manager.register_model(
         model.model_id,
-        Promise.resolve(model)
+        Promise.resolve(model),
       );
 
       const state_out = await (
         model.widget_manager as DummyManager
       ).get_state();
       const models = Object.keys(state_out.state).map(
-        (k) => state_out.state[k].state
+        (k) => state_out.state[k].state,
       );
       expect(models.length).to.equal(1);
       expect(models[0]._model_name).to.equal('DatetimeModel');
@@ -78,10 +78,10 @@ describe('Datetime', () => {
 
       const model = await createTestModelFromSerialized(
         DatetimeModel,
-        state_in
+        state_in,
       );
       expect(model.get('value')).to.eql(
-        new Date(Date.UTC(2002, 2, 20, 20, 2, 20, 2))
+        new Date(Date.UTC(2002, 2, 20, 20, 2, 20, 2)),
       );
     });
 
@@ -90,7 +90,7 @@ describe('Datetime', () => {
 
       const model = await createTestModelFromSerialized(
         DatetimeModel,
-        state_in
+        state_in,
       );
       expect(model.get('value')).to.be.a('null');
     });
@@ -99,7 +99,7 @@ describe('Datetime', () => {
       const state_in = {};
       const model = await createTestModelFromSerialized(
         DatetimeModel,
-        state_in
+        state_in,
       );
       expect(model.get('value')).to.be.a('null');
     });
@@ -144,18 +144,18 @@ describe('Datetime', () => {
 
       const model = await createTestModelFromSerialized(
         NaiveDatetimeModel,
-        state_in
+        state_in,
       );
       model.widget_manager.register_model(
         model.model_id,
-        Promise.resolve(model)
+        Promise.resolve(model),
       );
 
       const state_out = await (
         model.widget_manager as DummyManager
       ).get_state();
       const models = Object.keys(state_out.state).map(
-        (k) => state_out.state[k].state
+        (k) => state_out.state[k].state,
       );
       expect(models.length).to.eql(1);
       expect(models[0]._model_name).to.eql('NaiveDatetimeModel');
@@ -177,7 +177,7 @@ describe('Datetime', () => {
 
       const model = await createTestModelFromSerialized(
         NaiveDatetimeModel,
-        state_in
+        state_in,
       );
       expect(model.get('value')).to.eql(new Date(2002, 2, 20, 20, 2, 20, 2));
     });
@@ -187,7 +187,7 @@ describe('Datetime', () => {
 
       const model = await createTestModelFromSerialized(
         NaiveDatetimeModel,
-        state_in
+        state_in,
       );
       expect(model.get('value')).to.be.a('null');
     });
@@ -196,7 +196,7 @@ describe('Datetime', () => {
       const state_in = {};
       const model = await createTestModelFromSerialized(
         NaiveDatetimeModel,
-        state_in
+        state_in,
       );
       expect(model.get('value')).to.be.a('null');
     });

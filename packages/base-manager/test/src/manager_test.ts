@@ -75,7 +75,7 @@ describe('ManagerBase', function () {
       const model = await manager.new_model(spec);
       const view = await manager.create_view(model);
       expect(view.generateErrorMessage()['msg']).to.be.equal(
-        "Failed to load view class 'MissingView' from module 'test-widgets'"
+        "Failed to load view class 'MissingView' from module 'test-widgets'",
       );
     });
 
@@ -90,7 +90,7 @@ describe('ManagerBase', function () {
       const model = await manager.new_model(spec);
       const view = await manager.create_view(model);
       expect(view.generateErrorMessage()['msg']).to.be.equal(
-        "Failed to create view for 'ViewErrorWidget' from module 'test-widgets' with model 'ModelWithViewError' from module 'test-widgets'"
+        "Failed to create view for 'ViewErrorWidget' from module 'test-widgets' with model 'ModelWithViewError' from module 'test-widgets'",
       );
     });
 
@@ -122,12 +122,12 @@ describe('ManagerBase', function () {
       const view = await manager.create_view(model);
       // model.views contains some promise which resolves to the view
       const modelViews = await Promise.all(
-        Object.keys(model.views).map((i) => model.views[i])
+        Object.keys(model.views).map((i) => model.views[i]),
       );
       expect(modelViews).to.contain(view);
       view.remove();
       const modelViews2 = await Promise.all(
-        Object.keys(model.views).map((i) => model.views[i])
+        Object.keys(model.views).map((i) => model.views[i]),
       );
       expect(modelViews2).to.not.contain(view);
     });
@@ -280,7 +280,7 @@ describe('ManagerBase', function () {
       };
       const manager = this.managerBase;
       expect(manager.new_widget(spec)).to.be.rejectedWith(
-        'new_widget(...) must be given view information in the options.'
+        'new_widget(...) must be given view information in the options.',
       );
     });
 
@@ -351,7 +351,7 @@ describe('ManagerBase', function () {
       };
       const manager = this.managerBase;
       expect(manager.new_model(spec)).to.be.rejectedWith(
-        'Neither comm nor model_id provided in options object. At least one must exist.'
+        'Neither comm nor model_id provided in options object. At least one must exist.',
       );
     });
 
@@ -365,7 +365,7 @@ describe('ManagerBase', function () {
       const manager = this.managerBase;
       const model = await manager.new_model(spec);
       expect(model.get('msg')).to.be.equal(
-        "Failed to load model class 'Foo' from module 'bar'"
+        "Failed to load model class 'Foo' from module 'bar'",
       );
     });
 
@@ -379,7 +379,7 @@ describe('ManagerBase', function () {
       const manager = this.managerBase;
       const model = await manager.new_model(spec);
       expect(model.get('msg')).to.be.equal(
-        "Model class 'ModelErrorWidget' from module 'test-widgets' is loaded but can not be instantiated"
+        "Model class 'ModelErrorWidget' from module 'test-widgets' is loaded but can not be instantiated",
       );
     });
 
@@ -418,7 +418,7 @@ describe('ManagerBase', function () {
             dtype: 'uint8',
             buffer: new DataView(new Uint8Array([1, 2, 3]).buffer),
           },
-        }
+        },
       );
       expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
     });
@@ -530,7 +530,7 @@ describe('ManagerBase', function () {
             dtype: 'uint8',
             buffer: new DataView(new Uint8Array([1, 2, 3]).buffer),
           },
-        }
+        },
       );
       const state = await manager.get_state({ drop_defaults: true });
       const expectedState = {

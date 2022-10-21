@@ -20,14 +20,14 @@ class WidgetManager extends ManagerBase {
           let failedId = err.requireModules && err.requireModules[0];
           if (failedId) {
             console.log(
-              `Falling back to jsDelivr for ${moduleName}@${moduleVersion}`
+              `Falling back to jsDelivr for ${moduleName}@${moduleVersion}`,
             );
             window.require(
               [
                 `https://cdn.jsdelivr.net/npm/${moduleName}@${moduleVersion}/dist/index.js`,
               ],
               resolve,
-              reject
+              reject,
             );
           } else {
             throw err;
@@ -40,7 +40,7 @@ class WidgetManager extends ManagerBase {
         return module[className];
       } else {
         return Promise.reject(
-          `Class ${className} not found in module ${moduleName}@${moduleVersion}`
+          `Class ${className} not found in module ${moduleName}@${moduleVersion}`,
         );
       }
     });

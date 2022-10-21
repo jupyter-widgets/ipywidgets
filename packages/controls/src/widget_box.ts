@@ -99,7 +99,7 @@ export class BoxView extends DOMWidgetView {
         views.forEach((view) => {
           MessageLoop.postMessage(
             view.luminoWidget,
-            Widget.ResizeMessage.UnknownSize
+            Widget.ResizeMessage.UnknownSize,
           );
         });
       });

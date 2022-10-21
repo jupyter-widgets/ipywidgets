@@ -20,7 +20,7 @@ describe('DatePickerView', function () {
         model_module_version: '1.0.0',
         model_id: modelId,
       },
-      { description: 'test-date-model' }
+      { description: 'test-date-model' },
     );
   });
 
@@ -37,7 +37,7 @@ describe('DatePickerView', function () {
     const view = new widgets.DatePickerView(options);
     view.render();
     expect(getDatepicker(view.el).valueAsDate!.getTime()).to.equal(
-      testDate.getTime()
+      testDate.getTime(),
     );
   });
 
@@ -126,7 +126,7 @@ describe('deserialize_date', function () {
     };
     const expectedDate = new Date('2017-05-12');
     expect(widgets.deserialize_date(serialized)!.getTime()).to.equal(
-      expectedDate.getTime()
+      expectedDate.getTime(),
     );
   });
 });

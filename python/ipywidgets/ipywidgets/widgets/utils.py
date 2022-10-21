@@ -1,10 +1,11 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from pathlib import Path
-import sys
 import inspect
+import sys
 import warnings
+from pathlib import Path
+
 
 def _get_frame(level):
     """Get the frame at the given stack level."""
@@ -12,10 +13,10 @@ def _get_frame(level):
     # exist in all python implementations, so we fall back to inspect.stack()
 
     # We need to add one to level to account for this get_frame call.
-    if hasattr(sys, '_getframe'):
-        frame = sys._getframe(level+1)
+    if hasattr(sys, "_getframe"):
+        frame = sys._getframe(level + 1)
     else:
-        frame = inspect.stack(context=0)[level+1].frame
+        frame = inspect.stack(context=0)[level + 1].frame
     return frame
 
 
@@ -41,15 +42,16 @@ def _external_stacklevel(internal):
 
     # climb the stack frames while we see internal frames
     while frame and any(s in str(Path(frame.f_code.co_filename)) for s in normalized_internal):
-        level +=1
+        level += 1
         frame = frame.f_back
 
     # Return the stack level from the perspective of whoever called us (i.e., one level up)
-    return level-1
+    return level - 1
 
-def deprecation(message, internal='ipywidgets/widgets/'):
+
+def deprecation(message, internal="ipywidgets/widgets/"):
     """Generate a deprecation warning targeting the first frame that is not 'internal'
-    
+
     internal is a string or list of strings, which if they appear in filenames in the
     frames, the frames will be considered internal. Changing this can be useful if, for examnple,
     we know that ipywidgets is calling out to traitlets internally.
@@ -61,4 +63,4 @@ def deprecation(message, internal='ipywidgets/widgets/'):
     stacklevel = _external_stacklevel(internal)
 
     # The call to .warn adds one frame, so bump the stacklevel up by one
-    warnings.warn(message, DeprecationWarning, stacklevel=stacklevel+1)
+    warnings.warn(message, DeprecationWarning, stacklevel=stacklevel + 1)

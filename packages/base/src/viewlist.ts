@@ -17,7 +17,7 @@ export class ViewList<T> {
   constructor(
     create_view: (model: any, index: any) => T | Promise<T>,
     remove_view: ((view: T) => void) | null,
-    context: any
+    context: any,
   ) {
     this.initialize(create_view, remove_view, context);
   }
@@ -25,7 +25,7 @@ export class ViewList<T> {
   initialize(
     create_view: (model: any, index: any) => T | Promise<T>,
     remove_view: ((view: T) => void) | null,
-    context: any
+    context: any,
   ): void {
     this._handler_context = context || this;
     this._models = [];
@@ -49,7 +49,7 @@ export class ViewList<T> {
     new_models: any[],
     create_view?: (model: any, index: any) => T | Promise<T>,
     remove_view?: (view: T) => void,
-    context?: any
+    context?: any,
   ): Promise<T[]> {
     const remove = remove_view || this._remove_view;
     const create = create_view || this._create_view;
@@ -65,7 +65,7 @@ export class ViewList<T> {
     // Remove the non-matching items from the old list.
     const removed = this.views.splice(
       first_removed,
-      this.views.length - first_removed
+      this.views.length - first_removed,
     );
     for (let j = 0; j < removed.length; j++) {
       removed[j].then(function (view) {
@@ -91,7 +91,7 @@ export class ViewList<T> {
   remove(): Promise<void> {
     return Promise.all(this.views).then((views) => {
       views.forEach((value) =>
-        this._remove_view.call(this._handler_context, value)
+        this._remove_view.call(this._handler_context, value),
       );
       this.views = [];
       this._models = [];
