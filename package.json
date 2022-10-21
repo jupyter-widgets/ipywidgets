@@ -27,15 +27,16 @@
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "^3.2.5",
-    "@typescript-eslint/eslint-plugin": "^5.8.0",
-    "@typescript-eslint/parser": "^5.8.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
     "eslint": "^8.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "lerna": "^5.4.3",
     "lint-staged": "^12.1.3",
     "prettier": "^2.3.2",
-    "sort-package-json": "~1.53.1"
+    "sort-package-json": "~1.53.1",
+    "typescript": "^4.8.4"
   },
   "engines": {
     "node": ">=10.15.3",
