@@ -5,12 +5,12 @@ import { WidgetView } from '@jupyter-widgets/base';
 
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView, DescriptionStyleModel } from './widget_description';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
 import { uuid } from './utils';
 
-import * as utils from './utils';
 import noUiSlider from 'nouislider';
+import * as utils from './utils';
 
 export class SelectionModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -498,7 +498,7 @@ export class ToggleButtonsView extends DescriptionView {
     const previous_icons = this.model.previous('icons') || [];
     const previous_bstyle =
       (ToggleButtonsView.classMap as any)[
-        this.model.previous('button_style')
+      this.model.previous('button_style')
       ] || '';
     const tooltips = this.model.get('tooltips') || [];
     const disabled = this.model.get('disabled');
@@ -771,11 +771,11 @@ export class SelectionSliderView extends DescriptionView {
 
     // Using noUiSlider's event handler
     this.$slider.noUiSlider.on('update', (values: number[], handle: number) => {
-      this.handleSliderChange(values, handle);
+      this.handleSliderUpdateEvent(values, handle);
     });
 
-    this.$slider.noUiSlider.on('end', (values: number[], handle: number) => {
-      this.handleSliderChanged(values, handle);
+    this.$slider.noUiSlider.on('change', (values: number[], handle: number) => {
+      this.handleSliderChangeEvent(values, handle);
     });
   }
 
@@ -797,9 +797,9 @@ export class SelectionSliderView extends DescriptionView {
   }
 
   /**
-   * Called when the slider value is changing.
+   * Called when the slider value changes whilst dragging.
    */
-  handleSliderChange(values: number[], handle: number): void {
+  handleSliderUpdateEvent(values: number[], handle: number): void {
     const index = values[0];
     this.updateReadout(index);
 
@@ -808,6 +808,16 @@ export class SelectionSliderView extends DescriptionView {
     if (this.model.get('continuous_update')) {
       this.handleSliderChanged(values, handle);
     }
+  }
+
+  /**
+   * Called on a mouseUp event.
+   */
+  handleSliderChangeEvent(values: number[], handle: number): void {
+    const index = values[0];
+    this.updateReadout(index);
+
+    this.handleSliderChanged(values, handle);
   }
 
   /**
@@ -951,7 +961,7 @@ export class SelectionRangeSliderView extends SelectionSliderView {
   /**
    * Called when the slider value is changing.
    */
-  handleSliderChange(values: number[], handle: any): void {
+  handleSliderUpdateEvent(values: number[], handle: any): void {
     const intValues = values.map(Math.trunc);
     this.updateReadout(intValues);
 
