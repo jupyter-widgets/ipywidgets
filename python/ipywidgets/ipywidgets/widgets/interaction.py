@@ -13,11 +13,11 @@ from IPython import get_ipython
 from . import (Widget, ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
     VBox, Button, DOMWidget, Output)
+from .widget_description import DescriptionWidget
 from IPython.display import display, clear_output
 from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
 from warnings import warn
-
 
 
 empty = Parameter.empty
@@ -168,6 +168,7 @@ class interactive(VBox):
         self.manual = __options.get("manual", False)
         self.manual_name = __options.get("manual_name", "Run Interact")
         self.auto_display = __options.get("auto_display", False)
+        self.description_displayed = __options.get("description_displayed", True)
 
         new_kwargs = self.find_abbreviations(kwargs)
         # Before we proceed, let's make sure that the user has passed a set of args+kwargs
@@ -207,11 +208,15 @@ class interactive(VBox):
             # Also register input handlers on text areas, so the user can hit return to
             # invoke execution.
             for w in self.kwargs_widgets:
+                if isinstance(w, DescriptionWidget):
+                    w.description_displayed = self.description_displayed
                 if isinstance(w, Text):
                     w.on_submit(self.update)
         else:
-            for widget in self.kwargs_widgets:
-                widget.observe(self.update, names='value')
+            for w in self.kwargs_widgets:
+                if isinstance(w, DescriptionWidget):
+                    w.description_displayed = self.description_displayed
+                w.observe(self.update, names='value')
             self.update()
 
     # Callback function
@@ -377,7 +382,7 @@ class interactive(VBox):
     # Return a factory for interactive functions
     @classmethod
     def factory(cls):
-        options = dict(manual=False, auto_display=True, manual_name="Run Interact")
+        options = dict(manual=False, auto_display=True, manual_name="Run Interact", description_displayed=True)
         return _InteractFactory(cls, options)
 
 
