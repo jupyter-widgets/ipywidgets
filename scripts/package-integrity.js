@@ -7,10 +7,8 @@
  */
 
 var readFileSync = require('fs').readFileSync;
-var writeFileSync = require('fs').writeFileSync;
 var ts = require('typescript');
 var glob = require('glob');
-var childProcess = require('child_process');
 var path = require('path');
 
 // Packages to ignore

@@ -5,9 +5,6 @@
 
 var VIEW_MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 
-var htmlManagerVersion =
-  require('@jupyter-widgets/html-manager/package.json').version;
-
 var embed_widgets = function () {
   /**
    * Escape a string that will be the content of an HTML script tag.
@@ -51,7 +48,6 @@ var embed_widgets = function () {
             '',
           ].join('\n');
           var views = [];
-          var cells = Jupyter.notebook.get_cells();
           Jupyter.notebook.get_cells().forEach(function (cell) {
             if (cell.output_area) {
               cell.output_area.outputs.forEach(function (output) {
@@ -85,7 +81,7 @@ var embed_widgets = function () {
           content.style.minHeight = '250px';
           content.value = value;
 
-          var mod = dialog.modal({
+          dialog.modal({
             show: true,
             title: 'Embed widgets',
             body: content,

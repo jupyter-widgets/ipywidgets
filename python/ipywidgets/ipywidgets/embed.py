@@ -127,7 +127,7 @@ def _find_widget_refs_by_state(widget, state):
 def _get_recursive_state(widget, store=None, drop_defaults=False):
     """Gets the embed state of a widget, and all other widgets it refers to as well"""
     if store is None:
-        store = dict()
+        store = {}
     state = widget._get_embed_state(drop_defaults=drop_defaults)
     store[widget.model_id] = state
 

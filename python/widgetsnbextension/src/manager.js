@@ -27,8 +27,8 @@ function polyfill_new_comm_buffers(
    * argument comm_id is optional
    */
   return new Promise(function (resolve) {
-    requirejs(['services/kernels/comm'], function (comm) {
-      var comm = new comm.Comm(target_name, comm_id);
+    requirejs(['services/kernels/comm'], function (comm_package) {
+      var comm = new comm_package.Comm(target_name, comm_id);
       manager.register_comm(comm);
       // inline Comm.open(), but with buffers
       var content = {
@@ -169,7 +169,6 @@ export class WidgetManager extends ManagerBase {
    * Registers manager level actions with the notebook actions list
    */
   _init_actions() {
-    var notifier = Jupyter.notification_area.widget('widgets');
     this.saveWidgetsAction = {
       handler: function () {
         this.get_state({
@@ -308,7 +307,6 @@ export class WidgetManager extends ManagerBase {
     /**
      * Gets a promise for the valid widget models.
      */
-    var that = this;
     return this._get_connected_kernel().then(function (kernel) {
       return new Promise(function (resolve, reject) {
         kernel.comm_info('jupyter.widget', function (msg) {
@@ -335,14 +333,14 @@ export class WidgetManager extends ManagerBase {
           'kernel_connected.Kernel',
           function (event, data) {
             resolve(data.kernel);
-          },
+          }
         );
       }
     });
   }
 
-  setViewOptions(options) {
-    var options = options || {};
+  setViewOptions(options_param) {
+    var options = options_param || {};
     if (!options.output && options.parent) {
       // use the parent output if we don't have one
       options.output = options.parent.options.output;

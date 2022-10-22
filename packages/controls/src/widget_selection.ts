@@ -68,7 +68,10 @@ export class SelectionView extends DescriptionView {
   }
 
   updateTooltip(): void {
-    if (!this.listbox) return; // we might be constructing the parent
+    if (!this.listbox) {
+      // we might be constructing the parent
+      return;
+    }
     const title = this.model.get('tooltip');
     if (!title) {
       this.listbox.removeAttribute('title');
