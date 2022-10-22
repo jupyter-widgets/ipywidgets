@@ -133,7 +133,7 @@ function register_events(Jupyter, events, outputarea) {
       Jupyter.notebook.kernel &&
       Jupyter.notebook.kernel.widget_manager;
     if (!manager) {
-      var msg = 'Error rendering Jupyter widget: missing widget manager';
+      let msg = 'Error rendering Jupyter widget: missing widget manager';
       if (RENDER_SHOULD_THROW) {
         throw new Error(msg);
       }
@@ -172,7 +172,7 @@ function register_events(Jupyter, events, outputarea) {
           });
         });
     } else {
-      var msg =
+      let msg =
         'A Jupyter widget could not be displayed because the widget state could not be found. This could happen if the kernel storing the widget is no longer available, or if the widget state was not saved in the notebook. You may be able to create the widget by running the appropriate cells.';
       if (RENDER_SHOULD_THROW) {
         throw new Error(msg);
