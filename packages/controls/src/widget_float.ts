@@ -4,7 +4,10 @@
 import { CoreDescriptionModel } from './widget_core';
 
 import {
-  BaseIntSliderView, IntRangeSliderView, IntSliderView, IntTextView
+  BaseIntSliderView,
+  IntRangeSliderView,
+  IntSliderView,
+  IntTextView,
 } from './widget_int';
 
 import { format } from 'd3-format';
@@ -100,7 +103,7 @@ export class FloatLogSliderModel extends BoundedFloatModel {
   readout_formatter: any;
 }
 
-export class FloatRangeSliderModel extends FloatSliderModel { }
+export class FloatRangeSliderModel extends FloatSliderModel {}
 
 export class FloatSliderView extends IntSliderView {
   /**

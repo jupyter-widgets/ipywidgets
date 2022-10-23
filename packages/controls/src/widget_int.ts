@@ -78,7 +78,7 @@ export class IntSliderModel extends BoundedIntModel {
   readout_formatter: any;
 }
 
-export class IntRangeSliderModel extends IntSliderModel { }
+export class IntRangeSliderModel extends IntSliderModel {}
 
 export abstract class BaseIntSliderView extends DescriptionView {
   render(): void {
@@ -471,7 +471,6 @@ export class IntSliderView extends BaseIntSliderView {
       }
     }
   }
-
 
   handleSliderChangeEvent(values: any, handle: any): void {
     const actual_value = values.map(this._validate_slide_value);
