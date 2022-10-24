@@ -14,7 +14,7 @@ class TestDocSubst(TestCase):
         def f():
             """Docstring with value {key}"""
 
-        assert f.__doc__ == " Docstring with value 62 "
+        assert f.__doc__ == "Docstring with value 62"
 
     def test_unused_keys(self):
         snippets = {"key": "62", "other-key": "unused"}
@@ -23,4 +23,4 @@ class TestDocSubst(TestCase):
         def f():
             """Docstring with value {key}"""
 
-        assert f.__doc__ == " Docstring with value 62 "
+        assert f.__doc__ == "Docstring with value 62"
