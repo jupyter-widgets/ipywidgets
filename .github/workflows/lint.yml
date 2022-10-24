@@ -20,4 +20,3 @@ jobs:
           yarn install --frozen-lockfile
           yarn run integrity
           pre-commit run --all-files --show-diff-on-failure
-          # yarn run lint:check
