@@ -130,9 +130,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install file://$PWD/python/ipywidgets#egg=ipywidgets
+          pip install pre-commit
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+          cache: 'yarn'
+      - name: yarn install
+        run: |
+          yarn install --frozen-lockfile
       - name: Compare spec with latest version
         run: |
           python ./packages/schema/generate-spec.py -f markdown spec.md
+          # Run pre-commit and ignore the exit code since we just want to fix the file
+          pre-commit run --files spec.md && true
           diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
   ui-test:
     name: Visual Regression
