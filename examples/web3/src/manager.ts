@@ -23,7 +23,7 @@ export class WidgetManager extends HTMLManager {
     target_name: string,
     model_id: string,
     data?: any,
-    metadata?: any,
+    metadata?: any
   ): Promise<base.shims.services.Comm> {
     const comm = this.kernel.createComm(target_name, model_id);
     if (data || metadata) {

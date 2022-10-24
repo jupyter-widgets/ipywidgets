@@ -91,7 +91,7 @@ export class DummyManager extends ManagerBase {
   protected loadClass(
     className: string,
     moduleName: string,
-    moduleVersion: string,
+    moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
     if (moduleName === '@jupyter-widgets/controls') {
       if ((widgets as any)[className]) {

@@ -251,7 +251,7 @@ export class ColorPickerView extends DescriptionView {
   private _text_change(): void {
     const value = this._validate_color(
       this._textbox.value,
-      this.model.get('value'),
+      this.model.get('value')
     );
     this.model.set('value', value);
     this.touch();

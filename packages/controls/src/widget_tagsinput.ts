@@ -173,7 +173,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
       const tag = this.createTag(
         value[index],
         index,
-        this.selection != null && this.selection.isSelected(index),
+        this.selection != null && this.selection.isSelected(index)
       );
 
       // Drag and drop
@@ -202,7 +202,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
 
     this.el.insertBefore(
       this.taginputWrapper,
-      this.el.children[this.inputIndex],
+      this.el.children[this.inputIndex]
     );
 
     // The taginput is hidden until the user focuses on the widget
@@ -254,7 +254,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
         this.tags[index],
         value[index],
         index,
-        this.selection != null && this.selection.isSelected(index),
+        this.selection != null && this.selection.isSelected(index)
       );
     }
   }
@@ -415,7 +415,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     event: DragEvent,
     index: number,
     tagValue: any,
-    origin: string,
+    origin: string
   ): void {
     if (event.dataTransfer == null) {
       return;
@@ -437,7 +437,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
 
     const draggedTagValue: string = event.dataTransfer.getData('tagValue');
     const draggedTagindex: number = parseInt(
-      event.dataTransfer.getData('index'),
+      event.dataTransfer.getData('index')
     );
     const sameOrigin =
       event.dataTransfer.getData('origin') == this.model.model_id;
@@ -590,7 +590,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     tag: HTMLElement,
     value: any,
     index: number,
-    selected: boolean,
+    selected: boolean
   ): void;
 
   el: HTMLDivElement;
@@ -667,7 +667,7 @@ export class TagsInputView extends TagsInputBaseView {
     tag: HTMLDivElement,
     value: any,
     index: number,
-    selected: boolean,
+    selected: boolean
   ): void {
     if (selected) {
       tag.classList.add('mod-active');
@@ -740,7 +740,7 @@ export class ColorsInputView extends TagsInputBaseView {
     tag: HTMLDivElement,
     value: any,
     index: number,
-    selected: boolean,
+    selected: boolean
   ): void {
     const color = value;
     const darkerColor: string = d3Color.color(value)!.darker().toString();

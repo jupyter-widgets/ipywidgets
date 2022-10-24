@@ -489,7 +489,7 @@ export class TextView extends StringView {
   update_placeholder(value?: string): void {
     this.textbox.setAttribute(
       'placeholder',
-      value || this.model.get('placeholder'),
+      value || this.model.get('placeholder')
     );
   }
 

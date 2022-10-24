@@ -148,7 +148,7 @@ export interface IWidgetManager {
    */
   new_widget(
     options: IWidgetOptions,
-    serialized_state?: JSONObject,
+    serialized_state?: JSONObject
   ): Promise<WidgetModel>;
 
   /**
@@ -169,7 +169,7 @@ export interface IWidgetManager {
    */
   new_model(
     options: IModelOptions,
-    serialized_state?: JSONObject,
+    serialized_state?: JSONObject
   ): Promise<WidgetModel>;
 
   /**
@@ -180,11 +180,11 @@ export interface IWidgetManager {
    */
   create_view<VT extends DOMWidgetView = DOMWidgetView>(
     model: DOMWidgetModel,
-    options?: unknown,
+    options?: unknown
   ): Promise<VT>;
   create_view<VT extends WidgetView = WidgetView>(
     model: WidgetModel,
-    options?: unknown,
+    options?: unknown
   ): Promise<VT>;
 
   /**

@@ -117,7 +117,7 @@ export class ButtonView extends DOMWidgetView {
           ...icon
             .split(/[\s]+/)
             .filter(Boolean)
-            .map((v: string) => `fa-${v}`),
+            .map((v: string) => `fa-${v}`)
         );
         if (description.length === 0) {
           i.classList.add('center');

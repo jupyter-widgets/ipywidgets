@@ -16,7 +16,7 @@ import '@jupyter-widgets/controls/css/widgets-base.css';
 // If lab variables are not found, we set them (we don't want to reset the variables if they are already defined)
 if (
   getComputedStyle(document.documentElement).getPropertyValue(
-    '--jp-layout-color0',
+    '--jp-layout-color0'
   ) === ''
 ) {
   require('@jupyter-widgets/controls/css/labvariables.css');
@@ -50,15 +50,15 @@ const view_validate = ajv.compile<IViewState>(widget_view_schema);
  */
 export async function renderWidgets(
   managerFactory: () => HTMLManager,
-  element: HTMLElement = document.documentElement,
+  element: HTMLElement = document.documentElement
 ): Promise<void> {
   const tags = element.querySelectorAll(
-    'script[type="application/vnd.jupyter.widget-state+json"]',
+    'script[type="application/vnd.jupyter.widget-state+json"]'
   );
   await Promise.all(
     Array.from(tags).map(async (t) =>
-      renderManager(element, JSON.parse(t.innerHTML), managerFactory),
-    ),
+      renderManager(element, JSON.parse(t.innerHTML), managerFactory)
+    )
   );
 }
 
@@ -79,7 +79,7 @@ export async function renderWidgets(
 async function renderManager(
   element: HTMLElement,
   widgetState: unknown,
-  managerFactory: () => HTMLManager,
+  managerFactory: () => HTMLManager
 ): Promise<void> {
   const valid = model_validate(widgetState);
   if (!valid) {
@@ -88,7 +88,7 @@ async function renderManager(
   const manager = managerFactory();
   const models = await manager.set_state(widgetState as IManagerState);
   const tags = element.querySelectorAll(
-    'script[type="application/vnd.jupyter.widget-view+json"]',
+    'script[type="application/vnd.jupyter.widget-view+json"]'
   );
   await Promise.all(
     Array.from(tags).map(async (viewtag) => {
@@ -114,6 +114,6 @@ async function renderManager(
         const view = await manager.create_view(model);
         manager.display_view(view, widgetTag);
       }
-    }),
+    })
   );
 }

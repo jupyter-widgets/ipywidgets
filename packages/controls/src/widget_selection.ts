@@ -161,7 +161,7 @@ export class DropdownView extends SelectionView {
     this.model.set(
       'index',
       this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex,
-      { updated_view: this },
+      { updated_view: this }
     );
     this.touch();
   }
@@ -320,7 +320,7 @@ export class RadioButtonsView extends DescriptionView {
   update(options?: any): void {
     const items: string[] = this.model.get('_options_labels');
     const radios = Array.from(
-      this.container.querySelectorAll<HTMLInputElement>('input[type="radio"]'),
+      this.container.querySelectorAll<HTMLInputElement>('input[type="radio"]')
     ).map((x) => x.value);
     let stale = items.length !== radios.length;
 
@@ -597,7 +597,7 @@ export class ToggleButtonsView extends DescriptionView {
       this.update_mapped_classes(
         ToggleButtonsView.classMap,
         'button_style',
-        buttons[i],
+        buttons[i]
       );
     }
   }
@@ -608,7 +608,7 @@ export class ToggleButtonsView extends DescriptionView {
       this.set_mapped_classes(
         ToggleButtonsView.classMap,
         'button_style',
-        buttons[i],
+        buttons[i]
       );
     }
   }
@@ -911,7 +911,7 @@ export class SelectMultipleView extends SelectView {
       this.listbox.selectedOptions || [],
       function (option: HTMLOptionElement) {
         return option.index;
-      },
+      }
     );
     this.model.set('index', index, { updated_view: this });
     this.touch();

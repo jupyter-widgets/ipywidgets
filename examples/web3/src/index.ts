@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function (event) {
   // Create a codemirror instance
   const code = require('../widget_code.json').join('\n');
   const inputarea = document.getElementsByClassName(
-    'inputarea',
+    'inputarea'
   )[0] as HTMLElement;
   CodeMirror(inputarea, {
     value: code,
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async function (event) {
 
   // Create the widget area and widget manager
   const widgetarea = document.getElementsByClassName(
-    'widgetarea',
+    'widgetarea'
   )[0] as HTMLElement;
   const manager = new WidgetManager(kernel);
 

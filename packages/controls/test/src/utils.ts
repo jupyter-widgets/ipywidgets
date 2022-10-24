@@ -32,7 +32,7 @@ export class MockComm implements widgets.IClassicComm {
   open(
     data?: any,
     metadata?: any,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string {
     if (this._on_open) {
       this._on_open();
@@ -43,7 +43,7 @@ export class MockComm implements widgets.IClassicComm {
   close(
     data?: any,
     metadata?: any,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string {
     if (this._on_close) {
       this._on_close();
@@ -54,7 +54,7 @@ export class MockComm implements widgets.IClassicComm {
   send(
     data?: any,
     metadata?: any,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string {
     return '';
   }
@@ -73,7 +73,7 @@ export interface IConstructor<T> {
 export function createTestModel<T extends widgets.WidgetModel>(
   constructor: IConstructor<T>,
   attributes?: any,
-  widget_manager?: widgets.WidgetModel['widget_manager'],
+  widget_manager?: widgets.WidgetModel['widget_manager']
 ): T {
   const id = widgets.uuid();
   const modelOptions = {
@@ -85,16 +85,16 @@ export function createTestModel<T extends widgets.WidgetModel>(
 }
 
 export async function createTestModelFromSerialized<
-  T extends widgets.WidgetModel,
+  T extends widgets.WidgetModel
 >(
   constructor: IConstructor<T>,
   state?: any,
-  widget_manager?: widgets.WidgetModel['widget_manager'],
+  widget_manager?: widgets.WidgetModel['widget_manager']
 ): Promise<T> {
   widget_manager = widget_manager || new DummyManager();
   const attributes = await (constructor as any)._deserialize_state(
     state,
-    widget_manager,
+    widget_manager
   );
 
   return createTestModel(constructor, attributes, widget_manager);
@@ -102,7 +102,7 @@ export async function createTestModelFromSerialized<
 
 export function createTestView<T extends widgets.WidgetView>(
   model: widgets.WidgetModel,
-  viewCtor: IConstructor<T>,
+  viewCtor: IConstructor<T>
 ): Promise<T> {
   const mgr = model.widget_manager as DummyManager;
   mgr.testClasses[model.get('_view_name')] = viewCtor;

@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
     .then((models) =>
       manager.create_view(
         models.find(
-          (element) => element.model_id == '8621699ecc804983a612f09b7dfe806b',
-        ),
-      ),
+          (element) => element.model_id == '8621699ecc804983a612f09b7dfe806b'
+        )
+      )
     )
     .then((view) => manager.display_view(view));
 });

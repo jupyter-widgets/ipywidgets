@@ -140,15 +140,15 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   create_view<VT extends DOMWidgetView = DOMWidgetView>(
     model: DOMWidgetModel,
-    options?: any,
+    options?: any
   ): Promise<VT>;
   create_view<VT extends WidgetView = WidgetView>(
     model: WidgetModel,
-    options?: any,
+    options?: any
   ): Promise<VT>;
   create_view<VT extends WidgetView = WidgetView>(
     model: WidgetModel,
-    options = {},
+    options = {}
   ): Promise<VT> {
     const id = uuid();
     const viewPromise = (model.state_change = model.state_change.then(
@@ -159,7 +159,7 @@ export abstract class ManagerBase implements IWidgetManager {
           const ViewType = (await this.loadViewClass(
             _view_name,
             _view_module,
-            model.get('_view_module_version'),
+            model.get('_view_module_version')
           )) as typeof WidgetView;
           const view = new ViewType({
             model: model,
@@ -178,7 +178,7 @@ export abstract class ManagerBase implements IWidgetManager {
           return view;
         } catch (e) {
           console.error(
-            `Could not create a view for model id ${model.model_id}`,
+            `Could not create a view for model id ${model.model_id}`
           );
           const msg = `Failed to create view for '${_view_name}' from module '${_view_module}' with model '${model.name}' from module '${model.module}'`;
           const ModelCls = widgets.createErrorWidgetModel(e, msg);
@@ -191,7 +191,7 @@ export abstract class ManagerBase implements IWidgetManager {
 
           return view;
         }
-      },
+      }
     ));
     if (model.views) {
       model.views[id] = viewPromise;
@@ -237,7 +237,7 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   handle_comm_open(
     comm: IClassicComm,
-    msg: services.KernelMessage.ICommOpenMsg,
+    msg: services.KernelMessage.ICommOpenMsg
   ): Promise<WidgetModel> {
     const protocolVersion = ((msg.metadata || {})['version'] as string) || '';
     if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
@@ -256,7 +256,7 @@ export abstract class ManagerBase implements IWidgetManager {
         model_module_version: data.state['_model_module_version'] as string,
         comm: comm,
       },
-      data.state,
+      data.state
     ).catch(reject('Could not create a model.', true));
   }
 
@@ -268,7 +268,7 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   new_widget(
     options: IWidgetOptions,
-    serialized_state: JSONObject = {},
+    serialized_state: JSONObject = {}
   ): Promise<WidgetModel> {
     let commPromise;
     // we check to make sure the view information is provided, to help catch
@@ -279,7 +279,7 @@ export abstract class ManagerBase implements IWidgetManager {
       options.view_module_version === undefined
     ) {
       return Promise.reject(
-        'new_widget(...) must be given view information in the options.',
+        'new_widget(...) must be given view information in the options.'
       );
     }
     // If no comm is provided, a new comm is opened for the jupyter.widget
@@ -300,7 +300,7 @@ export abstract class ManagerBase implements IWidgetManager {
             _view_name: options.view_name,
           },
         },
-        { version: PROTOCOL_VERSION },
+        { version: PROTOCOL_VERSION }
       );
     }
     // The options dictionary is copied since data will be added to it.
@@ -323,7 +323,7 @@ export abstract class ManagerBase implements IWidgetManager {
           options_clone.model_id = uuid();
         }
         return this.new_model(options_clone, serialized_state);
-      },
+      }
     );
   }
 
@@ -354,18 +354,18 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   async new_model(
     options: IModelOptions,
-    serialized_state: any = {},
+    serialized_state: any = {}
   ): Promise<WidgetModel> {
     const model_id = options.model_id ?? options.comm?.comm_id;
     if (!model_id) {
       throw new Error(
-        'Neither comm nor model_id provided in options object. At least one must exist.',
+        'Neither comm nor model_id provided in options object. At least one must exist.'
       );
     }
     options.model_id = model_id;
     const modelPromise = this._make_model(
       options as RequiredSome<IModelOptions, 'model_id'>,
-      serialized_state,
+      serialized_state
     );
     // this call needs to happen before the first `await`, see note in `set_state`:
     this.register_model(model_id, modelPromise);
@@ -388,7 +388,7 @@ export abstract class ManagerBase implements IWidgetManager {
         CONTROL_COMM_TARGET,
         uuid(),
         {},
-        { version: CONTROL_COMM_PROTOCOL_VERSION },
+        { version: CONTROL_COMM_PROTOCOL_VERSION }
       );
 
       await new Promise((resolve, reject) => {
@@ -421,7 +421,7 @@ export abstract class ManagerBase implements IWidgetManager {
         // Reject if we didn't get a response in time
         setTimeout(
           () => reject('Control comm did not respond in time'),
-          CONTROL_COMM_TIMEOUT,
+          CONTROL_COMM_TIMEOUT
         );
       });
 
@@ -429,7 +429,7 @@ export abstract class ManagerBase implements IWidgetManager {
     } catch (error) {
       console.warn(
         'Failed to fetch ipywidgets through the "jupyter.widget.control" comm channel, fallback to fetching individual model state. Reason:',
-        error,
+        error
       );
       // Fall back to the old implementation for old ipywidgets backend versions (ipywidgets<=7.6)
       return this._loadFromKernelModels();
@@ -458,7 +458,7 @@ export abstract class ManagerBase implements IWidgetManager {
           ? undefined
           : await this._create_comm('jupyter.widget', widget_id);
         return { widget_id, comm };
-      }),
+      })
     );
 
     await Promise.all(
@@ -482,7 +482,7 @@ export abstract class ManagerBase implements IWidgetManager {
                 model_id: widget_id,
                 comm: comm,
               },
-              state.state,
+              state.state
             );
           } else {
             // model already exists here
@@ -497,7 +497,7 @@ export abstract class ManagerBase implements IWidgetManager {
           // other widgets can render
           console.error(error);
         }
-      }),
+      })
     );
   }
 
@@ -538,11 +538,11 @@ export abstract class ManagerBase implements IWidgetManager {
           {
             method: 'request_state',
           },
-          this.callbacks(undefined),
+          this.callbacks(undefined)
         );
 
         return info.promise;
-      }),
+      })
     );
 
     // We put in a synchronization barrier here so that we don't have to
@@ -563,21 +563,21 @@ export abstract class ManagerBase implements IWidgetManager {
             model_module_version: content.data.state._model_module_version,
             comm: widget_info.comm,
           },
-          content.data.state,
+          content.data.state
         );
-      }),
+      })
     );
   }
 
   async _make_model(
     options: RequiredSome<IModelOptions, 'model_id'>,
-    serialized_state: any = {},
+    serialized_state: any = {}
   ): Promise<WidgetModel> {
     const model_id = options.model_id;
     const model_promise = this.loadModelClass(
       options.model_name,
       options.model_module,
-      options.model_module_version,
+      options.model_module_version
     );
     let ModelType: typeof WidgetModel;
 
@@ -599,7 +599,7 @@ export abstract class ManagerBase implements IWidgetManager {
       const msg = 'Could not instantiate widget';
       console.error(msg);
       const error = new Error(
-        `Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`,
+        `Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`
       );
       return makeErrorModel(error, msg);
     }
@@ -607,7 +607,7 @@ export abstract class ManagerBase implements IWidgetManager {
     try {
       const attributes = await ModelType._deserialize_state(
         serialized_state,
-        this,
+        this
       );
       const modelOptions: IBackboneModelOptions = {
         widget_manager: this,
@@ -648,7 +648,7 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   get_state(options: IStateOptions = {}): Promise<IManagerState> {
     const modelPromises = Object.keys(this._models).map(
-      (id) => this._models[id],
+      (id) => this._models[id]
     );
     return Promise.all(modelPromises).then((models) => {
       return serialize_state(models, options);
@@ -695,7 +695,7 @@ export abstract class ManagerBase implements IWidgetManager {
             const bufferPaths = model.buffers.map((b: any) => b.path);
             // put_buffers expects buffers to be DataViews
             const buffers = model.buffers.map(
-              (b: any) => new DataView(decode[b.encoding](b.data)),
+              (b: any) => new DataView(decode[b.encoding](b.data))
             );
             put_buffers(model.state, bufferPaths, buffers);
           }
@@ -728,12 +728,12 @@ export abstract class ManagerBase implements IWidgetManager {
               (comm) => {
                 modelCreate.comm = comm;
                 return this.new_model(modelCreate); // No state, so safe wrt. case 1
-              },
+              }
             );
           } else {
             return this.new_model(modelCreate, modelState); // case 1
           }
-        }),
+        })
       );
     });
 
@@ -779,19 +779,19 @@ export abstract class ManagerBase implements IWidgetManager {
   protected abstract loadClass(
     className: string,
     moduleName: string,
-    moduleVersion: string,
+    moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView>;
 
   protected async loadModelClass(
     className: string,
     moduleName: string,
-    moduleVersion: string,
+    moduleVersion: string
   ): Promise<typeof WidgetModel> {
     try {
       const promise: Promise<typeof WidgetModel> = this.loadClass(
         className,
         moduleName,
-        moduleVersion,
+        moduleVersion
       ) as Promise<typeof WidgetModel>;
       await promise;
       return promise;
@@ -805,13 +805,13 @@ export abstract class ManagerBase implements IWidgetManager {
   protected async loadViewClass(
     className: string,
     moduleName: string,
-    moduleVersion: string,
+    moduleVersion: string
   ): Promise<typeof WidgetView> {
     try {
       const promise: Promise<typeof WidgetView> = this.loadClass(
         className,
         moduleName,
-        moduleVersion,
+        moduleVersion
       ) as Promise<typeof WidgetView>;
       await promise;
       return promise;
@@ -840,7 +840,7 @@ export abstract class ManagerBase implements IWidgetManager {
     model_id?: string,
     data?: JSONObject,
     metadata?: JSONObject,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): Promise<IClassicComm>;
   protected abstract _get_comm_info(): Promise<{}>;
 
@@ -887,13 +887,13 @@ export interface IStateOptions {
  */
 export function serialize_state(
   models: WidgetModel[],
-  options: IStateOptions = {},
+  options: IStateOptions = {}
 ): IManagerState {
   const state: IManagerStateMap = {};
   models.forEach((model) => {
     const model_id = model.model_id;
     const split = remove_buffers(
-      model.serialize(model.get_state(options.drop_defaults)),
+      model.serialize(model.get_state(options.drop_defaults))
     );
     const buffers: IBase64Buffers[] = split.buffers.map((buffer, index) => {
       return {

@@ -23,7 +23,7 @@ export class DirectionalLinkModel extends CoreWidgetModel {
 
   initialize(
     attributes: Backbone.ObjectHash,
-    options: { model_id: string; comm: any; widget_manager: any },
+    options: { model_id: string; comm: any; widget_manager: any }
   ): void {
     super.initialize(attributes, options);
     this.on('change', this.updateBindings, this);
@@ -34,7 +34,7 @@ export class DirectionalLinkModel extends CoreWidgetModel {
     sourceModel: WidgetModel,
     sourceAttr: string,
     targetModel: WidgetModel,
-    targetAttr: string,
+    targetAttr: string
   ): void {
     if (this._updating) {
       return;
@@ -60,14 +60,14 @@ export class DirectionalLinkModel extends CoreWidgetModel {
           this.sourceModel,
           this.sourceAttr,
           this.targetModel,
-          this.targetAttr,
+          this.targetAttr
         );
       });
       this.updateValue(
         this.sourceModel,
         this.sourceAttr,
         this.targetModel,
-        this.targetAttr,
+        this.targetAttr
       );
       this.listenToOnce(this.sourceModel, 'destroy', this.cleanup);
     }
@@ -82,7 +82,7 @@ export class DirectionalLinkModel extends CoreWidgetModel {
       this.stopListening(
         this.sourceModel,
         'change:' + this.sourceAttr,
-        undefined,
+        undefined
       );
       this.stopListening(this.sourceModel, 'destroy', undefined);
     }
@@ -115,7 +115,7 @@ export class LinkModel extends DirectionalLinkModel {
           this.targetModel,
           this.targetAttr,
           this.sourceModel,
-          this.sourceAttr,
+          this.sourceAttr
         );
       });
     }
@@ -127,7 +127,7 @@ export class LinkModel extends DirectionalLinkModel {
       this.stopListening(
         this.targetModel,
         'change:' + this.targetAttr,
-        undefined,
+        undefined
       );
     }
   }

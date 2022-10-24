@@ -47,7 +47,7 @@ export class OutputModel extends outputBase.OutputModel {
           that.set('outputs', that.output_area.toJSON(), { newMessage: true });
           that.save_changes();
         },
-        that,
+        that
       );
       that.listenTo(that, 'clear_output', function (msg) {
         that.output_area.handle_clear_output(msg);
@@ -94,7 +94,7 @@ export class OutputModel extends outputBase.OutputModel {
             previous_callback +
             ' instead of ' +
             this.model_id +
-            ') - likely the stack was not maintained in kernel.',
+            ') - likely the stack was not maintained in kernel.'
         );
       }
     }
@@ -110,7 +110,7 @@ export class OutputModel extends outputBase.OutputModel {
       this.output_area.clear_output();
       // fromJSON does not copy the message, so we make a deep copy
       this.output_area.fromJSON(
-        JSON.parse(JSON.stringify(this.get('outputs'))),
+        JSON.parse(JSON.stringify(this.get('outputs')))
       );
     }
   }
@@ -135,7 +135,7 @@ export class OutputView extends outputBase.OutputView {
         function (msg) {
           that.output_area.handle_output(msg);
         },
-        that,
+        that
       );
       that.listenTo(that.model, 'clear_output', function (msg) {
         that.output_area.handle_clear_output(msg);
@@ -158,7 +158,7 @@ export class OutputView extends outputBase.OutputView {
       this.output_area.clear_output();
       // fromJSON does not copy the message, so we make a deep copy
       this.output_area.fromJSON(
-        JSON.parse(JSON.stringify(this.model.get('outputs'))),
+        JSON.parse(JSON.stringify(this.model.get('outputs')))
       );
     }
   }

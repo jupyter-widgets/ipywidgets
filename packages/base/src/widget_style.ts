@@ -22,7 +22,7 @@ export class StyleModel extends WidgetModel {
       Object.keys(Derived.styleProperties).reduce((obj: any, key: string) => {
         obj[key] = Derived.styleProperties[key].default;
         return obj;
-      }, {}),
+      }, {})
     );
   }
 
@@ -65,7 +65,7 @@ export class StyleView extends WidgetView {
       'change:' + trait,
       (model: StyleModel, value: string) => {
         this.handleChange(trait, value);
-      },
+      }
     );
   }
 

@@ -31,7 +31,7 @@ module.exports = {
                   postcss.plugin('prepend', function () {
                     return function (css) {
                       css.prepend(
-                        "@import '@jupyter-widgets/controls/css/labvariables.css';",
+                        "@import '@jupyter-widgets/controls/css/labvariables.css';"
                       );
                     };
                   }),

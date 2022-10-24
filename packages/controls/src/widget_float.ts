@@ -53,7 +53,7 @@ export class FloatSliderModel extends BoundedFloatModel {
   }
   initialize(
     attributes: any,
-    options: { model_id: string; comm?: any; widget_manager: any },
+    options: { model_id: string; comm?: any; widget_manager: any }
   ): void {
     super.initialize(attributes, options);
     this.on('change:readout_format', this.update_readout_format, this);
@@ -89,7 +89,7 @@ export class FloatLogSliderModel extends BoundedFloatModel {
   }
   initialize(
     attributes: any,
-    options: { model_id: string; comm: any; widget_manager: any },
+    options: { model_id: string; comm: any; widget_manager: any }
   ): void {
     super.initialize(attributes, options);
     this.on('change:readout_format', this.update_readout_format, this);
@@ -210,7 +210,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
     } else {
       value = Math.max(
         Math.min(value, Math.pow(base, vmax)),
-        Math.pow(base, vmin),
+        Math.pow(base, vmin)
       );
 
       if (value !== this.model.get('value')) {

@@ -41,11 +41,11 @@ export function removeMath(text: string): { text: string; math: string[] } {
     text = text
       .replace(/~/g, '~T')
       .replace(/(^|[^\\])(`+)([^\n]*?[^`\n])\2(?!`)/gm, (wholematch) =>
-        wholematch.replace(/\$/g, '~D'),
+        wholematch.replace(/\$/g, '~D')
       );
     deTilde = (text: string) => {
       return text.replace(/~([TD])/g, (wholematch, character) =>
-        character === 'T' ? '~' : inline,
+        character === 'T' ? '~' : inline
       );
     };
   } else {
@@ -169,7 +169,7 @@ function processMath(
   j: number,
   preProcess: (input: string) => string,
   math: string[],
-  blocks: string[],
+  blocks: string[]
 ): string[] {
   let block = blocks
     .slice(i, j + 1)

@@ -43,7 +43,7 @@ export interface IClassicComm {
     data: any,
     callbacks: any,
     metadata?: any,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string;
 
   /**
@@ -58,7 +58,7 @@ export interface IClassicComm {
     data: any,
     callbacks: any,
     metadata?: any,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string;
 
   /**
@@ -73,7 +73,7 @@ export interface IClassicComm {
     data?: any,
     callbacks?: any,
     metadata?: any,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string;
 
   /**
@@ -118,7 +118,7 @@ export namespace shims {
         callbacks: any,
         metadata: any,
         comm_id: string,
-        buffers?: ArrayBuffer[] | ArrayBufferView[],
+        buffers?: ArrayBuffer[] | ArrayBufferView[]
       ): Promise<Comm> {
         const c = this.jsServicesKernel.createComm(target_name, comm_id);
         const comm = new Comm(c);
@@ -135,7 +135,7 @@ export namespace shims {
        */
       register_target(
         target_name: string,
-        f: (comm: Comm, object: KernelMessage.IMessage) => void,
+        f: (comm: Comm, object: KernelMessage.IMessage) => void
       ): void {
         const handle = this.jsServicesKernel.registerCommTarget(
           target_name,
@@ -152,7 +152,7 @@ export namespace shims {
               console.error(e);
               console.error(new Error('Exception opening new comm'));
             }
-          },
+          }
         );
         this.targets[target_name] = handle;
       }
@@ -163,7 +163,7 @@ export namespace shims {
        */
       unregister_target(
         target_name: string,
-        f: (comm: Comm, object: KernelMessage.IMessage) => void,
+        f: (comm: Comm, object: KernelMessage.IMessage) => void
       ): void {
         const handle = this.targets[target_name];
         handle.dispose();
@@ -221,7 +221,7 @@ export namespace shims {
         data: any,
         callbacks: any,
         metadata?: any,
-        buffers?: ArrayBuffer[] | ArrayBufferView[],
+        buffers?: ArrayBuffer[] | ArrayBufferView[]
       ): string {
         const future = this.jsServicesComm.open(data, metadata, buffers);
         this._hookupCallbacks(future, callbacks);
@@ -240,7 +240,7 @@ export namespace shims {
         data: any,
         callbacks: any,
         metadata?: any,
-        buffers?: ArrayBuffer[] | ArrayBufferView[],
+        buffers?: ArrayBuffer[] | ArrayBufferView[]
       ): string {
         const future = this.jsServicesComm.send(data, metadata, buffers);
         this._hookupCallbacks(future, callbacks);
@@ -258,7 +258,7 @@ export namespace shims {
         data?: any,
         callbacks?: any,
         metadata?: any,
-        buffers?: ArrayBuffer[] | ArrayBufferView[],
+        buffers?: ArrayBuffer[] | ArrayBufferView[]
       ): string {
         const future = this.jsServicesComm.close(data, metadata, buffers);
         this._hookupCallbacks(future, callbacks);
@@ -288,7 +288,7 @@ export namespace shims {
        */
       _hookupCallbacks(
         future: Kernel.IShellFuture,
-        callbacks: ICallbacks,
+        callbacks: ICallbacks
       ): void {
         if (callbacks) {
           future.onReply = function (msg): void {

@@ -34,7 +34,7 @@ import { KernelMessage } from '@jupyterlab/services';
  */
 export function unpack_models(
   value: any | Dict<unknown> | string | (Dict<unknown> | string)[],
-  manager?: IWidgetManager, // actually required, but typed to be compatible with ISerializers
+  manager?: IWidgetManager // actually required, but typed to be compatible with ISerializers
 ): Promise<WidgetModel | Dict<WidgetModel> | WidgetModel[] | any> {
   if (Array.isArray(value)) {
     const unpacked: any[] = [];
@@ -113,7 +113,7 @@ export class WidgetModel extends Backbone.Model {
    */
   initialize(
     attributes: Backbone.ObjectHash,
-    options: IBackboneModelOptions,
+    options: IBackboneModelOptions
   ): void {
     this._expectedEchoMsgIds = new Map<string, string>();
     this._attrsToUpdate = new Set<string>();
@@ -166,7 +166,7 @@ export class WidgetModel extends Backbone.Model {
   send(
     content: {},
     callbacks: {},
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): void {
     if (this.comm !== undefined) {
       const data = { method: 'custom', content: content };
@@ -237,7 +237,7 @@ export class WidgetModel extends Backbone.Model {
               // we may have echos coming from other clients, we only care about
               // dropping echos for which we expected a reply
               const expectedEcho = Object.keys(state).filter((attrName) =>
-                this._expectedEchoMsgIds.has(attrName),
+                this._expectedEchoMsgIds.has(attrName)
               );
               expectedEcho.forEach((attrName: string) => {
                 // Skip echo messages until we get the reply we are expecting.
@@ -254,7 +254,7 @@ export class WidgetModel extends Backbone.Model {
                     this._msg_buffer !== null &&
                     Object.prototype.hasOwnProperty.call(
                       this._msg_buffer,
-                      attrName,
+                      attrName
                     )
                   ) {
                     delete state[attrName];
@@ -265,7 +265,7 @@ export class WidgetModel extends Backbone.Model {
             return (this.constructor as typeof WidgetModel)._deserialize_state(
               // Combine the state updates, with preference for kernel updates
               state,
-              this.widget_manager,
+              this.widget_manager
             );
           })
           .then((state) => {
@@ -274,8 +274,8 @@ export class WidgetModel extends Backbone.Model {
           .catch(
             utils.reject(
               `Could not process update msg for model id: ${this.model_id}`,
-              true,
-            ),
+              true
+            )
           );
         return this.state_change;
       case 'custom':
@@ -296,7 +296,7 @@ export class WidgetModel extends Backbone.Model {
       this.set(state);
     } catch (e) {
       console.error(
-        `Error setting state: ${e instanceof Error ? e.message : e}`,
+        `Error setting state: ${e instanceof Error ? e.message : e}`
       );
     } finally {
       this._state_lock = null;
@@ -339,7 +339,7 @@ export class WidgetModel extends Backbone.Model {
         // Sanity check for logic errors that may push this below zero.
         if (this._pending_msgs < 0) {
           console.error(
-            `Jupyter Widgets message throttle: Pending messages < 0 (=${this._pending_msgs}), which is unexpected. Resetting to 0 to continue.`,
+            `Jupyter Widgets message throttle: Pending messages < 0 (=${this._pending_msgs}), which is unexpected. Resetting to 0 to continue.`
           );
           this._pending_msgs = 0; // do not break message throttling in case of unexpected errors
         }
@@ -347,7 +347,7 @@ export class WidgetModel extends Backbone.Model {
         if (this._msg_buffer !== null && this._pending_msgs < 1) {
           const msgId = this.send_sync_message(
             this._msg_buffer,
-            this._msg_buffer_callbacks,
+            this._msg_buffer_callbacks
           );
           this.rememberLastUpdateFor(msgId);
           this._msg_buffer = null;
@@ -409,7 +409,7 @@ export class WidgetModel extends Backbone.Model {
 
       this._buffered_state_diff = utils.assign(
         this._buffered_state_diff,
-        attrs,
+        attrs
       );
     }
 
@@ -581,7 +581,7 @@ export class WidgetModel extends Backbone.Model {
         },
         callbacks,
         {},
-        split.buffers,
+        split.buffers
       );
       this._pending_msgs++;
       return msgId;
@@ -609,7 +609,7 @@ export class WidgetModel extends Backbone.Model {
       if ((this as any)._changing) {
         utils.assign(
           this._buffered_state_diff_synced,
-          this._buffered_state_diff,
+          this._buffered_state_diff
         );
       }
       this._buffered_state_diff = {};
@@ -626,7 +626,7 @@ export class WidgetModel extends Backbone.Model {
   on_some_change(
     keys: string[],
     callback: (...args: any[]) => void,
-    context: any,
+    context: any
   ): void {
     this.on(
       'change',
@@ -635,7 +635,7 @@ export class WidgetModel extends Backbone.Model {
           callback.apply(context, args);
         }
       },
-      this,
+      this
     );
   }
 
@@ -654,7 +654,7 @@ export class WidgetModel extends Backbone.Model {
    */
   static _deserialize_state(
     state: Dict<BufferJSON>,
-    manager: IWidgetManager,
+    manager: IWidgetManager
   ): Promise<utils.Dict<unknown>> {
     const serializers = this.serializers;
     let deserialized: Dict<unknown>;
@@ -805,15 +805,15 @@ export class WidgetView extends NativeView<WidgetModel> {
    */
   create_child_view<VT extends DOMWidgetView = DOMWidgetView>(
     child_model: DOMWidgetModel,
-    options?: any,
+    options?: any
   ): Promise<VT>;
   create_child_view<VT extends WidgetView = WidgetView>(
     child_model: WidgetModel,
-    options?: any,
+    options?: any
   ): Promise<VT>;
   create_child_view<VT extends WidgetView = WidgetView>(
     child_model: WidgetModel,
-    options = {},
+    options = {}
   ): Promise<VT> {
     options = { parent: this, ...options };
     return this.model.widget_manager
@@ -958,7 +958,7 @@ export class DOMWidgetView extends WidgetView {
       (model: WidgetModel, new_classes: string[]) => {
         const old_classes = model.previous('_dom_classes');
         this.update_classes(old_classes, new_classes);
-      },
+      }
     );
 
     this.layoutPromise = Promise.resolve();
@@ -967,7 +967,7 @@ export class DOMWidgetView extends WidgetView {
       'change:layout',
       (model: WidgetModel, value: WidgetModel) => {
         this.setLayout(value, model.previous('layout'));
-      },
+      }
     );
 
     this.stylePromise = Promise.resolve();
@@ -976,7 +976,7 @@ export class DOMWidgetView extends WidgetView {
       'change:style',
       (model: WidgetModel, value: WidgetModel) => {
         this.setStyle(value, model.previous('style'));
-      },
+      }
     );
 
     this.displayed.then(() => {
@@ -1012,19 +1012,19 @@ export class DOMWidgetView extends WidgetView {
                 // effect first.
                 MessageLoop.postMessage(
                   this.luminoWidget,
-                  Widget.ResizeMessage.UnknownSize,
+                  Widget.ResizeMessage.UnknownSize
                 );
               });
               MessageLoop.postMessage(
                 this.luminoWidget,
-                Widget.ResizeMessage.UnknownSize,
+                Widget.ResizeMessage.UnknownSize
               );
               this.trigger('layout-changed');
               return view;
             });
           })
           .catch(
-            utils.reject('Could not add LayoutView to DOMWidgetView', true),
+            utils.reject('Could not add LayoutView to DOMWidgetView', true)
           );
       });
     }
@@ -1051,7 +1051,7 @@ export class DOMWidgetView extends WidgetView {
             });
           })
           .catch(
-            utils.reject('Could not add styleView to DOMWidgetView', true),
+            utils.reject('Could not add styleView to DOMWidgetView', true)
           );
       });
     }
@@ -1072,7 +1072,7 @@ export class DOMWidgetView extends WidgetView {
   update_classes(
     old_classes: string[],
     new_classes: string[],
-    el?: HTMLElement,
+    el?: HTMLElement
   ): void {
     if (el === undefined) {
       el = this.el;
@@ -1122,7 +1122,7 @@ export class DOMWidgetView extends WidgetView {
   update_mapped_classes(
     class_map: Dict<string[]>,
     trait_name: string,
-    el?: HTMLElement,
+    el?: HTMLElement
   ): void {
     let key = this.model.previous(trait_name) as string;
     const old_classes = class_map[key] ? class_map[key] : [];
@@ -1135,7 +1135,7 @@ export class DOMWidgetView extends WidgetView {
   set_mapped_classes(
     class_map: Dict<string[]>,
     trait_name: string,
-    el?: HTMLElement,
+    el?: HTMLElement
   ): void {
     const key = this.model.get(trait_name);
     const new_classes = class_map[key] ? class_map[key] : [];

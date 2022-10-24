@@ -74,7 +74,7 @@ export function deserialize_datetime(value: ISerializedDatetime): Date | null {
       value.hours,
       value.minutes,
       value.seconds,
-      value.milliseconds,
+      value.milliseconds
     );
     return date;
   }
@@ -184,7 +184,7 @@ export class DatetimeView extends DescriptionView {
   private _update_value(
     model?: Backbone.Model,
     newValue?: any,
-    options?: any,
+    options?: any
   ): void {
     if (options === undefined || options.updated_view !== this) {
       const value = this.model.get('value') as Date | null;
@@ -221,7 +221,7 @@ export class DatetimeView extends DescriptionView {
             time.hours,
             time.minutes,
             time.seconds,
-            time.milliseconds,
+            time.milliseconds
           );
         }
         this.model.set('value', time !== null && date, { updated_view: this });
@@ -314,7 +314,7 @@ export interface ISerializedNaiveDatetime {
 }
 
 export function serialize_naive(
-  value: Date | null,
+  value: Date | null
 ): ISerializedNaiveDatetime | null {
   if (value === null) {
     return null;
@@ -332,7 +332,7 @@ export function serialize_naive(
 }
 
 export function deserialize_naive(
-  value: ISerializedNaiveDatetime,
+  value: ISerializedNaiveDatetime
 ): Date | null {
   if (value === null) {
     return null;
@@ -343,7 +343,7 @@ export function deserialize_naive(
       value.hours,
       value.minutes,
       value.seconds,
-      value.milliseconds,
+      value.milliseconds
     );
     return date;
   }

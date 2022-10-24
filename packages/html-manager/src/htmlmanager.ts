@@ -31,7 +31,7 @@ export class HTMLManager extends ManagerBase {
         mimeTypes: [WIDGET_MIMETYPE],
         createRenderer: (options) => new WidgetRenderer(options, this),
       },
-      0,
+      0
     );
 
     this._viewList = new Set<DOMWidgetView>();
@@ -39,7 +39,7 @@ export class HTMLManager extends ManagerBase {
       this._viewList.forEach((view) => {
         MessageLoop.postMessage(
           view.luminoWidget,
-          LuminoWidget.Widget.ResizeMessage.UnknownSize,
+          LuminoWidget.Widget.ResizeMessage.UnknownSize
         );
       });
     });
@@ -50,7 +50,7 @@ export class HTMLManager extends ManagerBase {
    */
   async display_view(
     view: Promise<DOMWidgetView> | DOMWidgetView,
-    el: HTMLElement,
+    el: HTMLElement
   ): Promise<void> {
     let v: DOMWidgetView;
     try {
@@ -88,7 +88,7 @@ export class HTMLManager extends ManagerBase {
     model_id: string,
     data?: any,
     metadata?: any,
-    buffers?: ArrayBuffer[] | ArrayBufferView[],
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): Promise<any> {
     return Promise.resolve({
       on_close: () => {
@@ -109,7 +109,7 @@ export class HTMLManager extends ManagerBase {
   protected loadClass(
     className: string,
     moduleName: string,
-    moduleVersion: string,
+    moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
     return new Promise((resolve, reject) => {
       if (moduleName === '@jupyter-widgets/base') {
@@ -128,7 +128,7 @@ export class HTMLManager extends ManagerBase {
         return (module as any)[className];
       } else {
         return Promise.reject(
-          `Class ${className} not found in module ${moduleName}@${moduleVersion}`,
+          `Class ${className} not found in module ${moduleName}@${moduleVersion}`
         );
       }
     });

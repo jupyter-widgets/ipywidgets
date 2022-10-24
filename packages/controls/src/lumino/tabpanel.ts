@@ -125,7 +125,7 @@ export class TabPanel extends Widget {
     this.tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
     this.tabBar.tabActivateRequested.connect(
       this._onTabActivateRequested,
-      this,
+      this
     );
 
     // Connect the evented panel signal handlers.
@@ -282,7 +282,7 @@ export class TabPanel extends Widget {
    */
   private _onCurrentChanged(
     sender: TabBar<Widget>,
-    args: TabBar.ICurrentChangedArgs<Widget>,
+    args: TabBar.ICurrentChangedArgs<Widget>
   ): void {
     // Extract the previous and current title from the args.
     const { previousIndex, previousTitle, currentIndex, currentTitle } = args;
@@ -320,7 +320,7 @@ export class TabPanel extends Widget {
    */
   private _onTabActivateRequested(
     sender: TabBar<Widget>,
-    args: TabBar.ITabActivateRequestedArgs<Widget>,
+    args: TabBar.ITabActivateRequestedArgs<Widget>
   ): void {
     args.title.owner.activate();
   }
@@ -330,7 +330,7 @@ export class TabPanel extends Widget {
    */
   private _onTabCloseRequested(
     sender: TabBar<Widget>,
-    args: TabBar.ITabCloseRequestedArgs<Widget>,
+    args: TabBar.ITabCloseRequestedArgs<Widget>
   ): void {
     args.title.owner.close();
   }
@@ -340,7 +340,7 @@ export class TabPanel extends Widget {
    */
   private _onTabMoved(
     sender: TabBar<Widget>,
-    args: TabBar.ITabMovedArgs<Widget>,
+    args: TabBar.ITabMovedArgs<Widget>
   ): void {
     this.tabContents.insertWidget(args.toIndex, args.title.owner);
   }
@@ -353,7 +353,7 @@ export class TabPanel extends Widget {
   }
 
   private _currentChanged = new Signal<this, TabPanel.ICurrentChangedArgs>(
-    this,
+    this
   );
 }
 

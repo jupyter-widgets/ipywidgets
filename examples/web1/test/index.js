@@ -1,7 +1,7 @@
 const widgetsRendered = new Promise((resolve, reject) => {
   setTimeout(
     () => reject(Error('timeout waiting for widgets to render')),
-    5000,
+    5000
   ); // 5s timeout
 
   const listener = () => {
@@ -24,7 +24,7 @@ describe('index.html', function () {
     });
     it('correct value', () => {
       expect(document.querySelector('textarea').value).to.equal(
-        'test <b>text</b>',
+        'test <b>text</b>'
       );
     });
   });
@@ -34,7 +34,7 @@ describe('index.html', function () {
     });
     it('correct value', () => {
       expect(
-        document.querySelector('div.widget-html-content').innerHTML,
+        document.querySelector('div.widget-html-content').innerHTML
       ).to.equal('test <b>text</b>');
     });
   });

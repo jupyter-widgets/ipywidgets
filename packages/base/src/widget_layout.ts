@@ -64,7 +64,7 @@ export class LayoutModel extends WidgetModel {
         _model_name: 'LayoutModel',
         _view_name: 'LayoutView',
       },
-      css_properties,
+      css_properties
     );
   }
 }
@@ -95,7 +95,7 @@ export class LayoutView extends WidgetView {
       'change:' + trait,
       (model: LayoutModel, value: any) => {
         this.handleChange(trait, value);
-      },
+      }
     );
 
     // Set the initial value on display.

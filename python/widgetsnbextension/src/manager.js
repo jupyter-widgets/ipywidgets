@@ -18,7 +18,7 @@ function polyfill_new_comm_buffers(
   callbacks,
   metadata,
   comm_id,
-  buffers,
+  buffers
 ) {
   /**
    * This polyfills services/kernel/comm/CommManager.new_comm to
@@ -41,7 +41,7 @@ function polyfill_new_comm_buffers(
         content,
         callbacks,
         metadata,
-        buffers,
+        buffers
       );
       resolve(comm);
     });
@@ -55,7 +55,7 @@ function new_comm(
   callbacks,
   metadata,
   comm_id,
-  buffers,
+  buffers
 ) {
   // Checks whether new_comm needs a polyfill, and calls the correct version
   // Polyfill needed for notebook <5.1, in which the new_comm method does not support a buffers argument.
@@ -66,7 +66,7 @@ function new_comm(
   }
   return manager.new_comm.apply(
     manager,
-    Array.prototype.slice.call(arguments, 1),
+    Array.prototype.slice.call(arguments, 1)
   );
 }
 
@@ -96,7 +96,7 @@ export class WidgetManager extends ManagerBase {
     // Register with the comm manager. (1)
     this.comm_manager.register_target(
       this.comm_target_name,
-      this.handle_comm_open.bind(this),
+      this.handle_comm_open.bind(this)
     );
 
     var that = this;
@@ -139,7 +139,7 @@ export class WidgetManager extends ManagerBase {
   loadClass(className, moduleName, moduleVersion) {
     const failure = () => {
       throw new Error(
-        'Class ' + className + ' not found in module ' + moduleName,
+        'Class ' + className + ' not found in module ' + moduleName
       );
     };
     if (moduleName === '@jupyter-widgets/controls') {
@@ -190,7 +190,7 @@ export class WidgetManager extends ManagerBase {
     Jupyter.menubar.actions.register(
       this.saveWidgetsAction,
       'save-with-widgets',
-      'widgets',
+      'widgets'
     );
 
     this.clearWidgetsAction = {
@@ -205,7 +205,7 @@ export class WidgetManager extends ManagerBase {
     Jupyter.menubar.actions.register(
       this.saveWidgetsAction,
       'save-clear-widgets',
-      'widgets',
+      'widgets'
     );
   }
 
@@ -235,23 +235,20 @@ export class WidgetManager extends ManagerBase {
     divider.classList.add('divider');
 
     widgetsSubmenu.appendChild(
-      this._createMenuItem(
-        'Save Notebook Widget State',
-        this.saveWidgetsAction,
-      ),
+      this._createMenuItem('Save Notebook Widget State', this.saveWidgetsAction)
     );
     widgetsSubmenu.appendChild(
       this._createMenuItem(
         'Clear Notebook Widget State',
-        this.clearWidgetsAction,
-      ),
+        this.clearWidgetsAction
+      )
     );
     widgetsSubmenu.appendChild(divider);
     widgetsSubmenu.appendChild(
-      this._createMenuItem('Download Widget State', saveState.action),
+      this._createMenuItem('Download Widget State', saveState.action)
     );
     widgetsSubmenu.appendChild(
-      this._createMenuItem('Embed Widgets', embedWidgets.action),
+      this._createMenuItem('Embed Widgets', embedWidgets.action)
     );
   }
 
@@ -285,7 +282,7 @@ export class WidgetManager extends ManagerBase {
           that.callbacks(),
           metadata,
           comm_id,
-          buffers,
+          buffers
         );
       } else {
         // Construct a comm that already is open on the kernel side. We
