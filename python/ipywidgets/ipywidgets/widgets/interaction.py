@@ -15,19 +15,17 @@ from IPython import get_ipython
 from IPython.display import clear_output, display
 from traitlets import Any, HasTraits, Unicode, observe
 
-from . import (
-    Button,
-    Checkbox,
-    DOMWidget,
-    Dropdown,
-    FloatSlider,
-    IntSlider,
-    Output,
-    Text,
-    ValueWidget,
-    VBox,
-    Widget,
-)
+from .domwidget import DOMWidget
+from .valuewidget import ValueWidget
+from .widget import Widget
+from .widget_bool import Checkbox
+from .widget_box import VBox
+from .widget_button import Button
+from .widget_float import FloatSlider
+from .widget_int import IntSlider
+from .widget_output import Output
+from .widget_selection import Dropdown
+from .widget_string import Text
 
 empty = Parameter.empty
 
