@@ -33,7 +33,7 @@ jobs:
     - name: Build docs
       run: |
         cd docs/source
-        python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
+        python -m sphinx -vvv -T -E -b html -d ../build/doctrees -D language=en . ../build/html
   js:
     name: JavaScript
     runs-on: ubuntu-latest
