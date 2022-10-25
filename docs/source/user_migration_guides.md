@@ -1,10 +1,8 @@
-Migrating user code
-===================
+# Migrating user code
 
 These are migration guides specifically for ipywidgets users.
 
-Migrating from 7.x to 8.0
--------------------------
+## Migrating from 7.x to 8.0
 
 For more details about the changes done for the 8.0 major version, please consult the
 [changelog](./changelog).
@@ -59,8 +57,8 @@ those that want to use the new functionality:
 Four attributes have been added: `border_left`, `border_right`, `border_top` and `border_bottom`.
 These can be used to set the corresponding CSS border strings individually. Setting the
 `border` property overrides all of those four attributes to the new value of `border`. If
-the individual values are set to different values, *the `border` property will return `None`
-when you read its value*.
+the individual values are set to different values, _the `border` property will return `None`
+when you read its value_.
 
 #### Layout.overflow_x / overflow_y
 

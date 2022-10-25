@@ -6,12 +6,13 @@
 Represents an HTML Color .
 """
 
-from .widget_description import DescriptionWidget
+from traitlets import Bool, CaselessStrEnum, CInt, TraitError, Unicode, Union, validate
+
+from .trait_types import Date, date_serialization
 from .valuewidget import ValueWidget
 from .widget import register
 from .widget_core import CoreWidget
-from .trait_types import Date, date_serialization
-from traitlets import Unicode, Bool, Union, CInt, CaselessStrEnum, TraitError, validate
+from .widget_description import DescriptionWidget
 
 
 @register
@@ -37,8 +38,8 @@ class DatePicker(DescriptionWidget, ValueWidget, CoreWidget):
     >>> date_pick.value = datetime.date(2019, 7, 9)
     """
 
-    _view_name = Unicode('DatePickerView').tag(sync=True)
-    _model_name = Unicode('DatePickerModel').tag(sync=True)
+    _view_name = Unicode("DatePickerView").tag(sync=True)
+    _model_name = Unicode("DatePickerModel").tag(sync=True)
 
     value = Date(None, allow_none=True).tag(sync=True, **date_serialization)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)

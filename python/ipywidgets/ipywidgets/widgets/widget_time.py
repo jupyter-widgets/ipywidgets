@@ -5,7 +5,15 @@
 Time picker widget
 """
 
-from traitlets import Unicode, Bool, Union, CaselessStrEnum, CFloat, validate, TraitError
+from traitlets import (
+    Bool,
+    CaselessStrEnum,
+    CFloat,
+    TraitError,
+    Unicode,
+    Union,
+    validate,
+)
 
 from .trait_types import Time, time_serialization
 from .valuewidget import ValueWidget

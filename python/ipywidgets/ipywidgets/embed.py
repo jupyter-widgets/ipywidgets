@@ -12,10 +12,12 @@ Functions for generating embeddable HTML/javascript of a widget.
 
 import json
 import re
-from .widgets import Widget, DOMWidget, widget as widget_module
-from .widgets.widget_link import Link
-from .widgets.docutils import doc_subst
+
 from ._version import __html_manager_version__
+from .widgets import DOMWidget, Widget
+from .widgets import widget as widget_module
+from .widgets.docutils import doc_subst
+from .widgets.widget_link import Link
 
 snippet_template = """
 {load}
@@ -41,7 +43,6 @@ requirejs_snippet_template = """
 """
 
 
-
 html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,16 +59,26 @@ widget_view_template = """<script type="application/vnd.jupyter.widget-view+json
 {view_spec}
 </script>"""
 
-DEFAULT_EMBED_SCRIPT_URL = 'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
-DEFAULT_EMBED_REQUIREJS_URL = 'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
+DEFAULT_EMBED_SCRIPT_URL = (
+    "https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed.js"
+    % __html_manager_version__
+)
+DEFAULT_EMBED_REQUIREJS_URL = (
+    "https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed-amd.js"
+    % __html_manager_version__
+)
 
 _doc_snippets = {}
-_doc_snippets['views_attribute'] = """
+_doc_snippets[
+    "views_attribute"
+] = """
     views: widget or collection of widgets or None
         The widgets to include views for. If None, all DOMWidgets are
         included (not just the displayed ones).
 """
-_doc_snippets['embed_kwargs'] = """
+_doc_snippets[
+    "embed_kwargs"
+] = """
     drop_defaults: boolean
         Whether to drop default values from the widget states.
     state: dict or None (default)
@@ -116,12 +127,12 @@ def _find_widget_refs_by_state(widget, state):
 def _get_recursive_state(widget, store=None, drop_defaults=False):
     """Gets the embed state of a widget, and all other widgets it refers to as well"""
     if store is None:
-        store = dict()
+        store = {}
     state = widget._get_embed_state(drop_defaults=drop_defaults)
     store[widget.model_id] = state
 
     # Loop over all values included in state (i.e. don't consider excluded values):
-    for ref in _find_widget_refs_by_state(widget, state['state']):
+    for ref in _find_widget_refs_by_state(widget, state["state"]):
         if ref.model_id not in store:
             _get_recursive_state(ref, store, drop_defaults=drop_defaults)
     return store
@@ -129,7 +140,7 @@ def _get_recursive_state(widget, store=None, drop_defaults=False):
 
 def add_resolved_links(store, drop_defaults):
     """Adds the state of any link models between two models in store"""
-    for widget_id, widget in widget_module._instances.items(): # go over all widgets
+    for widget_id, widget in widget_module._instances.items():  # go over all widgets
         if isinstance(widget, Link) and widget_id not in store:
             if widget.source[0].model_id in store and widget.target[0].model_id in store:
                 store[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
@@ -167,7 +178,7 @@ def dependency_state(widgets, drop_defaults=True):
     # collect the state of all relevant widgets
     if widgets is None:
         # Get state of all widgets, no smart resolution needed.
-        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
+        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)["state"]
     else:
         try:
             widgets[0]
@@ -216,18 +227,21 @@ def embed_data(views, drop_defaults=True, state=None):
 
     if state is None:
         # Get state of all known widgets
-        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
+        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)["state"]
 
     # Rely on ipywidget to get the default values
     json_data = Widget.get_manager_state(widgets=[])
     # but plug in our own state
-    json_data['state'] = state
+    json_data["state"] = state
 
     view_specs = [w.get_view_spec() for w in views]
 
     return dict(manager_state=json_data, view_specs=view_specs)
 
-script_escape_re = re.compile(r'<(script|/script|!--)', re.IGNORECASE)
+
+script_escape_re = re.compile(r"<(script|/script|!--)", re.IGNORECASE)
+
+
 def escape_script(s):
     """Escape a string that will be the content of an HTML script tag.
 
@@ -238,17 +252,13 @@ def escape_script(s):
     We only replace these three cases so that most html or other content
     involving `<` is readable.
     """
-    return script_escape_re.sub(r'\\u003c\1', s)
+    return script_escape_re.sub(r"\\u003c\1", s)
+
 
 @doc_subst(_doc_snippets)
-def embed_snippet(views,
-                  drop_defaults=True,
-                  state=None,
-                  indent=2,
-                  embed_url=None,
-                  requirejs=True,
-                  cors=True
-                 ):
+def embed_snippet(
+    views, drop_defaults=True, state=None, indent=2, embed_url=None, requirejs=True, cors=True
+):
     """Return a snippet that can be embedded in an HTML file.
 
     Parameters
@@ -263,9 +273,9 @@ def embed_snippet(views,
 
     data = embed_data(views, drop_defaults=drop_defaults, state=state)
 
-    widget_views = '\n'.join(
+    widget_views = "\n".join(
         widget_view_template.format(view_spec=escape_script(json.dumps(view_spec)))
-        for view_spec in data['view_specs']
+        for view_spec in data["view_specs"]
     )
 
     if embed_url is None:
@@ -273,18 +283,18 @@ def embed_snippet(views,
 
     load = load_requirejs_template if requirejs else load_template
 
-    use_cors = ' crossorigin="anonymous"' if cors else ''
+    use_cors = ' crossorigin="anonymous"' if cors else ""
     values = {
-        'load': load.format(embed_url=embed_url, use_cors=use_cors),
-        'json_data': escape_script(json.dumps(data['manager_state'], indent=indent)),
-        'widget_views': widget_views,
+        "load": load.format(embed_url=embed_url, use_cors=use_cors),
+        "json_data": escape_script(json.dumps(data["manager_state"], indent=indent)),
+        "widget_views": widget_views,
     }
 
     return snippet_template.format(**values)
 
 
 @doc_subst(_doc_snippets)
-def embed_minimal_html(fp, views, title='IPyWidget export', template=None, **kwargs):
+def embed_minimal_html(fp, views, title="IPyWidget export", template=None, **kwargs):
     """Write a minimal HTML file with widget views embedded.
 
     Parameters
@@ -302,8 +312,8 @@ def embed_minimal_html(fp, views, title='IPyWidget export', template=None, **kwa
     snippet = embed_snippet(views, **kwargs)
 
     values = {
-        'title': title,
-        'snippet': snippet,
+        "title": title,
+        "snippet": snippet,
     }
     if template is None:
         template = html_template
@@ -311,7 +321,7 @@ def embed_minimal_html(fp, views, title='IPyWidget export', template=None, **kwa
     html_code = template.format(**values)
 
     # Check if fp is writable:
-    if hasattr(fp, 'write'):
+    if hasattr(fp, "write"):
         fp.write(html_code)
     else:
         # Assume fp is a filename:

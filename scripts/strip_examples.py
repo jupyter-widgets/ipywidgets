@@ -33,20 +33,20 @@ import sys
 
 try:
     # Jupyter >= 4
-    from nbformat import read, write, NO_CONVERT
+    from nbformat import NO_CONVERT, read, write
 except ImportError:
     # IPython 3
     try:
-        from IPython.nbformat import read, write, NO_CONVERT
+        from IPython.nbformat import NO_CONVERT, read, write
     except ImportError:
         # IPython < 3
         from IPython.nbformat import current
-    
+
         def read(f, as_version):
-            return current.read(f, 'json')
-    
+            return current.read(f, "json")
+
         def write(nb, f):
-            return current.write(nb, f, 'json')
+            return current.write(nb, f, "json")
 
 
 def _cells(nb):
@@ -60,20 +60,20 @@ def _cells(nb):
 
 def strip_output(nb):
     """strip the outputs from a notebook object"""
-    nb.metadata.pop('signature', None)
-    nb.metadata.pop('widgets', None)
+    nb.metadata.pop("signature", None)
+    nb.metadata.pop("widgets", None)
     for cell in _cells(nb):
-        if 'outputs' in cell:
-            cell['outputs'] = []
-        if 'prompt_number' in cell:
-            cell['prompt_number'] = None
+        if "outputs" in cell:
+            cell["outputs"] = []
+        if "prompt_number" in cell:
+            cell["prompt_number"] = None
     return nb
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     filename = sys.argv[1]
-    with open(filename, 'r', encoding='utf8') as f:
+    with open(filename, encoding="utf8") as f:
         nb = read(f, as_version=NO_CONVERT)
     nb = strip_output(nb)
-    with open(filename, 'w', encoding='utf8') as f:
+    with open(filename, "w", encoding="utf8") as f:
         write(nb, f)

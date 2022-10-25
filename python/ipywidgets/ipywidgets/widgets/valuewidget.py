@@ -3,8 +3,9 @@
 
 """Contains the ValueWidget class"""
 
-from .widget import Widget
 from traitlets import Any
+
+from .widget import Widget
 
 
 class ValueWidget(Widget):
@@ -21,7 +22,7 @@ class ValueWidget(Widget):
 
     def _repr_keys(self):
         # Ensure value key comes first, and is always present
-        yield 'value'
+        yield "value"
         for key in super()._repr_keys():
-            if key != 'value':
+            if key != "value":
                 yield key

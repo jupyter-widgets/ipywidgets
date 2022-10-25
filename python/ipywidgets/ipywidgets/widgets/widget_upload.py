@@ -8,25 +8,31 @@ Represents a file upload button.
 import datetime as dt
 
 from traitlets import (
-    observe, default, Unicode, Dict, Int, Bool, Bytes, CaselessStrEnum
+    Bool,
+    Bunch,
+    Bytes,
+    CaselessStrEnum,
+    Dict,
+    Int,
+    Unicode,
+    default,
+    observe,
 )
 
-from .widget_description import DescriptionWidget
-from .valuewidget import ValueWidget
-from .widget_core import CoreWidget
-from .widget_button import ButtonStyle
-from .widget import register, widget_serialization
 from .trait_types import InstanceDict, TypedTuple
-from traitlets import Bunch
+from .valuewidget import ValueWidget
+from .widget import register, widget_serialization
+from .widget_button import ButtonStyle
+from .widget_core import CoreWidget
+from .widget_description import DescriptionWidget
 
 
 def _deserialize_single_file(js):
     uploaded_file = Bunch()
-    for attribute in ['name', 'type', 'size', 'content']:
+    for attribute in ["name", "type", "size", "content"]:
         uploaded_file[attribute] = js[attribute]
-    uploaded_file['last_modified'] = dt.datetime.fromtimestamp(
-        js['last_modified'] / 1000,
-        tz=dt.timezone.utc
+    uploaded_file["last_modified"] = dt.datetime.fromtimestamp(
+        js["last_modified"] / 1000, tz=dt.timezone.utc
     )
     return uploaded_file
 
@@ -37,9 +43,9 @@ def _deserialize_value(js, _):
 
 def _serialize_single_file(uploaded_file):
     js = {}
-    for attribute in ['name', 'type', 'size', 'content']:
+    for attribute in ["name", "type", "size", "content"]:
         js[attribute] = uploaded_file[attribute]
-    js['last_modified'] = int(uploaded_file['last_modified'].timestamp() * 1000)
+    js["last_modified"] = int(uploaded_file["last_modified"].timestamp() * 1000)
     return js
 
 
@@ -47,10 +53,7 @@ def _serialize_value(value, _):
     return [_serialize_single_file(entry) for entry in value]
 
 
-_value_serialization = {
-    'from_json': _deserialize_value,
-    'to_json': _serialize_value
-}
+_value_serialization = {"from_json": _deserialize_value, "to_json": _serialize_value}
 
 
 @register
@@ -120,21 +123,27 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     error: str, optional
         Whether the last upload triggered an error.
     """
-    _model_name = Unicode('FileUploadModel').tag(sync=True)
-    _view_name = Unicode('FileUploadView').tag(sync=True)
 
-    accept = Unicode(help='File types to accept, empty string for all').tag(sync=True)
-    multiple = Bool(help='If True, allow for multiple files upload').tag(sync=True)
-    disabled = Bool(help='Enable or disable button').tag(sync=True)
-    icon = Unicode('upload', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
+    _model_name = Unicode("FileUploadModel").tag(sync=True)
+    _view_name = Unicode("FileUploadView").tag(sync=True)
+
+    accept = Unicode(help="File types to accept, empty string for all").tag(sync=True)
+    multiple = Bool(help="If True, allow for multiple files upload").tag(sync=True)
+    disabled = Bool(help="Enable or disable button").tag(sync=True)
+    icon = Unicode("upload", help="Font-awesome icon name, without the 'fa-' prefix.").tag(
+        sync=True
+    )
     button_style = CaselessStrEnum(
-        values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
-        help='Use a predefined styling for the button.').tag(sync=True)
+        values=["primary", "success", "info", "warning", "danger", ""],
+        default_value="",
+        help="Use a predefined styling for the button.",
+    ).tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
-    error = Unicode(help='Error message').tag(sync=True)
-    value = TypedTuple(Dict(), help='The file upload value').tag(
-        sync=True, echo_update=False, **_value_serialization)
+    error = Unicode(help="Error message").tag(sync=True)
+    value = TypedTuple(Dict(), help="The file upload value").tag(
+        sync=True, echo_update=False, **_value_serialization
+    )
 
-    @default('description')
+    @default("description")
     def _default_description(self):
-        return 'Upload'
+        return "Upload"

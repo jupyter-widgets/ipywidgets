@@ -1,21 +1,19 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # Copyright (c) Vidar Tonaas Fauske.
 # Distributed under the terms of the Modified BSD License.
 
-import pytest
-
 import datetime
-import pytz
 
+import pytest
+import pytz
 from traitlets import TraitError
 
 from ..trait_types import (
-    time_to_json,
-    time_from_json,
-    datetime_to_json,
     datetime_from_json,
+    datetime_to_json,
+    time_from_json,
+    time_to_json,
 )
 
 
@@ -25,9 +23,7 @@ def test_time_serialize_none():
 
 def test_time_serialize_value():
     t = datetime.time(13, 37, 42, 7000)
-    assert time_to_json(t, None) == dict(
-        hours=13, minutes=37, seconds=42, milliseconds=7
-    )
+    assert time_to_json(t, None) == dict(hours=13, minutes=37, seconds=42, milliseconds=7)
 
 
 def test_time_deserialize_none():
@@ -86,6 +82,4 @@ def test_datetime_deserialize_value():
         seconds=42,
         milliseconds=7,
     )
-    assert datetime_from_json(v, None) == datetime.datetime(
-        2002, 2, 20, 14, 19, 42, 7000, tz
-    )
+    assert datetime_from_json(v, None) == datetime.datetime(2002, 2, 20, 14, 19, 42, 7000, tz)

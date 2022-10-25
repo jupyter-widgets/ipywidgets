@@ -181,7 +181,10 @@ export class CheckboxView extends DescriptionView {
   }
 
   updateTooltip(): void {
-    if (!this.checkbox) return; // we might be constructing the parent
+    if (!this.checkbox) {
+      // we might be constructing the parent
+      return;
+    }
     const title = this.model.get('tooltip');
     if (!title) {
       this.checkbox.removeAttribute('title');

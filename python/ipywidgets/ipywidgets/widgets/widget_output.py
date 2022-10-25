@@ -7,18 +7,19 @@ Represents a widget that can be used to display output within the widget area.
 """
 
 import sys
+import traceback
 from functools import wraps
 
+from IPython import get_ipython
+from IPython.core.interactiveshell import InteractiveShell
+from IPython.display import clear_output
+from traitlets import Dict, Unicode
+
+from .._version import __jupyter_widgets_output_version__
 from .domwidget import DOMWidget
 from .trait_types import TypedTuple
 from .widget import register
-from .._version import __jupyter_widgets_output_version__
 
-from traitlets import Unicode, Dict
-from IPython.core.interactiveshell import InteractiveShell
-from IPython.display import clear_output
-from IPython import get_ipython
-import traceback
 
 @register
 class Output(DOMWidget):
@@ -50,15 +51,18 @@ class Output(DOMWidget):
         def func():
             print('prints to output widget')
     """
-    _view_name = Unicode('OutputView').tag(sync=True)
-    _model_name = Unicode('OutputModel').tag(sync=True)
-    _view_module = Unicode('@jupyter-widgets/output').tag(sync=True)
-    _model_module = Unicode('@jupyter-widgets/output').tag(sync=True)
+
+    _view_name = Unicode("OutputView").tag(sync=True)
+    _model_name = Unicode("OutputModel").tag(sync=True)
+    _view_module = Unicode("@jupyter-widgets/output").tag(sync=True)
+    _model_module = Unicode("@jupyter-widgets/output").tag(sync=True)
     _view_module_version = Unicode(__jupyter_widgets_output_version__).tag(sync=True)
     _model_module_version = Unicode(__jupyter_widgets_output_version__).tag(sync=True)
 
-    msg_id = Unicode('', help="Parent message id of messages to capture").tag(sync=True)
-    outputs = TypedTuple(trait=Dict(), help="The output messages synced from the frontend.").tag(sync=True)
+    msg_id = Unicode("", help="Parent message id of messages to capture").tag(sync=True)
+    outputs = TypedTuple(trait=Dict(), help="The output messages synced from the frontend.").tag(
+        sync=True
+    )
 
     __counter = 0
 
@@ -94,6 +98,7 @@ class Output(DOMWidget):
             is also True.
             Default: False
         """
+
         def capture_decorator(func):
             @wraps(func)
             def inner(*args, **kwargs):
@@ -101,7 +106,9 @@ class Output(DOMWidget):
                     self.clear_output(*clear_args, **clear_kwargs)
                 with self:
                     return func(*args, **kwargs)
+
             return inner
+
         return capture_decorator
 
     def __enter__(self):
@@ -113,7 +120,7 @@ class Output(DOMWidget):
             kernel = ip.kernel
         elif self.comm is not None and self.comm.kernel is not None:
             kernel = self.comm.kernel
-        
+
         if kernel:
             parent = None
             if hasattr(kernel, "get_parent"):
@@ -136,17 +143,19 @@ class Output(DOMWidget):
                 ip.showtraceback((etype, evalue, tb), tb_offset=0)
             elif self.comm is not None and self.comm.kernel is not None:
                 kernel = self.comm.kernel
-                kernel.send_response(kernel.iopub_socket,
-                                     u'error',
-                                     {
-                    u'traceback': ["".join(traceback.format_exception(etype, evalue, tb))],
-                    u'evalue': repr(evalue.args),
-                    u'ename': etype.__name__
-                    })
+                kernel.send_response(
+                    kernel.iopub_socket,
+                    "error",
+                    {
+                        "traceback": ["".join(traceback.format_exception(etype, evalue, tb))],
+                        "evalue": repr(evalue.args),
+                        "ename": etype.__name__,
+                    },
+                )
         self._flush()
         self.__counter -= 1
         if self.__counter == 0:
-            self.msg_id = ''
+            self.msg_id = ""
         # suppress exceptions when in IPython, since they are shown above,
         # otherwise let someone else handle it
         return True if kernel else None
@@ -158,17 +167,15 @@ class Output(DOMWidget):
 
     def _append_stream_output(self, text, stream_name):
         """Append a stream output."""
-        self.outputs += (
-            {'output_type': 'stream', 'name': stream_name, 'text': text},
-        )
+        self.outputs += ({"output_type": "stream", "name": stream_name, "text": text},)
 
     def append_stdout(self, text):
         """Append text to the stdout stream."""
-        self._append_stream_output(text, stream_name='stdout')
+        self._append_stream_output(text, stream_name="stdout")
 
     def append_stderr(self, text):
         """Append text to the stderr stream."""
-        self._append_stream_output(text, stream_name='stderr')
+        self._append_stream_output(text, stream_name="stderr")
 
     def append_display_data(self, display_object):
         """Append a display object as an output.
@@ -181,10 +188,4 @@ class Output(DOMWidget):
         """
         fmt = InteractiveShell.instance().display_formatter.format
         data, metadata = fmt(display_object)
-        self.outputs += (
-            {
-                'output_type': 'display_data',
-                'data': data,
-                'metadata': metadata
-            },
-        )
+        self.outputs += ({"output_type": "display_data", "data": data, "metadata": metadata},)
