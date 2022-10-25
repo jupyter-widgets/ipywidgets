@@ -5,7 +5,6 @@ channels:
 dependencies:
   - bqplot
   - build
-  - empack
   - ipykernel
   - jupyter_client
   - jupyterlab >=3,<4
