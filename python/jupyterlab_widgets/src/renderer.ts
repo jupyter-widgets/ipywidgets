@@ -19,7 +19,10 @@ export class WidgetRenderer
   extends Panel
   implements IRenderMime.IRenderer, IDisposable
 {
-  constructor(options: IRenderMime.IRendererOptions, manager?: LabWidgetManager) {
+  constructor(
+    options: IRenderMime.IRendererOptions,
+    manager?: LabWidgetManager
+  ) {
     super();
     this.mimeType = options.mimeType;
     if (manager) {
