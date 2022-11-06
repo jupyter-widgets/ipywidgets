@@ -78,7 +78,7 @@ export class IntSliderModel extends BoundedIntModel {
   readout_formatter: any;
 }
 
-export class IntRangeSliderModel extends IntSliderModel {}
+export class IntRangeSliderModel extends IntSliderModel { }
 
 export abstract class BaseIntSliderView extends DescriptionView {
   render(): void {
@@ -223,7 +223,8 @@ export abstract class BaseIntSliderView extends DescriptionView {
       },
     });
 
-    // Using noUiSlider's event handler
+    // Using noUiSlider's 'update' and 'change' events.
+    // See reference: https://refreshless.com/nouislider/events-callbacks/
     this.$slider.noUiSlider.on('update', (values: any, handle: any) => {
       this.handleSliderUpdateEvent(values, handle);
     });
@@ -268,12 +269,13 @@ export abstract class BaseIntSliderView extends DescriptionView {
   abstract handleTextChange(): void;
 
   /**
-   * Called when the slider value changes on mouseUp.
+   * Called when the slider handle is released after dragging, 
+   * or by tapping or moving by the arrow keys.
    */
   abstract handleSliderChangeEvent(value: any, handle: any): void;
 
   /**
-   * Called when the slider value changes whilst dragging.
+   * Called whilst the slider is dragged, tapped or moved by the arrow keys.
    */
   abstract handleSliderUpdateEvent(value: any, handle: any): void;
 
@@ -371,6 +373,10 @@ export class IntRangeSliderView extends BaseIntSliderView {
     }
   }
 
+  /**
+   * Called when the slider handle is released after dragging, 
+   * or by tapping or moving by the arrow keys.
+   */
   handleSliderChangeEvent(values: any, handle: any): void {
     const actual_value = values.map(this._validate_slide_value);
     this.readout.textContent = this.valueToString(actual_value);
@@ -378,6 +384,9 @@ export class IntRangeSliderView extends BaseIntSliderView {
     this.handleSliderChanged(values, handle);
   }
 
+  /**
+   * Called whilst the slider is dragged, tapped or moved by the arrow keys.
+   */
   handleSliderUpdateEvent(values: any, handle: any): void {
     const actual_value = values.map(this._validate_slide_value);
     this.readout.textContent = this.valueToString(actual_value);

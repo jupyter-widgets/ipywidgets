@@ -498,7 +498,7 @@ export class ToggleButtonsView extends DescriptionView {
     const previous_icons = this.model.previous('icons') || [];
     const previous_bstyle =
       (ToggleButtonsView.classMap as any)[
-        this.model.previous('button_style')
+      this.model.previous('button_style')
       ] || '';
     const tooltips = this.model.get('tooltips') || [];
     const disabled = this.model.get('disabled');
@@ -769,7 +769,8 @@ export class SelectionSliderView extends DescriptionView {
       },
     });
 
-    // Using noUiSlider's event handler
+    // Using noUiSlider's 'update' and 'change' events.
+    // See reference: https://refreshless.com/nouislider/events-callbacks/
     this.$slider.noUiSlider.on('update', (values: number[], handle: number) => {
       this.handleSliderUpdateEvent(values, handle);
     });
@@ -797,7 +798,7 @@ export class SelectionSliderView extends DescriptionView {
   }
 
   /**
-   * Called when the slider value changes whilst dragging.
+   * Called whilst the slider is dragged, tapped or moved by the arrow keys.
    */
   handleSliderUpdateEvent(values: number[], handle: number): void {
     const index = values[0];
@@ -811,7 +812,8 @@ export class SelectionSliderView extends DescriptionView {
   }
 
   /**
-   * Called on a mouseUp event.
+   * Called when the slider handle is released after dragging, 
+   * or by tapping or moving by the arrow keys.
    */
   handleSliderChangeEvent(values: number[], handle: number): void {
     const index = values[0];
