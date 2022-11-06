@@ -7,7 +7,7 @@ import {
   BaseIntSliderView,
   IntRangeSliderView,
   IntSliderView,
-  IntTextView
+  IntTextView,
 } from './widget_int';
 
 import { format } from 'd3-format';
@@ -103,7 +103,7 @@ export class FloatLogSliderModel extends BoundedFloatModel {
   readout_formatter: any;
 }
 
-export class FloatRangeSliderModel extends FloatSliderModel { }
+export class FloatRangeSliderModel extends FloatSliderModel {}
 
 export class FloatSliderView extends IntSliderView {
   /**
@@ -240,7 +240,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
   }
 
   /**
-   * Called when the slider handle is released after dragging, 
+   * Called when the slider handle is released after dragging,
    * or by tapping or moving by the arrow keys.
    */
   handleSliderChangeEvent(values: number[], handle: number): void {

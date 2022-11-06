@@ -78,7 +78,7 @@ export class IntSliderModel extends BoundedIntModel {
   readout_formatter: any;
 }
 
-export class IntRangeSliderModel extends IntSliderModel { }
+export class IntRangeSliderModel extends IntSliderModel {}
 
 export abstract class BaseIntSliderView extends DescriptionView {
   render(): void {
@@ -269,7 +269,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
   abstract handleTextChange(): void;
 
   /**
-   * Called when the slider handle is released after dragging, 
+   * Called when the slider handle is released after dragging,
    * or by tapping or moving by the arrow keys.
    */
   abstract handleSliderChangeEvent(value: any, handle: any): void;
@@ -374,7 +374,7 @@ export class IntRangeSliderView extends BaseIntSliderView {
   }
 
   /**
-   * Called when the slider handle is released after dragging, 
+   * Called when the slider handle is released after dragging,
    * or by tapping or moving by the arrow keys.
    */
   handleSliderChangeEvent(values: any, handle: any): void {

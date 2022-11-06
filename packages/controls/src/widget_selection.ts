@@ -498,7 +498,7 @@ export class ToggleButtonsView extends DescriptionView {
     const previous_icons = this.model.previous('icons') || [];
     const previous_bstyle =
       (ToggleButtonsView.classMap as any)[
-      this.model.previous('button_style')
+        this.model.previous('button_style')
       ] || '';
     const tooltips = this.model.get('tooltips') || [];
     const disabled = this.model.get('disabled');
@@ -812,7 +812,7 @@ export class SelectionSliderView extends DescriptionView {
   }
 
   /**
-   * Called when the slider handle is released after dragging, 
+   * Called when the slider handle is released after dragging,
    * or by tapping or moving by the arrow keys.
    */
   handleSliderChangeEvent(values: number[], handle: number): void {
