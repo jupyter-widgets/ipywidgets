@@ -82,8 +82,9 @@ class TagsInputBaseModel extends CoreDOMWidgetModel {
     return {
       ...super.defaults(),
       value: [],
+      placeholder: '\u200b',
       allowed_tags: null,
-      allow_duplicates: true
+      allow_duplicates: true,
     };
   }
 }
@@ -100,8 +101,13 @@ abstract class TagsInputBaseView extends DOMWidgetView {
 
     this.taginputWrapper = document.createElement('div');
 
-    // The taginput is not displayed until the user focuses on the widget
-    this.taginputWrapper.style.display = 'none';
+    // The taginput is hidden until the user focuses on the widget
+    // Unless there is no value
+    if (this.model.get('value').length) {
+      this.taginputWrapper.style.display = 'none';
+    } else {
+      this.taginputWrapper.style.display = 'inline-block';
+    }
 
     this.datalistID = uuid();
 
@@ -109,6 +115,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.taginput.classList.add('jupyter-widget-tag');
     this.taginput.classList.add('jupyter-widget-taginput');
     this.taginput.setAttribute('list', this.datalistID);
+    this.taginput.setAttribute('type', 'text');
 
     this.autocompleteList = document.createElement('datalist');
     this.autocompleteList.id = this.datalistID;
@@ -116,6 +123,10 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.updateAutocomplete();
     this.model.on('change:allowed_tags', this.updateAutocomplete.bind(this));
 
+    this.updatePlaceholder();
+    this.model.on('change:placeholder', this.updatePlaceholder.bind(this));
+
+    this.taginputWrapper.classList.add('widget-text');
     this.taginputWrapper.appendChild(this.taginput);
     this.taginputWrapper.appendChild(this.autocompleteList);
 
@@ -194,6 +205,14 @@ abstract class TagsInputBaseView extends DOMWidgetView {
       this.el.children[this.inputIndex]
     );
 
+    // The taginput is hidden until the user focuses on the widget
+    // Unless there is no value
+    if (this.model.get('value').length) {
+      this.taginputWrapper.style.display = 'none';
+    } else {
+      this.taginputWrapper.style.display = 'inline-block';
+    }
+
     this.preventLoosingFocus = false;
 
     return super.update();
@@ -212,6 +231,14 @@ abstract class TagsInputBaseView extends DOMWidgetView {
       option.value = tag;
       this.autocompleteList.appendChild(option);
     }
+  }
+
+  /**
+   * Update the auto-completion list
+   */
+  updatePlaceholder(): void {
+    this.taginput.placeholder = this.model.get('placeholder');
+    this.resizeInput();
   }
 
   /**
@@ -297,7 +324,15 @@ abstract class TagsInputBaseView extends DOMWidgetView {
    * Resize the input element
    */
   resizeInput(): void {
-    const size = this.taginput.value.length + 1;
+    let content: string;
+
+    if (this.taginput.value.length != 0) {
+      content = this.taginput.value;
+    } else {
+      content = this.model.get('placeholder');
+    }
+
+    const size = content.length + 1;
     this.taginput.setAttribute('size', String(size));
   }
 
@@ -538,17 +573,9 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.updateTags();
   }
 
-  /**
-   * The default tag name.
-   *
-   * #### Notes
-   * This is a read-only attribute.
-   */
-  get tagName(): string {
-    // We can't make this an attribute with a default value
-    // since it would be set after it is needed in the
-    // constructor.
-    return 'div';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'div';
   }
 
   /**
@@ -588,7 +615,7 @@ export class TagsInputModel extends TagsInputBaseModel {
       value: [],
       tag_style: '',
       _view_name: 'TagsInputView',
-      _model_name: 'TagsInputModel'
+      _model_name: 'TagsInputModel',
     };
   }
 }
@@ -656,7 +683,7 @@ export class TagsInputView extends TagsInputBaseView {
     success: 'mod-success',
     info: 'mod-info',
     warning: 'mod-warning',
-    danger: 'mod-danger'
+    danger: 'mod-danger',
   };
 }
 
@@ -666,7 +693,7 @@ export class ColorsInputModel extends TagsInputBaseModel {
       ...super.defaults(),
       value: [],
       _view_name: 'ColorsInputView',
-      _model_name: 'ColorsInputModel'
+      _model_name: 'ColorsInputModel',
     };
   }
 }
@@ -678,10 +705,7 @@ export class ColorsInputView extends TagsInputBaseView {
   createTag(value: string, index: number, selected: boolean): HTMLDivElement {
     const tag = document.createElement('div');
     const color = value;
-    const darkerColor: string = d3Color
-      .color(value)!
-      .darker()
-      .toString();
+    const darkerColor: string = d3Color.color(value)!.darker().toString();
 
     tag.classList.add('jupyter-widget-tag');
     tag.classList.add('jupyter-widget-colortag');
@@ -719,10 +743,7 @@ export class ColorsInputView extends TagsInputBaseView {
     selected: boolean
   ): void {
     const color = value;
-    const darkerColor: string = d3Color
-      .color(value)!
-      .darker()
-      .toString();
+    const darkerColor: string = d3Color.color(value)!.darker().toString();
 
     if (!selected) {
       tag.classList.remove('mod-active');
@@ -752,7 +773,7 @@ abstract class NumbersInputModel extends TagsInputModel {
     return {
       ...super.defaults(),
       min: null,
-      max: null
+      max: null,
     };
   }
 }
@@ -789,12 +810,14 @@ abstract class NumbersInputView extends TagsInputView {
       (min != null && parsed < min) ||
       (max != null && parsed > max)
     ) {
-      throw value +
+      throw (
+        value +
         ' is not a valid number, it should be in the range [' +
         min +
         ', ' +
         max +
-        ']';
+        ']'
+      );
     }
 
     return parsed;
@@ -811,7 +834,7 @@ export class FloatsInputModel extends NumbersInputModel {
       ...super.defaults(),
       _view_name: 'FloatsInputView',
       _model_name: 'FloatsInputModel',
-      format: '.1f'
+      format: '.1f',
     };
   }
 }
@@ -830,7 +853,7 @@ export class IntsInputModel extends NumbersInputModel {
       ...super.defaults(),
       _view_name: 'IntsInputView',
       _model_name: 'IntsInputModel',
-      format: '.3g'
+      format: 'd',
     };
   }
 }

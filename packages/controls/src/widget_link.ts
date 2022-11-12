@@ -9,7 +9,7 @@ export class DirectionalLinkModel extends CoreWidgetModel {
   static serializers = {
     ...CoreWidgetModel.serializers,
     target: { deserialize: unpack_models },
-    source: { deserialize: unpack_models }
+    source: { deserialize: unpack_models },
   };
 
   defaults(): Backbone.ObjectHash {
@@ -17,7 +17,7 @@ export class DirectionalLinkModel extends CoreWidgetModel {
       ...super.defaults(),
       target: undefined,
       source: undefined,
-      _model_name: 'DirectionalLinkModel'
+      _model_name: 'DirectionalLinkModel',
     };
   }
 
@@ -103,7 +103,7 @@ export class LinkModel extends DirectionalLinkModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      _model_name: 'LinkModel'
+      _model_name: 'LinkModel',
     };
   }
 

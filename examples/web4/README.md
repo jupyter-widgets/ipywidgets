@@ -13,12 +13,23 @@ replace
 
 with
 
-`<script src="https://unpkg.com/@jupyter-widgets/html-manager/dist/embed.js" crossorigin="anonymous"></script>`
+`<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager/dist/embed.js" crossorigin="anonymous"></script>`
 
 If you need a specific version of the HTML widget manager, you can include a
 semver range. For example:
 
-`<script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.8.0/dist/embed.js" crossorigin="anonymous"></script>`
+`<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^0.8.0/dist/embed.js" crossorigin="anonymous"></script>`
+
+The widget data in this example was generated from the following code:
+
+```python
+from ipywidgets import VBox, jsdlink, IntSlider, Button
+
+s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+b = Button(icon='legal')
+jsdlink((s1, 'value'), (s2, 'max'))
+VBox([s1, s2, b])
+```
 
 ## Try it
 

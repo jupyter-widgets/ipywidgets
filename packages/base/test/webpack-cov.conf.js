@@ -5,24 +5,26 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: 'coverage.js',
-    publicPath: './build/'
   },
   bail: true,
   module: {
     loaders: [
-      { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.ipynb$/, loader: 'json-loader' },
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.md$/, loader: 'raw-loader' },
-      { test: /\.html$/, loader: 'file?name=[name].[ext]' }
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.md$/, type: 'asset/source' },
+      {
+        test: /\.html$/,
+        type: 'asset/resource',
+        generator: { filename: '[name].[ext]' },
+      },
+      { test: /\.ipynb$/, type: 'json' },
     ],
     preLoaders: [
       // instrument only testing sources with Istanbul
       {
         test: /\.js$/,
         include: path.resolve('lib/'),
-        loader: 'istanbul-instrumenter'
-      }
-    ]
-  }
+        loader: 'istanbul-instrumenter',
+      },
+    ],
+  },
 };

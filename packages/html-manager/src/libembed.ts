@@ -2,15 +2,25 @@
 // Distributed under the terms of the Modified BSD License.
 
 declare let __webpack_public_path__: string;
-// eslint-disable-next-line prefer-const
+/* eslint-disable prefer-const, @typescript-eslint/no-unused-vars */
 __webpack_public_path__ =
   (window as any).__jupyter_widgets_assets_path__ || __webpack_public_path__;
+/* eslint-enable prefer-const, @typescript-eslint/no-unused-vars */
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import '@fortawesome/fontawesome-free/css/v4-shims.min.css';
 
 import '@lumino/widgets/style/index.css';
-import '@jupyter-widgets/controls/css/widgets.css';
+import '@jupyter-widgets/controls/css/widgets-base.css';
+
+// If lab variables are not found, we set them (we don't want to reset the variables if they are already defined)
+if (
+  getComputedStyle(document.documentElement).getPropertyValue(
+    '--jp-layout-color0'
+  ) === ''
+) {
+  require('@jupyter-widgets/controls/css/labvariables.css');
+}
 
 // Used just for the typing. We must not import the javascript because we don't
 // want to include it in the require embedding.
@@ -18,12 +28,19 @@ import { HTMLManager } from './index';
 
 // Load json schema validator
 import Ajv from 'ajv';
+import { IManagerState } from '@jupyter-widgets/base-manager';
 const widget_state_schema = require('@jupyter-widgets/schema').v2.state;
 const widget_view_schema = require('@jupyter-widgets/schema').v2.view;
 
+interface IViewState {
+  version_major: number;
+  version_minor: number;
+  model_id: string;
+}
+
 const ajv = new Ajv();
-const model_validate = ajv.compile(widget_state_schema);
-const view_validate = ajv.compile(widget_view_schema);
+const model_validate = ajv.compile<IManagerState>(widget_state_schema);
+const view_validate = ajv.compile<IViewState>(widget_view_schema);
 
 /**
  * Render the inline widgets inside a DOM element.
@@ -39,7 +56,7 @@ export async function renderWidgets(
     'script[type="application/vnd.jupyter.widget-state+json"]'
   );
   await Promise.all(
-    Array.from(tags).map(async t =>
+    Array.from(tags).map(async (t) =>
       renderManager(element, JSON.parse(t.innerHTML), managerFactory)
     )
   );
@@ -61,7 +78,7 @@ export async function renderWidgets(
  */
 async function renderManager(
   element: HTMLElement,
-  widgetState: any,
+  widgetState: unknown,
   managerFactory: () => HTMLManager
 ): Promise<void> {
   const valid = model_validate(widgetState);
@@ -69,19 +86,19 @@ async function renderManager(
     throw new Error(`Model state has errors: ${model_validate.errors}`);
   }
   const manager = managerFactory();
-  const models = await manager.set_state(widgetState);
+  const models = await manager.set_state(widgetState as IManagerState);
   const tags = element.querySelectorAll(
     'script[type="application/vnd.jupyter.widget-view+json"]'
   );
   await Promise.all(
-    Array.from(tags).map(async viewtag => {
+    Array.from(tags).map(async (viewtag) => {
       const widgetViewObject = JSON.parse(viewtag.innerHTML);
       const valid = view_validate(widgetViewObject);
       if (!valid) {
         throw new Error(`View state has errors: ${view_validate.errors}`);
       }
       const model_id: string = widgetViewObject.model_id;
-      const model = models.find(item => item.model_id == model_id);
+      const model = models.find((item) => item.model_id == model_id);
       if (model !== undefined && viewtag.parentElement !== null) {
         const prev = viewtag.previousElementSibling;
         if (

@@ -243,7 +243,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'jupyter-js-widgets'` | 
 `_view_module_version` | string           | `'~2.1.0'`       | 
 `_view_name`     | string           | `'ProgressView'` | 
-`bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -404,7 +404,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'jupyter-js-widgets'` | 
 `_view_module_version` | string           | `'~2.1.0'`       | 
 `_view_name`     | string           | `'ProgressView'` | 
-`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -839,7 +839,7 @@ Attribute        | Type             | Default          | Help
 
 ## Inheritance
 
-In the list below, the notation `WidgetB(WidgetA)` indicates that WidgetB inherits all of the attributes from WidgetA. This may help in implementing widgets to easily see the inheritance hierarcy.
+In the list below, the notation `WidgetB(WidgetA)` indicates that WidgetB inherits all of the attributes from WidgetA. This may help in implementing widgets to easily see the inheritance hierarchy.
 
 * CoreWidget - Abstract
 * DOMWidget(Widget) - Abstract

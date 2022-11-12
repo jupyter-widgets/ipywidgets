@@ -3,14 +3,146 @@
 
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView } from './widget_description';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
 import { uuid } from './utils';
 
+import { JUPYTER_CONTROLS_VERSION } from './version';
+
 /**
- * Class name for a combobox with an invlid value.
+ * Class name for a combobox with an invalid value.
  */
 const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
+
+class StringStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'StringStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background: {
+      selector: '',
+      attribute: 'background',
+      default: null as any,
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: '',
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: '',
+    },
+  };
+}
+
+export class HTMLStyleModel extends StringStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'HTMLStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+    };
+  }
+
+  public static styleProperties = {
+    ...StringStyleModel.styleProperties,
+  };
+}
+
+export class HTMLMathStyleModel extends StringStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'HTMLMathStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+    };
+  }
+
+  public static styleProperties = {
+    ...StringStyleModel.styleProperties,
+  };
+}
+
+export class LabelStyleModel extends StringStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'LabelStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+    };
+  }
+
+  public static styleProperties = {
+    ...StringStyleModel.styleProperties,
+    font_family: {
+      selector: '',
+      attribute: 'font-family',
+      default: '',
+    },
+    font_style: {
+      selector: '',
+      attribute: 'font-style',
+      default: '',
+    },
+    font_variant: {
+      selector: '',
+      attribute: 'font-variant',
+      default: '',
+    },
+    font_weight: {
+      selector: '',
+      attribute: 'font-weight',
+      default: '',
+    },
+    text_decoration: {
+      selector: '',
+      attribute: 'text-decoration',
+      default: '',
+    },
+  };
+}
+
+export class TextStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'TextStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background: {
+      selector: '.widget-input',
+      attribute: 'background',
+      default: null as any,
+    },
+    font_size: {
+      selector: '.widget-input',
+      attribute: 'font-size',
+      default: '',
+    },
+    text_color: {
+      selector: '.widget-input',
+      attribute: 'color',
+      default: '',
+    },
+  };
+}
 
 export class StringModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -19,7 +151,7 @@ export class StringModel extends CoreDescriptionModel {
       value: '',
       disabled: false,
       placeholder: '\u200b',
-      _model_name: 'StringModel'
+      _model_name: 'StringModel',
     };
   }
 }
@@ -49,7 +181,7 @@ export class HTMLModel extends StringModel {
     return {
       ...super.defaults(),
       _view_name: 'HTMLView',
-      _model_name: 'HTMLModel'
+      _model_name: 'HTMLModel',
     };
   }
 }
@@ -97,7 +229,7 @@ export class HTMLMathModel extends StringModel {
     return {
       ...super.defaults(),
       _view_name: 'HTMLMathView',
-      _model_name: 'HTMLMathModel'
+      _model_name: 'HTMLMathModel',
     };
   }
 }
@@ -143,7 +275,7 @@ export class LabelModel extends StringModel {
     return {
       ...super.defaults(),
       _view_name: 'LabelView',
-      _model_name: 'LabelModel'
+      _model_name: 'LabelModel',
     };
   }
 }
@@ -177,7 +309,7 @@ export class TextareaModel extends StringModel {
       _view_name: 'TextareaView',
       _model_name: 'TextareaModel',
       rows: null,
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }
@@ -193,6 +325,7 @@ export class TextareaView extends StringView {
     this.textbox = document.createElement('textarea');
     this.textbox.setAttribute('rows', '5');
     this.textbox.id = this.label.htmlFor = uuid();
+    this.textbox.classList.add('widget-input');
     this.el.appendChild(this.textbox);
 
     this.update(); // Set defaults.
@@ -260,7 +393,7 @@ export class TextareaView extends StringView {
       'keydown input': 'handleKeyDown',
       'keypress input': 'handleKeypress',
       'input textarea': 'handleChanging',
-      'change textarea': 'handleChanged'
+      'change textarea': 'handleChanged',
     };
   }
 
@@ -322,7 +455,7 @@ export class TextModel extends StringModel {
       ...super.defaults(),
       _view_name: 'TextView',
       _model_name: 'TextModel',
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }
@@ -338,6 +471,7 @@ export class TextView extends StringView {
     this.textbox = document.createElement('input');
     this.textbox.setAttribute('type', this.inputType);
     this.textbox.id = this.label.htmlFor = uuid();
+    this.textbox.classList.add('widget-input');
     this.el.appendChild(this.textbox);
 
     this.update(); // Set defaults.
@@ -402,7 +536,7 @@ export class TextView extends StringView {
       'keydown input': 'handleKeyDown',
       'keypress input': 'handleKeypress',
       'input input': 'handleChanging',
-      'change input': 'handleChanged'
+      'change input': 'handleChanged',
     };
   }
 
@@ -471,7 +605,7 @@ export class PasswordModel extends TextModel {
     return {
       ...super.defaults(),
       _view_name: 'PasswordView',
-      _model_name: 'PasswordModel'
+      _model_name: 'PasswordModel',
     };
   }
 }
@@ -490,7 +624,7 @@ export class ComboboxModel extends TextModel {
       _model_name: 'ComboboxModel',
       _view_name: 'ComboboxView',
       options: [],
-      ensure_options: false
+      ensure_options: false,
     };
   }
 }
@@ -531,10 +665,13 @@ export class ComboboxView extends TextView {
     this.isInitialRender = false;
 
     const opts = this.model.get('options') as string[];
-    const optLines = opts.map(o => {
-      return `<option value="${o}"></option>`;
-    });
-    this.datalist.innerHTML = optLines.join('\n');
+    const optionFragment = document.createDocumentFragment();
+    for (const v of opts) {
+      const o = document.createElement('option');
+      o.value = v;
+      optionFragment.appendChild(o);
+    }
+    this.datalist.appendChild(optionFragment);
   }
 
   isValid(value: string): boolean {

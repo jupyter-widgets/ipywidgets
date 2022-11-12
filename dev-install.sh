@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo -n "Checking jupyter lab... "
+echo -n "Checking JupyterLab (assuming JupyterLab >=3)... "
 jupyter lab --version 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "no, skipping installation of widgets for jupyterlab"
@@ -38,23 +38,20 @@ yarn install
 yarn run build
 
 echo -n "widgetsnbextension"
-cd widgetsnbextension
-pip install -v -e .
+pip install -v -e ./python/widgetsnbextension
 if [[ "$OSTYPE" == "msys" ]]; then
     jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension
 else
     jupyter nbextension install --overwrite --py --symlink $nbExtFlags widgetsnbextension
 fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
-cd ..
 
 echo -n "ipywidgets"
-pip install -v -e ".[test]"
+pip install -v -e "./python/ipywidgets[test]"
 
 if test "$skip_jupyter_lab" != yes; then
-    jupyter labextension link ./packages/base --no-build
-    jupyter labextension link ./packages/base-manager --no-build
-    jupyter labextension link ./packages/controls --no-build
-    jupyter labextension link ./packages/output --no-build
-    jupyter labextension install ./packages/jupyterlab-manager
+    echo -n "jupyterlab_ipywidgets"
+    pip install jupyter_packaging
+    pip install -ve ./python/jupyterlab_widgets
+    jupyter labextension develop ./python/jupyterlab_widgets --overwrite
 fi

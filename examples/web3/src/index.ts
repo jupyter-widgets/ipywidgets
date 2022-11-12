@@ -3,12 +3,11 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/python/python';
 import 'font-awesome/css/font-awesome.css';
 import { WidgetManager } from './manager';
-import * as lmWidget from '@lumino/widgets';
 
 import {
   KernelManager,
   ServerConnection,
-  KernelMessage
+  KernelMessage,
 } from '@jupyterlab/services';
 
 const BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
@@ -16,17 +15,13 @@ if (BASEURL === null) {
   alert('A base URL is needed to run the example!');
   throw new Error('A base URL is needed to run the example!');
 }
-const WSURL =
-  'ws:' +
-  BASEURL.split(':')
-    .slice(1)
-    .join(':');
+const WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 
-document.addEventListener('DOMContentLoaded', async function(event) {
+document.addEventListener('DOMContentLoaded', async function (event) {
   // Connect to the notebook webserver.
   const connectionInfo = ServerConnection.makeSettings({
     baseUrl: BASEURL!,
-    wsUrl: WSURL
+    wsUrl: WSURL,
   });
   const kernelManager = new KernelManager({ serverSettings: connectionInfo });
   const kernel = await kernelManager.startNew();
@@ -42,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async function(event) {
     tabSize: 4,
     showCursorWhenSelecting: true,
     viewportMargin: Infinity,
-    readOnly: true
+    readOnly: true,
   });
 
   // Create the widget area and widget manager
@@ -60,10 +55,9 @@ document.addEventListener('DOMContentLoaded', async function(event) {
       const widgetData: any =
         msg.content.data['application/vnd.jupyter.widget-view+json'];
       if (widgetData !== undefined && widgetData.version_major === 2) {
-        const model = await manager.get_model(widgetData.model_id);
-        if (model !== undefined) {
-          const view = await manager.create_view(model);
-          lmWidget.Widget.attach(view.pWidget, widgetarea);
+        if (manager.has_model(widgetData.model_id)) {
+          const model = await manager.get_model(widgetData.model_id)!;
+          manager.display_view(manager.create_view(model), widgetarea);
         }
       }
     }

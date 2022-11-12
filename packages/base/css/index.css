@@ -5,12 +5,36 @@
 .jupyter-widgets-disconnected::before {
   content: '\f127'; /* chain-broken */
   display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: inherit;
+  font: normal normal 900 14px/1 'Font Awesome 5 Free', 'FontAwesome';
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #d9534f;
   padding: 3px;
   align-self: flex-start;
+}
+
+.jupyter-widgets-error-widget {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  border: solid 1px red;
+  margin: 0 auto;
+}
+
+.jupyter-widgets-error-widget.icon-error {
+  min-width: var(--jp-widgets-inline-width-short);
+}
+.jupyter-widgets-error-widget.text-error {
+  min-width: calc(2 * var(--jp-widgets-inline-width));
+  min-height: calc(3 * var(--jp-widgets-inline-height));
+}
+
+.jupyter-widgets-error-widget p {
+  text-align: center;
+}
+
+.jupyter-widgets-error-widget.text-error pre::first-line {
+  font-weight: bold;
 }

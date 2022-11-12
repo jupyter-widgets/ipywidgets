@@ -5,6 +5,11 @@ import { assign } from './utils';
 
 import { WidgetModel, WidgetView, DOMWidgetView } from './widget';
 
+/**
+ * Three functions to deal with some CSS attributes
+ * to make them easier to use.
+ */
+
 export class StyleModel extends WidgetModel {
   defaults(): Backbone.ObjectHash {
     const Derived = this.constructor as typeof StyleModel;
@@ -12,7 +17,7 @@ export class StyleModel extends WidgetModel {
       super.defaults(),
       {
         _model_name: 'StyleModel',
-        _view_name: 'StyleView'
+        _view_name: 'StyleView',
       },
       Object.keys(Derived.styleProperties).reduce((obj: any, key: string) => {
         obj[key] = Derived.styleProperties[key].default;
@@ -108,7 +113,7 @@ export class StyleView extends WidgetView {
     const parent = this.options.parent as DOMWidgetView;
     const ModelType = this.model.constructor as typeof StyleModel;
     const styleProperties = ModelType.styleProperties;
-    this._traitNames.forEach(trait => {
+    this._traitNames.forEach((trait) => {
       if (parent) {
         const attribute = styleProperties[trait].attribute;
         const selector = styleProperties[trait].selector;

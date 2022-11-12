@@ -1,0 +1,141 @@
+name: Packaging
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: '*'
+
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+        cache: 'yarn'
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+        architecture: 'x64'
+
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip wheel build jupyterlab~=3.0
+    - name: Build PyPI distributions for ipywidgets
+      run: |
+        mkdir -p dist/
+        cd python/ipywidgets
+        python -m build
+        cp ./dist/* ../../dist
+    - name: Build and link packages
+      run: |
+        yarn install
+        yarn run build
+    - name: Build PyPI distributions for jupyterlab_widgets
+      run: |
+        cd python/jupyterlab_widgets
+        python -m build
+        cp ./dist/* ../../dist
+    - name: Build PyPI distributions for widgetsnbextension
+      run: |
+        cd python/widgetsnbextension
+        python -m build
+        cp ./dist/* ../../dist
+    - name: Build checksum file
+      run: |
+        cd dist
+        sha256sum * | tee SHA256SUMS
+    - name: Upload distributions
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist ${{ github.run_number }}
+        path: ./dist
+
+  install:
+    runs-on: ${{ matrix.os }}-latest
+    needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, windows]
+        python: ['3.7', '3.10']
+        dist: ['ipywidgets*.tar.gz']
+        include:
+          - python: '3.10'
+            dist: 'jupyterlab_widgets*.tar.gz'
+            os: 'ubuntu'
+          - python: '3.10'
+            dist: 'widgetsnbextension*.tar.gz'
+            os: 'ubuntu'
+          - python: '3.10'
+            dist: 'ipywidgets*.whl'
+            os: 'ubuntu'
+    steps:
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+          architecture: 'x64'
+      - name: Checkout # For the cache keys
+        uses: actions/checkout@v2
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install the prerequisites
+        run: |
+          python -m pip install pip
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist ${{ github.run_number }}
+          path: ./dist
+      - name: Install the package
+        run: |
+          cd dist
+          python -m pip install -vv ${{ matrix.dist }}
+      - name: Validate environment
+        run: |
+          python -m pip freeze
+          python -m pip check
+      - name: Check the JupyterLab extension is installed
+        if: matrix.dist != 'widgetsnbextension*.tar.gz'
+        run: |
+          python -m pip install jupyterlab~=3.0
+
+          jupyter labextension list
+          jupyter labextension list 2>&1 | grep -ie "@jupyter-widgets/jupyterlab-manager.*enabled.*ok" -
+      - name: Check the Classic Notebook extension is installed
+        if: matrix.dist != 'jupyterlab_widgets*.tar.gz'
+        run: |
+          python -m pip install notebook~=6.0
+
+          jupyter nbextension list
+          jupyter nbextension list 2>&1 | grep -ie "jupyter-js-widgets/extension.*enabled" -

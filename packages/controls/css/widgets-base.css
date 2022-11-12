@@ -68,11 +68,6 @@
   overflow: visible;
 }
 
-.jupyter-widgets.jupyter-widgets-disconnected::before {
-  line-height: var(--jp-widgets-inline-height);
-  height: var(--jp-widgets-inline-height);
-}
-
 .jp-Output-result > .jupyter-widgets {
   margin-left: 0;
   margin-right: 0;
@@ -80,7 +75,9 @@
 
 /* vbox and hbox */
 
-.widget-inline-hbox {
+/* <DEPRECATED> */
+.widget-inline-hbox, /* </DEPRECATED> */
+ .jupyter-widget-inline-hbox {
   /* Horizontal widgets */
   box-sizing: border-box;
   display: flex;
@@ -88,7 +85,9 @@
   align-items: baseline;
 }
 
-.widget-inline-vbox {
+/* <DEPRECATED> */
+.widget-inline-vbox, /* </DEPRECATED> */
+ .jupyter-widget-inline-vbox {
   /* Vertical Widgets */
   box-sizing: border-box;
   display: flex;
@@ -96,25 +95,33 @@
   align-items: center;
 }
 
-.widget-box {
+/* <DEPRECATED> */
+.widget-box, /* </DEPRECATED> */
+.jupyter-widget-box {
   box-sizing: border-box;
   display: flex;
   margin: 0;
   overflow: auto;
 }
 
-.widget-gridbox {
+/* <DEPRECATED> */
+.widget-gridbox, /* </DEPRECATED> */
+.jupyter-widget-gridbox {
   box-sizing: border-box;
   display: grid;
   margin: 0;
   overflow: auto;
 }
 
-.widget-hbox {
+/* <DEPRECATED> */
+.widget-hbox, /* </DEPRECATED> */
+.jupyter-widget-hbox {
   flex-direction: row;
 }
 
-.widget-vbox {
+/* <DEPRECATED> */
+.widget-vbox, /* </DEPRECATED> */
+.jupyter-widget-vbox {
   flex-direction: column;
 }
 
@@ -409,9 +416,13 @@
 
 /* Widget Button, Widget Toggle Button, Widget Upload */
 
-.widget-button,
-.widget-toggle-button,
-.widget-upload {
+/* <DEPRECATED> */
+.widget-button, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-toggle-button, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-upload, /* </DEPRECATED> */
+.jupyter-widget-button,
+.jupyter-widget-toggle-button,
+.jupyter-widget-upload {
   width: var(--jp-widgets-inline-width-short);
 }
 
@@ -422,7 +433,9 @@
   margin-bottom: initial;
 }
 
-.widget-label-basic {
+/* <DEPRECATED> */
+.widget-label-basic, /* </DEPRECATED> */
+.jupyter-widget-label-basic {
   /* Basic Label */
   color: var(--jp-widgets-label-color);
   font-size: var(--jp-widgets-font-size);
@@ -432,7 +445,9 @@
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-label {
+/* <DEPRECATED> */
+.widget-label, /* </DEPRECATED> */
+.jupyter-widget-label {
   /* Label */
   color: var(--jp-widgets-label-color);
   font-size: var(--jp-widgets-font-size);
@@ -442,7 +457,9 @@
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-inline-hbox .widget-label {
+/* <DEPRECATED> */
+.widget-inline-hbox .widget-label, /* </DEPRECATED> */
+.jupyter-widget-inline-hbox .jupyter-widget-label {
   /* Horizontal Widget Label */
   color: var(--jp-widgets-label-color);
   text-align: right;
@@ -451,7 +468,9 @@
   flex-shrink: 0;
 }
 
-.widget-inline-vbox .widget-label {
+/* <DEPRECATED> */
+.widget-inline-vbox .widget-label, /* </DEPRECATED> */
+.jupyter-widget-inline-vbox .jupyter-widget-label {
   /* Vertical Widget Label */
   color: var(--jp-widgets-label-color);
   text-align: center;
@@ -460,7 +479,9 @@
 
 /* Widget Readout Styling */
 
-.widget-readout {
+/* <DEPRECATED> */
+.widget-readout, /* </DEPRECATED> */
+.jupyter-widget-readout {
   color: var(--jp-widgets-readout-color);
   font-size: var(--jp-widgets-font-size);
   height: var(--jp-widgets-inline-height);
@@ -470,7 +491,9 @@
   text-align: center;
 }
 
-.widget-readout.overflow {
+/* <DEPRECATED> */
+.widget-readout.overflow, /* </DEPRECATED> */
+.jupyter-widget-readout.overflow {
   /* Overflowing Readout */
 
   /* From Material Design Lite
@@ -488,7 +511,9 @@
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
-.widget-inline-hbox .widget-readout {
+/* <DEPRECATED> */
+.widget-inline-hbox .widget-readout, /* </DEPRECATED> */
+.jupyter-widget-inline-hbox .jupyter-widget-readout {
   /* Horizontal Readout */
   text-align: center;
   max-width: var(--jp-widgets-inline-width-short);
@@ -496,7 +521,9 @@
   margin-left: var(--jp-widgets-inline-margin);
 }
 
-.widget-inline-vbox .widget-readout {
+/* <DEPRECATED> */
+.widget-inline-vbox .widget-readout, /* </DEPRECATED> */
+.jupyter-widget-inline-vbox .jupyter-widget-readout {
   /* Vertical Readout */
   margin-top: var(--jp-widgets-inline-margin);
   /* as wide as the widget */
@@ -505,13 +532,17 @@
 
 /* Widget Checkbox Styling */
 
-.widget-checkbox {
+/* <DEPRECATED> */
+.widget-checkbox, /* </DEPRECATED> */
+.jupyter-widget-checkbox {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-checkbox input[type='checkbox'] {
+/* <DEPRECATED> */
+.widget-checkbox input[type='checkbox'], /* </DEPRECATED> */
+.jupyter-widget-checkbox input[type='checkbox'] {
   margin: 0px calc(var(--jp-widgets-inline-margin) * 2) 0px 0px;
   line-height: var(--jp-widgets-inline-height);
   font-size: large;
@@ -522,56 +553,82 @@
 
 /* Widget Valid Styling */
 
-.widget-valid {
+/* <DEPRECATED> */
+.widget-valid, /* </DEPRECATED> */
+.jupyter-widget-valid {
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
   width: var(--jp-widgets-inline-width-short);
   font-size: var(--jp-widgets-font-size);
 }
 
-.widget-valid i {
+/* <DEPRECATED> */
+.widget-valid i, /* </DEPRECATED> */
+.jupyter-widget-valid i {
   line-height: var(--jp-widgets-inline-height);
   margin-right: var(--jp-widgets-inline-margin);
   margin-left: var(--jp-widgets-inline-margin);
 }
 
-.widget-valid.mod-valid i {
+/* <DEPRECATED> */
+.widget-valid.mod-valid i, /* </DEPRECATED> */
+.jupyter-widget-valid.mod-valid i {
   color: green;
 }
 
-.widget-valid.mod-invalid i {
+/* <DEPRECATED> */
+.widget-valid.mod-invalid i, /* </DEPRECATED> */
+.jupyter-widget-valid.mod-invalid i {
   color: red;
 }
 
-.widget-valid.mod-valid .widget-valid-readout {
+/* <DEPRECATED> */
+.widget-valid.mod-valid .widget-valid-readout, /* </DEPRECATED> */
+.jupyter-widget-valid.mod-valid .jupyter-widget-valid-readout {
   display: none;
 }
 
-/* Widget Text and TextArea Stying */
+/* Widget Text and TextArea Styling */
 
-.widget-textarea,
-.widget-text {
+/* <DEPRECATED> */
+.widget-textarea, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text, /* </DEPRECATED> */
+.jupyter-widget-textarea,
+.jupyter-widget-text {
   width: var(--jp-widgets-inline-width);
 }
 
-.widget-text input[type='text'],
-.widget-text input[type='number'],
-.widget-text input[type='password'] {
+/* <DEPRECATED> */
+.widget-text input[type='text'], /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text input[type='number'], /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text input[type='password'], /* </DEPRECATED> */
+.jupyter-widget-text input[type='text'],
+.jupyter-widget-text input[type='number'],
+.jupyter-widget-text input[type='password'] {
   height: var(--jp-widgets-inline-height);
-  line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-text input[type='text']:disabled,
-.widget-text input[type='number']:disabled,
-.widget-text input[type='password']:disabled,
-.widget-textarea textarea:disabled {
+/* <DEPRECATED> */
+.widget-text input[type='text']:disabled, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text input[type='number']:disabled, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text input[type='password']:disabled, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-textarea textarea:disabled, /* </DEPRECATED> */
+.jupyter-widget-text input[type='text']:disabled,
+.jupyter-widget-text input[type='number']:disabled,
+.jupyter-widget-text input[type='password']:disabled,
+.jupyter-widget-textarea textarea:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
-.widget-text input[type='text'],
-.widget-text input[type='number'],
-.widget-text input[type='password'],
-.widget-textarea textarea {
+/* <DEPRECATED> */
+.widget-text input[type='text'], /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text input[type='number'], /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text input[type='password'], /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-textarea textarea, /* </DEPRECATED> */
+.jupyter-widget-text input[type='text'],
+.jupyter-widget-text input[type='number'],
+.jupyter-widget-text input[type='password'],
+.jupyter-widget-textarea textarea {
   box-sizing: border-box;
   border: var(--jp-widgets-input-border-width) solid
     var(--jp-widgets-input-border-color);
@@ -584,30 +641,43 @@
   outline: none !important;
 }
 
-.widget-text input[type='text'],
-.widget-text input[type='password'],
-.widget-textarea textarea {
+/* <DEPRECATED> */
+.widget-text input[type='text'], /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-text input[type='password'], /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-textarea textarea, /* </DEPRECATED> */
+.jupyter-widget-text input[type='text'],
+.jupyter-widget-text input[type='password'],
+.jupyter-widget-textarea textarea {
   padding: var(--jp-widgets-input-padding)
     calc(var(--jp-widgets-input-padding) * 2);
 }
 
-.widget-text input[type='number'] {
+/* <DEPRECATED> */
+.widget-text input[type='number'], /* </DEPRECATED> */
+.jupyter-widget-text input[type='number'] {
   padding: var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding)
     calc(var(--jp-widgets-input-padding) * 2);
 }
 
-.widget-textarea textarea {
+/* <DEPRECATED> */
+.widget-textarea textarea, /* </DEPRECATED> */
+.jupyter-widget-textarea textarea {
   height: inherit;
   width: inherit;
 }
 
-.widget-text input:focus,
-.widget-textarea textarea:focus {
+/* <DEPRECATED> */
+.widget-text input:focus, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-textarea textarea:focus, /* </DEPRECATED> */
+.jupyter-widget-text input:focus,
+.jupyter-widget-textarea textarea:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 /* Horizontal Slider */
-.widget-hslider {
+/* <DEPRECATED> */
+.widget-hslider, /* </DEPRECATED> */
+.jupyter-widget-hslider {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
@@ -618,11 +688,15 @@
   align-items: center;
 }
 
-.widgets-slider .slider-container {
+/* <DEPRECATED> */
+.widgets-slider .slider-container, /* </DEPRECATED> */
+.jupyter-widgets-slider .slider-container {
   overflow: visible;
 }
 
-.widget-hslider .slider-container {
+/* <DEPRECATED> */
+.widget-hslider .slider-container, /* </DEPRECATED> */
+.jupyter-widget-hslider .slider-container {
   margin-left: calc(
     var(--jp-widgets-slider-handle-size) / 2 - 2 *
       var(--jp-widgets-slider-border-width)
@@ -636,18 +710,24 @@
 
 /* Vertical Slider */
 
-.widget-vbox .widget-label {
+/* <DEPRECATED> */
+.widget-vbox .widget-label, /* </DEPRECATED> */
+.jupyter-widget-vbox .jupyter-widget-label {
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-vslider {
+/* <DEPRECATED> */
+.widget-vslider, /* </DEPRECATED> */
+.jupyter-widget-vslider {
   /* Vertical Slider */
   height: var(--jp-widgets-vertical-height);
   width: var(--jp-widgets-inline-width-tiny);
 }
 
-.widget-vslider .slider-container {
+/* <DEPRECATED> */
+.widget-vslider .slider-container, /* </DEPRECATED> */
+.jupyter-widget-vslider .slider-container {
   flex: 1 1 var(--jp-widgets-inline-width-short);
   margin-left: auto;
   margin-right: auto;
@@ -705,7 +785,9 @@
 
 /* Horisontal Progress */
 
-.widget-hprogress {
+/* <DEPRECATED> */
+.widget-hprogress, /* </DEPRECATED> */
+.jupyter-widget-hprogress {
   /* Progress Bar */
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
@@ -713,7 +795,9 @@
   align-items: center;
 }
 
-.widget-hprogress .progress {
+/* <DEPRECATED> */
+.widget-hprogress .progress, /* </DEPRECATED> */
+.jupyter-widget-hprogress .progress {
   flex-grow: 1;
   margin-top: var(--jp-widgets-input-padding);
   margin-bottom: var(--jp-widgets-input-padding);
@@ -724,12 +808,16 @@
 
 /* Vertical Progress */
 
-.widget-vprogress {
+/* <DEPRECATED> */
+.widget-vprogress, /* </DEPRECATED> */
+.jupyter-widget-vprogress {
   height: var(--jp-widgets-vertical-height);
   width: var(--jp-widgets-inline-width-tiny);
 }
 
-.widget-vprogress .progress {
+/* <DEPRECATED> */
+.widget-vprogress .progress, /* </DEPRECATED> */
+.jupyter-widget-vprogress .progress {
   flex-grow: 1;
   width: var(--jp-widgets-progress-thickness);
   margin-left: auto;
@@ -739,13 +827,17 @@
 
 /* Select Widget Styling */
 
-.widget-dropdown {
+/* <DEPRECATED> */
+.widget-dropdown, /* </DEPRECATED> */
+.jupyter-widget-dropdown {
   height: var(--jp-widgets-inline-height);
   width: var(--jp-widgets-inline-width);
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-dropdown > select {
+/* <DEPRECATED> */
+.widget-dropdown > select, /* </DEPRECATED> */
+.jupyter-widget-dropdown > select {
   padding-right: 20px;
   border: var(--jp-widgets-input-border-width) solid
     var(--jp-widgets-input-border-color);
@@ -769,24 +861,32 @@
   background-position: right center;
   background-image: var(--jp-widgets-dropdown-arrow);
 }
-.widget-dropdown > select:focus {
+/* <DEPRECATED> */
+.widget-dropdown > select:focus, /* </DEPRECATED> */
+.jupyter-widget-dropdown > select:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.widget-dropdown > select:disabled {
+/* <DEPRECATED> */
+.widget-dropdown > select:disabled, /* </DEPRECATED> */
+.jupyter-widget-dropdown > select:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* To disable the dotted border in Firefox around select controls.
    See http://stackoverflow.com/a/18853002 */
-.widget-dropdown > select:-moz-focusring {
+/* <DEPRECATED> */
+.widget-dropdown > select:-moz-focusring, /* </DEPRECATED> */
+.jupyter-widget-dropdown > select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;
 }
 
 /* Select and SelectMultiple */
 
-.widget-select {
+/* <DEPRECATED> */
+.widget-select, /* </DEPRECATED> */
+.jupyter-widget-select {
   width: var(--jp-widgets-inline-width);
   line-height: var(--jp-widgets-inline-height);
 
@@ -796,7 +896,9 @@
   align-items: flex-start;
 }
 
-.widget-select > select {
+/* <DEPRECATED> */
+.widget-select > select, /* </DEPRECATED> */
+.jupyter-widget-select > select {
   border: var(--jp-widgets-input-border-width) solid
     var(--jp-widgets-input-border-color);
   background-color: var(--jp-widgets-input-background-color);
@@ -813,11 +915,14 @@
   padding-top: 5px;
 }
 
-.widget-select > select:focus {
+/* <DEPRECATED> */
+.widget-select > select:focus, /* </DEPRECATED> */
+.jupyter-widget-select > select:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.wiget-select > select > option {
+.wiget-select > select > option,
+.jupyter-wiget-select > select > option {
   padding-left: var(--jp-widgets-input-padding);
   line-height: var(--jp-widgets-inline-height);
   /* line-height doesn't work on some browsers for select options */
@@ -831,27 +936,37 @@
 
 /* Toggle Buttons Styling */
 
-.widget-toggle-buttons {
+/* <DEPRECATED> */
+.widget-toggle-buttons, /* </DEPRECATED> */
+.jupyter-widget-toggle-buttons {
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-toggle-buttons .widget-toggle-button {
+/* <DEPRECATED> */
+.widget-toggle-buttons .widget-toggle-button, /* </DEPRECATED> */
+.jupyter-widget-toggle-buttons .jupyter-widget-toggle-button {
   margin-left: var(--jp-widgets-margin);
   margin-right: var(--jp-widgets-margin);
 }
 
-.widget-toggle-buttons .jupyter-button:disabled {
+/* <DEPRECATED> */
+.widget-toggle-buttons .jupyter-button:disabled, /* </DEPRECATED> */
+.jupyter-widget-toggle-buttons .jupyter-button:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Radio Buttons Styling */
 
-.widget-radio {
+/* <DEPRECATED> */
+.widget-radio, /* </DEPRECATED> */
+.jupyter-widget-radio {
   width: var(--jp-widgets-inline-width);
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-radio-box {
+/* <DEPRECATED> */
+.widget-radio-box, /* </DEPRECATED> */
+.jupyter-widget-radio-box {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -860,13 +975,17 @@
   margin-bottom: var(--jp-widgets-radio-item-height-adjustment);
 }
 
-.widget-radio-box label {
+/* <DEPRECATED> */
+.widget-radio-box label, /* </DEPRECATED> */
+.jupyter-widget-radio-box label {
   height: var(--jp-widgets-radio-item-height);
   line-height: var(--jp-widgets-radio-item-height);
   font-size: var(--jp-widgets-font-size);
 }
 
-.widget-radio-box input {
+/* <DEPRECATED> */
+.widget-radio-box input, /* </DEPRECATED> */
+.jupyter-widget-radio-box input {
   height: var(--jp-widgets-radio-item-height);
   line-height: var(--jp-widgets-radio-item-height);
   margin: 0 calc(var(--jp-widgets-input-padding) * 2) 0 1px;
@@ -875,19 +994,25 @@
 
 /* Color Picker Styling */
 
-.widget-colorpicker {
+/* <DEPRECATED> */
+.widget-colorpicker, /* </DEPRECATED> */
+.jupyter-widget-colorpicker {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-colorpicker > .widget-colorpicker-input {
+/* <DEPRECATED> */
+.widget-colorpicker > .widget-colorpicker-input, /* </DEPRECATED> */
+.jupyter-widget-colorpicker > .jupyter-widget-colorpicker-input {
   flex-grow: 1;
   flex-shrink: 1;
   min-width: var(--jp-widgets-inline-width-tiny);
 }
 
-.widget-colorpicker input[type='color'] {
+/* <DEPRECATED> */
+.widget-colorpicker input[type='color'], /* </DEPRECATED> */
+.jupyter-widget-colorpicker input[type='color'] {
   width: var(--jp-widgets-inline-height);
   height: var(--jp-widgets-inline-height);
   padding: 0 2px; /* make the color square actually square on Chrome on OS X */
@@ -903,17 +1028,24 @@
   outline: none !important;
 }
 
-.widget-colorpicker.concise input[type='color'] {
+/* <DEPRECATED> */
+.widget-colorpicker.concise input[type='color'], /* </DEPRECATED> */
+.jupyter-widget-colorpicker.concise input[type='color'] {
   border-left: var(--jp-widgets-input-border-width) solid
     var(--jp-widgets-input-border-color);
 }
 
-.widget-colorpicker input[type='color']:focus,
-.widget-colorpicker input[type='text']:focus {
+/* <DEPRECATED> */
+.widget-colorpicker input[type='color']:focus, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-colorpicker input[type='text']:focus, /* </DEPRECATED> */
+.jupyter-widget-colorpicker input[type='color']:focus,
+.jupyter-widget-colorpicker input[type='text']:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.widget-colorpicker input[type='text'] {
+/* <DEPRECATED> */
+.widget-colorpicker input[type='text'], /* </DEPRECATED> */
+.jupyter-widget-colorpicker input[type='text'] {
   flex-grow: 1;
   outline: none !important;
   height: var(--jp-widgets-inline-height);
@@ -930,19 +1062,25 @@
   box-sizing: border-box;
 }
 
-.widget-colorpicker input[type='text']:disabled {
+/* <DEPRECATED> */
+.widget-colorpicker input[type='text']:disabled, /* </DEPRECATED> */
+.jupyter-widget-colorpicker input[type='text']:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Date Picker Styling */
 
-.widget-datepicker {
+/* <DEPRECATED> */
+.widget-datepicker, /* </DEPRECATED> */
+.jupyter-widget-datepicker {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-datepicker input[type='date'] {
+/* <DEPRECATED> */
+.widget-datepicker input[type='date'], /* </DEPRECATED> */
+.jupyter-widget-datepicker input[type='date'] {
   flex-grow: 1;
   flex-shrink: 1;
   min-width: 0; /* This makes it possible for the flexbox to shrink this input */
@@ -958,56 +1096,78 @@
   box-sizing: border-box;
 }
 
-.widget-datepicker input[type='date']:focus {
+/* <DEPRECATED> */
+.widget-datepicker input[type='date']:focus, /* </DEPRECATED> */
+.jupyter-widget-datepicker input[type='date']:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.widget-datepicker input[type='date']:invalid {
+/* <DEPRECATED> */
+.widget-datepicker input[type='date']:invalid, /* </DEPRECATED> */
+.jupyter-widget-datepicker input[type='date']:invalid {
   border-color: var(--jp-warn-color1);
 }
 
-.widget-datepicker input[type='date']:disabled {
+/* <DEPRECATED> */
+.widget-datepicker input[type='date']:disabled, /* </DEPRECATED> */
+.jupyter-widget-datepicker input[type='date']:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Play Widget */
 
-.widget-play {
+/* <DEPRECATED> */
+.widget-play, /* </DEPRECATED> */
+.jupyter-widget-play {
   width: var(--jp-widgets-inline-width-short);
   display: flex;
   align-items: stretch;
 }
 
-.widget-play .jupyter-button {
+/* <DEPRECATED> */
+.widget-play .jupyter-button, /* </DEPRECATED> */
+.jupyter-widget-play .jupyter-button {
   flex-grow: 1;
   height: auto;
 }
 
-.widget-play .jupyter-button:disabled {
+/* <DEPRECATED> */
+.widget-play .jupyter-button:disabled, /* </DEPRECATED> */
+.jupyter-widget-play .jupyter-button:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Tab Widget */
 
-.jupyter-widgets.widget-tab {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab {
   display: flex;
   flex-direction: column;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar {
   /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
   overflow-x: visible;
   overflow-y: visible;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar > .p-TabBar-content, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar > .lm-TabBar-content {
   /* Make sure that the tab grows from bottom up */
   align-items: flex-end;
   min-width: 0;
   min-height: 0;
 }
 
-.jupyter-widgets.widget-tab > .widget-tab-contents {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .widget-tab-contents, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .widget-tab-contents {
   width: 100%;
   box-sizing: border-box;
   margin: 0;
@@ -1019,14 +1179,20 @@
   overflow: auto;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar {
   font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
   min-height: calc(
     var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width)
   );
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tab {
   flex: 0 1 var(--jp-widgets-horizontal-tab-width);
   min-width: 35px;
   min-height: calc(
@@ -1042,7 +1208,10 @@
   position: relative;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tab.lm-mod-current {
   color: var(--jp-ui-font-color0);
   /* We want the background to match the tab content background */
   background: var(--jp-layout-color1);
@@ -1053,7 +1222,10 @@
   overflow: visible;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tab.lm-mod-current:before {
   position: absolute;
   top: calc(-1 * var(--jp-border-width));
   left: calc(-1 * var(--jp-border-width));
@@ -1063,49 +1235,93 @@
   background: var(--jp-brand-color1);
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab:first-child, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tab:first-child {
   margin-left: 0;
 }
 
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar
-  .p-TabBar-tab:hover:not(.p-mod-current) {
+  .p-TabBar-tab:hover:not(.p-mod-current),
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .p-TabBar
+  .p-TabBar-tab:hover:not(.p-mod-current),
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar
+  .lm-TabBar-tab:hover:not(.lm-mod-current) {
   background: var(--jp-layout-color1);
   color: var(--jp-ui-font-color1);
 }
 
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar
   .p-mod-closable
-  > .p-TabBar-tabCloseIcon {
+  > .p-TabBar-tabCloseIcon,
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+> .p-TabBar
+.p-mod-closable
+> .p-TabBar-tabCloseIcon,
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar
+  .lm-mod-closable
+  > .lm-TabBar-tabCloseIcon {
   margin-left: 4px;
 }
 
 /* This font-awesome strategy may not work across FA4 and FA5, but we don't
 actually support closable tabs, so it really doesn't matter */
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar
   .p-mod-closable
-  > .p-TabBar-tabCloseIcon:before {
+  > .p-TabBar-tabCloseIcon:before,
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-widget-tab
+> .p-TabBar
+.p-mod-closable
+> .p-TabBar-tabCloseIcon:before,
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar
+  .lm-mod-closable
+  > .lm-TabBar-tabCloseIcon:before {
   font-family: FontAwesome;
   content: '\f00d'; /* close */
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon,
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel,
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon, /* </DEPRECATED> */
+/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel, /* </DEPRECATED> */
+/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon, /* </DEPRECATED> */
+/* <DEPRECATED> */ .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabIcon, /* </DEPRECATED> */
+/* <DEPRECATED> */ .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabLabel, /* </DEPRECATED> */
+/* <DEPRECATED> */ .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabCloseIcon, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tabIcon,
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tabLabel,
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tabCloseIcon {
   line-height: var(--jp-widgets-horizontal-tab-height);
 }
 
 /* Accordion Widget */
 
-.p-Collapse {
+.jupyter-widget-Collapse {
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
-.p-Collapse-header {
+.jupyter-widget-Collapse-header {
   padding: var(--jp-widgets-input-padding);
   cursor: pointer;
   color: var(--jp-ui-font-color2);
@@ -1116,19 +1332,19 @@ actually support closable tabs, so it really doesn't matter */
   font-weight: bold;
 }
 
-.p-Collapse-header:hover {
+.jupyter-widget-Collapse-header:hover {
   background-color: var(--jp-layout-color1);
   color: var(--jp-ui-font-color1);
 }
 
-.p-Collapse-open > .p-Collapse-header {
+.jupyter-widget-Collapse-open > .jupyter-widget-Collapse-header {
   background-color: var(--jp-layout-color1);
   color: var(--jp-ui-font-color0);
   cursor: default;
   border-bottom: none;
 }
 
-.p-Collapse-contents {
+.jupyter-widget-Collapse-contents {
   padding: var(--jp-widgets-container-padding);
   background-color: var(--jp-layout-color1);
   color: var(--jp-ui-font-color1);
@@ -1138,29 +1354,35 @@ actually support closable tabs, so it really doesn't matter */
   overflow: auto;
 }
 
-.p-Accordion {
+.jupyter-widget-Accordion {
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
-.p-Accordion .p-Collapse {
+.jupyter-widget-Accordion .jupyter-widget-Collapse {
   margin-bottom: 0;
 }
 
-.p-Accordion .p-Collapse + .p-Collapse {
+.jupyter-widget-Accordion .jupyter-widget-Collapse + .jupyter-widget-Collapse {
   margin-top: 4px;
 }
 
 /* HTML widget */
 
-.widget-html,
-.widget-htmlmath {
+/* <DEPRECATED> */
+.widget-html, /* </DEPRECATED> */
+/* <DEPRECATED> */ .widget-htmlmath, /* </DEPRECATED> */
+.jupyter-widget-html,
+.jupyter-widget-htmlmath {
   font-size: var(--jp-widgets-font-size);
 }
 
-.widget-html > .widget-html-content,
-.widget-htmlmath > .widget-html-content {
+/* <DEPRECATED> */
+.widget-html > .widget-html-content, /* </DEPRECATED> */
+/* <DEPRECATED> */.widget-htmlmath > .widget-html-content, /* </DEPRECATED> */
+.jupyter-widget-html > .jupyter-widget-html-content,
+.jupyter-widget-htmlmath > .jupyter-widget-html-content {
   /* Fill out the area in the HTML widget */
   align-self: stretch;
   flex-grow: 1;
@@ -1173,7 +1395,9 @@ actually support closable tabs, so it really doesn't matter */
 
 /* Image widget  */
 
-.widget-image {
+/* <DEPRECATED> */
+.widget-image, /* </DEPRECATED> */
+.jupyter-widget-image {
   max-width: 100%;
   height: auto;
 }

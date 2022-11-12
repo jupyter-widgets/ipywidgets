@@ -4,9 +4,25 @@
 import argparse
 import json
 from operator import itemgetter
+import pathlib
+import sys
 
-from traitlets import (CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat,
-                       Float, CInt, Int, Instance, Dict, Bytes, Any)
+from traitlets import (
+    CaselessStrEnum,
+    Unicode,
+    Tuple,
+    List,
+    Bool,
+    CFloat,
+    Float,
+    CInt,
+    Int,
+    Instance,
+    Dict,
+    Bytes,
+    Any,
+    Union,
+)
 
 import ipywidgets as widgets
 from ipywidgets import Color
@@ -21,8 +37,7 @@ widget is using. A reference to a widget is serialized to JSON as a string of
 the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a
 previously created widget of the specified type.
 
-This model specification is for ipywidgets 7.4.*, @jupyter-widgets/base 1.1.*,
-and @jupyter-widgets/controls 1.4.*.
+This model specification is for ipywidgets 8.
 
 ## Model attributes
 
@@ -62,7 +77,16 @@ def trait_type(trait, widget_list):
         w_type = 'color'
     elif isinstance(trait, Dict):
         w_type = 'object'
-    elif isinstance(trait, Bytes) or isinstance(trait, ByteMemoryView):
+    elif isinstance(trait, Union):
+        union_attributes = []
+        union_types = []
+        for ut in trait.trait_types:
+            ua = trait_type(ut, widget_list)
+            union_attributes.append(ua)
+            union_types.append(ua['type'])
+        w_type = union_types
+        attributes['union_attributes'] = union_attributes
+    elif isinstance(trait, (Bytes, ByteMemoryView)):
         w_type = 'bytes'
     elif isinstance(trait, Instance) and issubclass(trait.klass,
                                                      widgets.Widget):
@@ -90,7 +114,15 @@ def jsdefault(trait):
         if issubclass(trait.klass, widgets.Widget):
             return 'reference to new instance'
     else:
-        default = trait.default_value
+        try:
+            # traitlets 5
+            default = trait.default()
+        except AttributeError:
+            # traitlets 4 - can be deleted when we depend only on traitlets 5
+            if isinstance(trait, Union):
+                default = trait.make_dynamic_default()
+            else:
+                default = trait.default_value
         if isinstance(default, bytes) or isinstance(default, memoryview):
             default = trait.default_value_repr()
     return default
@@ -112,6 +144,10 @@ def mddefault(attribute):
 
 def mdtype(attribute):
     md_type = attribute['type']
+    if 'union_attributes' in attribute and isinstance(md_type, (list, tuple)):
+        md_type = ' or '.join(
+            mdtype(ua) for ua in attribute['union_attributes']
+        )
     if md_type in NUMBER_MAP:
         md_type = NUMBER_MAP[md_type]
     if attribute.get('allow_none'):
@@ -196,16 +232,34 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Description of your program')
     parser.add_argument('-f', '--format', choices=['json', 'json-pretty', 'markdown'], 
         help='Format to generate', default='json')
+    parser.add_argument('output', nargs='?', type=pathlib.Path)
     args = parser.parse_args()
     format = args.format
 
-    widgets_to_document = sorted(widgets.Widget.widget_types.items())
+    widgets_to_document = sorted(widgets.Widget._widget_types.items())
     spec = create_spec(widgets_to_document)
-    if format == 'json':
-        print(json.dumps(spec, sort_keys=True))
-    elif format == 'json-pretty':
-        print(json.dumps(spec, sort_keys=True,
-              indent=2, separators=(',', ': ')))
-    elif format == 'markdown':
-        # We go through the json engine to convert tuples to lists, etc.
-        print(create_markdown(json.loads(json.dumps(spec))))
+
+    if args.output:
+        args.output.parent.mkdir(exist_ok=True)
+        output = open(args.output, mode='w', encoding='utf8')
+    else:
+        output = sys.stdout
+
+    try:
+        if format == 'json':
+            try:
+                json.dump(spec, output, sort_keys=True)
+            except TypeError:
+                print('Encountered error when converting spec to JSON. Here is the spec:')
+                print(spec)
+                raise
+        elif format == 'json-pretty':
+            json.dump(spec, output, sort_keys=True,
+                indent=2, separators=(',', ': '))
+        elif format == 'markdown':
+            # We go through the json engine to convert tuples to lists, etc.
+            output.write(create_markdown(json.loads(json.dumps(spec))))
+        output.write('\n')
+    finally:
+        if args.output:
+            output.close()

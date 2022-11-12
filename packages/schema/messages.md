@@ -13,7 +13,7 @@ For more details on the `comm` infrastructure, see the [Custom messages section]
 
 Throughout this document, relevant parts of messages to the discussion are quoted, and fields irrelevant to the discussion are not displayed.
 
-## Implementating the Jupyter widgets protocol in the kernel
+## Implementing the Jupyter widgets protocol in the kernel
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
 
@@ -240,7 +240,7 @@ The core idea of widgets is that some state is automatically synced back and for
 
 These fields are assumed immutable (set at initialization, and never changed).
 
-## Implementating the Jupyter widgets protocol in the kernel
+## Implementing the Jupyter widgets protocol in the kernel
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
 
@@ -292,6 +292,32 @@ The `data.state` and `data.buffer_paths` values are the same as in the `comm_ope
 
 See the [Model state](jupyterwidgetmodels.latest.md) documentation for the attributes of core Jupyter widgets.
 
+#### Synchronizing multiple frontends: `echo_update`
+
+Starting with protocol version `2.1.0`, `echo_update` messages from the kernel to the frontend are optional update messages for echoing state in messages from a frontend to the kernel back out to all the frontends.
+
+```
+{
+  'comm_id' : 'u-u-i-d',
+  'data' : {
+    'method': 'echo_update',
+    'state': { <dictionary of widget state> },
+    'buffer_paths': [ <list with paths corresponding to the binary buffers> ]
+  }
+}
+```
+
+The Jupyter comm protocol is asymmetric in how messages flow: messages flow from a single frontend to a single kernel, but messages are broadcast from the kernel to *all* frontends. In the widget protocol, if a frontend updates the value of a widget, the frontend does not have a way to directly notify other frontends about the state update. The `echo_update` optional messages enable a kernel to broadcast out frontend updates to all frontends. This can also help resolve the race condition where the kernel and a frontend simultaneously send updates to each other since the frontend now knows the order of kernel updates.
+
+The `echo_update` messages enable a frontend to optimistically update its widget views to reflect its own changes that it knows the kernel will yet process. These messages are intended to be used as follows:
+1. A frontend model attribute is updated, and the frontend views are optimistically updated to reflect the attribute.
+2. The frontend queues an update message to the kernel and records the message id for the attribute.
+3. The frontend ignores updates to the attribute from the kernel contained in `echo_update` messages until it gets an `echo_update` message corresponding to its own update of the attribute (i.e., the [parent_header](https://jupyter-client.readthedocs.io/en/latest/messaging.html#parent-header) id matches the stored message id for the attribute). It also ignores `echo_update` updates if it has a pending attribute update to send to the kernel. Once the frontend receives its own `echo_update` and does not have any more pending attribute updates to send to the kernel, it starts applying attribute updates from `echo_update` messages.
+
+Since the `echo_update` update messages are optional, and not all attribute updates may be echoed, it is important that only `echo_update` updates are ignored in the last step above, and `update` message updates are always applied.
+
+Implementation note: For attributes where sending back an `echo_update` is considered too expensive or unnecessary, we have implemented an opt-out mechanism in the ipywidgets package. A model trait can have the `echo_update` metadata attribute set to `False` to flag that the kernel should never send an `echo_update` update for that attribute to the frontends. Additionally, we have a system-wide flag to disable echoing for all attributes via the environment variable `JUPYTER_WIDGETS_ECHO`. For ipywdgets 7.7, we default `JUPYTER_WIDGETS_ECHO` to off (disabling all echo messages) and in ipywidgets 8.0 we default `JUPYTER_WIDGETS_ECHO` to on (enabling echo messages).
+
 #### State requests: `request_state`
 
 When a frontend wants to request the full state of a widget, the frontend sends a `request_state` message:
@@ -338,3 +364,48 @@ To display a widget, the kernel sends a Jupyter [iopub `display_data` message](h
   }
 }
 ```
+
+
+
+
+# Control Widget messaging protocol, version 1.0
+
+This is implemented in ipywidgets 7.7.
+
+### The `jupyter.widget.control` comm target
+
+A kernel-side Jupyter widgets library may optionally register a `jupyter.widget.control` comm target that is used for fetching all kernel widget state through a single comm message.
+
+#### State requests: `request_states`
+
+When a frontend wants to request the full state of all widgets from the kernel in a single message, the frontend sends a `request_states` message through the `jupyter.widget.control` comm channel:
+
+```
+{
+  'comm_id' : 'u-u-i-d',
+  'data' : {
+    'method': 'request_states'
+  }
+}
+```
+
+The kernel handler for the `jupyter.widget.control` comm target should immediately send an `update_states` message with all widgets states:
+
+```
+{
+  'comm_id' : 'u-u-i-d',
+  'data' : {
+    'method': 'update_states',
+    'states': {
+      <widget1 u-u-i-d>: <widget1 state>,
+      <widget2 u-u-i-d>: <widget2 state>,
+      [...]
+    },
+    'buffer_paths': [ <list with paths corresponding to the binary buffers> ]
+  }
+}
+```
+
+Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' in the `data.states` object corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['widget-id1', 'x'], ['widget-id2', 'y', 'z', 0]]`, then the first binary buffer is the value of the `data.states['widget-id1']['x']` attribute and the second binary buffer is the value of the `data.states['widget-id2']['y']['z'][0]` state attribute. A path representing a list value (i.e., last index of the path is an integer) will have a `null` placeholder in the list in `data.states`, and a path representing a value for a dictionary key (i.e., last index of the path is a string) will not exist in the dictionary in `data.states`.
+
+Since the `update_states` message may be very large, it may be dropped in the communication channel (for example, the message may exceed the websocket message limit size). For that reason, we suggest that frontends fall back to other ways to retrieve state from the kernel if they do not get an `update_states` reply in a reasonable amount of time.

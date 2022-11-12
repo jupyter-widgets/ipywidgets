@@ -18,7 +18,7 @@ export class CoreWidgetModel extends WidgetModel {
       _view_module: '@jupyter-widgets/controls',
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 }
@@ -31,7 +31,7 @@ export class CoreDOMWidgetModel extends DOMWidgetModel {
       _view_module: '@jupyter-widgets/controls',
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 }
@@ -44,7 +44,7 @@ export class CoreDescriptionModel extends DescriptionModel {
       _view_module: '@jupyter-widgets/controls',
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 }

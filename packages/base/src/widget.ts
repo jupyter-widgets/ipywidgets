@@ -25,7 +25,7 @@ import { IClassicComm, ICallbacks } from './services-shim';
 
 import { JUPYTER_WIDGETS_VERSION } from './version';
 
-import { Dict } from './utils';
+import { BufferJSON, Dict } from './utils';
 
 import { KernelMessage } from '@jupyterlab/services';
 
@@ -34,7 +34,7 @@ import { KernelMessage } from '@jupyterlab/services';
  */
 export function unpack_models(
   value: any | Dict<unknown> | string | (Dict<unknown> | string)[],
-  manager: IWidgetManager
+  manager?: IWidgetManager // actually required, but typed to be compatible with ISerializers
 ): Promise<WidgetModel | Dict<WidgetModel> | WidgetModel[] | any> {
   if (Array.isArray(value)) {
     const unpacked: any[] = [];
@@ -44,13 +44,13 @@ export function unpack_models(
     return Promise.all(unpacked);
   } else if (value instanceof Object && typeof value !== 'string') {
     const unpacked: { [key: string]: any } = {};
-    Object.keys(value).forEach(key => {
+    Object.keys(value).forEach((key) => {
       unpacked[key] = unpack_models(value[key], manager);
     });
     return utils.resolvePromisesDict(unpacked);
   } else if (typeof value === 'string' && value.slice(0, 10) === 'IPY_MODEL_') {
-    // get_model returns a promise already (except when it retunrs undefined!)
-    return Promise.resolve(manager.get_model(value.slice(10, value.length)));
+    // get_model returns a promise already
+    return manager!.get_model(value.slice(10, value.length));
   } else {
     return Promise.resolve(value);
   }
@@ -66,6 +66,12 @@ export interface ISerializers {
   };
 }
 
+export interface IBackboneModelOptions extends Backbone.ModelSetOptions {
+  model_id: string;
+  comm?: any;
+  widget_manager: any;
+}
+
 export class WidgetModel extends Backbone.Model {
   /**
    * The default attributes.
@@ -78,7 +84,7 @@ export class WidgetModel extends Backbone.Model {
       _view_module: '@jupyter-widgets/base',
       _view_name: null as string | null,
       _view_module_version: JUPYTER_WIDGETS_VERSION,
-      _view_count: null as number | null
+      _view_count: null as number | null,
     };
   }
 
@@ -107,8 +113,11 @@ export class WidgetModel extends Backbone.Model {
    */
   initialize(
     attributes: Backbone.ObjectHash,
-    options: { model_id: string; comm?: any; widget_manager: any }
+    options: IBackboneModelOptions
   ): void {
+    this._expectedEchoMsgIds = new Map<string, string>();
+    this._attrsToUpdate = new Set<string>();
+
     super.initialize(attributes, options);
 
     // Attributes should be initialized here, since user initialization may depend on it
@@ -187,13 +196,16 @@ export class WidgetModel extends Backbone.Model {
       delete this.comm;
     }
     // Delete all views of this model
-    const views = Object.keys(this.views).map((id: string) => {
-      return this.views[id].then(view => view.remove());
-    });
-    delete this.views;
-    return Promise.all(views).then(() => {
-      return;
-    });
+    if (this.views) {
+      const views = Object.keys(this.views).map((id: string) => {
+        return this.views![id].then((view) => view.remove());
+      });
+      delete this.views;
+      return Promise.all(views).then(() => {
+        return;
+      });
+    }
+    return Promise.resolve();
   }
 
   /**
@@ -212,26 +224,51 @@ export class WidgetModel extends Backbone.Model {
     const method = data.method;
     switch (method) {
       case 'update':
+      case 'echo_update':
         this.state_change = this.state_change
           .then(() => {
-            const state = data.state;
-            const buffer_paths = data.buffer_paths || [];
-            // Make sure the buffers are DataViews
-            const buffers = (msg.buffers || []).map(b => {
-              if (b instanceof DataView) {
-                return b;
-              } else {
-                return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-              }
-            });
-
+            const state: Dict<BufferJSON> = data.state;
+            const buffer_paths = data.buffer_paths ?? [];
+            const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
             utils.put_buffers(state, buffer_paths, buffers);
+
+            if (msg.parent_header && method === 'echo_update') {
+              const msgId = (msg.parent_header as any).msg_id;
+              // we may have echos coming from other clients, we only care about
+              // dropping echos for which we expected a reply
+              const expectedEcho = Object.keys(state).filter((attrName) =>
+                this._expectedEchoMsgIds.has(attrName)
+              );
+              expectedEcho.forEach((attrName: string) => {
+                // Skip echo messages until we get the reply we are expecting.
+                const isOldMessage =
+                  this._expectedEchoMsgIds.get(attrName) !== msgId;
+                if (isOldMessage) {
+                  // Ignore an echo update that comes before our echo.
+                  delete state[attrName];
+                } else {
+                  // we got our echo confirmation, so stop looking for it
+                  this._expectedEchoMsgIds.delete(attrName);
+                  // Start accepting echo updates unless we plan to send out a new state soon
+                  if (
+                    this._msg_buffer !== null &&
+                    Object.prototype.hasOwnProperty.call(
+                      this._msg_buffer,
+                      attrName
+                    )
+                  ) {
+                    delete state[attrName];
+                  }
+                }
+              });
+            }
             return (this.constructor as typeof WidgetModel)._deserialize_state(
+              // Combine the state updates, with preference for kernel updates
               state,
               this.widget_manager
             );
           })
-          .then(state => {
+          .then((state) => {
             this.set_state(state);
           })
           .catch(
@@ -258,7 +295,9 @@ export class WidgetModel extends Backbone.Model {
     try {
       this.set(state);
     } catch (e) {
-      console.error(`Error setting state: ${e.message}`);
+      console.error(
+        `Error setting state: ${e instanceof Error ? e.message : e}`
+      );
     } finally {
       this._state_lock = null;
     }
@@ -277,7 +316,7 @@ export class WidgetModel extends Backbone.Model {
       const d = this.defaults;
       const defaults = typeof d === 'function' ? d.call(this) : d;
       const state: JSONObject = {};
-      Object.keys(fullState).forEach(key => {
+      Object.keys(fullState).forEach((key) => {
         if (!utils.isEqual(fullState[key], defaults[key])) {
           state[key] = fullState[key];
         }
@@ -297,9 +336,20 @@ export class WidgetModel extends Backbone.Model {
     if (this.comm !== void 0) {
       if (msg.content.execution_state === 'idle') {
         this._pending_msgs--;
+        // Sanity check for logic errors that may push this below zero.
+        if (this._pending_msgs < 0) {
+          console.error(
+            `Jupyter Widgets message throttle: Pending messages < 0 (=${this._pending_msgs}), which is unexpected. Resetting to 0 to continue.`
+          );
+          this._pending_msgs = 0; // do not break message throttling in case of unexpected errors
+        }
         // Send buffer if one is waiting and we are below the throttle.
         if (this._msg_buffer !== null && this._pending_msgs < 1) {
-          this.send_sync_message(this._msg_buffer, this._msg_buffer_callbacks);
+          const msgId = this.send_sync_message(
+            this._msg_buffer,
+            this._msg_buffer_callbacks
+          );
+          this.rememberLastUpdateFor(msgId);
           this._msg_buffer = null;
           this._msg_buffer_callbacks = null;
         }
@@ -348,10 +398,24 @@ export class WidgetModel extends Backbone.Model {
         }
       }
 
+      // _buffered_state_diff_synced lists things that have already been sent to the kernel during a top-level call to .set(), so we don't need to buffer these things either.
+      if (this._buffered_state_diff_synced) {
+        for (const key of Object.keys(this._buffered_state_diff_synced)) {
+          if (attrs[key] === this._buffered_state_diff_synced[key]) {
+            delete attrs[key];
+          }
+        }
+      }
+
       this._buffered_state_diff = utils.assign(
         this._buffered_state_diff,
         attrs
       );
+    }
+
+    // If this ended a top-level call to .set, then reset _buffered_state_diff_synced
+    if ((this as any)._changing === false) {
+      this._buffered_state_diff_synced = {};
     }
     return return_value;
   }
@@ -400,6 +464,10 @@ export class WidgetModel extends Backbone.Model {
       }
     }
 
+    Object.keys(attrs).forEach((attrName: string) => {
+      this._attrsToUpdate.add(attrName);
+    });
+
     const msgState = this.serialize(attrs);
 
     if (Object.keys(msgState).length > 0) {
@@ -429,7 +497,8 @@ export class WidgetModel extends Backbone.Model {
       } else {
         // We haven't exceeded the throttle, send the message like
         // normal.
-        this.send_sync_message(attrs, callbacks);
+        const msgId = this.send_sync_message(attrs, callbacks);
+        this.rememberLastUpdateFor(msgId);
         // Since the comm is a one-way communication, assume the message
         // arrived and was processed successfully.
         // Don't call options.success since we don't have a model back from
@@ -437,6 +506,12 @@ export class WidgetModel extends Backbone.Model {
         // 'sync' event.
       }
     }
+  }
+  rememberLastUpdateFor(msgId: string) {
+    this._attrsToUpdate.forEach((attrName) => {
+      this._expectedEchoMsgIds.set(attrName, msgId);
+    });
+    this._attrsToUpdate = new Set<string>();
   }
 
   /**
@@ -472,10 +547,22 @@ export class WidgetModel extends Backbone.Model {
 
   /**
    * Send a sync message to the kernel.
+   *
+   * If a message is sent successfully, this returns the message ID of that
+   * message. Otherwise it returns an empty string
    */
-  send_sync_message(state: JSONObject, callbacks: any = {}): void {
+  send_sync_message(state: JSONObject, callbacks: any = {}): string {
+    if (!this.comm) {
+      return '';
+    }
     try {
-      callbacks.iopub = callbacks.iopub || {};
+      // Make a 2-deep copy so we don't modify the caller's callbacks object.
+      callbacks = {
+        shell: { ...callbacks.shell },
+        iopub: { ...callbacks.iopub },
+        input: callbacks.input,
+      };
+      // Save the caller's status callback so we can call it after we handle the message.
       const statuscb = callbacks.iopub.status;
       callbacks.iopub.status = (msg: KernelMessage.IStatusMsg): void => {
         this._handle_status(msg);
@@ -486,20 +573,22 @@ export class WidgetModel extends Backbone.Model {
 
       // split out the binary buffers
       const split = utils.remove_buffers(state);
-      this.comm.send(
+      const msgId = this.comm.send(
         {
           method: 'update',
           state: split.state,
-          buffer_paths: split.buffer_paths
+          buffer_paths: split.buffer_paths,
         },
         callbacks,
         {},
         split.buffers
       );
       this._pending_msgs++;
+      return msgId;
     } catch (e) {
       console.error('Could not send widget sync message', e);
     }
+    return '';
   }
 
   /**
@@ -514,6 +603,15 @@ export class WidgetModel extends Backbone.Model {
         options.callbacks = callbacks;
       }
       this.save(this._buffered_state_diff, options);
+
+      // If we are currently in a .set() call, save what state we have synced
+      // to the kernel so we don't buffer it again as we come out of the .set call.
+      if ((this as any)._changing) {
+        utils.assign(
+          this._buffered_state_diff_synced,
+          this._buffered_state_diff
+        );
+      }
       this._buffered_state_diff = {};
     }
   }
@@ -555,11 +653,11 @@ export class WidgetModel extends Backbone.Model {
    * deserialization of widget models.
    */
   static _deserialize_state(
-    state: JSONObject,
+    state: Dict<BufferJSON>,
     manager: IWidgetManager
   ): Promise<utils.Dict<unknown>> {
     const serializers = this.serializers;
-    let deserialized: Dict<any>;
+    let deserialized: Dict<unknown>;
     if (serializers) {
       deserialized = {};
       for (const k in state) {
@@ -583,9 +681,9 @@ export class WidgetModel extends Backbone.Model {
   // values subclasses may set in their initialization functions.
   widget_manager: IWidgetManager;
   model_id: string;
-  views: { [key: string]: Promise<WidgetView> };
+  views?: { [key: string]: Promise<WidgetView> };
   state_change: Promise<any>;
-  comm: IClassicComm;
+  comm?: IClassicComm;
   name: string;
   module: string;
 
@@ -593,23 +691,30 @@ export class WidgetModel extends Backbone.Model {
   private _closed: boolean;
   private _state_lock: any;
   private _buffered_state_diff: any;
+  private _buffered_state_diff_synced: any;
   private _msg_buffer: any;
   private _msg_buffer_callbacks: any;
   private _pending_msgs: number;
+  // keep track of the msg id for each attr for updates we send out so
+  // that we can ignore old messages that we send in order to avoid
+  // 'drunken' sliders going back and forward
+  private _expectedEchoMsgIds: Map<string, string>;
+  // because we don't know the attrs in _handle_status, we keep track of what we will send
+  private _attrsToUpdate: Set<string>;
 }
 
 export class DOMWidgetModel extends WidgetModel {
   static serializers: ISerializers = {
     ...WidgetModel.serializers,
     layout: { deserialize: unpack_models },
-    style: { deserialize: unpack_models }
+    style: { deserialize: unpack_models },
   };
 
   defaults(): Backbone.ObjectHash {
     return utils.assign(super.defaults(), {
       _dom_classes: [],
       tabbable: null,
-      tooltip: null
+      tooltip: null,
       // We do not declare defaults for the layout and style attributes.
       // Those defaults are constructed on the kernel side and synced here
       // as needed, and our code here copes with those attributes being
@@ -765,7 +870,8 @@ export namespace JupyterLuminoWidget {
 export class JupyterLuminoWidget extends Widget {
   constructor(options: Widget.IOptions & JupyterLuminoWidget.IOptions) {
     const view = options.view;
-    delete options.view;
+    // Cast as any since we cannot delete a mandatory value
+    delete (options as any).view;
     super(options);
     this._view = view;
   }
@@ -780,9 +886,7 @@ export class JupyterLuminoWidget extends Widget {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view.remove();
     this._view = null!;
   }
 
@@ -800,10 +904,15 @@ export class JupyterLuminoWidget extends Widget {
   private _view: DOMWidgetView;
 }
 
+/**
+ * @deprecated Use {@link JupyterLuminoWidget} instead (Since 8.0).
+ */
+export const JupyterPhosphorWidget = JupyterLuminoWidget;
+
 export class JupyterLuminoPanelWidget extends Panel {
   constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
     this._view = view;
   }
@@ -829,9 +938,7 @@ export class JupyterLuminoPanelWidget extends Panel {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view?.remove();
     this._view = null!;
   }
 
@@ -888,7 +995,7 @@ export class DOMWidgetView extends WidgetView {
 
   setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {
     if (layout) {
-      this.layoutPromise = this.layoutPromise.then(oldLayoutView => {
+      this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
         if (oldLayoutView) {
           oldLayoutView.unlayout();
           this.stopListening(oldLayoutView.model);
@@ -896,7 +1003,7 @@ export class DOMWidgetView extends WidgetView {
         }
 
         return this.create_child_view(layout)
-          .then(view => {
+          .then((view) => {
             // Trigger the displayed event of the child view.
             return this.displayed.then(() => {
               view.trigger('displayed');
@@ -904,14 +1011,15 @@ export class DOMWidgetView extends WidgetView {
                 // Post (asynchronous) so layout changes can take
                 // effect first.
                 MessageLoop.postMessage(
-                  this.pWidget,
+                  this.luminoWidget,
                   Widget.ResizeMessage.UnknownSize
                 );
               });
               MessageLoop.postMessage(
-                this.pWidget,
+                this.luminoWidget,
                 Widget.ResizeMessage.UnknownSize
               );
+              this.trigger('layout-changed');
               return view;
             });
           })
@@ -924,7 +1032,7 @@ export class DOMWidgetView extends WidgetView {
 
   setStyle(style: StyleModel, oldStyle?: StyleModel): void {
     if (style) {
-      this.stylePromise = this.stylePromise.then(oldStyleView => {
+      this.stylePromise = this.stylePromise.then((oldStyleView) => {
         if (oldStyleView) {
           oldStyleView.unstyle();
           this.stopListening(oldStyleView.model);
@@ -932,10 +1040,11 @@ export class DOMWidgetView extends WidgetView {
         }
 
         return this.create_child_view(style)
-          .then(view => {
+          .then((view) => {
             // Trigger the displayed event of the child view.
             return this.displayed.then(() => {
               view.trigger('displayed');
+              this.trigger('style-changed');
               // Unlike for the layout attribute, style changes don't
               // trigger Lumino resize messages.
               return view;
@@ -968,7 +1077,7 @@ export class DOMWidgetView extends WidgetView {
     if (el === undefined) {
       el = this.el;
     }
-    utils.difference(old_classes, new_classes).map(function(c) {
+    utils.difference(old_classes, new_classes).map(function (c) {
       if (el!.classList) {
         // classList is not supported by IE for svg elements
         el!.classList.remove(c);
@@ -976,7 +1085,7 @@ export class DOMWidgetView extends WidgetView {
         el!.setAttribute('class', el!.getAttribute('class')!.replace(c, ''));
       }
     });
-    utils.difference(new_classes, old_classes).map(function(c) {
+    utils.difference(new_classes, old_classes).map(function (c) {
       if (el!.classList) {
         // classList is not supported by IE for svg elements
         el!.classList.add(c);
@@ -1034,21 +1143,21 @@ export class DOMWidgetView extends WidgetView {
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.pWidget) {
-      this.pWidget.dispose();
+    if (this.luminoWidget) {
+      this.luminoWidget.dispose();
     }
 
     this.$el = el instanceof $ ? el : $(el);
     this.el = this.$el[0];
-    this.pWidget = new JupyterLuminoWidget({
+    this.luminoWidget = new JupyterLuminoWidget({
       node: el,
-      view: this
+      view: this,
     });
   }
 
   remove(): any {
-    if (this.pWidget) {
-      this.pWidget.dispose();
+    if (this.luminoWidget) {
+      this.luminoWidget.dispose();
     }
     return super.remove();
   }
@@ -1058,14 +1167,17 @@ export class DOMWidgetView extends WidgetView {
       case 'after-attach':
         this.trigger('displayed');
         break;
+      case 'show':
+        this.trigger('shown');
+        break;
     }
   }
 
   private _comm_live_update(): void {
     if (this.model.comm_live) {
-      this.pWidget.removeClass('jupyter-widgets-disconnected');
+      this.luminoWidget.removeClass('jupyter-widgets-disconnected');
     } else {
-      this.pWidget.addClass('jupyter-widgets-disconnected');
+      this.luminoWidget.addClass('jupyter-widgets-disconnected');
     }
   }
 
@@ -1079,9 +1191,17 @@ export class DOMWidgetView extends WidgetView {
       this.el.removeAttribute('tabIndex');
     }
   }
+
+  /**
+   * @deprecated Use {@link luminoWidget} instead (Since 8.0).
+   */
+  get pWidget(): Widget {
+    return this.luminoWidget;
+  }
+
   el: HTMLElement; // Override typing
   '$el': any;
-  pWidget: Widget;
+  luminoWidget: Widget;
   layoutPromise: Promise<any>;
   stylePromise: Promise<any>;
 }

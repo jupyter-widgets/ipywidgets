@@ -10,7 +10,7 @@ import {
   JupyterLuminoPanelWidget,
   reject,
   WidgetView,
-  Dict
+  Dict,
 } from '@jupyter-widgets/base';
 
 import { Widget, Panel } from '@lumino/widgets';
@@ -27,7 +27,7 @@ export class ControllerButtonModel extends CoreDOMWidgetModel {
       _model_name: 'ControllerButtonModel',
       _view_name: 'ControllerButtonView',
       value: 0.0,
-      pressed: false
+      pressed: false,
     };
   }
 }
@@ -79,7 +79,7 @@ export class ControllerAxisModel extends CoreDOMWidgetModel {
       ...super.defaults(),
       _model_name: 'ControllerAxisModel',
       _view_name: 'ControllerAxisView',
-      value: 0.0
+      value: 0.0,
     };
   }
 }
@@ -134,7 +134,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
   static serializers = {
     ...CoreDOMWidgetModel.serializers,
     buttons: { deserialize: unpack_models },
-    axes: { deserialize: unpack_models }
+    axes: { deserialize: unpack_models },
   };
 
   defaults(): Backbone.ObjectHash {
@@ -148,7 +148,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
       connected: false,
       timestamp: 0,
       buttons: [],
-      axes: []
+      axes: [],
     };
   }
 
@@ -183,7 +183,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
     const index = this.get('index');
     const pad = navigator.getGamepads()[index];
     if (pad) {
-      this.setup(pad).then(controls => {
+      this.setup(pad).then((controls) => {
         this.set(controls);
         this.save_changes();
         window.requestAnimationFrame(this.update_loop.bind(this));
@@ -207,7 +207,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
       name: pad.id,
       mapping: pad.mapping,
       connected: pad.connected,
-      timestamp: pad.timestamp
+      timestamp: pad.timestamp,
     });
     // Create buttons and axes. When done, start the update loop
     return utils.resolvePromisesDict({
@@ -220,7 +220,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
         pad.axes.map((axis, index) => {
           return this._create_axis_model(index);
         })
-      )
+      ),
     });
   }
 
@@ -235,20 +235,20 @@ export class ControllerModel extends CoreDOMWidgetModel {
     if (pad && index === pad.index && id === pad.id) {
       this.set({
         timestamp: pad.timestamp,
-        connected: pad.connected
+        connected: pad.connected,
       });
       this.save_changes();
-      this.get('buttons').forEach(function(
+      this.get('buttons').forEach(function (
         model: ControllerButtonModel,
         index: number
       ) {
         model.set({
           value: pad!.buttons[index].value,
-          pressed: pad!.buttons[index].pressed
+          pressed: pad!.buttons[index].pressed,
         });
         model.save_changes();
       });
-      this.get('axes').forEach(function(
+      this.get('axes').forEach(function (
         model: ControllerAxisModel,
         index: number
       ) {
@@ -265,10 +265,10 @@ export class ControllerModel extends CoreDOMWidgetModel {
    * Resets the gamepad attributes, and start the wait_loop.
    */
   reset_gamepad(): void {
-    this.get('buttons').forEach(function(button: ControllerButtonModel) {
+    this.get('buttons').forEach(function (button: ControllerButtonModel) {
       button.close();
     });
-    this.get('axes').forEach(function(axis: ControllerAxisModel) {
+    this.get('axes').forEach(function (axis: ControllerAxisModel) {
       axis.close();
     });
     this.set({
@@ -277,7 +277,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
       connected: false,
       timestamp: 0.0,
       buttons: [],
-      axes: []
+      axes: [],
     });
     this.save_changes();
     window.requestAnimationFrame(this.wait_loop.bind(this));
@@ -294,9 +294,9 @@ export class ControllerModel extends CoreDOMWidgetModel {
         model_module_version: this.get('_model_module_version'),
         view_name: 'ControllerButtonView',
         view_module: '@jupyter-widgets/controls',
-        view_module_version: this.get('_view_module_version')
+        view_module_version: this.get('_view_module_version'),
       })
-      .then(function(model) {
+      .then(function (model) {
         model.set('description', index);
         return model;
       });
@@ -313,9 +313,9 @@ export class ControllerModel extends CoreDOMWidgetModel {
         model_module_version: this.get('_model_module_version'),
         view_name: 'ControllerAxisView',
         view_module: '@jupyter-widgets/controls',
-        view_module_version: this.get('_view_module_version')
+        view_module_version: this.get('_view_module_version'),
       })
-      .then(function(model) {
+      .then(function (model) {
         model.set('description', index);
         return model;
       });
@@ -329,18 +329,18 @@ export class ControllerModel extends CoreDOMWidgetModel {
  */
 export class ControllerView extends DOMWidgetView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new JupyterLuminoPanelWidget({ view: this });
-    return this.pWidget.node;
+    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+    return this.luminoWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.luminoWidget.node) {
       // Boxes don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
 
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.luminoWidget.node;
+    this.$el = $(this.luminoWidget.node);
   }
 
   initialize(parameters: WidgetView.IInitializeParameters): void {
@@ -367,11 +367,11 @@ export class ControllerView extends DOMWidgetView {
 
     this.axis_box = new Panel();
     this.axis_box.node.style.display = 'flex';
-    this.pWidget.addWidget(this.axis_box);
+    this.luminoWidget.addWidget(this.axis_box);
 
     this.button_box = new Panel();
     this.button_box.node.style.display = 'flex';
-    this.pWidget.addWidget(this.button_box);
+    this.luminoWidget.addWidget(this.button_box);
 
     this.button_views.update(this.model.get('buttons'));
     this.axis_views.update(this.model.get('axes'));
@@ -389,11 +389,11 @@ export class ControllerView extends DOMWidgetView {
     const dummy = new Widget();
     this.button_box.addWidget(dummy);
 
-    return this.create_child_view(model)
-      .then((view: ControllerButtonView) => {
+    return this.create_child_view<ControllerButtonView>(model)
+      .then((view) => {
         // replace the dummy widget with the new one.
         const i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
-        this.button_box.insertWidget(i, view.pWidget);
+        this.button_box.insertWidget(i, view.luminoWidget);
         dummy.dispose();
         return view;
       })
@@ -406,11 +406,11 @@ export class ControllerView extends DOMWidgetView {
     const dummy = new Widget();
     this.axis_box.addWidget(dummy);
 
-    return this.create_child_view(model)
-      .then((view: ControllerAxisView) => {
+    return this.create_child_view<ControllerAxisView>(model)
+      .then((view) => {
         // replace the dummy widget with the new one.
         const i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
-        this.axis_box.insertWidget(i, view.pWidget);
+        this.axis_box.insertWidget(i, view.luminoWidget);
         dummy.dispose();
         return view;
       })
@@ -429,5 +429,5 @@ export class ControllerView extends DOMWidgetView {
   axis_box: Panel;
   button_box: Panel;
   model: ControllerModel;
-  pWidget: JupyterLuminoPanelWidget;
+  luminoWidget: JupyterLuminoPanelWidget;
 }

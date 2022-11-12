@@ -45,13 +45,15 @@ export class MockComm implements widgets.IClassicComm {
     return '';
   }
   send(): string {
-    return '';
+    this._msgid += 1;
+    return this._msgid.toString();
   }
   comm_id: string;
   target_name: string;
   _on_msg: Function | null = null;
   _on_open: Function | null = null;
   _on_close: Function | null = null;
+  _msgid = 0;
 }
 
 const typesToArray: { [key: string]: any } = {
@@ -62,23 +64,23 @@ const typesToArray: { [key: string]: any } = {
   uint16: Uint16Array,
   uint32: Uint32Array,
   float32: Float32Array,
-  float64: Float64Array
+  float64: Float64Array,
 };
 
-const JSONToArray = function(obj: any): any {
+const JSONToArray = function (obj: any): any {
   return new typesToArray[obj.dtype](obj.buffer.buffer);
 };
 
-const arrayToJSON = function(obj: any): any {
+const arrayToJSON = function (obj: any): any {
   const dtype = Object.keys(typesToArray).filter(
-    i => typesToArray[i] === obj.constructor
+    (i) => typesToArray[i] === obj.constructor
   )[0];
   return { dtype, buffer: obj };
 };
 
 const array_serialization = {
   deserialize: JSONToArray,
-  serialize: arrayToJSON
+  serialize: arrayToJSON,
 };
 
 class TestWidget extends widgets.WidgetModel {
@@ -91,7 +93,7 @@ class TestWidget extends widgets.WidgetModel {
       _view_module: 'test-widgets',
       _view_name: 'TestWidgetView',
       _view_module_version: '1.0.0',
-      _view_count: null as any
+      _view_count: null as any,
     };
   }
 }
@@ -112,14 +114,14 @@ class TestWidgetView extends widgets.WidgetView {
 class BinaryWidget extends TestWidget {
   static serializers = {
     ...widgets.WidgetModel.serializers,
-    array: array_serialization
+    array: array_serialization,
   };
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
       _model_name: 'BinaryWidget',
       _view_name: 'BinaryWidgetView',
-      array: new Int8Array(0)
+      array: new Int8Array(0),
     };
   }
 }
@@ -135,7 +137,7 @@ const testWidgets = {
   TestWidget,
   TestWidgetView,
   BinaryWidget,
-  BinaryWidgetView
+  BinaryWidgetView,
 };
 
 export class DummyManager implements widgets.IWidgetManager {
@@ -195,15 +197,26 @@ export class DummyManager implements widgets.IWidgetManager {
    * Get a promise for a model by model id.
    *
    * #### Notes
-   * If a model is not found, undefined is returned (NOT a promise). However,
-   * the calling code should also deal with the case where a rejected promise
-   * is returned, and should treat that also as a model not found.
+   * If the model is not found, the returned Promise object is rejected.
+   *
+   * If you would like to synchronously test if a model exists, use .has_model().
    */
-  get_model(model_id: string): Promise<widgets.WidgetModel> | undefined {
-    // TODO: Perhaps we should return a Promise.reject if the model is not
-    // found. Right now this isn't a true async function because it doesn't
-    // always return a promise.
-    return this._models[model_id];
+  async get_model(model_id: string): Promise<widgets.WidgetModel> {
+    const modelPromise = this._models[model_id];
+    if (modelPromise === undefined) {
+      throw new Error('widget model not found');
+    }
+    return modelPromise;
+  }
+
+  /**
+   * Returns true if the given model is registered, otherwise false.
+   *
+   * #### Notes
+   * This is a synchronous way to check if a model is registered.
+   */
+  has_model(model_id: string): boolean {
+    return this._models[model_id] !== undefined;
   }
 
   /**
@@ -224,7 +237,7 @@ export class DummyManager implements widgets.IWidgetManager {
     modelPromise: Promise<widgets.WidgetModel>
   ): void {
     this._models[model_id] = modelPromise;
-    modelPromise.then(model => {
+    modelPromise.then((model) => {
       model.once('comm:close', () => {
         delete this._models[model_id];
       });
@@ -299,7 +312,7 @@ export class DummyManager implements widgets.IWidgetManager {
     const modelOptions = {
       widget_manager: this,
       model_id: model_id,
-      comm: options.comm
+      comm: options.comm,
     };
     const widget_model = new ModelType(attributes, modelOptions);
     widget_model.name = options.model_name;
@@ -314,6 +327,10 @@ export class DummyManager implements widgets.IWidgetManager {
    */
   resolveUrl(url: string): Promise<string> {
     return Promise.resolve(url);
+  }
+
+  inline_sanitize(s: string): string {
+    return s;
   }
 
   /**

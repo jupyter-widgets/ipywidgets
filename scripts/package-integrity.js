@@ -20,11 +20,11 @@ var IGNORE = {
   '@jupyter-widgets/jupyterlab-manager': [
     'backbone',
     '@types/backbone',
-    '@jupyterlab/cells'
+    '@jupyterlab/cells',
   ],
   '@jupyter-widgets/html-manager': ['ajv', '@jupyter-widgets/schema'],
   '@jupyter-widgets/example-web-tmpnb': ['http-server', 'font-awesome'],
-  '@jupyter-widgets/example-web3': ['http-server', '@jupyter-widgets/controls']
+  '@jupyter-widgets/example-web3': ['http-server', '@jupyter-widgets/controls'],
 };
 
 /**
@@ -70,7 +70,7 @@ function validate(dname) {
   var deps = pkg['dependencies'];
 
   // Extract all of the imports from the TypeScript files.
-  filenames.forEach(fileName => {
+  filenames.forEach((fileName) => {
     var sourceFile = ts.createSourceFile(
       fileName,
       readFileSync(fileName).toString(),
@@ -81,7 +81,7 @@ function validate(dname) {
     //console.log(fileName, getImports(sourceFile));
   });
   var names = Array.from(new Set(imports)).sort();
-  names = names.map(function(name) {
+  names = names.map(function (name) {
     var parts = name.split('/');
     if (name.indexOf('@') === 0) {
       return parts[0] + '/' + parts[1];
@@ -90,7 +90,7 @@ function validate(dname) {
   });
 
   var problems = [];
-  names.forEach(function(name) {
+  names.forEach(function (name) {
     if (name === '..' || name === '.' || ignore.indexOf(name) !== -1) {
       return;
     }
@@ -98,7 +98,7 @@ function validate(dname) {
       problems.push('Missing package: ' + name);
     }
   });
-  Object.keys(deps).forEach(function(name) {
+  Object.keys(deps).forEach(function (name) {
     if (ignore.indexOf(name) !== -1) {
       return;
     }
@@ -121,9 +121,9 @@ var baseConfig = require(path.join(basePath, 'package.json'));
 
 // Gather the versions of each package.
 var versions = {};
-baseConfig.workspaces.forEach(function(spec) {
+baseConfig.workspaces.forEach(function (spec) {
   var dirs = glob.sync(path.join(basePath, spec));
-  dirs.forEach(function(dname) {
+  dirs.forEach(function (dname) {
     try {
       var pkg = require(path.resolve(dname) + '/package.json');
       versions[pkg['name']] = pkg['version'];
@@ -136,9 +136,9 @@ baseConfig.workspaces.forEach(function(spec) {
 var errors = {};
 
 // Validate each package.
-baseConfig.workspaces.forEach(function(spec) {
+baseConfig.workspaces.forEach(function (spec) {
   var dirs = glob.sync(path.join(basePath, spec));
-  dirs.forEach(function(dname) {
+  dirs.forEach(function (dname) {
     var name = path.relative('.', dname);
     var problems = validate(dname);
     if (problems.length > 0) {

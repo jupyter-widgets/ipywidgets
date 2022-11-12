@@ -1,1 +1,1 @@
-require('@jupyter-widgets/html-manager/dist/embed');
+require('@jupyter-widgets/html-manager/lib/embed');

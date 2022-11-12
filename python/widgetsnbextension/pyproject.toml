@@ -1,0 +1,18 @@
+[build-system]
+# These are the assumed default build requirements from pip:
+# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
+requires = ["jupyter_packaging~=0.10,<2"]
+
+[tool.jupyter-packaging.options]
+skip-if-exists = ["widgetnbextension/static/extension.js"]
+ensured-targets = ["widgetnbextension/static/extension.js"]
+
+[tool.jupyter-packaging.builder]
+factory = "jupyter_packaging.npm_builder"
+
+[tool.jupyter-packaging.build-args]
+build_cmd = "build"
+npm = ["yarn"]
+
+[tool.check-manifest]
+ignore = ["widgetnbextension/static/**", "yarn.lock", ".*", "package-lock.json"]

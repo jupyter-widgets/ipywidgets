@@ -1,11 +1,77 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { DOMWidgetView } from '@jupyter-widgets/base';
+
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView } from './widget_description';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
-import { DOMWidgetView } from '@jupyter-widgets/base';
+export class CheckboxStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'CheckboxStyleModel',
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background: {
+      selector: '',
+      attribute: 'background',
+      default: null as any,
+    },
+  };
+}
+
+export class ToggleButtonStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'ToggleButtonStyleModel',
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    font_family: {
+      selector: '',
+      attribute: 'font-family',
+      default: '',
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: '',
+    },
+    font_style: {
+      selector: '',
+      attribute: 'font-style',
+      default: '',
+    },
+    font_variant: {
+      selector: '',
+      attribute: 'font-variant',
+      default: '',
+    },
+    font_weight: {
+      selector: '',
+      attribute: 'font-weight',
+      default: '',
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: '',
+    },
+    text_decoration: {
+      selector: '',
+      attribute: 'text-decoration',
+      default: '',
+    },
+  };
+}
 
 export class BoolModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -13,7 +79,7 @@ export class BoolModel extends CoreDescriptionModel {
       ...super.defaults(),
       value: false,
       disabled: false,
-      _model_name: 'BoolModel'
+      _model_name: 'BoolModel',
     };
   }
 }
@@ -23,8 +89,9 @@ export class CheckboxModel extends CoreDescriptionModel {
     return {
       ...super.defaults(),
       indent: true,
+      style: null,
       _view_name: 'CheckboxView',
-      _model_name: 'CheckboxModel'
+      _model_name: 'CheckboxModel',
     };
   }
 }
@@ -68,7 +135,7 @@ export class CheckboxView extends DescriptionView {
   }
 
   /**
-   * Overriden from super class
+   * Overridden from super class
    *
    * Update the description span (rather than the label) since
    * we want the description to the right of the checkbox.
@@ -79,7 +146,12 @@ export class CheckboxView extends DescriptionView {
       return;
     }
     const description = this.model.get('description');
-    this.descriptionSpan.innerHTML = description;
+    if (this.model.get('description_allow_html')) {
+      this.descriptionSpan.innerHTML =
+        this.model.widget_manager.inline_sanitize(description);
+    } else {
+      this.descriptionSpan.textContent = description;
+    }
     this.typeset(this.descriptionSpan);
     this.descriptionSpan.title = description;
     this.checkbox.title = description;
@@ -120,7 +192,7 @@ export class CheckboxView extends DescriptionView {
 
   events(): { [e: string]: string } {
     return {
-      'click input[type="checkbox"]': '_handle_click'
+      'click input[type="checkbox"]': '_handle_click',
     };
   }
 
@@ -177,7 +249,8 @@ export class ToggleButtonModel extends BoolModel {
       _model_name: 'ToggleButtonModel',
       tooltip: '',
       icon: '',
-      button_style: ''
+      button_style: '',
+      style: null,
     };
   }
 }
@@ -245,7 +318,7 @@ export class ToggleButtonView extends DOMWidgetView {
   events(): { [e: string]: string } {
     return {
       // Dictionary of events and their handlers.
-      click: '_handle_click'
+      click: '_handle_click',
     };
   }
 
@@ -262,17 +335,9 @@ export class ToggleButtonView extends DOMWidgetView {
     this.touch();
   }
 
-  /**
-   * The default tag name.
-   *
-   * #### Notes
-   * This is a read-only attribute.
-   */
-  get tagName(): string {
-    // We can't make this an attribute with a default value
-    // since it would be set after it is needed in the
-    // constructor.
-    return 'button';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'button';
   }
 
   el: HTMLButtonElement;
@@ -282,7 +347,7 @@ export class ToggleButtonView extends DOMWidgetView {
     success: ['mod-success'],
     info: ['mod-info'],
     warning: ['mod-warning'],
-    danger: ['mod-danger']
+    danger: ['mod-danger'],
   };
 }
 
@@ -292,7 +357,7 @@ export class ValidModel extends BoolModel {
       ...super.defaults(),
       readout: 'Invalid',
       _view_name: 'ValidView',
-      _model_name: 'ValidModel'
+      _model_name: 'ValidModel',
     };
   }
 }

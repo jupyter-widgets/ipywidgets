@@ -3,7 +3,7 @@
 
 import * as libembed from './libembed';
 
-let cdn = 'https://unpkg.com/';
+let cdn = 'https://cdn.jsdelivr.net/npm/';
 let onlyCDN = false;
 
 // find the data-cdn for any script tag, assuming it is only used for embed-amd.js
@@ -18,7 +18,7 @@ Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
  *
  * @param pkg Package name or names to load
  */
-const requirePromise = function(pkg: string | string[]): Promise<any> {
+const requirePromise = function (pkg: string | string[]): Promise<any> {
   return new Promise((resolve, reject) => {
     const require = (window as any).requirejs;
     if (require === undefined) {
@@ -54,8 +54,8 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
  * @param moduleName The name of the module to load..
  * @param version The semver range for the module, if loaded from a CDN.
  *
- * By default, the CDN service used is unpkg.com. However, this default can be
- * overriden by specifying another URL via the HTML attribute
+ * By default, the CDN service used is jsDelivr. However, this default can be
+ * overridden by specifying another URL via the HTML attribute
  * "data-jupyter-widgets-cdn" on a script tag of the page.
  *
  * The semver range is only used with the CDN.
@@ -80,12 +80,12 @@ export function requireLoader(
     console.log(`Loading from ${cdn} for ${moduleName}@${moduleVersion}`);
     return loadFromCDN();
   }
-  return requirePromise([`${moduleName}`]).catch(err => {
+  return requirePromise([`${moduleName}`]).catch((err) => {
     const failedId = err.requireModules && err.requireModules[0];
     if (failedId) {
       require.undef(failedId);
       console.log(`Falling back to ${cdn} for ${moduleName}@${moduleVersion}`);
-      loadFromCDN();
+      return loadFromCDN();
     }
   });
 }
@@ -95,7 +95,7 @@ export function requireLoader(
  *
  * @param element (default document.documentElement) The element containing widget state and views.
  * @param loader (default requireLoader) The function used to look up the modules containing
- * the widgets' models and views classes. (The default loader looks them up on unpkg.com)
+ * the widgets' models and views classes. (The default loader looks them up on jsDelivr)
  */
 export function renderWidgets(
   element = document.documentElement,
@@ -104,7 +104,7 @@ export function renderWidgets(
     moduleVersion: string
   ) => Promise<any> = requireLoader
 ): void {
-  requirePromise(['@jupyter-widgets/html-manager']).then(htmlmanager => {
+  requirePromise(['@jupyter-widgets/html-manager']).then((htmlmanager) => {
     const managerFactory = (): any => {
       return new htmlmanager.HTMLManager({ loader: loader });
     };

@@ -63,7 +63,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * We've scoped the rules so that they are consistent with exactly our code.
  */
 
-.jupyter-widgets.widget-tab > .p-TabBar {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar {
   display: flex;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -71,15 +74,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   user-select: none;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='horizontal'] {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='horizontal'], /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar[data-orientation='horizontal'], /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar[data-orientation='horizontal'] {
   flex-direction: row;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='vertical'] {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='vertical'], /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar[data-orientation='vertical'], /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar[data-orientation='vertical'] {
   flex-direction: column;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar > .p-TabBar-content, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar > .lm-TabBar-content {
   margin: 0;
   padding: 0;
   display: flex;
@@ -87,61 +99,128 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   list-style-type: none;
 }
 
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar[data-orientation='horizontal']
-  > .p-TabBar-content {
+  > .p-TabBar-content,
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+> .p-TabBar[data-orientation='horizontal']
+> .p-TabBar-content,
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar[data-orientation='horizontal']
+  > .lm-TabBar-content {
   flex-direction: row;
 }
 
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar[data-orientation='vertical']
-  > .p-TabBar-content {
+  > .p-TabBar-content,
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+> .p-TabBar[data-orientation='vertical']
+> .p-TabBar-content,
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar[data-orientation='vertical']
+  > .lm-TabBar-content {
   flex-direction: column;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tab {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon,
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon, /* </DEPRECATED> */
+/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabIcon, /* </DEPRECATED> */
+/* <DEPRECATED> */ .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabCloseIcon, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tabIcon,
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tabCloseIcon {
   flex: 0 0 auto;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabLabel, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tabLabel {
   flex: 1 1 auto;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-hidden {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-hidden, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab.p-mod-hidden, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar .lm-TabBar-tab.lm-mod-hidden {
   display: none !important;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar.p-mod-dragging .p-TabBar-tab {
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar.p-mod-dragging .p-TabBar-tab, /* </DEPRECATED> */
+/* <DEPRECATED> */.jupyter-widgets.jupyter-widget-tab > .p-TabBar.p-mod-dragging .p-TabBar-tab, /* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab > .lm-TabBar.lm-mod-dragging .lm-TabBar-tab {
   position: relative;
 }
 
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar.p-mod-dragging[data-orientation='horizontal']
-  .p-TabBar-tab {
+  .p-TabBar-tab,
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .p-TabBar.p-mod-dragging[data-orientation='horizontal']
+  .p-TabBar-tab,
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar.lm-mod-dragging[data-orientation='horizontal']
+  .lm-TabBar-tab {
   left: 0;
   transition: left 150ms ease;
 }
 
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar.p-mod-dragging[data-orientation='vertical']
-  .p-TabBar-tab {
+  .p-TabBar-tab,
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+> .p-TabBar.p-mod-dragging[data-orientation='vertical']
+.p-TabBar-tab,
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar.lm-mod-dragging[data-orientation='vertical']
+  .lm-TabBar-tab {
   top: 0;
   transition: top 150ms ease;
 }
 
+/* <DEPRECATED> */
 .jupyter-widgets.widget-tab
   > .p-TabBar.p-mod-dragging
-  .p-TabBar-tab.p-mod-dragging {
+  .p-TabBar-tab.p-mod-dragging,
+/* </DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+> .p-TabBar.p-mod-dragging
+.p-TabBar-tab.p-mod-dragging,
+/* </DEPRECATED> */
+.jupyter-widgets.jupyter-widget-tab
+  > .lm-TabBar.lm-mod-dragging
+  .lm-TabBar-tab.lm-mod-dragging {
   transition: none;
 }
 

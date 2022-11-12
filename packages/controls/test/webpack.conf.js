@@ -5,16 +5,20 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: 'bundle.js',
-    publicPath: './build/'
   },
   bail: true,
   module: {
     rules: [
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.md$/, loader: 'raw-loader' },
-      { test: /\.html$/, loader: 'file?name=[name].[ext]' },
-      { test: /\.ipynb$/, loader: 'json-loader' }
-    ]
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.md$/, type: 'asset/source' },
+      {
+        test: /\.html$/,
+        type: 'asset/resource',
+        generator: { filename: '[name].[ext]' },
+      },
+      { test: /\.ipynb$/, type: 'json' },
+    ],
   },
-  mode: 'development'
+  mode: 'development',
+  resolve: { fallback: { util: false } },
 };

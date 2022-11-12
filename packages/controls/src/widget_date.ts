@@ -31,7 +31,7 @@ export function serialize_date(value: Date | null): ISerializedDate | null {
     return {
       year: value.getUTCFullYear(),
       month: value.getUTCMonth(),
-      date: value.getUTCDate()
+      date: value.getUTCDate(),
     };
   }
 }
@@ -52,8 +52,8 @@ export class DatePickerModel extends CoreDescriptionModel {
     ...CoreDescriptionModel.serializers,
     value: {
       serialize: serialize_date,
-      deserialize: deserialize_date
-    }
+      deserialize: deserialize_date,
+    },
   };
 
   defaults(): Backbone.ObjectHash {
@@ -61,7 +61,7 @@ export class DatePickerModel extends CoreDescriptionModel {
       ...super.defaults(),
       value: null,
       _model_name: 'DatePickerModel',
-      _view_name: 'DatePickerView'
+      _view_name: 'DatePickerView',
     };
   }
 }
@@ -104,7 +104,7 @@ export class DatePickerView extends DescriptionView {
     void this._picker_focusout;
     return {
       'change [type="date"]': '_picker_change',
-      'focusout [type="date"]': '_picker_focusout'
+      'focusout [type="date"]': '_picker_focusout',
     };
   }
 

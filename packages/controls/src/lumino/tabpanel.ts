@@ -111,13 +111,13 @@ export class TabPanel extends Widget {
    */
   constructor(options: TabPanel.IOptions = {}) {
     super();
-    this.addClass('p-TabPanel');
+    this.addClass('jupyter-widget-TabPanel');
 
     // Create the tab bar and contents panel.
     this.tabBar = new TabBar<Widget>(options);
-    this.tabBar.addClass('p-TabPanel-tabBar');
+    this.tabBar.addClass('jupyter-widget-TabPanel-tabBar');
     this.tabContents = new EventedPanel();
-    this.tabContents.addClass('p-TabPanel-tabContents');
+    this.tabContents.addClass('jupyter-widget-TabPanel-tabContents');
 
     // Connect the tab bar signal handlers.
     this.tabBar.tabMoved.connect(this._onTabMoved, this);
@@ -306,7 +306,7 @@ export class TabPanel extends Widget {
       previousIndex,
       previousWidget,
       currentIndex,
-      currentWidget
+      currentWidget,
     });
 
     // Flush the message loop on IE and Edge to prevent flicker.

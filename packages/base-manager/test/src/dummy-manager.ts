@@ -62,23 +62,23 @@ const typesToArray: { [key: string]: any } = {
   uint16: Uint16Array,
   uint32: Uint32Array,
   float32: Float32Array,
-  float64: Float64Array
+  float64: Float64Array,
 };
 
-const JSONToArray = function(obj: any): any {
+const JSONToArray = function (obj: any): any {
   return new typesToArray[obj.dtype](obj.buffer.buffer);
 };
 
-const arrayToJSON = function(obj: any): any {
+const arrayToJSON = function (obj: any): any {
   const dtype = Object.keys(typesToArray).filter(
-    i => typesToArray[i] === obj.constructor
+    (i) => typesToArray[i] === obj.constructor
   )[0];
   return { dtype, buffer: obj };
 };
 
 const array_serialization = {
   deserialize: JSONToArray,
-  serialize: arrayToJSON
+  serialize: arrayToJSON,
 };
 
 class TestWidget extends widgets.WidgetModel {
@@ -91,8 +91,53 @@ class TestWidget extends widgets.WidgetModel {
       _view_module: 'test-widgets',
       _view_name: 'TestWidgetView',
       _view_module_version: '1.0.0',
-      _view_count: null as any
+      _view_count: null as any,
     };
+  }
+}
+class ModelErrorWidget extends widgets.WidgetModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_module: 'test-widgets',
+      _model_name: 'ModelErrorWidget',
+      _model_module_version: '1.0.0',
+    };
+  }
+  initialize(attributes: Backbone.ObjectHash, options: any) {
+    throw new Error('Model error');
+  }
+}
+class ModelWithMissingView extends widgets.WidgetModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_module: 'test-widgets',
+      _model_name: 'ModelWithViewError',
+      _model_module_version: '1.0.0',
+      _view_module: 'test-widgets',
+      _view_name: 'MissingView',
+      _view_module_version: '1.0.0',
+    };
+  }
+}
+class ModelWithViewError extends widgets.WidgetModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_module: 'test-widgets',
+      _model_name: 'ModelWithViewError',
+      _model_module_version: '1.0.0',
+      _view_module: 'test-widgets',
+      _view_name: 'ViewErrorWidget',
+      _view_module_version: '1.0.0',
+    };
+  }
+}
+
+class ViewErrorWidget extends widgets.WidgetView {
+  render(): void {
+    throw new Error('Render error');
   }
 }
 
@@ -112,14 +157,14 @@ class TestWidgetView extends widgets.WidgetView {
 class BinaryWidget extends TestWidget {
   static serializers = {
     ...widgets.WidgetModel.serializers,
-    array: array_serialization
+    array: array_serialization,
   };
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
       _model_name: 'BinaryWidget',
       _view_name: 'BinaryWidgetView',
-      array: new Int8Array(0)
+      array: new Int8Array(0),
     };
   }
 }
@@ -135,7 +180,11 @@ const testWidgets = {
   TestWidget,
   TestWidgetView,
   BinaryWidget,
-  BinaryWidgetView
+  BinaryWidgetView,
+  ModelErrorWidget,
+  ModelWithViewError,
+  ViewErrorWidget,
+  ModelWithMissingView,
 };
 
 export class DummyManager extends ManagerBase {

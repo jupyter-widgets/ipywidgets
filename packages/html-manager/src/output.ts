@@ -3,7 +3,7 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import { Panel } from '@lumino/widgets';
+import { JupyterLuminoPanelWidget } from '@jupyter-widgets/base';
 
 import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
 
@@ -17,22 +17,33 @@ export class OutputModel extends outputBase.OutputModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      msg_id: ''
+      msg_id: '',
+      outputs: [],
     };
   }
 
   initialize(attributes: any, options: any): void {
     super.initialize(attributes, options);
-    this._outputs = new OutputAreaModel({
-      values: attributes.outputs,
-      // Widgets (including this output widget) are only rendered in
-      // trusted contexts
-      trusted: true
-    });
+    this._outputs = new OutputAreaModel({ trusted: true });
+    this.listenTo(this, 'change:outputs', this.setOutputs);
+    this.setOutputs();
   }
 
   get outputs(): OutputAreaModel {
     return this._outputs;
+  }
+
+  clear_output(wait = false): void {
+    this._outputs.clear(wait);
+  }
+
+  setOutputs(model?: any, value?: any, options?: any): void {
+    if (!(options && options.newMessage)) {
+      // fromJSON does not clear the existing output
+      this.clear_output();
+      // fromJSON does not copy the message, so we make a deep copy
+      this._outputs.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
+    }
   }
 
   private _outputs: OutputAreaModel;
@@ -41,33 +52,37 @@ export class OutputModel extends outputBase.OutputModel {
 
 export class OutputView extends outputBase.OutputView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new Panel();
-    return this.pWidget.node;
+    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+    return this.luminoWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.luminoWidget.node) {
       // Boxes don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.luminoWidget.node;
+    this.$el = $(this.luminoWidget.node);
   }
 
   render(): void {
-    const manager = this.model.widget_manager;
-    const rendermime = manager.renderMime;
+    super.render();
     this._outputView = new OutputArea({
-      rendermime: rendermime,
-      model: this.model.outputs
+      rendermime: this.model.widget_manager.renderMime,
+      model: this.model.outputs,
     });
-    this.pWidget.insertWidget(0, this._outputView);
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-output');
+    this.luminoWidget.insertWidget(0, this._outputView);
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('widget-output');
     this.update();
+  }
+
+  remove(): any {
+    this._outputView.dispose();
+    return super.remove();
   }
 
   model: OutputModel;
   private _outputView: OutputArea;
-  pWidget: Panel;
+  luminoWidget: JupyterLuminoPanelWidget;
 }

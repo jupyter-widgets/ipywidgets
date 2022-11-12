@@ -16,35 +16,35 @@ chai.use(sinonChai);
 // test ManagerBase by creating a simple derived class
 // and testing it.
 
-describe('ManagerBase', function() {
-  beforeEach(function() {
+describe('ManagerBase', function () {
+  beforeEach(function () {
     this.managerBase = new DummyManager();
     this.modelOptions = {
       model_name: 'TestWidget',
       model_module: 'test-widgets',
       model_module_version: '1.0.0',
-      model_id: 'u-u-i-d'
+      model_id: 'u-u-i-d',
     };
   });
 
-  describe('comm_target_name', function() {
-    it('is "jupyter.widget"', function() {
+  describe('comm_target_name', function () {
+    it('is "jupyter.widget"', function () {
       expect(this.managerBase.comm_target_name).to.equal('jupyter.widget');
     });
   });
 
-  describe('setViewOptions', function() {
-    it('returns an object', function() {
+  describe('setViewOptions', function () {
+    it('returns an object', function () {
       expect(this.managerBase.setViewOptions()).to.deep.equal({});
     });
-    it('returns the passed options', function() {
+    it('returns the passed options', function () {
       const options = { a: 1 };
       expect(this.managerBase.setViewOptions(options)).to.deep.equal(options);
     });
   });
 
-  describe('create_view', function() {
-    it('returns a Promise to a view', async function() {
+  describe('create_view', function () {
+    it('returns a Promise to a view', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model(this.modelOptions);
       const view = await manager.create_view(model);
@@ -52,19 +52,49 @@ describe('ManagerBase', function() {
       expect(view.model).to.equal(model);
     });
 
-    it('renders the view', async function() {
+    it('renders the view', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model({
         model_name: 'BinaryWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        model_id: 'u-u-i-d'
+        model_id: 'u-u-i-d',
       });
       const view = await manager.create_view(model);
       expect(view._rendered).to.equal(1);
     });
 
-    it('removes the view on model destroy', async function() {
+    it('return ErrorWidget if view class can not be loaded', async function () {
+      const spec = {
+        model_name: 'ModelWithMissingView',
+        model_module: 'test-widgets',
+        model_module_version: '1.0.0',
+        model_id: 'id',
+      };
+      const manager = this.managerBase;
+      const model = await manager.new_model(spec);
+      const view = await manager.create_view(model);
+      expect(view.generateErrorMessage()['msg']).to.be.equal(
+        "Failed to load view class 'MissingView' from module 'test-widgets'"
+      );
+    });
+
+    it('return ErrorWidget if view class can not be created', async function () {
+      const spec = {
+        model_name: 'ModelWithViewError',
+        model_module: 'test-widgets',
+        model_module_version: '1.0.0',
+        model_id: 'id',
+      };
+      const manager = this.managerBase;
+      const model = await manager.new_model(spec);
+      const view = await manager.create_view(model);
+      expect(view.generateErrorMessage()['msg']).to.be.equal(
+        "Failed to create view for 'ViewErrorWidget' from module 'test-widgets' with model 'ModelWithViewError' from module 'test-widgets'"
+      );
+    });
+
+    it('removes the view on model destroy', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model(this.modelOptions);
       const view = await manager.create_view(model);
@@ -76,7 +106,7 @@ describe('ManagerBase', function() {
       expect(view._removed).to.equal(1);
     });
 
-    it('accepts optional view options, which it sends through setViewOptions', async function() {
+    it('accepts optional view options, which it sends through setViewOptions', async function () {
       const manager = this.managerBase;
       sinon.spy(manager, 'setViewOptions');
       const model = await manager.new_model(this.modelOptions);
@@ -86,44 +116,56 @@ describe('ManagerBase', function() {
       expect(view.options).to.deep.equal(options);
     });
 
-    it('registers itself with the model.views, deleted when removed', async function() {
+    it('registers itself with the model.views, deleted when removed', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model(this.modelOptions);
       const view = await manager.create_view(model);
       // model.views contains some promise which resolves to the view
       const modelViews = await Promise.all(
-        Object.keys(model.views).map(i => model.views[i])
+        Object.keys(model.views).map((i) => model.views[i])
       );
       expect(modelViews).to.contain(view);
       view.remove();
       const modelViews2 = await Promise.all(
-        Object.keys(model.views).map(i => model.views[i])
+        Object.keys(model.views).map((i) => model.views[i])
       );
       expect(modelViews2).to.not.contain(view);
     });
   });
 
-  describe('callbacks', function() {
-    it('returns an object', function() {
+  describe('callbacks', function () {
+    it('returns an object', function () {
       const c = this.managerBase.callbacks();
       expect(c).to.be.an('object');
     });
   });
 
-  describe('get_model', function() {
-    it('returns a promise to the model', async function() {
+  describe('get_model', function () {
+    it('returns a promise to the model', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model(this.modelOptions);
       expect(await manager.get_model(model.model_id)).to.be.equal(model);
     });
 
-    it('returns undefined when model is not registered', function() {
-      expect(this.managerBase.get_model('not-defined')).to.be.undefined;
+    it('returns rejected promise when model is not registered', function () {
+      expect(this.managerBase.get_model('not-defined')).to.be.rejected;
     });
   });
 
-  describe('handle_comm_open', function() {
-    it('returns a promise to a model', async function() {
+  describe('has_model', function () {
+    it('returns true when the model is registered', async function () {
+      const manager = this.managerBase;
+      const model = await manager.new_model(this.modelOptions);
+      expect(manager.has_model(model.model_id)).to.be.true;
+    });
+
+    it('returns false when the model is not registered', function () {
+      expect(this.managerBase.has_model('not-defined')).to.be.false;
+    });
+  });
+
+  describe('handle_comm_open', function () {
+    it('returns a promise to a model', async function () {
       const manager = this.managerBase;
       const comm = new MockComm();
       const model = await manager.handle_comm_open(comm, {
@@ -133,19 +175,19 @@ describe('ManagerBase', function() {
               _model_name: 'TestWidget',
               _model_module: 'test-widgets',
               _model_module_version: '1.0.0',
-              value: 50
-            }
-          }
+              value: 50,
+            },
+          },
         },
         metadata: {
-          version: '2.0.0'
-        }
+          version: '2.1.0',
+        },
       });
       expect(model.comm).to.equal(comm);
       expect(model.get('value')).to.equal(50);
     });
 
-    it('throws if widget protocol version is not specified', async function() {
+    it('throws if widget protocol version is not specified', async function () {
       const manager = this.managerBase;
       const comm = new MockComm();
       const model = manager.handle_comm_open(comm, {
@@ -155,15 +197,15 @@ describe('ManagerBase', function() {
               _model_name: 'TestWidget',
               _model_module: 'test-widgets',
               _model_module_version: '1.0.0',
-              value: 50
-            }
-          }
-        }
+              value: 50,
+            },
+          },
+        },
       });
       expect(model).to.be.rejected;
     });
 
-    it('throws if widget protocol version is not compatible', async function() {
+    it('throws if widget protocol version is not compatible', async function () {
       const manager = this.managerBase;
       const comm = new MockComm();
       const model = manager.handle_comm_open(comm, {
@@ -173,18 +215,18 @@ describe('ManagerBase', function() {
               _model_name: 'TestWidget',
               _model_module: 'test-widgets',
               _model_module_version: '1.0.0',
-              value: 50
-            }
-          }
+              value: 50,
+            },
+          },
         },
         metadata: {
-          version: '1.0'
-        }
+          version: '1.0',
+        },
       });
       expect(model).to.be.rejected;
     });
 
-    it('allows setting initial state, including binary state', async function() {
+    it('allows setting initial state, including binary state', async function () {
       const manager = this.managerBase;
       const comm = new MockComm();
       const model = await manager.handle_comm_open(comm, {
@@ -194,23 +236,23 @@ describe('ManagerBase', function() {
               _model_name: 'BinaryWidget',
               _model_module: 'test-widgets',
               _model_module_version: '1.0.0',
-              array: { dtype: 'uint8' }
+              array: { dtype: 'uint8' },
             },
-            buffer_paths: [['array', 'buffer']]
-          }
+            buffer_paths: [['array', 'buffer']],
+          },
         },
         buffers: [new DataView(new Uint8Array([1, 2, 3]).buffer)],
         metadata: {
-          version: '2.0.0'
-        }
+          version: '2.1.0',
+        },
       });
       expect(model.comm).to.equal(comm);
       expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
     });
   });
 
-  describe('new_widget', function() {
-    it('syncs once on creation', async function() {
+  describe('new_widget', function () {
+    it('syncs once on creation', async function () {
       const comm = new MockComm();
       sinon.spy(comm, 'send');
       const spec = {
@@ -220,21 +262,21 @@ describe('ManagerBase', function() {
         view_name: 'TestView',
         view_module: 'test-widgets',
         view_module_version: '1.0.0',
-        comm: comm
+        comm: comm,
       };
       const manager = this.managerBase;
       await manager.new_widget(spec);
       expect((comm.send as any).calledOnce).to.be.true;
     });
 
-    it('rejects if view information is not passed in', async function() {
+    it('rejects if view information is not passed in', async function () {
       const comm = new MockComm();
       sinon.spy(comm, 'send');
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        comm: comm
+        comm: comm,
       };
       const manager = this.managerBase;
       expect(manager.new_widget(spec)).to.be.rejectedWith(
@@ -242,28 +284,28 @@ describe('ManagerBase', function() {
       );
     });
 
-    it('creates a comm if one is not passed in', async function() {
+    it('creates a comm if one is not passed in', async function () {
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
         view_name: 'TestView',
         view_module: 'test-widgets',
-        view_module_version: '1.0.0'
+        view_module_version: '1.0.0',
       };
       const manager = this.managerBase;
       const model = await manager.new_widget(spec);
       expect(model.comm).to.not.be.undefined;
     });
 
-    it('creates a model even if the comm creation has errors', async function() {
+    it('creates a model even if the comm creation has errors', async function () {
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
         view_name: 'TestView',
         view_module: 'test-widgets',
-        view_module_version: '1.0.0'
+        view_module_version: '1.0.0',
       };
       class NewWidgetManager extends DummyManager {
         _create_comm(): Promise<MockComm> {
@@ -277,8 +319,8 @@ describe('ManagerBase', function() {
     });
   });
 
-  describe('new_model', function() {
-    it('returns a promise to a model', async function() {
+  describe('new_model', function () {
+    it('returns a promise to a model', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model(this.modelOptions);
       // we check that the model has a .get() method
@@ -288,24 +330,24 @@ describe('ManagerBase', function() {
       expect(model.module).to.be.equal(this.modelOptions.model_module);
     });
 
-    it('model id defaults to comm id if not specified', async function() {
+    it('model id defaults to comm id if not specified', async function () {
       const comm = new MockComm();
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        comm: comm
+        comm: comm,
       };
       const manager = this.managerBase;
       const model = await manager.new_model(spec);
       expect(model.model_id).to.be.equal(comm.comm_id);
     });
 
-    it('rejects if model_id or comm not given', async function() {
+    it('rejects if model_id or comm not given', async function () {
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
-        model_module_version: '1.0.0'
+        model_module_version: '1.0.0',
       };
       const manager = this.managerBase;
       expect(manager.new_model(spec)).to.be.rejectedWith(
@@ -313,69 +355,95 @@ describe('ManagerBase', function() {
       );
     });
 
-    it('throws an error if there is an error loading the class');
+    it('return ErrorWidget if model class can not be loaded', async function () {
+      const spec = {
+        model_name: 'Foo',
+        model_module: 'bar',
+        model_module_version: '1.0.0',
+        model_id: 'id',
+      };
+      const manager = this.managerBase;
+      const model = await manager.new_model(spec);
+      expect(model.get('msg')).to.be.equal(
+        "Failed to load model class 'Foo' from module 'bar'"
+      );
+    });
 
-    it('does not sync on creation', async function() {
+    it('return ErrorWidget if model can not be created', async function () {
+      const spec = {
+        model_name: 'ModelErrorWidget',
+        model_module: 'test-widgets',
+        model_module_version: '1.0.0',
+        model_id: 'id',
+      };
+      const manager = this.managerBase;
+      const model = await manager.new_model(spec);
+      expect(model.get('msg')).to.be.equal(
+        "Model class 'ModelErrorWidget' from module 'test-widgets' is loaded but can not be instantiated"
+      );
+    });
+
+    it('does not sync on creation', async function () {
       const comm = new MockComm();
       sinon.spy(comm, 'send');
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        comm: comm
+        comm: comm,
       };
       const manager = this.managerBase;
       await manager.new_model(spec);
       expect((comm.send as any).notCalled).to.be.true;
     });
 
-    it('calls loadClass to retrieve model class', async function() {
+    it('calls loadClass to retrieve model class', async function () {
       const manager = this.managerBase;
       sinon.spy(manager, 'loadClass');
       await manager.new_model(this.modelOptions);
       expect(manager.loadClass.calledOnce).to.be.true;
     });
 
-    it('deserializes attributes using custom serializers and handles binary state', async function() {
+    it('deserializes attributes using custom serializers and handles binary state', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model(
         {
           model_name: 'BinaryWidget',
           model_module: 'test-widgets',
           model_module_version: '1.0.0',
-          model_id: 'u-u-i-d'
+          model_id: 'u-u-i-d',
         },
         {
           array: {
             dtype: 'uint8',
-            buffer: new DataView(new Uint8Array([1, 2, 3]).buffer)
-          }
+            buffer: new DataView(new Uint8Array([1, 2, 3]).buffer),
+          },
         }
       );
       expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
     });
 
-    it('sets up a comm close handler to delete the model', async function() {
+    it('sets up a comm close handler to delete the model', async function () {
       const comm = new MockComm();
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        comm: comm
+        comm: comm,
       };
       const manager = this.managerBase;
       const model = await manager.new_model(spec);
       comm.close();
-      expect(manager.get_model(model.model_id)).to.be.undefined;
+      expect(manager.get_model(model.model_id)).to.be.rejected;
     });
   });
 
-  describe('clear_state', function() {
-    it('clears the model dictionary and closes widgets', async function() {
+  describe('clear_state', function () {
+    it('clears the model dictionary and closes widgets', async function () {
       const spec = {
         model_name: 'TestWidget',
         model_module: 'test-widgets',
-        model_module_version: '1.0.0'
+        model_module_version: '1.0.0',
       };
       const comm1 = new MockComm();
       const comm2 = new MockComm();
@@ -389,8 +457,8 @@ describe('ManagerBase', function() {
       expect(await manager.get_model(model1.model_id)).to.be.equal(model1);
       expect(await manager.get_model(model2.model_id)).to.be.equal(model2);
       await manager.clear_state();
-      expect(manager.get_model(model1.model_id)).to.be.undefined;
-      expect(manager.get_model(model2.model_id)).to.be.undefined;
+      expect(manager.get_model(model1.model_id)).to.be.rejected;
+      expect(manager.get_model(model2.model_id)).to.be.rejected;
       expect((comm1.close as any).calledOnce).to.be.true;
       expect((comm2.close as any).calledOnce).to.be.true;
       expect(model1.comm).to.be.undefined;
@@ -398,8 +466,8 @@ describe('ManagerBase', function() {
     });
   });
 
-  describe('get_state', function() {
-    it('returns a valid schema', async function() {
+  describe('get_state', function () {
+    it('returns a valid schema', async function () {
       const manager = this.managerBase;
       await manager.new_model(this.modelOptions);
       const state = await manager.get_state();
@@ -419,15 +487,15 @@ describe('ManagerBase', function() {
               _view_module: 'test-widgets',
               _view_name: 'TestWidgetView',
               _view_module_version: '1.0.0',
-              _view_count: null as any
-            }
-          }
-        }
+              _view_count: null as any,
+            },
+          },
+        },
       };
       expect(state).to.deep.equal(expectedState);
     });
 
-    it('handles the drop_defaults option', async function() {
+    it('handles the drop_defaults option', async function () {
       const manager = this.managerBase;
       await manager.new_model(this.modelOptions, { value: 50 });
       const state = await manager.get_state({ drop_defaults: true });
@@ -440,28 +508,28 @@ describe('ManagerBase', function() {
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
             state: {
-              value: 50
-            }
-          }
-        }
+              value: 50,
+            },
+          },
+        },
       };
       expect(state).to.deep.equal(expectedState);
     });
 
-    it('encodes binary buffers to base64 using custom serializers', async function() {
+    it('encodes binary buffers to base64 using custom serializers', async function () {
       const manager = this.managerBase;
       await manager.new_model(
         {
           model_name: 'BinaryWidget',
           model_module: 'test-widgets',
           model_module_version: '1.0.0',
-          model_id: 'u-u-i-d'
+          model_id: 'u-u-i-d',
         },
         {
           array: {
             dtype: 'uint8',
-            buffer: new DataView(new Uint8Array([1, 2, 3]).buffer)
-          }
+            buffer: new DataView(new Uint8Array([1, 2, 3]).buffer),
+          },
         }
       );
       const state = await manager.get_state({ drop_defaults: true });
@@ -474,24 +542,24 @@ describe('ManagerBase', function() {
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
             state: {
-              array: { dtype: 'uint8' }
+              array: { dtype: 'uint8' },
             },
             buffers: [
               {
                 data: 'AQID',
                 path: ['array', 'buffer'],
-                encoding: 'base64'
-              }
-            ]
-          }
-        }
+                encoding: 'base64',
+              },
+            ],
+          },
+        },
       };
       expect(state).to.deep.equal(expectedState);
     });
   });
 
-  describe('set_state', function() {
-    it('handles binary base64 buffers', async function() {
+  describe('set_state', function () {
+    it('handles binary base64 buffers', async function () {
       const state = {
         version_major: 2,
         version_minor: 0,
@@ -501,17 +569,17 @@ describe('ManagerBase', function() {
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
             state: {
-              array: { dtype: 'uint8' }
+              array: { dtype: 'uint8' },
             },
             buffers: [
               {
                 data: 'AQID',
                 path: ['array', 'buffer'],
-                encoding: 'base64'
-              }
-            ]
-          }
-        }
+                encoding: 'base64',
+              },
+            ],
+          },
+        },
       };
       const manager = this.managerBase;
       await manager.set_state(state);
@@ -519,7 +587,7 @@ describe('ManagerBase', function() {
       expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
     });
 
-    it('handles binary hex buffers', async function() {
+    it('handles binary hex buffers', async function () {
       const state = {
         version_major: 2,
         version_minor: 0,
@@ -529,17 +597,17 @@ describe('ManagerBase', function() {
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
             state: {
-              array: { dtype: 'uint8' }
+              array: { dtype: 'uint8' },
             },
             buffers: [
               {
                 data: '010203',
                 path: ['array', 'buffer'],
-                encoding: 'hex'
-              }
-            ]
-          }
-        }
+                encoding: 'hex',
+              },
+            ],
+          },
+        },
       };
       const manager = this.managerBase;
       await manager.set_state(state);

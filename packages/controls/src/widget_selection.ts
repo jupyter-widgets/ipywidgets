@@ -19,7 +19,7 @@ export class SelectionModel extends CoreDescriptionModel {
       _model_name: 'SelectionModel',
       index: '',
       _options_labels: [],
-      disabled: false
+      disabled: false,
     };
   }
 }
@@ -86,7 +86,7 @@ export class DropdownModel extends SelectionModel {
       ...super.defaults(),
       _model_name: 'DropdownModel',
       _view_name: 'DropdownView',
-      button_style: ''
+      button_style: '',
     };
   }
 }
@@ -99,16 +99,6 @@ export class DropdownModel extends SelectionModel {
 // For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
 
 export class DropdownView extends SelectionView {
-  /**
-   * Public constructor.
-   */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
-    super.initialize(parameters);
-    this.listenTo(this.model, 'change:_options_labels', () =>
-      this._updateOptions()
-    );
-  }
-
   /**
    * Called when view is rendered.
    */
@@ -127,7 +117,15 @@ export class DropdownView extends SelectionView {
   /**
    * Update the contents of this view
    */
-  update(): void {
+  update(options?: { updated_view?: DropdownView }): void {
+    // Debounce set calls from ourselves:
+    if (options?.updated_view !== this) {
+      const optsChanged = this.model.hasChanged('_options_labels');
+      if (optsChanged) {
+        // Need to update options:
+        this._updateOptions();
+      }
+    }
     // Select the correct element
     const index = this.model.get('index');
     this.listbox.selectedIndex = index === null ? -1 : index;
@@ -149,7 +147,7 @@ export class DropdownView extends SelectionView {
 
   events(): { [e: string]: string } {
     return {
-      'change select': '_handle_change'
+      'change select': '_handle_change',
     };
   }
 
@@ -159,7 +157,8 @@ export class DropdownView extends SelectionView {
   _handle_change(): void {
     this.model.set(
       'index',
-      this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex
+      this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex,
+      { updated_view: this }
     );
     this.touch();
   }
@@ -182,7 +181,7 @@ export class SelectModel extends SelectionModel {
       ...super.defaults(),
       _model_name: 'SelectModel',
       _view_name: 'SelectView',
-      rows: 5
+      rows: 5,
     };
   }
 }
@@ -193,12 +192,6 @@ export class SelectView extends SelectionView {
    */
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
-    this.listenTo(this.model, 'change:_options_labels', () =>
-      this._updateOptions()
-    );
-    this.listenTo(this.model, 'change:index', (model, value, options) =>
-      this.updateSelection(options)
-    );
     // Create listbox here so that subclasses can modify it before it is populated in render()
     this.listbox = document.createElement('select');
   }
@@ -220,7 +213,20 @@ export class SelectView extends SelectionView {
   /**
    * Update the contents of this view
    */
-  update(): void {
+  update(options?: { updated_view?: WidgetView }): void {
+    // Don't update options/index on set calls from ourselves:
+    if (options?.updated_view !== this) {
+      const optsChange = this.model.hasChanged('_options_labels');
+      const idxChange = this.model.hasChanged('index');
+      if (optsChange || idxChange) {
+        // Stash the index to guard against change events
+        const idx = this.model.get('index');
+        if (optsChange) {
+          this._updateOptions();
+        }
+        this.updateSelection(idx);
+      }
+    }
     super.update();
     let rows = this.model.get('rows');
     if (rows === null) {
@@ -229,11 +235,8 @@ export class SelectView extends SelectionView {
     this.listbox.setAttribute('size', rows);
   }
 
-  updateSelection(options: any = {}): void {
-    if (options.updated_view === this) {
-      return;
-    }
-    const index = this.model.get('index');
+  updateSelection(index?: null | number): void {
+    index = index || (this.model.get('index') as null | number);
     this.listbox.selectedIndex = index === null ? -1 : index;
   }
 
@@ -252,7 +255,7 @@ export class SelectView extends SelectionView {
 
   events(): { [e: string]: string } {
     return {
-      'change select': '_handle_change'
+      'change select': '_handle_change',
     };
   }
 
@@ -284,7 +287,7 @@ export class RadioButtonsModel extends SelectionModel {
       _view_name: 'RadioButtonsView',
       tooltips: [],
       icons: [],
-      button_style: ''
+      button_style: '',
     };
   }
 }
@@ -314,8 +317,8 @@ export class RadioButtonsView extends DescriptionView {
   update(options?: any): void {
     const items: string[] = this.model.get('_options_labels');
     const radios = Array.from(
-      this.container.querySelectorAll('input[type="radio"]')
-    ).map((x: HTMLInputElement) => x.value);
+      this.container.querySelectorAll<HTMLInputElement>('input[type="radio"]')
+    ).map((x) => x.value);
     let stale = items.length !== radios.length;
 
     if (!stale) {
@@ -344,9 +347,8 @@ export class RadioButtonsView extends DescriptionView {
     }
     items.forEach((item: any, index: number) => {
       const item_query = 'input[data-value="' + encodeURIComponent(item) + '"]';
-      const radio = this.container.querySelectorAll<HTMLInputElement>(
-        item_query
-      );
+      const radio =
+        this.container.querySelectorAll<HTMLInputElement>(item_query);
       if (radio.length > 0) {
         const radio_el = radio[0];
         radio_el.checked = this.model.get('index') === index;
@@ -395,7 +397,7 @@ export class RadioButtonsView extends DescriptionView {
 
   events(): { [e: string]: string } {
     return {
-      'click input[type="radio"]': '_handle_click'
+      'click input[type="radio"]': '_handle_click',
     };
   }
 
@@ -433,7 +435,7 @@ export class ToggleButtonsStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      _model_name: 'ToggleButtonsStyleModel'
+      _model_name: 'ToggleButtonsStyleModel',
     };
   }
 
@@ -442,13 +444,13 @@ export class ToggleButtonsStyleModel extends DescriptionStyleModel {
     button_width: {
       selector: '.widget-toggle-button',
       attribute: 'width',
-      default: null as any
+      default: null as any,
     },
     font_weight: {
       selector: '.widget-toggle-button',
       attribute: 'font-weight',
-      default: ''
-    }
+      default: '',
+    },
   };
 }
 
@@ -457,7 +459,7 @@ export class ToggleButtonsModel extends SelectionModel {
     return {
       ...super.defaults(),
       _model_name: 'ToggleButtonsModel',
-      _view_name: 'ToggleButtonsView'
+      _view_name: 'ToggleButtonsView',
     };
   }
 }
@@ -501,7 +503,7 @@ export class ToggleButtonsView extends DescriptionView {
     const tooltips = this.model.get('tooltips') || [];
     const disabled = this.model.get('disabled');
     const buttons = this.buttongroup.querySelectorAll('button');
-    const values = Array.from(buttons).map(x => x.value);
+    const values = Array.from(buttons).map((x) => x.value);
     let stale = false;
 
     for (let i = 0, len = items.length; i < len; ++i) {
@@ -559,7 +561,7 @@ export class ToggleButtonsView extends DescriptionView {
       }
     });
 
-    this.stylePromise.then(function(style) {
+    this.stylePromise.then(function (style) {
       if (style) {
         style.style();
       }
@@ -610,7 +612,7 @@ export class ToggleButtonsView extends DescriptionView {
 
   events(): { [e: string]: string } {
     return {
-      'click button': '_handle_click'
+      'click button': '_handle_click',
     };
   }
 
@@ -639,7 +641,7 @@ export namespace ToggleButtonsView {
     success: ['mod-success'],
     info: ['mod-info'],
     warning: ['mod-warning'],
-    danger: ['mod-danger']
+    danger: ['mod-danger'],
   };
 }
 
@@ -651,7 +653,7 @@ export class SelectionSliderModel extends SelectionModel {
       _view_name: 'SelectionSliderView',
       orientation: 'horizontal',
       readout: true,
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }
@@ -698,8 +700,8 @@ export class SelectionSliderView extends DescriptionView {
    * Called when the model is changed.  The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update(options?: any): void {
-    if (options === undefined || options.updated_view !== this) {
+  update(options?: { updated_view?: WidgetView }): void {
+    if (options?.updated_view !== this) {
       this.updateSliderOptions(this.model);
       const orientation = this.model.get('orientation');
       const disabled = this.model.get('disabled');
@@ -747,22 +749,24 @@ export class SelectionSliderView extends DescriptionView {
     const min = 0;
     const max = labels.length - 1;
     const orientation = this.model.get('orientation');
+    const behavior = this.model.get('behavior');
 
     noUiSlider.create(this.$slider, {
       start: this.model.get('index'),
       connect: true,
+      behaviour: behavior,
       range: {
         min: min,
-        max: max
+        max: max,
       },
       step: 1,
       animate: false,
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number): number => value,
-        to: (value: number): number => value
-      }
+        from: (value: string): number => Number(value),
+        to: (value: number): number => Math.round(value),
+      },
     });
 
     // Using noUiSlider's event handler
@@ -857,9 +861,9 @@ export class SelectionSliderView extends DescriptionView {
       start: this.model.get('index'),
       range: {
         min: min,
-        max: max
+        max: max,
       },
-      step: 1
+      step: 1,
     });
   }
 
@@ -892,7 +896,7 @@ export class SelectMultipleModel extends MultipleSelectionModel {
       ...super.defaults(),
       _model_name: 'SelectMultipleModel',
       _view_name: 'SelectMultipleView',
-      rows: null
+      rows: null,
     };
   }
 }
@@ -914,10 +918,7 @@ export class SelectMultipleView extends SelectView {
     this.el.classList.add('widget-select-multiple');
   }
 
-  updateSelection(options: any = {}): void {
-    if (options.updated_view === this) {
-      return;
-    }
+  updateSelection(): void {
     const selected = this.model.get('index') || [];
     const listboxOptions = this.listbox.options;
     // Clear the selection
@@ -934,7 +935,7 @@ export class SelectMultipleView extends SelectView {
   _handle_change(): void {
     const index = Array.prototype.map.call(
       this.listbox.selectedOptions || [],
-      function(option: HTMLOptionElement) {
+      function (option: HTMLOptionElement) {
         return option.index;
       }
     );
@@ -951,7 +952,7 @@ export class SelectionRangeSliderModel extends MultipleSelectionModel {
       _view_name: 'SelectionSliderView',
       orientation: 'horizontal',
       readout: true,
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }
@@ -964,8 +965,8 @@ export class SelectionRangeSliderView extends SelectionSliderView {
     super.render();
   }
 
-  updateSelection(): void {
-    const index = this.model.get('index');
+  updateSelection(index?: number[]): void {
+    index = index || (this.model.get('index') as number[]);
     this.updateReadout(index);
   }
 

@@ -1,5 +1,9 @@
 # Developer Install
 
+The core Jupyter Widgets packages are developed in the
+[https://github.com/jupyter-widgets/ipywidgets](https://github.com/jupyter-widgets/ipywidgets) git repository.
+
+
 ## Prerequisites
 
 To install ipywidgets from git, you will need:
@@ -18,19 +22,25 @@ To install ipywidgets from git, you will need:
 
 
 
-### Installing With Conda 
+### Installing With Conda
 
 ```bash
-conda create -c conda-forge -n ipywidgets yarn notebook
+conda create -c conda-forge -n ipywidgets yarn notebook jupyterlab
 conda activate ipywidgets
 ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
-pip install --pre jupyterlab
 git clone https://github.com/jupyter-widgets/ipywidgets.git
 cd ipywidgets
 ./dev-install.sh
 ```
 
-Notice that we install the prerelease of JupyterLab currently, which is only available via `pip`.
+### Installing with pip
+
+To do an editable install of the python ipywidgets package into the user site directory with pip, please use
+
+```bash
+pip install --prefix=$(python -m site --user-base) -e .
+```
+Using `pip install --user -e .` will not work due to a bug in pip. See https://github.com/pypa/pip/issues/7953 for more details.
 
 Rebuilding after making changes
 ----------------------------
@@ -75,8 +85,8 @@ Updating widget model specification
 
 To update the widget model specification with changes, do something like this in the repo root:
 ```
-python ./packages/schema/generate-spec.py -f json-pretty > packages/schema/jupyterwidgetmodels.latest.json
-python ./packages/schema/generate-spec.py -f markdown > packages/schema/jupyterwidgetmodels.latest.md
+python ./packages/schema/generate-spec.py -f json-pretty packages/schema/jupyterwidgetmodels.latest.json
+python ./packages/schema/generate-spec.py -f markdown packages/schema/jupyterwidgetmodels.latest.md
 ```
 
 Releasing new versions

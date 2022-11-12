@@ -1,0 +1,19 @@
+{
+  "name": "@jupyter-widgets/ui-tests",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ipywidgets UI Tests",
+  "scripts": {
+    "start": "jupyter lab --config ./jupyter_server_config.py",
+    "start:detached": "yarn run start&",
+    "test": "playwright test",
+    "test:debug": "PWDEBUG=1 playwright test",
+    "test:report": "http-server ./playwright-report -a localhost -o",
+    "test:update": "playwright test --update-snapshots"
+  },
+  "author": "Project Jupyter",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@jupyterlab/galata": "~4.0.2"
+  }
+}

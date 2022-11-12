@@ -668,6 +668,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -795,6 +801,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -1121,9 +1133,52 @@
         "type": "string"
       },
       {
-        "default": "",
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font family.",
+        "name": "font_family",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font style.",
+        "name": "font_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font variant.",
+        "name": "font_variant",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
         "help": "Button text font weight.",
         "name": "font_weight",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text color.",
+        "name": "text_color",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text decoration.",
+        "name": "text_decoration",
         "type": "string"
       }
     ],
@@ -1193,6 +1248,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes.",
         "name": "disabled",
         "type": "bool"
@@ -1215,7 +1276,7 @@
         "help": "Styling customizations",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "CheckboxStyle"
       },
       {
         "allow_none": true,
@@ -1246,6 +1307,69 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "CheckboxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "CheckboxStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "CheckboxStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -1307,6 +1431,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -1384,6 +1514,129 @@
         "type": "string"
       },
       {
+        "default": "ColorsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ColorsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of string tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorsInputView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "ComboboxModel",
         "help": "",
         "name": "_model_name",
@@ -1421,6 +1674,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -1455,10 +1714,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -1942,6 +2201,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes.",
         "name": "disabled",
         "type": "bool"
@@ -1952,6 +2217,35 @@
         "name": "layout",
         "type": "reference",
         "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Date"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Date"
+      },
+      {
+        "default": 1,
+        "help": "The date step to use for the picker, in days, or \"any\".",
+        "name": "step",
+        "type": ["int", "string"],
+        "union_attributes": [
+          {
+            "type": "int"
+          },
+          {
+            "enum": ["any"],
+            "type": "string"
+          }
+        ]
       },
       {
         "default": "reference to new instance",
@@ -1990,6 +2284,132 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "DatePickerView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatetimeModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatetimeView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Datetime"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Datetime"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "value",
+        "type": "Datetime"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatetimeModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatetimeView",
       "version": "2.0.0"
     }
   },
@@ -2176,6 +2596,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -2292,6 +2718,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -2420,6 +2852,13 @@
         "type": "float"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is holding the slider.",
         "name": "continuous_update",
@@ -2430,6 +2869,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -2572,7 +3017,7 @@
         "allow_none": true,
         "default": "",
         "enum": ["success", "info", "warning", "danger", ""],
-        "help": "Use a predefined styling for the progess bar.",
+        "help": "Use a predefined styling for the progress bar.",
         "name": "bar_style",
         "type": "string"
       },
@@ -2581,6 +3026,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": "reference to new instance",
@@ -2695,6 +3146,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is sliding the slider.",
         "name": "continuous_update",
@@ -2705,6 +3163,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -2844,6 +3308,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is holding the slider.",
         "name": "continuous_update",
@@ -2854,6 +3325,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -3006,6 +3483,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -3060,6 +3543,156 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatTextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": ".1f",
+        "help": "",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "default": "\u200b",
+        "help": "",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of float tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatsInputView",
       "version": "2.0.0"
     }
   },
@@ -3311,6 +3944,12 @@
         "type": "string"
       },
       {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
         "default": "reference to new instance",
         "help": "",
         "name": "layout",
@@ -3325,10 +3964,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "HTMLMathStyle"
       },
       {
         "allow_none": true,
@@ -3359,6 +3998,83 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "HTMLMathView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HTMLMathStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text color",
+        "name": "text_color",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HTMLMathStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -3416,6 +4132,12 @@
         "type": "string"
       },
       {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
         "default": "reference to new instance",
         "help": "",
         "name": "layout",
@@ -3430,10 +4152,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "HTMLStyle"
       },
       {
         "allow_none": true,
@@ -3464,6 +4186,83 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "HTMLView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HTMLStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text color",
+        "name": "text_color",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HTMLStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -3621,7 +4420,7 @@
       {
         "default": "",
         "enum": ["success", "info", "warning", "danger", ""],
-        "help": "Use a predefined styling for the progess bar.",
+        "help": "Use a predefined styling for the progress bar.",
         "name": "bar_style",
         "type": "string"
       },
@@ -3630,6 +4429,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": "reference to new instance",
@@ -3744,6 +4549,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is sliding the slider.",
         "name": "continuous_update",
@@ -3754,6 +4566,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -3892,6 +4710,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is holding the slider.",
         "name": "continuous_update",
@@ -3902,6 +4727,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -4053,6 +4884,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -4133,6 +4970,156 @@
         "type": "string"
       },
       {
+        "default": "IntsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": "d",
+        "help": "",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": "\u200b",
+        "help": "",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of int tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntsInputView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "LabelModel",
         "help": "",
         "name": "_model_name",
@@ -4163,6 +5150,12 @@
         "type": "string"
       },
       {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
         "default": "reference to new instance",
         "help": "",
         "name": "layout",
@@ -4177,10 +5170,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "LabelStyle"
       },
       {
         "allow_none": true,
@@ -4211,6 +5204,118 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "LabelView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "LabelStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font family.",
+        "name": "font_family",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font style.",
+        "name": "font_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font variant.",
+        "name": "font_variant",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font weight.",
+        "name": "font_weight",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text color",
+        "name": "text_color",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text decoration.",
+        "name": "text_decoration",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "LabelStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -4301,6 +5406,132 @@
         "type": "string"
       },
       {
+        "default": "NaiveDatetimeModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatetimeView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Datetime"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Datetime"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "value",
+        "type": "Datetime"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "NaiveDatetimeModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatetimeView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "PasswordModel",
         "help": "",
         "name": "_model_name",
@@ -4338,6 +5569,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -4357,10 +5594,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -4449,6 +5686,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -4486,7 +5729,7 @@
       },
       {
         "default": false,
-        "help": "Whether the control will repeat in a continous loop.",
+        "help": "Whether the control will repeat in a continuous loop.",
         "name": "repeat",
         "type": "bool"
       },
@@ -4668,6 +5911,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -4780,6 +6029,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -4904,6 +6159,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -5020,6 +6281,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is holding the slider.",
         "name": "continuous_update",
@@ -5030,6 +6298,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -5065,10 +6339,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "SliderStyle"
       },
       {
         "allow_none": true,
@@ -5153,6 +6427,13 @@
         "type": "string"
       },
       {
+        "default": "drag-tap",
+        "enum": ["drag-tap", "drag-snap", "tap", "drag", "snap"],
+        "help": "Slider dragging behavior.",
+        "name": "behavior",
+        "type": "string"
+      },
+      {
         "default": true,
         "help": "Update the value of the widget as the user is holding the slider.",
         "name": "continuous_update",
@@ -5163,6 +6444,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -5198,10 +6485,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "SliderStyle"
       },
       {
         "allow_none": true,
@@ -5316,7 +6603,7 @@
         "type": "string"
       },
       {
-        "default": "StackedModel",
+        "default": "StackModel",
         "help": "",
         "name": "_model_name",
         "type": "string"
@@ -5334,7 +6621,7 @@
         "type": "string"
       },
       {
-        "default": "StackedView",
+        "default": "StackView",
         "help": "",
         "name": "_view_name",
         "type": "string"
@@ -5396,12 +6683,12 @@
     ],
     "model": {
       "module": "@jupyter-widgets/controls",
-      "name": "StackedModel",
+      "name": "StackModel",
       "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
-      "name": "StackedView",
+      "name": "StackView",
       "version": "2.0.0"
     }
   },
@@ -5542,6 +6829,136 @@
         "type": "string"
       },
       {
+        "default": "TagsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TagsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of string tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TagsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TagsInputView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "TextModel",
         "help": "",
         "name": "_model_name",
@@ -5579,6 +6996,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -5598,10 +7021,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -5632,6 +7055,83 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TextStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text color",
+        "name": "text_color",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TextStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -5696,6 +7196,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes",
         "name": "disabled",
         "type": "bool"
@@ -5722,10 +7228,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -5756,6 +7262,147 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TextareaView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TimeModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TimeView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Time"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Time"
+      },
+      {
+        "default": 60,
+        "help": "The time step to use for the picker, in seconds, or \"any\".",
+        "name": "step",
+        "type": ["float", "string"],
+        "union_attributes": [
+          {
+            "type": "float"
+          },
+          {
+            "enum": ["any"],
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "value",
+        "type": "Time"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TimeModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TimeView",
       "version": "2.0.0"
     }
   },
@@ -5821,6 +7468,12 @@
       },
       {
         "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
+      },
+      {
+        "default": false,
         "help": "Enable or disable user changes.",
         "name": "disabled",
         "type": "bool"
@@ -5843,7 +7496,7 @@
         "help": "Styling customizations",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "ToggleButtonStyle"
       },
       {
         "allow_none": true,
@@ -5874,6 +7527,111 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ToggleButtonView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ToggleButtonStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font family.",
+        "name": "font_family",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font style.",
+        "name": "font_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font variant.",
+        "name": "font_variant",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font weight.",
+        "name": "font_weight",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text color",
+        "name": "text_color",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text decoration.",
+        "name": "text_decoration",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ToggleButtonStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -5946,6 +7704,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,
@@ -6235,6 +7999,12 @@
         "help": "Description of the control.",
         "name": "description",
         "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Accept HTML in the description.",
+        "name": "description_allow_html",
+        "type": "bool"
       },
       {
         "default": false,

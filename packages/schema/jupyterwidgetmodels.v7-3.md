@@ -349,7 +349,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.3.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
-`bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -523,7 +523,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.3.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
-`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -663,7 +663,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.3.0'`        | 
 `_model_name`    | string           | `'PlayModel'`    | 
 `_playing`       | boolean          | `false`          | Whether the control is currently playing.
-`_repeat`        | boolean          | `false`          | Whether the control will repeat in a continous loop.
+`_repeat`        | boolean          | `false`          | Whether the control will repeat in a continuous loop.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.3.0'`        | 
 `_view_name`     | string           | `'PlayView'`     | 

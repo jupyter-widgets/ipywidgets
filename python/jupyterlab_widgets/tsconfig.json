@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfigbase",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*"],
+  "references": [
+    {
+      "path": "../../packages/base"
+    },
+    {
+      "path": "../../packages/controls"
+    },
+    {
+      "path": "../../packages/output"
+    }
+  ]
+}

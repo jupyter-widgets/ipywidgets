@@ -5,58 +5,18 @@
 
 var path = require('path');
 
-var version = require('./package.json').version;
-
-var rules = [
-  { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-  // jquery-ui loads some images
-  { test: /\.(jpg|png|gif)$/, use: 'file-loader' },
-  // required to load font-awesome
-  {
-    test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-    use: {
-      loader: 'url-loader',
-      options: {
-        limit: 10000,
-        mimetype: 'application/font-woff'
-      }
-    }
+var options = {
+  devtool: 'source-map',
+  mode: 'production',
+  module: {
+    rules: [
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      // required to load font-awesome
+      { test: /\.(woff|woff2|eot|ttf|otf)$/i, type: 'asset/resource' },
+      { test: /\.svg$/i, type: 'asset' },
+    ],
   },
-  {
-    test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-    use: {
-      loader: 'url-loader',
-      options: {
-        limit: 10000,
-        mimetype: 'application/font-woff'
-      }
-    }
-  },
-  {
-    test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-    use: {
-      loader: 'url-loader',
-      options: {
-        limit: 10000,
-        mimetype: 'application/octet-stream'
-      }
-    }
-  },
-  { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'file-loader' },
-  {
-    test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-    use: {
-      loader: 'url-loader',
-      options: {
-        limit: 10000,
-        mimetype: 'image/svg+xml'
-      }
-    }
-  }
-];
-
-var publicPath =
-  'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
+};
 
 module.exports = [
   {
@@ -65,11 +25,8 @@ module.exports = [
     output: {
       filename: 'embed.js',
       path: path.resolve(__dirname, 'dist'),
-      publicPath: publicPath
     },
-    devtool: 'source-map',
-    module: { rules: rules },
-    mode: 'production'
+    ...options,
   },
   {
     // script that renders widgets using the amd embedding and can render third-party custom widgets
@@ -77,63 +34,63 @@ module.exports = [
     output: {
       filename: 'embed-amd-render.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath
     },
-    module: { rules: rules },
-    mode: 'production'
+    ...options,
   },
   {
     // embed library that depends on requirejs, and can load third-party widgets dynamically
-    entry: './lib/libembed-amd.js',
+    entry: ['./amd-public-path.js', './lib/libembed-amd.js'],
     output: {
       library: '@jupyter-widgets/html-manager/dist/libembed-amd',
       filename: 'libembed-amd.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
+      publicPath: '', // Set in amd-public-path.js
     },
-    module: { rules: rules },
-    mode: 'production'
+    // 'module' is the magic requirejs dependency used to set the publicPath
+    externals: ['module'],
+    ...options,
   },
   {
     // @jupyter-widgets/html-manager
-    entry: './lib/index.js',
+    entry: ['./amd-public-path.js', './lib/index.js'],
     output: {
       library: '@jupyter-widgets/html-manager',
       filename: 'index.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
+      publicPath: '', // Set in amd-public-path.js
     },
-    module: { rules: rules },
-    externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls'],
-    mode: 'production'
+    // 'module' is the magic requirejs dependency used to set the publicPath
+    externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls', 'module'],
+    ...options,
   },
   {
     // @jupyter-widgets/base
-    entry: '@jupyter-widgets/base/lib/index',
+    entry: ['./amd-public-path.js', '@jupyter-widgets/base/lib/index'],
     output: {
       library: '@jupyter-widgets/base',
       filename: 'base.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
+      publicPath: '', // Set in amd-public-path.js
     },
-    module: { rules: rules },
-    mode: 'production'
+    // 'module' is the magic requirejs dependency used to set the publicPath
+    externals: ['module'],
+    ...options,
   },
   {
     // @jupyter-widgets/controls
-    entry: '@jupyter-widgets/controls/lib/index',
+    entry: ['./amd-public-path.js', '@jupyter-widgets/controls/lib/index'],
     output: {
       library: '@jupyter-widgets/controls',
       filename: 'controls.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
+      publicPath: '', // Set in amd-public-path.js
     },
-    module: { rules: rules },
-    externals: ['@jupyter-widgets/base'],
-    mode: 'production'
-  }
+    // 'module' is the magic requirejs dependency used to set the publicPath
+    externals: ['@jupyter-widgets/base', 'module'],
+    ...options,
+  },
 ];
