@@ -640,7 +640,7 @@ class Widget(LoggingHasTraits):
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
-        with self.hold_sync(), self._lock_property(**sync_data), self.hold_trait_notifications():
+        with self._lock_property(**sync_data), self.hold_trait_notifications():
             for name in sync_data:
                 if name in self.keys:
                     from_json = self.trait_metadata(name, 'from_json',

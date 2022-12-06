@@ -287,10 +287,13 @@ def test_hold_sync(echo):
     msg = {'method': 'echo_update', 'state': {'value': 42.0}, 'buffer_paths': []}
     call42 = mock.call(msg, buffers=[])
 
-    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': []}
+    msg = {'method': 'update', 'state': {'value': 2.0}, 'buffer_paths': []}
     call2 = mock.call(msg, buffers=[])
 
-    calls = [call42, call2] if echo else [call2]
+    msg = {'method': 'update', 'state': {'other': 11.0}, 'buffer_paths': []}
+    call11 = mock.call(msg, buffers=[])
+
+    calls = [call42, call2, call11] if echo else [call2, call11]
     widget._send.assert_has_calls(calls)
 
 
