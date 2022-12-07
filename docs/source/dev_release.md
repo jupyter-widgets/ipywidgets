@@ -9,7 +9,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging python-build
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging python-build python=3.9 traitlets
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
@@ -27,6 +27,7 @@ First, update the relevant model specification versions. For example, the commit
 Next, regenerate the model spec with the new version numbers by doing something like this in the repository root directory:
 
 ```
+(cd python/ipywidgets; pip install -e .)
 python ./packages/schema/generate-spec.py -f json-pretty packages/schema/jupyterwidgetmodels.latest.json
 python ./packages/schema/generate-spec.py -f markdown packages/schema/jupyterwidgetmodels.latest.md
 ```
