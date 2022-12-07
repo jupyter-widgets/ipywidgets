@@ -9,7 +9,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging python-build python=3.9 traitlets
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging python-build jq
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
