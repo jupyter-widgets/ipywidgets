@@ -2,6 +2,14 @@
 
 This is a summary of changes in ipywidgets releases. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
+8.0.3
+-----
+
+Highlights include:
+
+- Fix: be backwards compatibel with 7.x, where we re-instroduced `.widget` and `.widget_types` [#3567](https://github.com/jupyter-widgets/ipywidgets/pull/3567)
+- Fix: be backwards compatibel with 7.x, revert hold_sync during set_state [#3642](https://github.com/jupyter-widgets/ipywidgets/pull/3642)
+
 ## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/8.0.0)
 
 To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub, or the 
