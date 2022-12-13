@@ -4,10 +4,10 @@
 import { CoreDescriptionModel } from './widget_core';
 
 import {
-  IntSliderView,
-  IntRangeSliderView,
-  IntTextView,
   BaseIntSliderView,
+  IntRangeSliderView,
+  IntSliderView,
+  IntTextView,
 } from './widget_int';
 
 import { format } from 'd3-format';
@@ -166,13 +166,14 @@ export class FloatLogSliderView extends BaseIntSliderView {
       },
     });
 
-    // Using noUiSlider's event handler
+    // Using noUiSlider's 'update' and 'change' events.
+    // See reference: https://refreshless.com/nouislider/events-callbacks/
     this.$slider.noUiSlider.on('update', (values: any, handle: any) => {
-      this.handleSliderChange(values, handle);
+      this.handleSliderUpdateEvent(values, handle);
     });
 
-    this.$slider.noUiSlider.on('end', (values: any, handle: any) => {
-      this.handleSliderChanged(values, handle);
+    this.$slider.noUiSlider.on('change', (values: any, handle: any) => {
+      this.handleSliderChangeEvent(values, handle);
     });
   }
 
@@ -222,10 +223,11 @@ export class FloatLogSliderView extends BaseIntSliderView {
       }
     }
   }
+
   /**
-   * Called when the slider value is changing.
+   * Called whilst the slider is dragged, tapped or moved by the arrow keys.
    */
-  handleSliderChange(values: number[], handle: number): void {
+  handleSliderUpdateEvent(values: number[], handle: number): void {
     const base = this.model.get('base');
     const actual_value = Math.pow(base, this._validate_slide_value(values[0]));
     this.readout.textContent = this.valueToString(actual_value);
@@ -235,6 +237,18 @@ export class FloatLogSliderView extends BaseIntSliderView {
     if (this.model.get('continuous_update')) {
       this.handleSliderChanged(values, handle);
     }
+  }
+
+  /**
+   * Called when the slider handle is released after dragging,
+   * or by tapping or moving by the arrow keys.
+   */
+  handleSliderChangeEvent(values: number[], handle: number): void {
+    const base = this.model.get('base');
+    const actual_value = Math.pow(base, this._validate_slide_value(values[0]));
+    this.readout.textContent = this.valueToString(actual_value);
+
+    this.handleSliderChanged(values, handle);
   }
 
   /**

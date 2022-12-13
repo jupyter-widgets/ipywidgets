@@ -3,7 +3,7 @@
 
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView, DescriptionStyleModel } from './widget_description';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
 import { DOMWidgetView, WidgetView } from '@jupyter-widgets/base';
 
@@ -223,13 +223,14 @@ export abstract class BaseIntSliderView extends DescriptionView {
       },
     });
 
-    // Using noUiSlider's event handler
+    // Using noUiSlider's 'update' and 'change' events.
+    // See reference: https://refreshless.com/nouislider/events-callbacks/
     this.$slider.noUiSlider.on('update', (values: any, handle: any) => {
-      this.handleSliderChange(values, handle);
+      this.handleSliderUpdateEvent(values, handle);
     });
 
-    this.$slider.noUiSlider.on('end', (values: any, handle: any) => {
-      this.handleSliderChanged(values, handle);
+    this.$slider.noUiSlider.on('change', (values: any, handle: any) => {
+      this.handleSliderChangeEvent(values, handle);
     });
   }
 
@@ -268,9 +269,15 @@ export abstract class BaseIntSliderView extends DescriptionView {
   abstract handleTextChange(): void;
 
   /**
-   * Called when the slider value is changing.
+   * Called when the slider handle is released after dragging,
+   * or by tapping or moving by the arrow keys.
    */
-  abstract handleSliderChange(value: any, handle: any): void;
+  abstract handleSliderChangeEvent(value: any, handle: any): void;
+
+  /**
+   * Called whilst the slider is dragged, tapped or moved by the arrow keys.
+   */
+  abstract handleSliderUpdateEvent(value: any, handle: any): void;
 
   /**
    * Called when the slider value has changed.
@@ -366,7 +373,21 @@ export class IntRangeSliderView extends BaseIntSliderView {
     }
   }
 
-  handleSliderChange(values: any, handle: any): void {
+  /**
+   * Called when the slider handle is released after dragging,
+   * or by tapping or moving by the arrow keys.
+   */
+  handleSliderChangeEvent(values: any, handle: any): void {
+    const actual_value = values.map(this._validate_slide_value);
+    this.readout.textContent = this.valueToString(actual_value);
+
+    this.handleSliderChanged(values, handle);
+  }
+
+  /**
+   * Called whilst the slider is dragged, tapped or moved by the arrow keys.
+   */
+  handleSliderUpdateEvent(values: any, handle: any): void {
     const actual_value = values.map(this._validate_slide_value);
     this.readout.textContent = this.valueToString(actual_value);
 
@@ -460,8 +481,15 @@ export class IntSliderView extends BaseIntSliderView {
     }
   }
 
-  handleSliderChange(values: any, handle: any): void {
-    const actual_value = this._validate_slide_value(values[handle]);
+  handleSliderChangeEvent(values: any, handle: any): void {
+    const actual_value = values.map(this._validate_slide_value);
+    this.readout.textContent = this.valueToString(actual_value);
+
+    this.handleSliderChanged(values, handle);
+  }
+
+  handleSliderUpdateEvent(values: any, handle: any): void {
+    const actual_value = values.map(this._validate_slide_value);
     this.readout.textContent = this.valueToString(actual_value);
 
     // Only persist the value while sliding if the continuous_update
