@@ -18,4 +18,12 @@ module.exports = {
       { test: /\.svg$/i, type: 'asset' },
     ],
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      process: {
+        cwd: () => '/',
+        env: {},
+      },
+    }),
+  ],
 };
