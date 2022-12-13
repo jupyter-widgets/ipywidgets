@@ -310,7 +310,7 @@ class Widget(LoggingHasTraits):
         # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
         # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
         frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
             deprecation("Widget.widgets is deprecated.")
         return _instances
 
@@ -320,7 +320,7 @@ class Widget(LoggingHasTraits):
         # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
         # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
         frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
             deprecation("Widget._active_widgets is deprecated.")
         return _instances
 
@@ -330,7 +330,7 @@ class Widget(LoggingHasTraits):
         # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
         # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
         frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
             deprecation("Widget._widget_types is deprecated.")
         return _registry
 
@@ -340,7 +340,7 @@ class Widget(LoggingHasTraits):
         # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
         # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
         frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance'))):
+        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
             deprecation("Widget.widget_types is deprecated.")
         return _registry
 
