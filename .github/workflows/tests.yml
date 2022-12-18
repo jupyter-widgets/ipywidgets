@@ -61,12 +61,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install jupyterlab~=3.0
-    - name: cache (node)
-      uses: actions/cache@v3
-      id: cache-node-modules
-      with:
-        path: '**/node_modules'
-        key: js-test-node-modules-${{ hashFiles('yarn.lock') }}
     - name: yarn install
       run: |
         yarn install --frozen-lockfile
@@ -74,7 +68,7 @@ jobs:
       run: |
         yarn run build
         yarn run build:examples
-    - name: yarn build, test
+    - name: yarn test
       run: |
         pushd packages/base
         yarn run test:unit:firefox:headless
