@@ -37,7 +37,8 @@ jobs:
   js:
     name: JavaScript
     runs-on: ubuntu-latest
-
+    env:
+      CI: true
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -48,22 +49,33 @@ jobs:
         cache-dependency-path: |
           **/setup.cfg
           **/requirements*.txt
-    - name: Install dependencies
+    - name: Install apt dependencies
       run: |
         sudo apt-get install -y firefox
-        python -m pip install --upgrade pip
-        python -m pip install jupyterlab~=3.0
     - name: Install node
       uses: actions/setup-node@v3
       with:
         node-version: '14'
         cache: 'yarn'
-    - name: yarn install, build, test
+    - name: Install python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install jupyterlab~=3.0
+    - name: cache (node)
+      uses: actions/cache@v3
+      id: cache-node-modules
+      with:
+        path: '**/node_modules'
+        key: js-test-node-modules-${{ hashFiles('yarn.lock') }}
+    - name: yarn install
       run: |
         yarn install --frozen-lockfile
+    - name: yarn build, test
+      run: |
         yarn run build
         yarn run build:examples
-
+    - name: yarn build, test
+      run: |
         pushd packages/base
         yarn run test:unit:firefox:headless
         popd
@@ -83,9 +95,14 @@ jobs:
         pushd examples/web1
         yarn run test:firefox:headless
         popd
+    - name: upload npm debug logs
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: ipywidgets-js-debug-logs
+        path: |
+          ~/.npm/_logs
 
-      env:
-        CI: true
   python:
     name: Python
     runs-on: ubuntu-latest
