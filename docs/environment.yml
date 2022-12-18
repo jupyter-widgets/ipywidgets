@@ -5,18 +5,16 @@ channels:
 dependencies:
   - bqplot
   - build
-  - empack
-  - ipykernel
+  - ipykernel !=6.19.*
   - jupyter_client
   - jupyterlab >=3,<4
   - jupyter-packaging
-  - matplotlib
+  - matplotlib-base
   - nbsphinx
   - nodejs=14
   - numpy
   - packaging
   - pandoc
-  - pip
   - python=3.10
   - recommonmark
   - scikit-image
@@ -24,6 +22,10 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - sympy
+  # lite deps
+  - pip
+  - doit
+  - pkginfo
   - pip:
-    - jupyterlite==0.1.0b14
+    - jupyterlite==0.1.0b15
     - jupyterlite-sphinx~=0.7.2

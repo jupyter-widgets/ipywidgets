@@ -1,6 +1,6 @@
 bqplot
 build
-ipykernel
+ipykernel !=6.19.*
 jupyter_client
 jupyterlab>=3,<4
 jupyterlite-sphinx
