@@ -418,7 +418,7 @@ class Widget(LoggingHasTraits):
         state = data['state']
 
         # Find the widget class to instantiate in the registered widgets
-        widget_class = register.get(state['_model_module'],
+        widget_class = _registry.get(state['_model_module'],
                                                state['_model_module_version'],
                                                state['_model_name'],
                                                state['_view_module'],
