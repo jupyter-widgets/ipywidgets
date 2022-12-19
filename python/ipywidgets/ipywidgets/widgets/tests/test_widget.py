@@ -3,15 +3,19 @@
 
 """Test Widget."""
 
+import inspect
+
+import pytest
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import display
 from IPython.utils.capture import capture_output
-import inspect
-import pytest
 
+from ..._version import __jupyter_widgets_controls_version__
 from .. import widget
-from ..widget import Widget
+from ..widget import PROTOCOL_VERSION_MAJOR, Widget
 from ..widget_button import Button
+from .utils import DummyComm, setup, teardown
+
 
 def test_no_widget_view():
     # ensure IPython shell is instantiated
@@ -74,3 +78,27 @@ def test_compatibility():
     caller_path = inspect.stack(context=0)[1].filename
     assert all(x.filename == caller_path for x in record)
     assert len(record) == 6
+
+
+def test_create_from_frontend():
+    comm = DummyComm()
+    assert widget._instances == {}
+    msg = {
+        "content": {
+            "data": {
+                "model_id": "foo",
+                "model_name": "Button",
+                "state": {
+                    "_model_module": "@jupyter-widgets/controls",
+                    "_model_module_version": __jupyter_widgets_controls_version__,
+                    "_model_name": "ButtonModel",
+                    "_view_module": "@jupyter-widgets/controls",
+                    "_view_module_version": __jupyter_widgets_controls_version__,
+                    "_view_name": "ButtonView",
+                },
+            }
+        },
+        "metadata": {"version": PROTOCOL_VERSION_MAJOR},
+    }
+    Widget.handle_comm_opened(comm, msg)
+    assert isinstance(list(widget._instances.values())[0], Button)
