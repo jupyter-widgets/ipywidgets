@@ -1,17 +1,105 @@
 [build-system]
-requires = ["jupyter_packaging~=0.10,<2", "jupyterlab~=3.0"]
-build-backend = "jupyter_packaging.build_api"
+requires = [
+    "hatchling>=1.8.1",
+    "jupyterlab~=3.0",
+]
+build-backend = "hatchling.build"
 
-[tool.jupyter-packaging.options]
-skip-if-exists = ["jupyterlab_widgets/labextension/package.json"]
-ensured-targets = ["jupyterlab_widgets/labextension/package.json"]
+[project]
+name = "jupyterlab-widgets"
+description = "Jupyter interactive widgets for JupyterLab"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [
+    { name = "Jupyter Development Team", email = "jupyter@googlegroups.com" },
+]
+keywords = [
+    "Interactive",
+    "Interpreter",
+    "Jupyter",
+    "JupyterLab",
+    "JupyterLab3",
+    "Shell",
+    "Web",
+    "notebook",
+    "widgets",
+]
+classifiers = [
+    "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Framework :: Jupyter :: JupyterLab :: 3",
+    "Framework :: Jupyter :: JupyterLab :: Extensions",
+    "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+version = "3.0.3"
 
-[tool.jupyter-packaging.builder]
-factory = "jupyter_packaging.npm_builder"
+[project.license]
+file = "LICENSE"
 
-[tool.jupyter-packaging.build-args]
+[project.urls]
+Homepage = "https://github.com/jupyter-widgets/ipywidgets"
+
+[tool.hatch.build.targets.wheel.shared-data]
+"jupyterlab_widgets/labextension" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager"
+"install.json" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/install.json"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    ".github",
+]
+
+[tool.hatch.build.hooks.jupyter-builder]
+dependencies = [
+    "hatch-jupyter-builder>=0.5.3",
+]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = [
+    "jupyterlab_widgets/labextension/package.json",
+]
+skip-if-exists = [
+    "jupyterlab_widgets/labextension/package.json",
+]
+
+[tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
+build_dir = "jupyterlab_widgets/labextension"
+source_dir = "src"
+build_cmd = "install:extension"
+npm = [
+    "jlpm",
+]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 build_cmd = "build:prod"
-npm = ["jlpm"]
+npm = [
+    "jlpm",
+]
 
-[tool.check-manifest]
-ignore = ["jupyterlab_widgets/labextension/**", "yarn.lock", ".*", "package-lock.json"]
+[tool.tbump]
+field = [
+    { name = "channel", default = "" },
+    { name = "release", default = "" },
+]
+
+[tool.tbump.version]
+current = "3.0.3"
+regex = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)((?P<channel>a|b|rc|.dev)(?P<release>\\d+))?"
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
+version_template = "version = \"{major}.{minor}.{patch}{channel}{release}\""
