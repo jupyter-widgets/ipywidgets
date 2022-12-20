@@ -10,11 +10,9 @@ from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import display
 from IPython.utils.capture import capture_output
 
-from ..._version import __jupyter_widgets_controls_version__
 from .. import widget
-from ..widget import PROTOCOL_VERSION_MAJOR, Widget
+from ..widget import Widget
 from ..widget_button import Button
-from .utils import DummyComm, setup, teardown
 
 
 def test_no_widget_view():
@@ -28,10 +26,12 @@ def test_no_widget_view():
 
     assert len(cap.outputs) == 1, "expect 1 output"
     mime_bundle = cap.outputs[0].data
-    assert mime_bundle['text/plain'] == repr(w), "expected plain text output"
-    assert 'application/vnd.jupyter.widget-view+json' not in mime_bundle, "widget has no view"
-    assert cap.stdout == '', repr(cap.stdout)
-    assert cap.stderr == '', repr(cap.stderr)
+    assert mime_bundle["text/plain"] == repr(w), "expected plain text output"
+    assert (
+        "application/vnd.jupyter.widget-view+json" not in mime_bundle
+    ), "widget has no view"
+    assert cap.stdout == "", repr(cap.stdout)
+    assert cap.stderr == "", repr(cap.stderr)
 
 
 def test_widget_view():
@@ -45,10 +45,12 @@ def test_widget_view():
 
     assert len(cap.outputs) == 1, "expect 1 output"
     mime_bundle = cap.outputs[0].data
-    assert mime_bundle['text/plain'] == repr(w), "expected plain text output"
-    assert 'application/vnd.jupyter.widget-view+json' in mime_bundle, "widget should have have a view"
-    assert cap.stdout == '', repr(cap.stdout)
-    assert cap.stderr == '', repr(cap.stderr)
+    assert mime_bundle["text/plain"] == repr(w), "expected plain text output"
+    assert (
+        "application/vnd.jupyter.widget-view+json" in mime_bundle
+    ), "widget should have have a view"
+    assert cap.stdout == "", repr(cap.stdout)
+    assert cap.stderr == "", repr(cap.stderr)
 
 
 def test_close_all():
@@ -78,27 +80,3 @@ def test_compatibility():
     caller_path = inspect.stack(context=0)[1].filename
     assert all(x.filename == caller_path for x in record)
     assert len(record) == 6
-
-
-def test_create_from_frontend():
-    comm = DummyComm()
-    assert widget._instances == {}
-    msg = {
-        "content": {
-            "data": {
-                "model_id": "foo",
-                "model_name": "Button",
-                "state": {
-                    "_model_module": "@jupyter-widgets/controls",
-                    "_model_module_version": __jupyter_widgets_controls_version__,
-                    "_model_name": "ButtonModel",
-                    "_view_module": "@jupyter-widgets/controls",
-                    "_view_module_version": __jupyter_widgets_controls_version__,
-                    "_view_name": "ButtonView",
-                },
-            }
-        },
-        "metadata": {"version": PROTOCOL_VERSION_MAJOR},
-    }
-    Widget.handle_comm_opened(comm, msg)
-    assert isinstance(list(widget._instances.values())[0], Button)
