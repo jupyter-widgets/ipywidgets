@@ -87,9 +87,9 @@ export class BoxView extends DOMWidgetView {
     this.luminoWidget.addClass('widget-box');
   }
 
-  render(): void {
+  async render(): Promise<void> {
     super.render();
-    this.update_children();
+    await this.update_children();
     this.set_box_style();
   }
 

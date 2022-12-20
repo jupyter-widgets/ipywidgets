@@ -326,14 +326,12 @@ export abstract class ManagerBase implements IWidgetManager {
     );
   }
 
-  async register_model(
-    model_id: string,
-    modelPromise: Promise<WidgetModel>
-  ): Promise<void> {
+  register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
     this._models[model_id] = modelPromise;
-    const model = await modelPromise;
-    model.once('comm:close', () => {
-      delete this._models[model_id];
+    modelPromise.then((model) => {
+      model.once('comm:close', () => {
+        delete this._models[model_id];
+      });
     });
   }
 
@@ -682,7 +680,7 @@ export abstract class ManagerBase implements IWidgetManager {
         to another model that doesn't exist yet!
     */
 
-    const all_models = await Object.keys(models).map(async (model_id) => {
+    return Promise.all(Object.keys(models).map(async (model_id) => {
       // First put back the binary buffers
       const decode: { [s: string]: (s: string) => ArrayBuffer } = {
         base64: base64ToBuffer,
@@ -727,9 +725,8 @@ export abstract class ManagerBase implements IWidgetManager {
       } else {
         return this.new_model(modelCreate, modelState); // case 1
       }
-    });
+    }));
 
-    return Promise.all(all_models);
   }
 
   /**

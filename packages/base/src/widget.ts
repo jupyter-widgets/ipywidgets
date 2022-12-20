@@ -955,9 +955,7 @@ export class DOMWidgetView extends WidgetView {
   /**
    * Public constructor
    */
-  async initialize(
-    parameters: WidgetView.IInitializeParameters
-  ): Promise<void> {
+  initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
 
     this.listenTo(
@@ -987,10 +985,11 @@ export class DOMWidgetView extends WidgetView {
       }
     );
 
-    await this.displayed;
-    this.update_classes([], this.model.get('_dom_classes'));
-    this.setLayout(this.model.get('layout'));
-    this.setStyle(this.model.get('style'));
+    this.displayed.then(() => {
+      this.update_classes([], this.model.get('_dom_classes'));
+      this.setLayout(this.model.get('layout'));
+      this.setStyle(this.model.get('style'));
+    });
 
     this._comm_live_update();
     this.listenTo(this.model, 'comm_live_update', () => {
@@ -1000,17 +999,20 @@ export class DOMWidgetView extends WidgetView {
     this.updateTooltip();
   }
 
-  async setLayout(layout: LayoutModel, oldLayout?: LayoutModel): Promise<void> {
-    if (layout) {
-      const oldLayoutView = await this.layoutPromise;
+  setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {
+    if (!layout) {
+      return;
+    }
+    
+    this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
       if (oldLayoutView) {
         oldLayoutView.unlayout();
         this.stopListening(oldLayoutView.model);
         oldLayoutView.remove();
       }
 
-      try {
-        const view = await this.create_child_view(layout);
+      return this.create_child_view(layout)
+      .then(async (view) => {
         // Trigger the displayed event of the child view.
         await this.displayed;
         view.trigger('displayed');
@@ -1027,35 +1029,40 @@ export class DOMWidgetView extends WidgetView {
           Widget.ResizeMessage.UnknownSize
         );
         this.trigger('layout-changed');
-        this.layoutPromise = Promise.resolve(view);
-      } catch {
-        utils.reject('Could not add LayoutView to DOMWidgetView', true);
-      }
-    }
+        return view;
+      })
+      .catch(
+        utils.reject('Could not add LayoutView to DOMWidgetView', true)
+      );
+    })
   }
 
-  async setStyle(style: StyleModel, oldStyle?: StyleModel): Promise<void> {
-    if (style) {
-      const oldStyleView = await this.stylePromise;
+  setStyle(style: StyleModel, oldStyle?: StyleModel): void {
+    if (!style) {
+      return;
+    }
+
+    this.stylePromise = this.stylePromise.then((oldStyleView) => {
       if (oldStyleView) {
         oldStyleView.unstyle();
         this.stopListening(oldStyleView.model);
         oldStyleView.remove();
       }
 
-      try {
-        const view = await this.create_child_view(style);
+      return this.create_child_view(style)
+      .then(async (view) => {
         // Trigger the displayed event of the child view.
         await this.displayed;
         view.trigger('displayed');
         this.trigger('style-changed');
         // Unlike for the layout attribute, style changes don't
         // trigger Lumino resize messages.
-        this.stylePromise = Promise.resolve(view);
-      } catch {
-        utils.reject('Could not add styleView to DOMWidgetView', true);
-      }
-    }
+        return view;
+      })
+      .catch(
+        utils.reject('Could not add styleView to DOMWidgetView', true)
+      );
+    });
   }
 
   updateTooltip(): void {

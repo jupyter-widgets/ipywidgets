@@ -68,8 +68,9 @@ export class ViewList<T> {
       this.views.length - first_removed
     );
     for (let j = 0; j < removed.length; j++) {
-      const view = await removed[j];
+      removed[j].then(function (view) {
       remove.call(context, view);
+      });
     }
 
     // Add the rest of the new list items.
