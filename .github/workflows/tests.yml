@@ -36,7 +36,8 @@ jobs:
         python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
   js:
     name: JavaScript
-    runs-on: ubuntu-latest
+    # as of #3653 ubuntu-latest wasn't working
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -50,7 +51,6 @@ jobs:
           **/requirements*.txt
     - name: Install dependencies
       run: |
-        sudo apt-get install -y firefox
         python -m pip install --upgrade pip
         python -m pip install jupyterlab~=3.0
     - name: Install node
