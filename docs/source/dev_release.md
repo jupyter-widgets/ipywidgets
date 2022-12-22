@@ -60,8 +60,7 @@ Lerna will prompt you for version numbers for each of the changed npm packages i
 Go into the `python/jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
 
 ```
-python -m build
-twine upload dist/*
+(python/jupyterlab_widgets && python -m build && twine upload dist/*)
 ```
 
 Verify that the package is uploaded.
@@ -75,8 +74,7 @@ curl -s https://pypi.org/pypi/jupyterlab-widgets/json | jq  -r '[.releases[][] |
 Go into the `python/widgetsnbextension` directory. Change `widgetsnbextension/_version.py` to reflect the new version number.
 
 ```
-python -m build
-twine upload dist/*
+(cd python/widgetsnbextension && python -m build && twine upload dist/*)
 ```
 
 Verify that the package is uploaded.
@@ -90,8 +88,7 @@ curl -s https://pypi.org/pypi/widgetsnbextension/json | jq  -r '[.releases[][] |
 Go into the `python/ipywidgets` directory. Change `ipywidgets/_version.py` to reflect the new version number, and if necessary, a new `__html_manager_version__`. Change the `install_requires` parameter in `setup.cfg` reference the new widgetsnbextension and jupyterlab_widgets version.
 
 ```
-python -m build
-twine upload dist/*
+(cd python/ipywidgets && python -m build && twine upload dist/*)
 ```
 
 Verify that the package is uploaded:
@@ -124,7 +121,13 @@ Using the above script, you can do:
 ./scripts/hashes python/jupyterlab_widgets/dist/*
 ```
 
-Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push).
+Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push), e.g:
+
+```
+git tag 8.0.4
+git push origin master 8.0.4
+```
+
 
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
 
