@@ -1,0 +1,9 @@
+#!/bin/sh
+for f in $@
+do
+  echo "$f"
+  echo md5: `md5 -q "$f"`
+  echo sha1: `shasum -a 1 "$f" | awk '{print $1}'`
+  echo sha256: `shasum -a 256 "$f" | awk '{print $1}'`
+  echo
+done

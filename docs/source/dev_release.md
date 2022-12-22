@@ -102,7 +102,7 @@ curl -s https://pypi.org/pypi/ipywidgets/json | jq  -r '[.releases[][] | [.uploa
 
 ### Push changes back
 
-Calculate the hashes of the uploaded files. You could use a small shell script, for example, like this on macOS:
+Calculate the hashes of the uploaded files. You could use a small shell script, for example, like this on macOS (put in `scripts/hashes`):
 
 ```sh
 #!/bin/sh
@@ -119,9 +119,9 @@ done
 Using the above script, you can do:
 
 ```
-hashes python/ipywidgets/dist/*
-hashes python/widgetsnbextension/dist/*
-hashes python/jupyterlab_widgets/dist/*
+./scripts/hashes python/ipywidgets/dist/*
+./scripts/hashes python/widgetsnbextension/dist/*
+./scripts/hashes python/jupyterlab_widgets/dist/*
 ```
 
 Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push).
