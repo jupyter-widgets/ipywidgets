@@ -2,6 +2,15 @@
 
 This is a summary of changes in ipywidgets releases. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
+8.0.4
+-----
+
+Highlights include:
+
+- Fix: slider change event issue with tapping: [#3597](https://github.com/jupyter-widgets/ipywidgets/pull/3597), [#3617](https://github.com/jupyter-widgets/ipywidgets/pull/3617)
+- Fix: unintentional deprecation warnings: [#3648](https://github.com/jupyter-widgets/ipywidgets/pull/3648), [#3650](https://github.com/jupyter-widgets/ipywidgets/pull/3650)
+- Fix: registry state lookup failed, making is impossible to create widgets from the frontend: [#3653](https://github.com/jupyter-widgets/ipywidgets/pull/3653)
+
 8.0.3
 -----
 
