@@ -4,8 +4,7 @@ channels:
   - nodefaults
 dependencies:
   - bqplot
-  - build
-  - empack
+  - python-build
   - ipykernel
   - jupyter_client
   - jupyterlab >=3,<4
