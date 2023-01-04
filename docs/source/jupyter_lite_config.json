@@ -12,7 +12,9 @@
       "https://files.pythonhosted.org/packages/py3/j/jupyterlab_github/jupyterlab_github-3.0.1-py3-none-any.whl",
       "../../python/jupyterlab_widgets/jupyterlab_widgets/labextension"
     ],
-    "ignore_sys_prefix": true,
+    "ignore_sys_prefix": true
+  },
+  "PipliteAddon": {
     "piplite_urls": [
       "../../python/ipywidgets/dist",
       "../../python/widgetsnbextension/dist",
