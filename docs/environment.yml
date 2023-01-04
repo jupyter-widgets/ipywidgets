@@ -25,5 +25,5 @@ dependencies:
   - sphinx_rtd_theme
   - sympy
   - pip:
-    - jupyterlite==0.1.0b14
+    - jupyterlite==0.1.0b17
     - jupyterlite-sphinx~=0.7.2

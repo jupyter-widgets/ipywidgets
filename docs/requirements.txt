@@ -14,5 +14,5 @@ packaging
 scikit-image
 scikit-learn
 sympy
-jupyterlite==0.1.0b14
+jupyterlite==0.1.0b17
 jupyterlite-sphinx~=0.7.2
