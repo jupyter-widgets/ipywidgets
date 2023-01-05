@@ -1,6 +1,6 @@
 import { DOMWidgetModel, DOMWidgetView } from '@jupyter-widgets/base';
 
-export const OUTPUT_WIDGET_VERSION = '1.0.0';
+export const OUTPUT_WIDGET_VERSION = '1.1.0';
 
 export class OutputModel extends DOMWidgetModel {
   defaults(): Backbone.ObjectHash {
