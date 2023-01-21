@@ -40,7 +40,11 @@ index.built.js.map
 
 temp/*
 
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 ui-tests/test-results
 ui-tests/playwright-report
+
+**/lite/_output/
+**/lite/.cache
+**/*.doit.*

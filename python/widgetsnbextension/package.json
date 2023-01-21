@@ -18,7 +18,7 @@
     "build": "webpack",
     "clean": "rimraf widgetsnbextension/static",
     "prepublish": "npm run clean && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "webpack --watch"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^6.0.2",
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "css-loader": "^6.5.1",
+    "requirejs": "^2.3.6",
     "rimraf": "^3.0.2",
     "style-loader": "^3.3.1",
     "webpack": "^5.65.0",

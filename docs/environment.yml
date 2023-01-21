@@ -5,7 +5,7 @@ channels:
 dependencies:
   - python >=3.11,<3.12
   # build
-  - build
+  - python-build
   - pip
   - packaging
   - jupyter-packaging
@@ -20,6 +20,7 @@ dependencies:
   - pydata-sphinx-theme
   - sphinx >=5,<6
   - sphinx-autobuild
+  - sphinx-autodoc-typehints
   - sphinx-copybutton
   # demo
   - ipykernel

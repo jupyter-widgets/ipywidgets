@@ -11,6 +11,7 @@
     "@jupyter-widgets/jupyterlab-manager": "file:../../python/jupyterlab_widgets"
   },
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "watch": "tsc -b -w"
   }
 }
