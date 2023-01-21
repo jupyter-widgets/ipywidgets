@@ -10,10 +10,3 @@ python:
       path: ./python/ipywidgets
 conda:
   environment: docs/environment.yml
-
-# python:
-#     version: 3.7
-#     install:
-#       - method: pip
-#         path: ./python/ipywidgets
-#       - requirements: docs/requirements.txt

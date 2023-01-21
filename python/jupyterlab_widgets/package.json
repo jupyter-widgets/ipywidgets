@@ -33,7 +33,7 @@
     "build": "jlpm run build:lib && jlpm run build:labextension:dev",
     "build:labextension": "jupyter labextension build .",
     "build:labextension:dev": "jupyter labextension build --development True .",
-    "build:lib": "tsc",
+    "build:lib": "tsc -b",
     "build:prod": "jlpm run build:lib && jlpm run build:labextension",
     "clean": "jlpm run clean:lib",
     "clean:all": "jlpm run clean:lib && jlpm run clean:labextension",
@@ -90,7 +90,7 @@
   },
   "jupyterlab": {
     "extension": true,
-    "outputDir": "jupyterlab_widgets/labextension",
+    "outputDir": "labextension",
     "schemaDir": "./schema"
   }
 }

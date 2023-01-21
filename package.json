@@ -7,10 +7,12 @@
     "python/jupyterlab_widgets"
   ],
   "scripts": {
-    "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
-    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
-    "build:test": "lerna run build:test --ignore \"@jupyter-widgets/example-*\"",
-    "clean": "lerna run clean",
+    "build": "yarn build:lib && yarn build:labextension",
+    "build:lib": "lerna run build --stream --scope \"@jupyter-widgets/meta\"",
+    "build:labextension": "lerna run --stream build:labextension",
+    "build:examples": "lerna run build --stream --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "build:test": "lerna run build:test --stream --ignore \"@jupyter-widgets/example-*\"",
+    "clean": "lerna run --stream clean",
     "eslint": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
     "eslint:check": "eslint . --ignore-path .gitignore --ext .ts,.tsx",
     "integrity": "node scripts/package-integrity.js",

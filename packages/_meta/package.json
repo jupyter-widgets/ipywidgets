@@ -1,0 +1,16 @@
+{
+  "name": "@jupyter-widgets/meta",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "@jupyter-widgets/base": "file:../base",
+    "@jupyter-widgets/controls": "file:../controls",
+    "@jupyter-widgets/base-manager": "file:../base-manager",
+    "@jupyter-widgets/html-manager": "file:../html-manager",
+    "@jupyter-widgets/output": "file:../output",
+    "@jupyter-widgets/jupyterlab-manager": "file:../../python/jupyterlab_widgets"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  }
+}
