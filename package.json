@@ -7,14 +7,14 @@
     "python/jupyterlab_widgets"
   ],
   "scripts": {
-    "build": "yarn build:lib && yarn build:nbextension && yarn build:labextension",
+    "build": "lerna bootstrap && yarn build:lib && yarn build:nbextension && yarn build:labextension",
     "build:examples": "lerna run build --stream --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build:labextension": "lerna run --stream build:labextension",
     "build:lib": "lerna run build --stream --scope \"@jupyter-widgets/meta\"",
     "build:nbextension": "lerna run --stream build:nbextension",
     "build:test": "lerna run build:test --stream --ignore \"@jupyter-widgets/example-*\"",
     "clean": "lerna run --stream clean",
-    "deduplicate": "yarn-deduplicate -s fewer --fail",
+    "deduplicate": "yarn && yarn-deduplicate -s fewer --fail",
     "eslint": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
     "eslint:check": "eslint . --ignore-path .gitignore --ext .ts,.tsx",
     "integrity": "node scripts/package-integrity.js",
@@ -36,6 +36,9 @@
       "pre-commit": "lint-staged",
       "pre-push": "yarn run integrity"
     }
+  },
+  "resolutions": {
+    "typescript": "~4.9.4"
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "^3.5.2",
