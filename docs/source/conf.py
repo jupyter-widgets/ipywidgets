@@ -39,7 +39,7 @@ def on_config_inited(*args):
     run(["jupyter", "lite", "build"], LITE)
 
 def setup(app):
-    app.connect("config-inited", on_config_inited)
+    pass  # app.connect("config-inited", on_config_inited)
 
 
 # -- Sphinx extensions and configuration ------------------------
