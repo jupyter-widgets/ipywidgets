@@ -15,8 +15,7 @@ jobs:
     - name: Install node
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
-        cache: 'yarn'
+        node-version: '18'
     - name: Install Python
       uses: actions/setup-python@v1
       with:
