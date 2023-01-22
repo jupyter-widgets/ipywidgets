@@ -11,6 +11,9 @@
     },
     {
       "path": "../controls"
+    },
+    {
+      "path": "../output"
     }
   ]
 }

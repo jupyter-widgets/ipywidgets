@@ -38,9 +38,12 @@ jobs:
       run: |
         python -m pip install jupyterlab~=3.0 jupyter_packaging~=0.10
 
-    - name: Install node depedendencies
+    - name: Install node dependencies
       run: |
         jlpm
+
+    - name: Build node packages
+      run: |
         jlpm build
 
     - name: Install jupyterlab_widgets
