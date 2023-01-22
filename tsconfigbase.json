@@ -17,6 +17,7 @@
     "preserveWatchOutput": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
     "target": "es2017"

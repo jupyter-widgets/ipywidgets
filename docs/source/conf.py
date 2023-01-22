@@ -33,13 +33,15 @@ def on_config_inited(*args):
 
     run(["jlpm", "build"], ROOT)
 
+    run(["jlpm", "docs"], ROOT)
+
     for pkg_root in [IPYW, WIDG, JLW]:
         run(["pyproject-build"], pkg_root)
 
     run(["jupyter", "lite", "build"], LITE)
 
 def setup(app):
-    pass  # app.connect("config-inited", on_config_inited)
+    app.connect("config-inited", on_config_inited)
 
 
 # -- Sphinx extensions and configuration ------------------------
@@ -135,6 +137,7 @@ html_static_path = [
     # '_static',
     "../../packages/html-manager/dist",
     '../lite/_output',
+    '../typedoc',
     '../../node_modules/requirejs/require.js',
 ]
 htmlhelp_basename = 'ipywidgetsdoc'

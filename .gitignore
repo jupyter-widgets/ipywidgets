@@ -48,3 +48,4 @@ ui-tests/playwright-report
 **/lite/_output/
 **/lite/.cache
 **/*.doit.*
+**/docs/typedoc/
