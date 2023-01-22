@@ -10,20 +10,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
+
     - name: Install node
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'yarn'
+
     - name: Install Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: '3.8'
         architecture: 'x64'
+
     - name: Cache pip on Linux
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       if: startsWith(runner.os, 'Linux')
       with:
         path: ~/.cache/pip
@@ -31,21 +35,38 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-${{ matrix.python }}
 
-    - name: Install dependencies
+    - name: Install build dependencies
       run: |
         python -m pip install jupyterlab~=3.0 jupyter_packaging~=0.10
-    - name: Build the extension
+
+    - name: Install node depedendencies
       run: |
-        pushd python/ipywidgets
-        pip install .
-        popd
-        jlpm install
-        jlpm run build
-        pushd python/jupyterlab_widgets
-        pwd
-        pip install -e .
+        jlpm
+        jlpm build
+
+    - name: Install jupyterlab_widgets
+      run: |
+        cd python/jupyterlab_widgets
+        pip install -vv -e . --no-deps
+
+    - name: Install widgetsnbextension
+      run: |
+        cd python/widgetsnbextension
+        pip install -vv -e . --no-deps
+
+    - name: Install ipywidgets
+      run: |
+        cd python/ipywidgets
+        pip install -vv . --no-deps
+
+    - name: Install development extension
+      run: |
         jupyter labextension develop . --overwrite
-        popd
+
+    - name: List labextensions
+      run: |
         jupyter labextension list
 
+    - name: Run JupyterLab browser check
+      run: |
         python -m jupyterlab.browser_check

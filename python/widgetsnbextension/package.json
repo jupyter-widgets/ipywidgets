@@ -15,10 +15,11 @@
   "author": "Jupyter Project",
   "main": "src/extension.js",
   "scripts": {
-    "build": "webpack",
+    "build": "npm run build:nbextension",
+    "build:nbextension": "webpack",
     "clean": "rimraf widgetsnbextension/static",
     "prepublish": "npm run clean && npm run build",
-    "watch": "webpack --watch"
+    "watch": "npm run build --watch"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^6.0.2",

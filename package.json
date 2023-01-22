@@ -7,8 +7,9 @@
     "python/jupyterlab_widgets"
   ],
   "scripts": {
-    "build": "yarn build:lib && yarn build:labextension",
+    "build": "yarn build:lib && yarn build:nbextension && yarn build:labextension",
     "build:lib": "lerna run build --stream --scope \"@jupyter-widgets/meta\"",
+    "build:nbextension": "lerna run --stream build:nbextension",
     "build:labextension": "lerna run --stream build:labextension",
     "build:examples": "lerna run build --stream --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build:test": "lerna run build:test --stream --ignore \"@jupyter-widgets/example-*\"",
