@@ -100,6 +100,7 @@ some custom widget packages built on top of the Jupyter Widgets framework.
 
    user/index
    developer/index
+   contributor/index
    history/index
 
 .. only:: html

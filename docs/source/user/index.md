@@ -1,5 +1,7 @@
 # User Guide
 
+This section is for users of the `ipywidgets` package.
+
 ```{toctree}
 :maxdepth: 1
 ../examples
@@ -14,6 +16,5 @@
 ../examples/Using Interact
 ../examples/Widget Low Level
 ../examples/Widget Asynchronous
-../examples/Widget Custom
 ../embedding
 ```

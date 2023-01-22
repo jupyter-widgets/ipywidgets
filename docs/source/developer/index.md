@@ -1,10 +1,16 @@
 # Developer Guide
 
+This section is for developers who would like to build custom widgets.
+
+## Resources
+
 ```{toctree}
 :maxdepth: 1
-../dev_install.md
-../dev_testing.md
-../dev_docs.md
-../contributing.md
-../dev_release.md
+../examples/Widget Custom
+```
+
+## API
+```{toctree}
+:maxdepth: 1
+api/ipywidgets
 ```
