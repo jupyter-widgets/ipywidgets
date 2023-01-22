@@ -63,6 +63,7 @@ jobs:
 
     - name: Install development extension
       run: |
+        cd python/jupyterlab_widgets
         jupyter labextension develop . --overwrite
 
     - name: List labextensions
