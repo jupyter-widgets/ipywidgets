@@ -2,23 +2,23 @@
   "name": "@jupyter-widgets/schema",
   "version": "0.5.1",
   "description": "Schemas for the Jupyter interactive Widgets",
-  "main": "index.js",
-  "scripts": {
-    "test": "node index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jupyter-widgets/ipywidgets.git"
-  },
   "keywords": [
     "jupyter",
     "schemas",
     "notebook"
   ],
-  "author": "Project Jupyter",
-  "license": "BSD-3-Clause",
+  "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "bugs": {
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
-  "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-widgets/ipywidgets.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "Project Jupyter",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  }
 }
