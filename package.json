@@ -7,7 +7,7 @@
     "python/jupyterlab_widgets"
   ],
   "scripts": {
-    "build": "lerna bootstrap && yarn build:lib && yarn build:nbextension && yarn build:labextension",
+    "build": "lerna run build --stream --ignore \"@jupyter-widgets/example-*\"",
     "build:examples": "lerna run build --stream --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build:labextension": "lerna run --stream build:labextension",
     "build:lib": "lerna run build --stream --scope \"@jupyter-widgets/meta\"",
@@ -19,22 +19,22 @@
     "eslint:check": "eslint . --ignore-path .gitignore --ext .ts,.tsx",
     "integrity": "node scripts/package-integrity.js",
     "integrity2": "node buildutils/lib/integrity.js",
-    "lint": "yarn && yarn run prettier && yarn run eslint",
-    "lint:check": "yarn run prettier:check && yarn run eslint:check",
+    "lint": "yarn && yarn prettier && yarn eslint",
+    "lint:check": "yarn prettier:check && yarn eslint:check",
     "prettier": "yarn prettier:base --list-different --write",
     "prettier:base": "prettier --ignore-path .gitignore \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
     "prettier:check": "yarn prettier:base --check",
-    "publish": "yarn run clean && yarn run build && lerna publish --pre-dist-tag next from-git",
+    "publish": "yarn clean && yarn build && lerna publish --pre-dist-tag next from-git",
     "sort-package-json": "lerna exec --stream --parallel sort-package-json && sort-package-json",
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated",
-    "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" ",
+    "version": "yarn clean && yarn build && lerna version --no-push -m \"Bump version\" ",
     "watch": "lerna run --stream watch"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn run integrity"
+      "pre-push": "yarn integrity"
     }
   },
   "resolutions": {

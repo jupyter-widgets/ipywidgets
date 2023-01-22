@@ -56,27 +56,27 @@ jobs:
     - name: yarn install, build, test
       run: |
         yarn install --frozen-lockfile
-        yarn run build
-        yarn run build:examples
+        yarn build
+        yarn build:examples
 
         pushd packages/base
-        yarn run test:unit:firefox:headless
+        yarn test:unit:firefox:headless
         popd
 
         pushd packages/base-manager
-        yarn run test:unit:firefox:headless
+        yarn test:unit:firefox:headless
         popd
 
         pushd packages/controls
-        yarn run test:unit:firefox:headless
+        yarn test:unit:firefox:headless
         popd
 
         pushd packages/html-manager
-        yarn run test:unit:firefox:headless
+        yarn test:unit:firefox:headless
         popd
 
         pushd examples/web1
-        yarn run test:firefox:headless
+        yarn test:firefox:headless
         popd
 
       env:
@@ -157,15 +157,15 @@ jobs:
     - name: Build and Install ipywidgets
       run: |
         yarn install --frozen-lockfile
-        yarn run build
+        yarn build
 
     - name: Build the extension
       run: |
         cd python/ipywidgets
         pip install .
         cd ../..
-        jlpm install
-        jlpm run build
+        jlpm
+        jlpm build
         cd python/jupyterlab_widgets
         pwd
         pip install -e .
@@ -181,7 +181,7 @@ jobs:
     - name: Launch JupyterLab
       run: |
         cd ui-tests
-        yarn run start:detached
+        yarn start:detached
 
     - name: Wait for JupyterLab
       uses: ifaxity/wait-on-action@v1
@@ -192,7 +192,7 @@ jobs:
     - name: Run UI Tests
       run: |
         cd ui-tests
-        yarn run test
+        yarn test
 
     - name: Upload Playwright Test assets
       if: always()
@@ -214,7 +214,7 @@ jobs:
       if: failure()
       run: |
         cd ui-tests
-        yarn run test:update
+        yarn test:update
 
     - name: Upload updated snapshots
       if: failure()

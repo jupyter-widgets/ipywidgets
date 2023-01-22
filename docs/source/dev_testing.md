@@ -35,17 +35,17 @@ Galata needs to connect to a running instance of JupyterLab 3 to run UI tests. F
 
 ```sh
 # in ui-tests directory
-yarn run start
+yarn start
 ```
 
 Then run the `test` script:
 
 ```sh
 # in the ui-tests directory
-yarn run test
+yarn test
 ```
 
-You can pass additional arguments to `playwright` by appending parameters to the command. For example to run the test in headed mode, `yarn run test --headed`.
+You can pass additional arguments to `playwright` by appending parameters to the command. For example to run the test in headed mode, `yarn test --headed`.
 
 Checkout the [Playwright Command Line Reference](https://playwright.dev/docs/test-cli/) for more information about the available command line options.
 
@@ -57,7 +57,7 @@ New test suites can be added to the [ui-tests/tests](https://github.com/jupyter-
 
 When doing visual regression tests, it is important to use reference images that were generated in the same environment. Otherwise, even though the same browser is used for testing, there might be minor differences that could cause visual regression tests to fail.
 
-When adding a new visual regression test, first make sure your tests pass locally on your development environment, with a reference snapshots generated in your dev environment. You can generate new reference snapshots by running `yarn run test:update`.
+When adding a new visual regression test, first make sure your tests pass locally on your development environment, with a reference snapshots generated in your dev environment. You can generate new reference snapshots by running `yarn test:update`.
 
 To update the snapshots:
 
