@@ -23,9 +23,10 @@ dependencies:
   - sphinx-autodoc-typehints
   - sphinx-copybutton
   # demo
-  - ipykernel
-  - matplotlib-base
   - bqplot
+  - ipykernel
+  - ipyleaflet
+  - matplotlib-base
   - numpy
   - scikit-image
   - scikit-learn
