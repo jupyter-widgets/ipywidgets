@@ -2,10 +2,45 @@
 #
 
 import os
+import sys
+from pathlib import Path
 from packaging.version import Version
+
+HERE = Path(__file__).parent
+LITE = HERE.parent / "lite"
+ROOT = HERE.parent.parent
+JLW = ROOT / "python/jupyterlab_widgets"
+IPYW = ROOT / "python/ipywidgets"
+WIDG = ROOT / "python/widgetsnbextension"
+
+
+# work around unpickleable functions
+sys.path.append(str(HERE))
+from ipywidgets_docs_utils import jupyterlab_markdown_heading
 
 # silence debug messages
 os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
+
+def on_config_inited(*args):
+    import subprocess
+
+    def run(args, cwd):
+        print(f"in {cwd}...")
+        print(">>>", " ".join(args))
+        subprocess.check_call(args, cwd=str(cwd))
+
+    run(["jlpm"], ROOT)
+
+    run(["jlpm", "build"], ROOT)
+
+    for pkg_root in [IPYW, WIDG, JLW]:
+        run(["pyproject-build"], pkg_root)
+
+    run(["jupyter", "lite", "build"], LITE)
+
+def setup(app):
+    app.connect("config-inited", on_config_inited)
+
 
 # -- Sphinx extensions and configuration ------------------------
 
@@ -75,11 +110,22 @@ myst_enable_extensions = [
     "html_image",
 ]
 
+myst_heading_anchors = 4
+myst_heading_slug_func = jupyterlab_markdown_heading
+
 nb_execution_mode = "cache"
 
 nb_ipywidgets_js = {
     "require.js": {},
     "embed-amd.js": {}
+}
+
+autosummary_generate = True
+autoclass_content = "both"
+autodoc_typehints = "none"
+autodoc_default_options = {
+    "members": True,
+    "show-inheritance": True,
 }
 
 # -- html --------------------------
@@ -119,30 +165,3 @@ epub_title = project
 epub_author = author
 epub_publisher = author
 epub_copyright = copyright
-
-
-def on_config_inited(*args):
-    import subprocess
-    from pathlib import Path
-    HERE = Path(__file__).parent
-    LITE = HERE.parent / "lite"
-    ROOT = HERE.parent.parent
-    JLW = ROOT / "python/jupyterlab_widgets"
-    IPYW = ROOT / "python/ipywidgets"
-    WIDG = ROOT / "python/widgetsnbextension"
-
-    def run(args, cwd):
-        print(f"in {cwd}...")
-        print(">>>", " ".join(args))
-        subprocess.check_call(args, cwd=str(cwd))
-
-    run(["jlpm"], ROOT)
-    run(["jlpm", "build"], ROOT)
-
-    for pkg_root in [IPYW, WIDG, JLW]:
-        run(["pyproject-build"], pkg_root)
-
-    run(["jupyter", "lite", "build"], LITE)
-
-def setup(app):
-    app.connect("config-inited", on_config_inited)

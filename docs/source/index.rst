@@ -96,41 +96,11 @@ information from the community about kernels and frontends that support Jupyter 
 some custom widget packages built on top of the Jupyter Widgets framework.
 
 .. toctree::
-    :caption: User Guide
-    :maxdepth: 1
+   :maxdepth: 2
 
-    examples.md
-    user_install.md
-    examples/Widget Basics.ipynb
-    examples/Widget List.ipynb
-    examples/Output Widget.ipynb
-    examples/Widget Events.ipynb
-    examples/Widget Styling.ipynb
-    examples/Widget Layout.ipynb
-    examples/Layout Templates.ipynb
-    examples/Using Interact.ipynb
-    examples/Widget Low Level.ipynb
-    examples/Widget Asynchronous.ipynb
-    examples/Widget Custom.ipynb
-    embedding.md
-
-.. toctree::
-   :caption: Changelog and Migration
-   :maxdepth: 1
-
-   changelog.md
-   user_migration_guides.md
-   migration_guides.md
-
-.. toctree::
-   :caption: Developer Guide
-   :maxdepth: 1
-
-   dev_install.md
-   dev_testing.md
-   dev_docs.md
-   contributing.md
-   dev_release.md
+   user/index
+   developer/index
+   history/index
 
 .. only:: html
 
