@@ -55,7 +55,7 @@ jobs:
           cache: yarn
       - name: yarn install, build, test
         run: |
-          yarn install --frozen-lockfile
+          yarn --frozen-lockfile
           yarn build
           yarn build:examples
 
@@ -169,7 +169,7 @@ jobs:
 
       - name: Build and Install ipywidgets
         run: |
-          yarn install --frozen-lockfile
+          yarn --frozen-lockfile
           yarn build
 
       - name: Build the extension
@@ -188,7 +188,7 @@ jobs:
       - name: Install Test Dependencies
         run: |
           cd ui-tests
-          yarn install --frozen-lockfile
+          yarn --frozen-lockfile
           yarn playwright install chromium
 
       - name: Launch JupyterLab

@@ -16,6 +16,6 @@ jobs:
           cache: yarn
       - name: yarn install, integrity, lint
         run: |
-          yarn install --frozen-lockfile
+          yarn --frozen-lockfile
           yarn integrity
           yarn lint:check
