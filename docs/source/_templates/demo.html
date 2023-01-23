@@ -1,0 +1,30 @@
+<div class="demo-sidebar">
+    <a
+      href="{{ pathto('try/index') }}"
+      class="btn btn-primary"
+      target="_blank"
+      title="Try ipywidgets in your browser."
+    >
+      <i class="fas fa-lightbulb"></i>
+      Try Jupyter Widgets Now <span id="demo-app-label"></span>
+    </a>
+    <details>
+      <summary><i class="fas fa-flask"></i> App...</summary>
+      <input type="checkbox" id="demo-app"></input>
+      <em>Use RetroLab</em>
+    </details>
+    <script>$(function() {
+      const labUrl = `{{ pathto('try/index') }}`;
+      const retroUrl = `{{ pathto('try/retro/index') }}`;
+      function updateUrl() {
+        const useRetro = $("#demo-app").prop("value") === "on";
+        $("#demo-room-button").attr(
+          "href",
+          (useRetro ? retroUrl : labUrl)
+        );
+        $("#demo-app-label").text(useRetro ? ` in RetroLab` : '');
+      }
+      $('[data-toggle="tooltip"]').tooltip();
+      $('#demo-app').on('change', updateUrl);
+    });</script>
+  </div>

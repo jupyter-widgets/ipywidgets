@@ -1,11 +1,28 @@
 # Develop and Build Documentation
 
-To build the documentation you'll need [Sphinx](http://www.sphinx-doc.org/)
+To build the documentation you'll need [Sphinx](https://www.sphinx-doc.org/)
 and a few other packages.
 
 ## Setup docs dev environment
 
-### Use pip
+### Use `mamba` or `conda` (recommended)
+
+First create a [conda environment](https://conda.pydata.org/docs/using/envs.html#use-environment-from-file) named `ipywidgets_docs` to install all the necessary packages:
+
+```bash
+# create the environment
+mamba env update --file docs/environment.yml
+```
+
+Then, activate the environment.
+
+```bash
+# activate the environment
+conda activate ipywidgets_docs   # Linux and OS X
+activate ipywidgets_docs         # Windows
+```
+
+### Use `pip`
 
 Alternatively, it is also possible to create a virtual environment and activate it with the following commands:
 
@@ -23,23 +40,10 @@ In the environment, install the packages:
 python -m pip install -r docs/requirements.txt
 ```
 
-### Use conda
-
-First create a [conda environment](http://conda.pydata.org/docs/using/envs.html#use-environment-from-file) named `ipywidgets_docs` to install all the necessary packages:
-
-```bash
-# create the environment
-conda create -n ipywidgets_docs -c conda-forge python pip
-```
-
-Use conda to install the packages listed in `docs/requirements.txt`.
-
-Then, activate the conda environment.
-
-```bash
-# activate the environment
-conda activate ipywidgets_docs   # Linux and OS X
-activate ipywidgets_docs         # Windows
+```{hint}
+Building the documentation site requires a working `nodejs` installation, which
+can be installed with your package manager of choice, or directly from the
+[NodeJS website](https://nodejs.org).
 ```
 
 ## Build the documentation

@@ -13,6 +13,5 @@
   "logLevel": "Verbose",
   "name": "jupyter-widgets",
   "out": "docs/typedoc/typedoc",
-  "readme": "none",
   "tsconfig": "tsconfig.typedoc.json"
 }

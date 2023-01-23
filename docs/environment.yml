@@ -1,4 +1,4 @@
-name: docs
+name: ipywidgets_docs
 channels:
   - conda-forge
   - nodefaults
@@ -15,6 +15,7 @@ dependencies:
   - jupyter_client
   # docs
   - docutils >=0.19
+  - jupyterlab-myst
   - myst-nb >=0.17,<0.18
   - pandoc
   - pydata-sphinx-theme
@@ -22,6 +23,7 @@ dependencies:
   - sphinx-autobuild
   - sphinx-autodoc-typehints
   - sphinx-copybutton
+  - sphinxext-rediraffe
   # demo
   - bqplot
   - ipykernel

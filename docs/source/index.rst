@@ -98,10 +98,10 @@ some custom widget packages built on top of the Jupyter Widgets framework.
 .. toctree::
    :maxdepth: 2
 
-   user/index
-   developer/index
-   contributor/index
-   history/index
+   tutorials/index
+   how-to/index
+   reference/index
+   explanation/index
 
 .. only:: html
 

@@ -56,6 +56,7 @@ extensions = [
     'sphinx_autodoc_typehints',
     'sphinx_copybutton',
     'sphinx.ext.viewcode',
+    'sphinxext.rediraffe',
     'IPython.sphinxext.ipython_console_highlighting',
 ]
 
@@ -130,7 +131,14 @@ autodoc_default_options = {
     "show-inheritance": True,
 }
 
+rediraffe_redirects = {
+    "typedoc": "_static/typedoc/index",
+    "try/index": "_static/lab/index",
+    "try/retro/index": "_static/retro/tree/index",
+}
+
 # -- html --------------------------
+
 html_theme = 'pydata_sphinx_theme'
 
 html_static_path = [
@@ -140,8 +148,38 @@ html_static_path = [
     '../typedoc',
     '../../node_modules/requirejs/require.js',
 ]
+
+templates_path = ["_templates"]
+
 htmlhelp_basename = 'ipywidgetsdoc'
 
+html_theme_options = {
+    "icon_links": [
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/ipywidgets",
+            "icon": "fa-solid fa-box",
+        }
+    ],
+    "use_edit_page_button": True,
+    "github_url": "https://github.com/jupyter-widgets/ipywidgets",
+}
+
+html_context = {
+    "github_user": "jupyter-widgets",
+    "github_repo": "ipywidgets",
+    "github_version": "master",
+    "doc_path": "docs",
+}
+
+html_sidebars = {
+    "**": [
+        "demo.html",
+        "search-field.html",
+        "sidebar-nav-bs.html",
+        "sidebar-ethical-ads.html",
+    ]
+}
 
 # -- latex -------------------------
 

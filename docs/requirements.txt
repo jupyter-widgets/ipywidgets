@@ -11,6 +11,7 @@ matplotlib
 myst-nb >=0.17,<0.18
 numpy
 packaging
+pkginfo
 pydata-sphinx-theme
 recommonmark
 scikit-image
@@ -19,4 +20,5 @@ sphinx >=1.4.6
 sphinx-autobuild
 sphinx-autodoc-typehints
 sphinx-copybutton
+sphinxext-rediraffe
 sympy
