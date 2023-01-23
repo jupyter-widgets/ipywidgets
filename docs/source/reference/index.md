@@ -9,7 +9,7 @@
 ```{toctree}
 :caption: Python API
 :maxdepth: 1
-api/ipywidgets
+ipywidgets
 ../genindex
 ../modindex
 ```
@@ -17,5 +17,5 @@ api/ipywidgets
 ```{toctree}
 :caption: JS API
 :maxdepth: 1
-../typedoc/index
+jupyter-widgets
 ```

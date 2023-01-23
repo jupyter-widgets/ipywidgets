@@ -131,11 +131,11 @@ jobs:
           pip install file://$PWD/python/ipywidgets#egg=ipywidgets
       - name: Install JS dependencies
         run: |
-          jlpm
+          yarn
       - name: Compare spec with latest version
         run: |
           python ./packages/schema/generate-spec.py -f markdown spec.md
-          jlpm prettier
+          yarn prettier
           diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
 
   ui-test:
