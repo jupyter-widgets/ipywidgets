@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: yarn
       - name: Install dependencies
         run: |
           sudo apt-get install -y pandoc
@@ -51,6 +52,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: yarn
       - name: yarn install, build, test
         run: |
           yarn install --frozen-lockfile
@@ -125,6 +127,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: yarn
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
@@ -162,6 +165,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: yarn
 
       - name: Build and Install ipywidgets
         run: |
