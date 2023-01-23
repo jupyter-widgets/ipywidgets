@@ -1,5 +1,4 @@
-Contributing
-============
+# Contributing
 
 We appreciate contributions from the community.
 

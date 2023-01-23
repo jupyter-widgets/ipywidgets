@@ -128,7 +128,6 @@ git tag 8.0.4
 git push origin master 8.0.4
 ```
 
-
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
 
 # Release Notes

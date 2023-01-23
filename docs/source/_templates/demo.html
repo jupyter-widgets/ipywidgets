@@ -1,30 +1,45 @@
 <div class="demo-sidebar">
-    <a
-      href="{{ pathto('try/index') }}"
-      class="btn btn-primary"
-      target="_blank"
-      title="Try ipywidgets in your browser."
-    >
-      <i class="fas fa-lightbulb"></i>
-      Try Jupyter Widgets Now <span id="demo-app-label"></span>
-    </a>
-    <details>
-      <summary><i class="fas fa-flask"></i> App...</summary>
-      <input type="checkbox" id="demo-app"></input>
-      <em>Use RetroLab</em>
-    </details>
-    <script>$(function() {
-      const labUrl = `{{ pathto('try/index') }}`;
-      const retroUrl = `{{ pathto('try/retro/index') }}`;
-      function updateUrl() {
-        const useRetro = $("#demo-app").prop("value") === "on";
-        $("#demo-room-button").attr(
-          "href",
-          (useRetro ? retroUrl : labUrl)
-        );
-        $("#demo-app-label").text(useRetro ? ` in RetroLab` : '');
-      }
-      $('[data-toggle="tooltip"]').tooltip();
-      $('#demo-app').on('change', updateUrl);
-    });</script>
+  <p class="demo-title" role="heading" aria-level="1">
+    Try Jupyter Widgets <strong>Now</strong>
+  </p>
+
+  <div class="demo-app btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+      <input
+        type="radio"
+        name="demo-app"
+        autocomplete="off"
+        checked
+        title="Lab"
+        value="{{ pathto('try/lab/index') }}?path=Index.ipynb&path=Widget%20List.ipynb"
+      >
+      <i class="fas fa-flask"></i> Lab
+    </label>
+    <label class="btn btn-secondary">
+      <input
+        type="radio"
+        name="demo-app"
+        title="Notebook"
+        value="{{ pathto('try/retro/index') }}?path=Index.ipynb&path=Widget%20List.ipynb"
+      >
+      <i class="fas fa-book"></i> Notebook
+    </label>
   </div>
+
+  <a
+    href="{{ pathto('try/lab/index') }}?path=Index.ipynb&path=Widget%20List.ipynb"
+    class="btn btn-primary"
+    target="_blank"
+    title="Try Jupyter Widgets in your browser."
+    id="demo-button"
+  >
+    <i class="fas fa-play"></i>
+    Try Now
+  </a>
+
+  <script>$(function() {
+    $('.demo-app input').on('change', (event) => {
+      $("#demo-button").attr("href", (event.currentTarget.value));
+    });
+  });</script>
+</div>

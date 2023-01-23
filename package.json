@@ -23,7 +23,7 @@
     "lint": "yarn && yarn prettier && yarn eslint",
     "lint:check": "yarn prettier:check && yarn eslint:check",
     "prettier": "yarn prettier:base --list-different --write",
-    "prettier:base": "prettier --ignore-path .gitignore \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.yml,.yaml}\"",
+    "prettier:base": "prettier --ignore-path .gitignore \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.yml,.yaml,.md}\"",
     "prettier:check": "yarn prettier:base --check",
     "publish": "yarn clean && yarn build && lerna publish --pre-dist-tag next from-git",
     "sort-package-json": "lerna exec --stream --parallel sort-package-json && sort-package-json",

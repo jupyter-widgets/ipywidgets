@@ -1,0 +1,9 @@
+.demo-sidebar .demo-title {
+  font-size: var(--pst-sidebar-header-font-size);
+  font-weight: var(--pst-sidebar-header-font-weight);
+  margin-bottom: 0.5rem;
+}
+
+table.indextable tr.cap {
+  background-color: var(--pst-color-on-background) !important;
+}

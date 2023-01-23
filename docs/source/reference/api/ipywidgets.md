@@ -40,7 +40,6 @@
 
 > Opinions for auto-generating Widget user experiences
 
-
 ```{eval-rst}
 .. currentmodule:: ipywidgets
 .. automodule:: ipywidgets.widgets.interaction
@@ -212,7 +211,6 @@
     :members:
     :special-members:
 ```
-
 
 ## Utilities
 

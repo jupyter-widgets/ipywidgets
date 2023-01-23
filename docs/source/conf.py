@@ -4,6 +4,7 @@
 import os
 import sys
 from pathlib import Path
+
 from packaging.version import Version
 
 HERE = Path(__file__).parent
@@ -12,33 +13,30 @@ ROOT = HERE.parent.parent
 JLW = ROOT / "python/jupyterlab_widgets"
 IPYW = ROOT / "python/ipywidgets"
 WIDG = ROOT / "python/widgetsnbextension"
-
+TYPD = HERE.parent / "typedoc"
+NODM = ROOT / "node_modules"
+TSBI = [
+    p.parent / "tsconfig.tsbuildinfo" for p in ROOT.glob("packages/*/tsconfig.json")
+]
 
 # work around unpickleable functions
 sys.path.append(str(HERE))
-from ipywidgets_docs_utils import jupyterlab_markdown_heading
+from ipywidgets_docs_utils import jupyterlab_markdown_heading, run_if_needed
 
 # silence debug messages
 os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 
 def on_config_inited(*args):
-    import subprocess
+    """rebuild"""
 
-    def run(args, cwd):
-        print(f"in {cwd}...")
-        print(">>>", " ".join(args))
-        subprocess.check_call(args, cwd=str(cwd))
-
-    run(["jlpm"], ROOT)
-
-    run(["jlpm", "build"], ROOT)
-
-    run(["jlpm", "docs"], ROOT)
+    run_if_needed(["jlpm"], ROOT, [NODM])
+    run_if_needed(["jlpm", "build"], ROOT, TSBI)
+    run_if_needed(["jlpm", "docs"], ROOT, [TYPD / "typedoc/index.html"])
 
     for pkg_root in [IPYW, WIDG, JLW]:
-        run(["pyproject-build"], pkg_root)
+        run_if_needed(["pyproject-build"], pkg_root, [pkg_root / "dist"])
 
-    run(["jupyter", "lite", "build"], LITE)
+    run_if_needed(["jupyter", "lite", "build"], LITE)
 
 def setup(app):
     app.connect("config-inited", on_config_inited)
@@ -133,7 +131,7 @@ autodoc_default_options = {
 
 rediraffe_redirects = {
     "typedoc": "_static/typedoc/index",
-    "try/index": "_static/lab/index",
+    "try/lab/index": "_static/lab/index",
     "try/retro/index": "_static/retro/tree/index",
 }
 
@@ -142,11 +140,15 @@ rediraffe_redirects = {
 html_theme = 'pydata_sphinx_theme'
 
 html_static_path = [
-    # '_static',
+    '_static',
     "../../packages/html-manager/dist",
     '../lite/_output',
     '../typedoc',
     '../../node_modules/requirejs/require.js',
+]
+
+html_css_files = [
+    'theme.css',
 ]
 
 templates_path = ["_templates"]
@@ -174,8 +176,8 @@ html_context = {
 
 html_sidebars = {
     "**": [
-        "demo.html",
         "search-field.html",
+        "demo.html",
         "sidebar-nav-bs.html",
         "sidebar-ethical-ads.html",
     ]

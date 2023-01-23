@@ -10,10 +10,12 @@
 :caption: Python API
 :maxdepth: 1
 api/ipywidgets
+../genindex
+../modindex
 ```
 
 ```{toctree}
 :caption: JS API
 :maxdepth: 1
-../typedoc
+../typedoc/index
 ```

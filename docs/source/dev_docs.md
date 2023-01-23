@@ -1,9 +1,9 @@
 # Develop and Build Documentation
 
-To build the documentation you'll need [Sphinx](https://www.sphinx-doc.org/)
+To build the documentation you'll need [Sphinx](https://www.sphinx-doc.org)
 and a few other packages.
 
-## Setup docs dev environment
+## Setup documentation environment
 
 ### Use `mamba` or `conda` (recommended)
 
@@ -51,20 +51,35 @@ can be installed with your package manager of choice, or directly from the
 Once you have installed the required packages, you can build the docs with:
 
 ```bash
-cd docs
-make clean
-make html
+cd docs/source
+sphinx-build -T -E -b html -d ../build/doctrees -D language=en . ../build/html
 ```
 
 After that, the generated HTML files will be available at
 `build/html/index.html`. You may view the docs in your browser by entering
 the following in the terminal: `open build/html/index.html`. Alternatively,
-you can start a webserver using `python3 -m http.server` and navigate to
-<http://localhost:8000/build/html/index.html>.
+you can start the built-in Python web server:
 
-Windows users can find `make.bat` in the `docs` folder.
+```bash
+cd docs/build/html
+python3 -m http.server -b 127.0,0.1
+```
 
-You should also have a look at the [Project Jupyter Documentation Guide](https://jupyter.readthedocs.io/en/latest/contrib_docs/index.html).
+... and navigate to `http://localhost:8000/`.
+
+You should also have a look at the [Project Jupyter Documentation Guide](https://jupyter.readthedocs.io/en/latest/contrib_docs).
+
+## Watch the documentation
+
+It is also possible to launch a web server which watches the sources and automatically
+rebuilds:
+
+```bash
+cd docs/source
+sphinx-autobuild -T -E -b html -d ../build/doctrees -D language=en . ../build/html
+```
+
+... and navigate to `http://localhost:8000/`.
 
 ## Cleaning notebook output for docs
 
@@ -74,5 +89,5 @@ before committing the notebook. For example, the following command will strip
 all output from a notebook:
 
 ```bash
-nbstripout docs/source/examples/Widget\ List.ipynb
+nbstripout "docs/source/examples/Widget List.ipynb"
 ```

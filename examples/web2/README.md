@@ -9,7 +9,7 @@ This example implements a simple widget manager
 by extending the base widget manager from the `@jupyter-widgets/base` library. This custom widget manager reads the state of the widget manager in the
 `widget_state.json` file, which respects the standardized JSON schema for the
 `application/vnd.jupyter.widget-state+json` mime type. Such a `widget_state.json` file can be generated from rendered widgets in the
-classic Jupyter Notebook with the *Download widget state* action.
+classic Jupyter Notebook with the _Download widget state_ action.
 
 This example also displays a read-only text area containing the code
 provided in the `widget_code.json`, which we used to generate the widget state.

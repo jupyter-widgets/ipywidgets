@@ -197,9 +197,6 @@ To display a widget in JupyterLab, the kernel sends a Jupyter [iopub `display_da
 
 In order to display widgets in both the classic notebook and JupyterLab, ipywidgets sends both the `display` comm message and the iopub `display_data` message, and omits the `text/plain` mimetype from the `display_data` message (so the classic notebook will not show any output from the iopub message).
 
-
-
-
 # Widget messaging protocol, version 2
 
 This is implemented in ipywidgets 7.0.
@@ -231,12 +228,12 @@ The `msg_throttle` attribute of models is removed.
 
 The core idea of widgets is that some state is automatically synced back and forth between a kernel object and a frontend object. Several fields are assumed to be in every state object:
 
-* `_model_module`: the model module
-* `_model_module_version`: the semver range of the model
-* `_model_name`: the name of the model
-* `_view_module`: the view module
-* `_view_module_version`: the semver range of the view
-* `_view_name`: the name of the view
+- `_model_module`: the model module
+- `_model_module_version`: the semver range of the model
+- `_model_name`: the name of the model
+- `_view_module`: the view module
+- `_view_module_version`: the semver range of the view
+- `_view_name`: the name of the view
 
 These fields are assumed immutable (set at initialization, and never changed).
 
@@ -307,9 +304,10 @@ Starting with protocol version `2.1.0`, `echo_update` messages from the kernel t
 }
 ```
 
-The Jupyter comm protocol is asymmetric in how messages flow: messages flow from a single frontend to a single kernel, but messages are broadcast from the kernel to *all* frontends. In the widget protocol, if a frontend updates the value of a widget, the frontend does not have a way to directly notify other frontends about the state update. The `echo_update` optional messages enable a kernel to broadcast out frontend updates to all frontends. This can also help resolve the race condition where the kernel and a frontend simultaneously send updates to each other since the frontend now knows the order of kernel updates.
+The Jupyter comm protocol is asymmetric in how messages flow: messages flow from a single frontend to a single kernel, but messages are broadcast from the kernel to _all_ frontends. In the widget protocol, if a frontend updates the value of a widget, the frontend does not have a way to directly notify other frontends about the state update. The `echo_update` optional messages enable a kernel to broadcast out frontend updates to all frontends. This can also help resolve the race condition where the kernel and a frontend simultaneously send updates to each other since the frontend now knows the order of kernel updates.
 
 The `echo_update` messages enable a frontend to optimistically update its widget views to reflect its own changes that it knows the kernel will yet process. These messages are intended to be used as follows:
+
 1. A frontend model attribute is updated, and the frontend views are optimistically updated to reflect the attribute.
 2. The frontend queues an update message to the kernel and records the message id for the attribute.
 3. The frontend ignores updates to the attribute from the kernel contained in `echo_update` messages until it gets an `echo_update` message corresponding to its own update of the attribute (i.e., the [parent_header](https://jupyter-client.readthedocs.io/en/latest/messaging.html#parent-header) id matches the stored message id for the attribute). It also ignores `echo_update` updates if it has a pending attribute update to send to the kernel. Once the frontend receives its own `echo_update` and does not have any more pending attribute updates to send to the kernel, it starts applying attribute updates from `echo_update` messages.
@@ -364,9 +362,6 @@ To display a widget, the kernel sends a Jupyter [iopub `display_data` message](h
   }
 }
 ```
-
-
-
 
 # Control Widget messaging protocol, version 1.0
 
