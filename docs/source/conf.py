@@ -165,13 +165,20 @@ html_theme_options = {
     ],
     "use_edit_page_button": True,
     "github_url": "https://github.com/jupyter-widgets/ipywidgets",
+    "navbar_end": [
+        # disabled until widget dark variables are available
+        # "theme-switcher",
+        "navbar-icon-links",
+    ]
 }
 
 html_context = {
-    "github_user": "jupyter-widgets",
-    "github_repo": "ipywidgets",
-    "github_version": "master",
+    # disabled until widget dark variables are available
+    "default_mode": "light",
     "doc_path": "docs",
+    "github_repo": "ipywidgets",
+    "github_user": "jupyter-widgets",
+    "github_version": "master",
 }
 
 html_sidebars = {
