@@ -59,6 +59,7 @@ Paste the output from your browser Javascript console here.
 </details>
 
 ### If using JupyterLab
+
 - JupyterLab version:
 
 <details><summary>Installed Labextensions</summary>

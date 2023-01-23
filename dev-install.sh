@@ -34,8 +34,8 @@ set -e
 nbExtFlags="--sys-prefix $1"
 
 echo -n "Installing and building all yarn packages"
-yarn install
-yarn run build
+yarn
+yarn build
 
 echo -n "widgetsnbextension"
 pip install -v -e ./python/widgetsnbextension

@@ -7,45 +7,57 @@
     "python/jupyterlab_widgets"
   ],
   "scripts": {
-    "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
-    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
-    "build:test": "lerna run build:test --ignore \"@jupyter-widgets/example-*\"",
-    "clean": "lerna run clean",
+    "build": "lerna run build --stream --ignore \"@jupyter-widgets/example-*\"",
+    "build:examples": "lerna run build --stream --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "build:labextension": "lerna run --stream build:labextension",
+    "build:lib": "lerna run build --stream --scope \"@jupyter-widgets/meta\"",
+    "build:nbextension": "lerna run --stream build:nbextension",
+    "build:test": "lerna run build:test --stream --ignore \"@jupyter-widgets/example-*\"",
+    "clean": "lerna run --stream clean",
+    "deduplicate": "yarn && yarn-deduplicate -s fewer --fail",
+    "docs": "typedoc",
     "eslint": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
     "eslint:check": "eslint . --ignore-path .gitignore --ext .ts,.tsx",
     "integrity": "node scripts/package-integrity.js",
     "integrity2": "node buildutils/lib/integrity.js",
-    "lint": "yarn && yarn run prettier && yarn run eslint",
-    "lint:check": "yarn run prettier:check && yarn run eslint:check",
-    "prettier": "prettier --ignore-path .gitignore --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
-    "prettier:check": "prettier --ignore-path .gitignore --check \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
-    "publish": "yarn run clean && yarn run build && lerna publish --pre-dist-tag next from-git",
-    "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
+    "lint": "yarn && yarn prettier && yarn eslint",
+    "lint:check": "yarn prettier:check && yarn eslint:check",
+    "prettier": "yarn prettier:base --list-different --write",
+    "prettier:base": "prettier --ignore-path .gitignore \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.yml,.yaml,.md}\"",
+    "prettier:check": "yarn prettier:base --check",
+    "publish": "yarn clean && yarn build && lerna publish --pre-dist-tag next from-git",
+    "sort-package-json": "lerna exec --stream --parallel sort-package-json && sort-package-json",
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated",
-    "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" "
+    "version": "yarn clean && yarn build && lerna version --no-push -m \"Bump version\" ",
+    "watch": "lerna run --stream watch"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn run integrity"
+      "pre-push": "yarn integrity"
     }
   },
+  "resolutions": {
+    "typescript": "~4.9.4"
+  },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^3.2.5",
-    "@typescript-eslint/eslint-plugin": "^5.8.0",
-    "@typescript-eslint/parser": "^5.8.0",
-    "eslint": "^8.5.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "@jupyterlab/buildutils": "^3.5.2",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
+    "eslint": "^8.32.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "husky": "^7.0.4",
-    "lerna": "^5.4.3",
+    "lerna": "^6.4.1",
     "lint-staged": "^12.1.3",
-    "prettier": "^2.3.2",
-    "sort-package-json": "~1.53.1"
+    "prettier": "^2.8.3",
+    "sort-package-json": "^2.1.0",
+    "yarn-deduplicate": "^6.0.1",
+    "typedoc": "~0.23.24"
   },
   "engines": {
-    "node": ">=10.15.3",
+    "node": ">=14",
     "npm": "please-use-yarn",
     "yarn": ">=1.15.0"
   }

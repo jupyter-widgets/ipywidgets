@@ -68,7 +68,7 @@
     "rimraf": "^3.0.2",
     "sinon": "^12.0.1",
     "sinon-chai": "^3.3.0",
-    "typescript": "~4.3.2",
+    "typescript": "~4.9.4",
     "webpack": "^5.65.0"
   }
 }

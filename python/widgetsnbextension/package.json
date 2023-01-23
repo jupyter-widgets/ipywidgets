@@ -15,10 +15,11 @@
   "author": "Jupyter Project",
   "main": "src/extension.js",
   "scripts": {
-    "build": "webpack",
+    "build": "npm run build:nbextension",
+    "build:nbextension": "webpack",
     "clean": "rimraf widgetsnbextension/static",
     "prepublish": "npm run clean && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "npm run build --watch"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^6.0.2",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "css-loader": "^6.5.1",
+    "requirejs": "^2.3.6",
     "rimraf": "^3.0.2",
     "style-loader": "^3.3.1",
     "webpack": "^5.65.0",

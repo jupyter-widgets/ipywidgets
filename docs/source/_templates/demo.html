@@ -1,0 +1,45 @@
+<div class="demo-sidebar">
+  <p class="demo-title" role="heading" aria-level="1">
+    Try Jupyter Widgets <strong>Now</strong>
+  </p>
+
+  <div class="demo-app btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+      <input
+        type="radio"
+        name="demo-app"
+        autocomplete="off"
+        checked
+        title="Lab"
+        value="{{ pathto('try/lab/index') }}?path=Index.ipynb&path=Widget%20List.ipynb"
+      >
+      <i class="fas fa-flask"></i> Lab
+    </label>
+    <label class="btn btn-secondary">
+      <input
+        type="radio"
+        name="demo-app"
+        title="Notebook"
+        value="{{ pathto('try/retro/index') }}?path=Index.ipynb&path=Widget%20List.ipynb"
+      >
+      <i class="fas fa-book"></i> Notebook
+    </label>
+  </div>
+
+  <a
+    href="{{ pathto('try/lab/index') }}?path=Index.ipynb&path=Widget%20List.ipynb"
+    class="btn btn-primary"
+    target="_blank"
+    title="Try Jupyter Widgets in your browser."
+    id="demo-button"
+  >
+    <i class="fas fa-play"></i>
+    Try Now
+  </a>
+
+  <script>$(function() {
+    $('.demo-app input').on('change', (event) => {
+      $("#demo-button").attr("href", (event.currentTarget.value));
+    });
+  });</script>
+</div>

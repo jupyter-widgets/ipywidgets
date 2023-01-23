@@ -19,7 +19,4 @@ provides an overview of the core interactive widgets, including:
 - display areas
 - and more
 
-
 For more information, see the main [documentation](https://github.com/jupyter-widgets/ipywidgets#readme).
-
-

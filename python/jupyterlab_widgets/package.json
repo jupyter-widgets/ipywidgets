@@ -30,22 +30,20 @@
     "schema/*.json"
   ],
   "scripts": {
-    "build": "jlpm run build:lib && jlpm run build:labextension:dev",
+    "build": "jlpm build:lib && jlpm build:labextension:dev",
     "build:labextension": "jupyter labextension build .",
     "build:labextension:dev": "jupyter labextension build --development True .",
-    "build:lib": "tsc",
-    "build:prod": "jlpm run build:lib && jlpm run build:labextension",
-    "clean": "jlpm run clean:lib",
-    "clean:all": "jlpm run clean:lib && jlpm run clean:labextension",
-    "clean:labextension": "rimraf jupyterlab_widgets/labextension",
+    "build:lib": "tsc -b",
+    "build:prod": "jlpm build:lib && jlpm build:labextension",
+    "clean": "jlpm clean:lib",
+    "clean:all": "jlpm clean:lib && jlpm clean:labextension",
+    "clean:labextension": "rimraf labextension",
     "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
-    "install:extension": "jlpm run build",
-    "prepare": "jlpm run clean && jlpm run build:prod",
-    "watch": "run-p watch:src watch:labextension",
-    "watch:labextension": "jupyter labextension watch .",
-    "watch:src": "tsc -w"
+    "install:extension": "jlpm build",
+    "prepare": "jlpm clean && jlpm build:prod",
+    "watch": "jupyter labextension watch ."
   },
   "dependencies": {
     "@jupyter-widgets/base": "^6.0.2",
@@ -86,11 +84,11 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "typescript": "~4.3.2"
+    "typescript": "~4.9.4"
   },
   "jupyterlab": {
     "extension": true,
-    "outputDir": "jupyterlab_widgets/labextension",
+    "outputDir": "labextension",
     "schemaDir": "./schema"
   }
 }

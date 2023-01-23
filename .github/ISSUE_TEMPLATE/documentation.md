@@ -17,7 +17,6 @@ If you are referencing an existing piece of documentation or example please prov
 * There is no example showing how to do [...]
 -->
 
-
 ### Suggested Improvement
 
 <!--

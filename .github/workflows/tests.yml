@@ -7,226 +7,231 @@ jobs:
     name: Documentation
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.7
-        cache: 'pip'
-        cache-dependency-path: |
-          **/setup.cfg
-          **/requirements*.txt
-    - name: Install node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-        cache: 'yarn'
-        cache-dependency-path: |
-          yarn.lock
-          ui-tests/yarn.lock
-    - name: Install dependencies
-      run: |
-        sudo apt-get install -y pandoc
-        python -m pip install --upgrade pip
-        python -m pip install file://$PWD/python/ipywidgets#egg=ipywidgets
-        python -m pip install -r ./docs/requirements.txt
-    - name: Build docs
-      run: |
-        cd docs/source
-        python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+          cache: 'pip'
+          cache-dependency-path: |
+            **/setup.cfg
+            **/requirements*.txt
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: yarn
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y pandoc
+          python -m pip install --upgrade pip
+          python -m pip install file://$PWD/python/ipywidgets#egg=ipywidgets
+          python -m pip install -r ./docs/requirements.txt
+      - name: Build docs
+        run: |
+          cd docs/source
+          python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
   js:
     name: JavaScript
-    # as of #3653 ubuntu-latest wasn't working
-    runs-on: ubuntu-20.04
-
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.7
-        cache: 'pip'
-        cache-dependency-path: |
-          **/setup.cfg
-          **/requirements*.txt
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install jupyterlab~=3.0
-    - name: Install node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-        cache: 'yarn'
-    - name: yarn install, build, test
-      run: |
-        yarn install --frozen-lockfile
-        yarn run build
-        yarn run build:examples
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+          cache: 'pip'
+          cache-dependency-path: |
+            **/setup.cfg
+            **/requirements*.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install jupyterlab~=3.0
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: yarn
+      - name: yarn install, build, test
+        run: |
+          yarn --frozen-lockfile
+          yarn build
+          yarn build:examples
 
-        pushd packages/base
-        yarn run test:unit:firefox:headless
-        popd
+          pushd packages/base
+          yarn test:unit:firefox:headless
+          popd
 
-        pushd packages/base-manager
-        yarn run test:unit:firefox:headless
-        popd
+          pushd packages/base-manager
+          yarn test:unit:firefox:headless
+          popd
 
-        pushd packages/controls
-        yarn run test:unit:firefox:headless
-        popd
+          pushd packages/controls
+          yarn test:unit:firefox:headless
+          popd
 
-        pushd packages/html-manager
-        yarn run test:unit:firefox:headless
-        popd
+          pushd packages/html-manager
+          yarn test:unit:firefox:headless
+          popd
 
-        pushd examples/web1
-        yarn run test:firefox:headless
-        popd
+          pushd examples/web1
+          yarn test:firefox:headless
+          popd
 
-      env:
-        CI: true
+        env:
+          CI: true
   python:
     name: Python
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'pip'
-        cache-dependency-path: |
-          **/setup.cfg
-          **/requirements*.txt
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install file://$PWD/python/ipywidgets#egg=ipywidgets[test]
-    - name: Test with pytest
-      run: |
-        pip install pytest
-        cd python/ipywidgets
-        pytest --cov=ipywidgets ipywidgets
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            **/setup.cfg
+            **/requirements*.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install file://$PWD/python/ipywidgets#egg=ipywidgets[test]
+      - name: Test with pytest
+        run: |
+          pip install pytest
+          cd python/ipywidgets
+          pytest --cov=ipywidgets ipywidgets
+
   spec:
     name: Message Specification
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.7
-        cache: 'pip'
-        cache-dependency-path: |
-          **/setup.cfg
-          **/requirements*.txt
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install file://$PWD/python/ipywidgets#egg=ipywidgets
-    - name: Compare spec with latest version
-      run: |
-        python ./packages/schema/generate-spec.py -f markdown spec.md
-        diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+          cache: 'pip'
+          cache-dependency-path: |
+            **/setup.cfg
+            **/requirements*.txt
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: yarn
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install file://$PWD/python/ipywidgets#egg=ipywidgets
+      - name: Install JS dependencies
+        run: |
+          yarn
+      - name: Compare spec with latest version
+        run: |
+          python ./packages/schema/generate-spec.py -f markdown spec.md
+          yarn prettier
+          diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
+
   ui-test:
     name: Visual Regression
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-        cache: 'pip'
-        cache-dependency-path: |
-          **/setup.cfg
-          **/requirements*.txt
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -U jupyterlab~=3.2 jupyter-packaging~=0.10
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            **/setup.cfg
+            **/requirements*.txt
 
-    - name: Install node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-        cache: 'yarn'
-        cache-dependency-path: |
-          yarn.lock
-          ui-tests/yarn.lock
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U jupyterlab~=3.2 jupyter-packaging~=0.10
 
-    - name: Build and Install ipywidgets
-      run: |
-        yarn install --frozen-lockfile
-        yarn run build
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: yarn
 
-    - name: Build the extension
-      run: |
-        cd python/ipywidgets
-        pip install .
-        cd ../..
-        jlpm install
-        jlpm run build
-        cd python/jupyterlab_widgets
-        pwd
-        pip install -e .
-        jupyter labextension develop . --overwrite
-        jupyter labextension list
+      - name: Build and Install ipywidgets
+        run: |
+          yarn --frozen-lockfile
+          yarn build
 
-    - name: Install Test Dependencies
-      run: |
-        cd ui-tests
-        yarn install --frozen-lockfile
-        yarn playwright install chromium
+      - name: Build the extension
+        run: |
+          cd python/ipywidgets
+          pip install .
+          cd ../..
+          jlpm
+          jlpm build
+          cd python/jupyterlab_widgets
+          pwd
+          pip install -e .
+          jupyter labextension develop . --overwrite
+          jupyter labextension list
 
-    - name: Launch JupyterLab
-      run: |
-        cd ui-tests
-        yarn run start:detached
+      - name: Install Test Dependencies
+        run: |
+          cd ui-tests
+          yarn --frozen-lockfile
+          yarn playwright install chromium
 
-    - name: Wait for JupyterLab
-      uses: ifaxity/wait-on-action@v1
-      with:
-        resource: http-get://localhost:8888/api
-        timeout: 20000
+      - name: Launch JupyterLab
+        run: |
+          cd ui-tests
+          yarn start:detached
 
-    - name: Run UI Tests
-      run: |
-        cd ui-tests
-        yarn run test
+      - name: Wait for JupyterLab
+        uses: ifaxity/wait-on-action@v1
+        with:
+          resource: http-get://localhost:8888/api
+          timeout: 20000
 
-    - name: Upload Playwright Test assets
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: ipywidgets-test-assets
-        path: |
-          ui-tests/test-results
+      - name: Run UI Tests
+        run: |
+          cd ui-tests
+          yarn test
 
-    - name: Upload Playwright Test report
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: ipywidgets-test-report
-        path: |
-          ui-tests/playwright-report
+      - name: Upload Playwright Test assets
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ipywidgets-test-assets
+          path: |
+            ui-tests/test-results
 
-    - name: Update snapshots
-      if: failure()
-      run: |
-        cd ui-tests
-        yarn run test:update
+      - name: Upload Playwright Test report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ipywidgets-test-report
+          path: |
+            ui-tests/playwright-report
 
-    - name: Upload updated snapshots
-      if: failure()
-      uses: actions/upload-artifact@v2
-      with:
-        name: ipywidgets-updated-snapshots
-        path: ui-tests/tests
+      - name: Update snapshots
+        if: failure()
+        run: |
+          cd ui-tests
+          yarn test:update
+
+      - name: Upload updated snapshots
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ipywidgets-updated-snapshots
+          path: ui-tests/tests

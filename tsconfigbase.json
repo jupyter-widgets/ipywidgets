@@ -12,11 +12,13 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": true,
+    "noImplicitThis": false,
     "noUnusedLocals": true,
     "preserveWatchOutput": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
     "strict": true,
-    "noImplicitThis": false,
     "strictPropertyInitialization": false,
     "target": "es2017"
   }

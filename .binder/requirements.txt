@@ -1,5 +1,6 @@
 bqplot
 ipyleaflet
+jupyterlab-myst
 jupyterlab~=3.0
 matplotlib
 networkx

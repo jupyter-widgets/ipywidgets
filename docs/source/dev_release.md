@@ -1,7 +1,7 @@
 # Developer Release Procedure
 
-To release a new version of the widgets on PyPI and npm, first checkout master
-and cd into the repo root.
+To release a new version of the widgets on PyPI and npm, first checkout the
+`master` branch and `cd` into the repo root.
 
 ```
 cd release
@@ -16,7 +16,7 @@ git clone git@github.com:jupyter-widgets/ipywidgets.git
 cd ipywidgets
 ```
 
-### Fix the widget spec
+## Fix the widget spec
 
 If there were changes in the widget model specification (i.e., any change made
 to any widget attributes), we need to update the model specification version and
@@ -39,7 +39,7 @@ release.
 
 Commit the changes (don't forget to `git add` the new model spec file).
 
-### Publish the npm modules
+## Publish the npm modules
 
 ```
 # clean out all dirty files
@@ -48,19 +48,19 @@ git pull origin master
 git reset --hard origin/master
 git clean -fdx
 yarn install
-yarn run version
+yarn version
 # Check the latest commit to make sure it is correct
-yarn run publish
+yarn publish
 ```
 
-Lerna will prompt you for version numbers for each of the changed npm packages in the version step. Lerna will then change the versions appropriately (including the interdependency versions), commit, and tag. The `yarn run publish` step then publishes the public packages that were versioned to npm.
+Lerna will prompt you for version numbers for each of the changed npm packages in the version step. Lerna will then change the versions appropriately (including the interdependency versions), commit, and tag. The `yarn publish` step then publishes the public packages that were versioned to npm.
 
-### jupyterlab_widgets
+## `jupyterlab_widgets`
 
 Go into the `python/jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
 
 ```
-(python/jupyterlab_widgets && python -m build && twine upload dist/*)
+(python/jupyterlab_widgets && pyproject-build . && twine upload dist/*)
 ```
 
 Verify that the package is uploaded.
@@ -69,12 +69,12 @@ Verify that the package is uploaded.
 curl -s https://pypi.org/pypi/jupyterlab-widgets/json | jq  -r '[.releases[][] | [.upload_time, .digests.sha256, .filename] | join(" ")] | sort '
 ```
 
-### widgetsnbextension
+## `widgetsnbextension`
 
 Go into the `python/widgetsnbextension` directory. Change `widgetsnbextension/_version.py` to reflect the new version number.
 
 ```
-(cd python/widgetsnbextension && python -m build && twine upload dist/*)
+(cd python/widgetsnbextension && pyproject-build . && twine upload dist/*)
 ```
 
 Verify that the package is uploaded.
@@ -83,12 +83,12 @@ Verify that the package is uploaded.
 curl -s https://pypi.org/pypi/widgetsnbextension/json | jq  -r '[.releases[][] | [.upload_time, .digests.sha256, .filename] | join(" ")] | sort '
 ```
 
-### ipywidgets
+## `ipywidgets`
 
 Go into the `python/ipywidgets` directory. Change `ipywidgets/_version.py` to reflect the new version number, and if necessary, a new `__html_manager_version__`. Change the `install_requires` parameter in `setup.cfg` reference the new widgetsnbextension and jupyterlab_widgets version.
 
 ```
-(cd python/ipywidgets && python -m build && twine upload dist/*)
+(cd python/ipywidgets && pyproject-build . && twine upload dist/*)
 ```
 
 Verify that the package is uploaded:
@@ -97,7 +97,7 @@ Verify that the package is uploaded:
 curl -s https://pypi.org/pypi/ipywidgets/json | jq  -r '[.releases[][] | [.upload_time, .digests.sha256, .filename] | join(" ")] | sort '
 ```
 
-### Push changes back
+## Push changes back
 
 Calculate the hashes of the uploaded files. You could use a small shell script, for example, like this on macOS (put in `scripts/hashes`):
 
@@ -128,12 +128,11 @@ git tag 8.0.4
 git push origin master 8.0.4
 ```
 
-
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
 
 # Release Notes
 
-### Changelog
+## Changelog
 
 - Modify `scripts/milestone_check.py` to include the release and commit range for the release, and run `python scripts/milestone_check.py` to check the issues assigned to this milestone
 - Write release highlights. You can use the list generated below as a starting point:
@@ -141,7 +140,7 @@ Update conda-forge packages (if the requirements changed to ipywidgets, make sur
   loghub jupyter-widgets/ipywidgets -m XXX -t $GITHUB_TOKEN --template scripts/release_template.txt
   ```
 
-### Example
+## Example
 
 Here is an example of the release statistics for ipywidgets 7.0.
 

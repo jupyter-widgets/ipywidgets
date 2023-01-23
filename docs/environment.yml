@@ -1,29 +1,41 @@
-name: docs
+name: ipywidgets_docs
 channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - bqplot
-  - build
-  - empack
-  - ipykernel
-  - jupyter_client
-  - jupyterlab >=3,<4
-  - jupyter-packaging
-  - matplotlib
-  - nbsphinx
-  - nodejs=14
-  - numpy
-  - packaging
-  - pandoc
+  - python >=3.11,<3.12
+  # build
+  - python-build
   - pip
-  - python=3.10
-  - recommonmark
+  - packaging
+  - jupyter-packaging
+  - jupyterlab >=3,<4
+  - nodejs >=18,<19
+  # dependencies
+  - jupyter_client
+  # docs
+  - docutils >=0.19
+  - jupyterlab-myst
+  - myst-nb >=0.17,<0.18
+  - pandoc
+  - pydata-sphinx-theme
+  - sphinx >=5,<6
+  - sphinx-autobuild
+  - sphinx-autodoc-typehints
+  - sphinx-copybutton
+  - sphinxext-rediraffe
+  # demo
+  - bqplot
+  - ipykernel
+  - ipyleaflet
+  - matplotlib-base
+  - numpy
   - scikit-image
   - scikit-learn
-  - sphinx
-  - sphinx_rtd_theme
   - sympy
+  # jupyterlite dependencies
+  - doit
+  - pkginfo
+  - python-libarchive-c
   - pip:
-    - jupyterlite==0.1.0b14
-    - jupyterlite-sphinx~=0.7.2
+      - jupyterlite ==0.1.0b18
