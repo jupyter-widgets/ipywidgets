@@ -33,6 +33,7 @@ jobs:
           python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
       - name: Check internal links
         run: |
+          cd docs/build/html
           pytest-check-links -vv --check-anchors --check-links-ignore "^https?://" --links-ext html
   js:
     name: JavaScript
