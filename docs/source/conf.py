@@ -46,7 +46,6 @@ def setup(app):
 
 extensions = [
     'myst_nb',
-    'sphinx.ext.autosectionlabel',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
