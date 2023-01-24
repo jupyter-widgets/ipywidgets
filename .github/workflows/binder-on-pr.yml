@@ -18,7 +18,7 @@ jobs:
           script: |
             var PR_HEAD_USERREPO = process.env.PR_HEAD_USERREPO;
             var PR_HEAD_REF = process.env.PR_HEAD_REF;
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
