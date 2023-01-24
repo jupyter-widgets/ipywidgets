@@ -12,7 +12,7 @@ To install ipywidgets from git, you will need:
 - the latest [Jupyter Notebook development release](https://github.com/jupyter/notebook/releases)
 
   - Everything in the ipywidgets repository is developed using Jupyter
-    notebook's master branch.
+    notebook's `main` branch.
   - If you want to have a copy of ipywidgets that works against a stable
     version of the notebook, checkout the appropriate tag.
   - See the

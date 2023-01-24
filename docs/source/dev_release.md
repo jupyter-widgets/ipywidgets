@@ -1,7 +1,7 @@
 # Developer Release Procedure
 
 To release a new version of the widgets on PyPI and npm, first checkout the
-`master` branch and `cd` into the repo root.
+`main` branch and `cd` into the repo root.
 
 ```
 cd release
@@ -43,9 +43,9 @@ Commit the changes (don't forget to `git add` the new model spec file).
 
 ```
 # clean out all dirty files
-git checkout master
-git pull origin master
-git reset --hard origin/master
+git checkout main
+git pull origin main
+git reset --hard origin/main
 git clean -fdx
 yarn install
 yarn version
@@ -121,11 +121,11 @@ Using the above script, you can do:
 ./scripts/hashes python/jupyterlab_widgets/dist/*
 ```
 
-Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push), e.g:
+Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin `main` (and include the tag in the push), e.g:
 
 ```
 git tag 8.0.4
-git push origin master 8.0.4
+git push origin main 8.0.4
 ```
 
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
@@ -150,7 +150,7 @@ Here are some commands used to generate some of the statistics above.
 
 ```
 # merges since in 6.0.0, but not 7.0.0, which is a rough list of merged PRs
-git log --merges 6.0.0...master --pretty=oneline
+git log --merges 6.0.0...main --pretty=oneline
 
 # To really make sure we get all PRs, we could write a program that
 # pulled all of the PRs, examined a commit in each one, and did
@@ -164,11 +164,11 @@ git log --merges 6.0.0...master --pretty=oneline
 git show -s --format=%cd --date=short 6.0.0^{commit}
 
 # Non-merge commits in 7.0.0 not in any 6.x release
-git log --pretty=oneline --no-merges ^6.0.0 master | wc -l
+git log --pretty=oneline --no-merges ^6.0.0 main | wc -l
 
 # Authors of non-merge commits
-git shortlog -s  6.0.0..master --no-merges | cut -c8- | sort -f
+git shortlog -s  6.0.0..main --no-merges | cut -c8- | sort -f
 
 # New committers: authors unique in the 6.0.0..7.0.0 logs, but not in the 6.0.0 log
-comm -23 <(git shortlog -s -n 6.0.0..master --no-merges | cut -c8- | sort) <(git shortlog -s -n 6.0.0 --no-merges | cut -c8- | sort) | sort -f
+comm -23 <(git shortlog -s -n 6.0.0..main --no-merges | cut -c8- | sort) <(git shortlog -s -n 6.0.0 --no-merges | cut -c8- | sort) | sort -f
 ```

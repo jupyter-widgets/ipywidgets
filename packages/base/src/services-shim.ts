@@ -295,7 +295,6 @@ export namespace shims {
             if (callbacks.shell && callbacks.shell.reply) {
               callbacks.shell.reply(msg);
             }
-            // TODO: Handle payloads.  See https://github.com/jupyter/notebook/blob/master/notebook/static/services/kernels/kernel.js#L923-L947
           };
 
           future.onStdin = function (msg): void {

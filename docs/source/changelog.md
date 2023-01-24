@@ -447,7 +447,7 @@ If you are developing a custom widget or widget manager, here are some major cha
   - A custom serializer is given the widget instance as its second argument, and a custom deserializer is given the widget manager as its second argument.
   - The Javascript model `.id` attribute has been renamed to `.model_id` to avoid conflicting with the Backbone `.id` attribute. ([#1410](https://github.com/jupyter-widgets/ipywidgets/pull/1410))
 - Regarding widget managers and the syncing message protocol:
-  - The widget protocol was significantly overhauled. The new widget messaging protocol (version 2) is specified in the [version 2 protocol documentation](https://github.com/jupyter-widgets/ipywidgets/blob/master/jupyter-widgets-schema/messages.md).
+  - The widget protocol was significantly overhauled. The new widget messaging protocol (version 2) is specified in the [version 2 protocol documentation](https://github.com/jupyter-widgets/ipywidgets/blob/main/jupyter-widgets-schema/messages.md).
   - Widgets are now displayed with a `display_data` message instead of with a custom comm message. See the [ipywidgets](https://github.com/jupyter-widgets/ipywidgets/blob/20cd0f050090b1b19bb9657b8c3fa42ae384cfca/ipywidgets/widgets/widget.py#L656) implementation for an example. ([#1274](https://github.com/jupyter-widgets/ipywidgets/pull/1274))
   - Custom widget managers are now responsible completely for loading widget model and view classes. Widget managers should provide an output model and view class appropriate for their environment so that the `Output` widget works. ([#1313](https://github.com/jupyter-widgets/ipywidgets/pull/1313))
   - The widget manager `clear_state` method no longer has a `commlessOnly` argument. All models in the widget manager will be closed and cleared when `clear_state` is called. ([#1354](https://github.com/jupyter-widgets/ipywidgets/pull/1354))
@@ -459,7 +459,7 @@ Major user-visible changes in ipywidgets 6.0 include:
 - Rendering of Jupyter interactive widgets in various web contexts
 
   sphinx documentation: http://ipywidgets.readthedocs.io/en/latest/examples/Widget%20List.html
-  nbviewer: http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb
+  nbviewer: http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Widget%20List.ipynb
   Static web pages: http://jupyter.org/widgets
 
 - Addition of a DatePicker widget in the core widget collection.

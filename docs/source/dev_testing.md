@@ -18,9 +18,9 @@ This will run the test suite using `karma` with 'debug' level logging.
 
 `ipywidgets` uses the [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) framework for visual regression testing. Galata provides a high level API to programmatically interact with the JupyterLab UI, and tools for taking screenshots and generating test reports.
 
-UI tests are written in TypeScript and run with the Playwright test runner. The test suites are located in the [ui-tests/tests](https://github.com/jupyter-widgets/ipywidgets/tree/master/ui-tests/tests) directory.
+UI tests are written in TypeScript and run with the Playwright test runner. The test suites are located in the [ui-tests/tests](https://github.com/jupyter-widgets/ipywidgets/tree/main/ui-tests/tests) directory.
 
-The [main test suite](https://github.com/jupyter-widgets/ipywidgets/tree/master/ui-tests/tests/widgets.test.ts) uploads a [notebook](https://github.com/jupyter-widgets/ipywidgets/tree/master/ui-tests/tests/notebooks/widgets.ipynb) to JupyterLab, runs it cell by cell and captures a screenshot of the cell outputs. The cell outputs correspond to widgets of different types. The cell outputs captures are then compared to the [reference snapshots](https://github.com/jupyter-widgets/ipywidgets/tree/master/ui-tests/tests/widgets.test.ts-snapshots/) to detect any visual regression. The test report (diffs, result, videos) is uploaded to GitHub as an artifact and accessible from the GitHub Actions page in `Artifacts` section.
+The [main test suite](https://github.com/jupyter-widgets/ipywidgets/tree/main/ui-tests/tests/widgets.test.ts) uploads a [notebook](https://github.com/jupyter-widgets/ipywidgets/tree/main/ui-tests/tests/notebooks/widgets.ipynb) to JupyterLab, runs it cell by cell and captures a screenshot of the cell outputs. The cell outputs correspond to widgets of different types. The cell outputs captures are then compared to the [reference snapshots](https://github.com/jupyter-widgets/ipywidgets/tree/main/ui-tests/tests/widgets.test.ts-snapshots/) to detect any visual regression. The test report (diffs, result, videos) is uploaded to GitHub as an artifact and accessible from the GitHub Actions page in `Artifacts` section.
 
 ## Running Tests Locally
 
@@ -51,7 +51,7 @@ Checkout the [Playwright Command Line Reference](https://playwright.dev/docs/tes
 
 ## Adding new UI tests
 
-New test suites can be added to the [ui-tests/tests](https://github.com/jupyter-widgets/ipywidgets/tree/master/ui-tests/tests) directory. Their names need to end with `.test.ts`. You can see some additional example test suites in the [JupyterLab repo](https://github.com/jupyterlab/jupyterlab/blob/master/galata/test). If the tests in new suites are doing visual regression tests or HTML source regression tests then you also need to add their reference images to the `-snapshots` directories.
+New test suites can be added to the [ui-tests/tests](https://github.com/jupyter-widgets/ipywidgets/tree/main/ui-tests/tests) directory. Their names need to end with `.test.ts`. You can see some additional example test suites in the [JupyterLab repo](https://github.com/jupyterlab/jupyterlab/blob/master/galata/test). If the tests in new suites are doing visual regression tests or HTML source regression tests then you also need to add their reference images to the `-snapshots` directories.
 
 ## Reference Image Captures
 

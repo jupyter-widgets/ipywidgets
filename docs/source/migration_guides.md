@@ -313,10 +313,10 @@ for details.
 Since you probably want to avoid repeating the module version in every
 widget, a common pattern is to import the version from `package.json` and
 prepend a `~`. See
-[ipyvolume](https://github.com/maartenbreddels/ipyvolume/blob/master/js/src/figure.js#L1245)
+[ipyvolume](https://github.com/widgetti/ipyvolume/blob/master/js/src/figure.ts)
 for an example. If you do this, make sure that your webpack configuration
 includes a JSON loader. See the Webpack configuration for
-[ipyvolume](https://github.com/maartenbreddels/ipyvolume/blob/master/js/webpack.config.js#L7)
+[ipyvolume](https://github.com/widgetti/ipyvolume/blob/master/js/webpack.config.js#L7)
 for an example.
 
 ### Updating the notebook extension

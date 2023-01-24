@@ -178,7 +178,7 @@ html_context = {
     "doc_path": "docs",
     "github_repo": "ipywidgets",
     "github_user": "jupyter-widgets",
-    "github_version": "master",
+    "github_version": "main",
 }
 
 html_sidebars = {
