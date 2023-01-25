@@ -181,10 +181,16 @@ html_context = {
 }
 
 html_sidebars = {
+    "index": [
+        "demo.html",
+        "search-field.html",
+        "sidebar-nav-bs-index.html",
+        "sidebar-ethical-ads.html",
+    ],
     "**": [
         "search-field.html",
-        "demo.html",
         "sidebar-nav-bs.html",
+        "demo.html",
         "sidebar-ethical-ads.html",
     ]
 }

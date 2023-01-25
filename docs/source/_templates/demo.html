@@ -1,41 +1,41 @@
-<div class="demo-sidebar">
-  <p class="demo-title" role="heading" aria-level="1">
-    Try Jupyter Widgets <strong>Now</strong>
+<div id="demo-sidebar" class="admonition warning">
+  <p class="demo-title admonition-title" role="heading" aria-level="1">
+    <img src="https://jupyterlite.readthedocs.io/en/latest/_static/icon.svg" width="16" />
+    Try Jupyter Widgets
   </p>
 
-  <div class="demo-app btn-group btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-secondary active">
+  <div class="demo-app">
+    <label title="Try Widgets in a multi-document UI">
       <input
         type="radio"
         name="demo-app"
         autocomplete="off"
         checked
-        title="Lab"
         value="{{ pathto('try/lab/index') }}?path=Widget%20List.ipynb"
       >
       <i class="fas fa-flask"></i> Lab
     </label>
-    <label class="btn btn-secondary">
+    <label title="Try Widgets in a single-document UI">
       <input
         type="radio"
         name="demo-app"
-        title="Notebook"
+        autocomplete="off"
         value="{{ pathto('try/retro/index') }}?path=Widget%20List.ipynb"
       >
       <i class="fas fa-book"></i> Notebook
     </label>
+    <a
+      href="{{ pathto('try/lab/index') }}?path=Widget%20List.ipynb"
+      class="btn btn-primary"
+      target="_blank"
+      title="Try Jupyter Widgets in your browser."
+      id="demo-button"
+    >
+      <i class="fas fa-play"></i>
+      Try Now
+    </a>
   </div>
 
-  <a
-    href="{{ pathto('try/lab/index') }}?path=Widget%20List.ipynb"
-    class="btn btn-primary"
-    target="_blank"
-    title="Try Jupyter Widgets in your browser."
-    id="demo-button"
-  >
-    <i class="fas fa-play"></i>
-    Try Now
-  </a>
 
   <script>$(function() {
     $('.demo-app input').on('change', (event) => {
