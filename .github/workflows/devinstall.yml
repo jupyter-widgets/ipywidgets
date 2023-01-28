@@ -2,7 +2,7 @@ name: Run the dev-install script
 
 on:
   push:
-    branches: master
+    branches: main
   pull_request:
     branches: '*'
 

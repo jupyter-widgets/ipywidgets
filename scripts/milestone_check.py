@@ -15,7 +15,7 @@ import sys
 REPO = 'jupyter-widgets/ipywidgets'
 
 ranges = {
-    '8.0': 'origin/master ^7.x',
+    '8.0': 'origin/main ^7.x',
 }
 
 try:
@@ -182,7 +182,7 @@ print()
 
 if len(prs_not_represented) > 0:
     print("""
-PRs that are in the milestone, but have no commits in the version range. 
+PRs that are in the milestone, but have no commits in the version range.
 These PRs probably belong in a different milestone.
 """)
     print('\n'.join(f'https://github.com/{REPO}/pull/{i}' for i in prs_not_represented))
@@ -196,7 +196,7 @@ print()
 if len(notfound):
     print("""The following commits are not included in any PR on this milestone.
 This probably means the commit's PR needs to be assigned to this milestone,
-or the commit was pushed to master directly.
+or the commit was pushed to main directly.
 """)
     print('\n'.join('%s %s %s'%(c, commits[c][0], commits[c][1]) for c in notfound))
     prs_to_check = [c for c in notfound if 'Merge pull request #' in commits[c][1] and commits[c][0] == 'noreply@github.com']

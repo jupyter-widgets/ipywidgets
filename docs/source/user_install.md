@@ -77,7 +77,7 @@ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 This command defaults to installing the latest version of the **ipywidgets**
 JupyterLab extension. Depending on the version of JupyterLab you have installed, you
-may need to install [an older version](https://github.com/jupyter-widgets/ipywidgets/tree/master/packages/jupyterlab-manager#version-compatibility).
+may need to install [an older version](https://github.com/jupyter-widgets/ipywidgets/tree/main/packages/jupyterlab-manager#version-compatibility).
 
 If you install this extension while JupyterLab is running, you will need to
 refresh the page or restart JupyterLab before the changes take effect.

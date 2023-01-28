@@ -9,7 +9,7 @@ The documentation for `ipywidgets` 7 is available at
 [ipywidgets 7 documentation](https://ipywidgets.readthedocs.io/en/7.x).
 ```
 
-Jupyter Widgets are [interactive browser controls](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+Jupyter Widgets are [interactive browser controls](https://github.com/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Index.ipynb)
 for Jupyter notebooks. Examples include:
 
 - Basic form controls like **sliders**, **checkboxes**, **text inputs**

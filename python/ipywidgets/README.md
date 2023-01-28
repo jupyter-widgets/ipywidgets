@@ -1,7 +1,7 @@
 # ipywidgets: Interactive HTML Widgets
 
 **ipywidgets**, also known as jupyter-widgets or simply widgets, are
-[interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+[interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
 This package contains the python implementation of the core interactive widgets bundled in ipywidgets.
@@ -9,7 +9,7 @@ This package contains the python implementation of the core interactive widgets 
 ## Core Interactive Widgets
 
 The fundamental widgets provided by this library are called core interactive
-widgets. A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+widgets. A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Index.ipynb)
 provides an overview of the core interactive widgets, including:
 
 - sliders

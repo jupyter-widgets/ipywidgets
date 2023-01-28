@@ -1,10 +1,10 @@
 This directory holds configuration files for https://mybinder.org/.
 
 The interactive notebooks can be accessed with this link:
-https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=docs/source/examples
+https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/main?filepath=docs/source/examples
 
-To check out a different version, just replace "master" with the desired
+To check out a different version, just replace `main` with the desired
 branch/tag name or commit hash.
 
 To use JupyterLab, use:
-https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?urlpath=lab/tree/docs/source/examples
+https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/main?urlpath=lab/tree/docs/source/examples

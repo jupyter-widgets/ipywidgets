@@ -46,7 +46,6 @@ def setup(app):
 
 extensions = [
     'myst_nb',
-    'sphinx.ext.autosectionlabel',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
@@ -178,14 +177,20 @@ html_context = {
     "doc_path": "docs",
     "github_repo": "ipywidgets",
     "github_user": "jupyter-widgets",
-    "github_version": "master",
+    "github_version": "main",
 }
 
 html_sidebars = {
+    "index": [
+        "demo.html",
+        "search-field.html",
+        "sidebar-nav-bs-index.html",
+        "sidebar-ethical-ads.html",
+    ],
     "**": [
         "search-field.html",
-        "demo.html",
         "sidebar-nav-bs.html",
+        "demo.html",
         "sidebar-ethical-ads.html",
     ]
 }

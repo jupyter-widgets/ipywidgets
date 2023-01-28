@@ -252,7 +252,7 @@ If your notebook was saved with the special "Save Notebook Widget State" action
 in the Widgets menu, interactive widgets displayed in your notebook should also
 be rendered on nbviewer.
 
-See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb)
+See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Widget%20List.ipynb)
 example from the documentation.
 
 ## The Case of Custom Widget Libraries
@@ -306,14 +306,14 @@ Specifically:
   the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
   discussed above.
 
-We provide [additional examples](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples) of specializations of the base widget manager
+We provide [additional examples](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples) of specializations of the base widget manager
 implementing other usages of Jupyter widgets in web contexts.
 
-1. The [`web1`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web1) example is a simplistic example showcasing the use of
+1. The [`web1`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web1) example is a simplistic example showcasing the use of
    Jupyter widgets in a web context.
-2. The [`web2`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web2) example is a simple example making use of the
+2. The [`web2`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web2) example is a simple example making use of the
    `application/vnd.jupyter.widget-state+json` mime type.
-3. The [`web3`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web3) example showcases how communication with a Jupyter kernel can
+3. The [`web3`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web3) example showcases how communication with a Jupyter kernel can
    happen in a web context outside of the notebook or jupyterlab contexts.
-4. The [`web4`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web4) example shows how to embed widgets in an HTML document
+4. The [`web4`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web4) example shows how to embed widgets in an HTML document
    using the HTML widget manager.

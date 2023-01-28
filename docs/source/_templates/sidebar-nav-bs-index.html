@@ -1,0 +1,24 @@
+<style>
+  #bd-docs-nav .toctree-toggle,
+  #bd-docs-nav .toctree-checkbox {
+    display: none;
+  }
+  #bd-docs-nav .toctree-l1 > a{
+    font-weight: bold;
+  }
+</style>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="{{ _('Documentation Contents') }}">
+  <div class="bd-toc-item navbar-nav">
+    <!-- Specify a startdepth of 0 instead of default of 1 -->
+    {{ generate_toctree_html(
+      "sidebar",
+      startdepth=0,
+      show_nav_level=4,
+      maxdepth=4,
+      collapse=False,
+      includehidden=True,
+      titles_only=False
+    ) }}
+  </div>
+</nav>
