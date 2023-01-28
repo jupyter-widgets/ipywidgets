@@ -35,25 +35,29 @@ OTHER DEALINGS IN THE SOFTWARE.
 import * as Backbone from 'backbone';
 
 // Caches a local reference to `Element.prototype` for faster access.
-const ElementProto: any = Element.prototype; // : typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
+const ElementProto: any =
+  typeof Element !== 'undefined' ? Element.prototype : undefined;
 
 // Find the right `Element#matches` for IE>=9 and modern browsers.
-const matchesSelector =
-  ElementProto.matches ||
-  ElementProto['webkitMatchesSelector'] ||
-  ElementProto['mozMatchesSelector'] ||
-  ElementProto['msMatchesSelector'] ||
-  ElementProto['oMatchesSelector'] ||
-  function matches(selector: string): boolean {
-    const matches = (this.document || this.ownerDocument).querySelectorAll(
-      selector
-    );
-    let i = matches.length;
-    while (--i >= 0 && matches.item(i) !== this) {
-      continue;
-    }
-    return i > -1;
-  };
+function matchesFallback(selector: string): boolean {
+  const matches = (this.document || this.ownerDocument).querySelectorAll(
+    selector
+  );
+  let i = matches.length;
+  while (--i >= 0 && matches.item(i) !== this) {
+    continue;
+  }
+  return i > -1;
+}
+
+const matchesSelector = ElementProto
+  ? ElementProto.matches ||
+    ElementProto['webkitMatchesSelector'] ||
+    ElementProto['mozMatchesSelector'] ||
+    ElementProto['msMatchesSelector'] ||
+    ElementProto['oMatchesSelector'] ||
+    matchesFallback
+  : matchesFallback;
 
 interface IDOMEvent {
   eventName: string;
