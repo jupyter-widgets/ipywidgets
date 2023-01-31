@@ -671,7 +671,7 @@ export class ComboboxView extends TextView {
       o.value = v;
       optionFragment.appendChild(o);
     }
-    this.datalist.appendChild(optionFragment);
+    this.datalist.replaceChildren(...optionFragment.children);
   }
 
   isValid(value: string): boolean {

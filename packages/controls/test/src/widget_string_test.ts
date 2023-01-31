@@ -89,4 +89,31 @@ describe('ComboboxView', function () {
       expect(el.getAttribute('value')).to.equal(input[i]);
     }
   });
+
+  it('updates datalist children when options are updated', function () {
+    this.model.set({
+      value: 'ABC',
+      options: ['option1', 'option2', 'option3'],
+      ensure_option: true,
+    });
+    const options = { model: this.model };
+    const view = new widgets.ComboboxView(options);
+    view.render();
+    expect(view.datalist!.children.length).to.equal(3);
+    for (let i = 0; i < view.datalist!.children.length; ++i) {
+      const el = view.datalist!.children[i];
+      expect(el.tagName.toLowerCase()).to.equal('option');
+      expect(el.getAttributeNames()).to.eqls(['value']);
+      expect(el.getAttribute('value')).to.equal(`option${i + 1}`);
+    }
+
+    this.model.set({ options: ['option4', 'option5'] });
+    expect(view.datalist!.children.length).to.equal(2);
+    for (let i = 0; i < view.datalist!.children.length; ++i) {
+      const el = view.datalist!.children[i];
+      expect(el.tagName.toLowerCase()).to.equal('option');
+      expect(el.getAttributeNames()).to.eqls(['value']);
+      expect(el.getAttribute('value')).to.equal(`option${i + 4}`);
+    }
+  });
 });
