@@ -508,7 +508,10 @@ abstract class ManagerBase<T> {
                 } else {
                     // model already exists here
                     const model = await this.get_model(widget_id);
-                    model!.set_state(state.state);
+                    const deserializedState = await (
+                        model!.constructor as typeof WidgetModel
+                    )._deserialize_state(state.state, this);
+                    model!.set_state(deserializedState);
                 }
             } catch (error) {
                 // Failed to create a widget model, we continue creating other models so that
