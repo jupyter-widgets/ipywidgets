@@ -524,6 +524,8 @@ export class WidgetModel extends Backbone.Model {
    * binary array buffers.
    */
   serialize(state: Dict<any>): JSONObject {
+    const deepcopy = 
+      globalThis.structuredClone || (x: any) => JSON.parse(JSON.stringify(x));
     const serializers =
       (this.constructor as typeof WidgetModel).serializers || {};
     for (const k of Object.keys(state)) {
@@ -532,7 +534,7 @@ export class WidgetModel extends Backbone.Model {
           state[k] = serializers[k].serialize!(state[k], this);
         } else {
           // the default serializer just deep-copies the object
-          state[k] = JSON.parse(JSON.stringify(state[k]));
+          state[k] = deepcopy(state[k]);
         }
         if (state[k] && state[k].toJSON) {
           state[k] = state[k].toJSON();
