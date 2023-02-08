@@ -1062,3 +1062,14 @@ actually support closable tabs, so it really doesn't matter */
     max-width: 100%;
     height: auto;
 }
+
+/* cursor fix: https://github.com/jupyter-widgets/ipywidgets/pull/3687
+   Phosphor/Lumino sets the cursor, which we don't want. Otherwise
+   a widget does not have the proper cursor when it is a child of an
+   anchor tag. The two classes give it higher specificity than the
+   phosphor/lumino classes.
+*/
+
+.jupyter-widgets.lm-Widget, .jupyter-widgets.p-Widget {
+    cursor: unset;
+}
