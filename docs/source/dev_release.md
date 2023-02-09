@@ -10,7 +10,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook "nodejs==16.*" yarn twine jupyterlab=3 jupyter-packaging jq python==3.8
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
@@ -28,6 +28,7 @@ First, update the relevant model specification versions. For example, the commit
 
 Next, regenerate the model spec with the new version numbers by doing something like this in the repository root directory:
 ```
+(pip install -e .)
 python ./packages/schema/generate-spec.py > packages/schema/jupyterwidgetmodels.latest.md
 ```
 
@@ -42,9 +43,9 @@ Commit the changes (don't forget to `git add` the new model spec file).
 
 ```
 # clean out all dirty files
-git checkout master
-git pull origin master
-git reset --hard origin/master
+git checkout 7.x
+git pull origin 7.x
+git reset --hard origin/7.x
 git clean -fdx
 yarn install
 yarn run publish
