@@ -57,9 +57,7 @@ Lerna will prompt you for version numbers for each of the changed npm packages. 
 
 Go into the `jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
 ```
-python setup.py sdist bdist_wheel
-twine check dist/*
-twine upload dist/*
+(cd jupyterlab_widgets && python setup.py sdist bdist_wheel &&  twine check dist/* && twine upload dist/*)
 ```
 
 Verify that the package is uploaded.
@@ -71,9 +69,7 @@ curl -s https://pypi.org/pypi/jupyterlab-widgets/json | jq  -r '[.releases[][] |
 
 Go into the `widgetsnbextension` directory. Change `widgetsnbextension/_version.py` to reflect the new version number.
 ```
-python setup.py sdist
-python setup.py bdist_wheel --universal
-twine upload dist/*
+(cd widgetsnbextension && python setup.py sdist && python setup.py bdist_wheel --universal && twine upload dist/*)
 ```
 
 Verify that the package is uploaded.
@@ -86,9 +82,7 @@ curl -s https://pypi.org/pypi/widgetsnbextension/json | jq  -r '[.releases[][] |
 Change `ipywidgets/_version.py` to reflect the new version number, and if necessary, a new `__html_manager_version__`. Change the `install_requires` parameter in `setup.py` reference the new widgetsnbextension version.
 
 ```
-python setup.py sdist
-python setup.py bdist_wheel --universal
-twine upload dist/*
+(python setup.py sdist && python setup.py bdist_wheel --universal && twine upload dist/*)
 ```
 
 Verify that the package is uploaded:
@@ -98,7 +92,7 @@ curl -s https://pypi.org/pypi/ipywidgets/json | jq  -r '[.releases[][] | [.uploa
 
 ### Push changes back
 
-Calculate the hashes of the uploaded files. You could use a small shell script, for example, like this on macOS:
+Calculate the hashes of the uploaded files. You could use a small shell script, for example, like this on macOS (put in `scripts/hashes`):
 ```sh
 #!/bin/sh
 for f in $@
@@ -113,12 +107,12 @@ done
 
 Using the above script, you can do:
 ```
-hashes dist/*
-hashes widgetsnbextension/dist/*
-hashes jupyterlab_widgets/dist/*
+./scripts/hashes dist/*
+./scripts/hashes widgetsnbextension/dist/*
+./scripts/hashes jupyterlab_widgets/dist/*
 ```
 
-Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push).
+Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin 7.x (and include the tag in the push).
 
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
 
