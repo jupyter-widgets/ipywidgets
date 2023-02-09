@@ -3,6 +3,17 @@ ipywidgets changelog
 
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
+
+
+7.7.3
+-----
+
+Highlights include:
+
+- Fix cursor override for all widgets (now the default applies) [#3696](https://github.com/jupyter-widgets/ipywidgets/pull/3696)
+- Fix recovering from sleep/standby/reconnect [#3687](https://github.com/jupyter-widgets/ipywidgets/pull/3687)
+
+
 7.7.1
 -----
 
