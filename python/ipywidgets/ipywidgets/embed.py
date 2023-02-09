@@ -12,10 +12,12 @@ Functions for generating embeddable HTML/javascript of a widget.
 
 import json
 import re
-from .widgets import Widget, DOMWidget, widget as widget_module
-from .widgets.widget_link import Link
-from .widgets.docutils import doc_subst
+
 from ._version import __html_manager_version__
+from .widgets import DOMWidget, Widget
+from .widgets import widget as widget_module
+from .widgets.docutils import doc_subst
+from .widgets.widget_link import Link
 
 snippet_template = """
 {load}
@@ -299,7 +301,21 @@ def embed_minimal_html(fp, views, title='IPyWidget export', template=None, **kwa
         will be replaced by all the widgets.
     {embed_kwargs}
     """
-    snippet = embed_snippet(views, **kwargs)
+
+    if kwargs.get("state") is None:
+        state = dependency_state(views, drop_defaults=kwargs.get("drop_defaults"))
+    else:
+        state = kwargs["state"]
+        
+    snippet = embed_snippet(
+        views,
+        drop_defaults=kwargs.get("drop_defaults", True),
+        state=state,
+        indent=kwargs.get("indent", 2),
+        embed_url=kwargs.get("embed_url", None),
+        requirejs=kwargs.get("requirejs", True),
+        cors=kwargs.get("cors", True)
+    )
 
     values = {
         'title': title,
