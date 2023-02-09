@@ -286,7 +286,18 @@ def embed_snippet(views,
 
 
 @doc_subst(_doc_snippets)
-def embed_minimal_html(fp, views, title='IPyWidget export', template=None, **kwargs):
+def embed_minimal_html(
+    fp, 
+    views, 
+    title='IPyWidget export', 
+    template=None,
+    drop_defaults=True,
+    state=None,
+    indent=2,
+    embed_url=None,
+    requirejs=True,
+    cors=True,
+):
     """Write a minimal HTML file with widget views embedded.
 
     Parameters
@@ -299,22 +310,39 @@ def embed_minimal_html(fp, views, title='IPyWidget export', template=None, **kwa
         This should be a Python string with placeholders
         `{{title}}` and `{{snippet}}`. The `{{snippet}}` placeholder
         will be replaced by all the widgets.
-    {embed_kwargs}
+    drop_defaults: boolean
+        Whether to drop default values from the widget states.
+    state: dict or None (default)
+        The state to include. When set to None, the state of all passed views
+        is included. Otherwise it uses the passed state directly. This allows 
+        for end users to include a smaller state, under the responsibility that
+        this state is sufficient to reconstruct the embedded views.
+    indent: integer, string or None
+        The indent to use for the JSON state dump. See `json.dumps` for
+        full description.
+    embed_url: string or None
+        Allows for overriding the URL used to fetch the widget manager
+        for the embedded code. This defaults (None) to a `jsDelivr` CDN url.
+    requirejs: boolean (True)
+        Enables the requirejs-based embedding, which allows for custom widgets.
+        If True, the embed_url should point to an AMD module.
+    cors: boolean (True)
+        If True avoids sending user credentials while requesting the scripts.
+        When opening an HTML file from disk, some browsers may refuse to load
+        the scripts.
     """
 
-    if kwargs.get("state") is None:
-        state = dependency_state(views, drop_defaults=kwargs.get("drop_defaults"))
-    else:
-        state = kwargs["state"]
-        
+    if state is None:
+        state = dependency_state(views, drop_defaults=drop_defaults)
+
     snippet = embed_snippet(
         views,
-        drop_defaults=kwargs.get("drop_defaults", True),
+        drop_defaults=drop_defaults,
         state=state,
-        indent=kwargs.get("indent", 2),
-        embed_url=kwargs.get("embed_url", None),
-        requirejs=kwargs.get("requirejs", True),
-        cors=kwargs.get("cors", True)
+        indent=indent,
+        embed_url=embed_url,
+        requirejs=requirejs,
+        cors=cors
     )
 
     values = {
