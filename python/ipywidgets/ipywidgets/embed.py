@@ -312,11 +312,13 @@ def embed_minimal_html(
         will be replaced by all the widgets.
     drop_defaults: boolean
         Whether to drop default values from the widget states.
-    state: dict or None (default)
-        The state to include. When set to None, the state of all passed views
-        is included. Otherwise it uses the passed state directly. This allows 
-        for end users to include a smaller state, under the responsibility that
-        this state is sufficient to reconstruct the embedded views.
+    state: dict, string or None (default)
+        The state to include. When set to None or "dependent", the state of 
+        all passed views is included. When set to "complete", the complete
+        state of the widget is included. Otherwise it uses the passed state 
+        directly. This allows for end users to include a smaller state, under 
+        the responsibility that this state is sufficient to reconstruct the 
+        embedded views.
     indent: integer, string or None
         The indent to use for the JSON state dump. See `json.dumps` for
         full description.
@@ -332,8 +334,10 @@ def embed_minimal_html(
         the scripts.
     """
 
-    if state is None:
+    if state is None or state == "dependent":
         state = dependency_state(views, drop_defaults=drop_defaults)
+    elif state == "complete":
+        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
 
     snippet = embed_snippet(
         views,
