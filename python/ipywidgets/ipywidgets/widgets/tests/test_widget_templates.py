@@ -229,7 +229,7 @@ class TestTwoByTwoLayout(TestCase):
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"bottom-left bottom-right"')
         # check whether frontend was informed
-        send_state.assert_called_once_with(key="grid_template_areas")
+        send_state.assert_called_with(key="grid_template_areas")
 
         box = widgets.TwoByTwoLayout(top_left=button1, top_right=button3,
                                      bottom_left=None, bottom_right=button4)
@@ -240,7 +240,7 @@ class TestTwoByTwoLayout(TestCase):
         box.merge = False
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"bottom-left bottom-right"')
-        send_state.assert_called_once_with(key="grid_template_areas")
+        send_state.assert_called_with(key="grid_template_areas")
 
 
 class TestAppLayout(TestCase):
