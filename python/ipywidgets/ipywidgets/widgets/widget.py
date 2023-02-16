@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from collections.abc import Iterable
 from IPython import get_ipython
 from traitlets import (
-    Any, HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
+    HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
 from json import loads as jsonloads, dumps as jsondumps
 
@@ -479,7 +479,7 @@ class Widget(LoggingHasTraits):
 
     _view_count = Int(None, allow_none=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
-    comm = Any(None, allow_none=True)
+    comm = Instance(object, allow_none=True)
 
     keys = List(help="The traits which are synced.")
 
@@ -693,7 +693,7 @@ class Widget(LoggingHasTraits):
         # Send the state to the frontend before the user-registered callbacks
         # are called.
         name = change['name']
-        if self.comm is not None:
+        if self.comm is not None and (self.comm.kernel is not None if hasattr(self.comm, "kernel") else True):
             # Make sure this isn't information that the front-end just sent us.
             if name in self.keys and self._should_send_property(name, getattr(self, name)):
                 # Send new state to front-end
@@ -821,7 +821,7 @@ class Widget(LoggingHasTraits):
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
-        if self.comm is not None:
+        if self.comm is not None and (self.comm.kernel is not None if hasattr(self.comm, "kernel") else True):
             self.comm.send(data=msg, buffers=buffers)
 
     def _repr_keys(self):
