@@ -304,6 +304,11 @@ def register(name=''):
     else:
         return reg(name)
 
+# speed up .keys generation at widget instance creation time
+_keys_cache = {}
+# for each class maps keys to a to_json callable
+_trait_to_json_cache = {}
+
 
 class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
@@ -454,13 +459,16 @@ class Widget(LoggingHasTraits):
 
     _view_count = Int(None, allow_none=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
-    comm = Instance('ipykernel.comm.Comm', allow_none=True)
+    comm = None
 
     keys = List(help="The traits which are synced.")
 
     @default('keys')
     def _default_keys(self):
-        return [name for name in self.traits(sync=True)]
+        cls = type(self)
+        if cls not in _keys_cache:
+            _keys_cache[cls] = [name for name in self.traits(sync=True)]
+        return _keys_cache[cls].copy()
 
     _property_lock = Dict()
     _holding_sync = False
@@ -501,16 +509,9 @@ class Widget(LoggingHasTraits):
                 args['comm_id'] = self._model_id
 
             self.comm = Comm(**args)
-
-    @observe('comm')
-    def _comm_changed(self, change):
-        """Called when the comm is changed."""
-        if change['new'] is None:
-            return
-        self._model_id = self.model_id
-
-        self.comm.on_msg(self._handle_msg)
-        Widget.widgets[self.model_id] = self
+            self._model_id = self.model_id
+            self.comm.on_msg(self._handle_msg)
+            Widget.widgets[self.model_id] = self
 
     @property
     def model_id(self):
@@ -576,15 +577,25 @@ class Widget(LoggingHasTraits):
             keys = key
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
-        state = {}
-        traits = self.traits()
-        for k in keys:
-            to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
-            value = to_json(getattr(self, k), self)
-            if not PY3 and isinstance(traits[k], Bytes) and isinstance(value, bytes):
-                value = memoryview(value)
-            if not drop_defaults or not self._compare(value, traits[k].default_value):
-                state[k] = value
+
+        state = {k:getattr(self, k) for k in keys}
+
+        trait_to_json = self._trait_to_json_dict
+        for key in set(keys) & set(trait_to_json):
+            state[key] = trait_to_json[key](state[key], self)
+
+        if not PY3:
+            traits = self.traits()
+            for key in keys:
+                if isinstance(traits[key], Bytes) and isinstance(value, bytes):
+                    state[key] = memoryview(value)
+
+        if drop_defaults:
+            traits = self.traits()
+            for key in keys:
+                value = state[key]
+                if self._compare(value, traits[key].default_value):
+                    del state[key]
         return state
 
     def _is_numpy(self, x):
@@ -721,9 +732,27 @@ class Widget(LoggingHasTraits):
                 self.send_state(self._states_to_send)
                 self._states_to_send.clear()
 
+    @property
+    def _trait_to_json_dict(self):
+        # avoid finding the to_json at runtime by caching it
+        # in the class
+        cls = type(self)
+        if cls not in _trait_to_json_cache:
+            trait_to_json = {}
+            traits = self.traits()
+            for name, trait in traits.items():
+                to_json = trait.metadata.get('to_json')
+                if to_json:
+                    trait_to_json[name] = to_json
+            _trait_to_json_cache[cls] = trait_to_json
+        else:
+            trait_to_json = _trait_to_json_cache[cls]
+        return trait_to_json
+
+
     def _should_send_property(self, key, value):
         """Check the property lock (property_lock)"""
-        to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
+        to_json = self._trait_to_json_dict.get(key, self._trait_to_json)
         if key in self._property_lock:
             # model_state, buffer_paths, buffers
             split_value = _remove_buffers({ key: to_json(value, self)})

@@ -26,7 +26,6 @@ _widget_attrs = {}
 undefined = object()
 
 def setup_test_comm():
-    Widget.comm.klass = DummyComm
     ipywidgets.widgets.widget.Comm = DummyComm
     _widget_attrs['_ipython_display_'] = Widget._ipython_display_
     def raise_not_implemented(*args, **kwargs):
@@ -34,7 +33,6 @@ def setup_test_comm():
     Widget._ipython_display_ = raise_not_implemented
 
 def teardown_test_comm():
-    Widget.comm.klass = Comm
     ipywidgets.widgets.widget.Comm = Comm
     for attr, value in _widget_attrs.items():
         if value is undefined:
