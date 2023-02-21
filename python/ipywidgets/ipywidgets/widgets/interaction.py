@@ -208,7 +208,8 @@ class interactive(VBox):
             # invoke execution.
             for w in self.kwargs_widgets:
                 if isinstance(w, Text):
-                    w.on_submit(self.update)
+                    w.continuous_update = False
+                    w.observe(self.update, names='value')
         else:
             for widget in self.kwargs_widgets:
                 widget.observe(self.update, names='value')

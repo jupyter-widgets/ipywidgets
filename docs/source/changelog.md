@@ -2,8 +2,7 @@
 
 This is a summary of changes in ipywidgets releases. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
-8.0.4
------
+## 8.0.4
 
 Highlights include:
 
@@ -11,8 +10,9 @@ Highlights include:
 - Fix: unintentional deprecation warnings: [#3648](https://github.com/jupyter-widgets/ipywidgets/pull/3648), [#3650](https://github.com/jupyter-widgets/ipywidgets/pull/3650)
 - Fix: registry state lookup failed, making is impossible to create widgets from the frontend: [#3653](https://github.com/jupyter-widgets/ipywidgets/pull/3653)
 
-8.0.3
------
+  8.0.3
+
+---
 
 Highlights include:
 
@@ -21,7 +21,7 @@ Highlights include:
 
 ## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/8.0.0)
 
-To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub, or the 
+To see the full list of pull requests and issues, see the [8.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1) on GitHub, or the
 [full list of changes since 7.x](https://github.com/jupyter-widgets/ipywidgets/compare/7.x...8.0.0). See the [user migration guide](./user_migration_guides.md) for suggestions about migrating your code that uses ipywidgets to 8.0. If you author a custom widget, please see the [custom widget migration guide](./migration_guides.md) for suggestions about migrating your widget to support ipywidgets 8.
 
 ### Users
@@ -87,9 +87,7 @@ The file upload widget has been overhauled to handle multiple files in a more us
 
 See the [user migration guide](./user_migration_guides.md#FileUpload) for details on how to migrate your code.
 
- ([#2767](https://github.com/jupyter-widgets/ipywidgets/pull/2767), [#2724](https://github.com/jupyter-widgets/ipywidgets/pull/2724), [#2666](https://github.com/jupyter-widgets/ipywidgets/pull/2666), [#2480](https://github.com/jupyter-widgets/ipywidgets/issues/2480))
-
-
+([#2767](https://github.com/jupyter-widgets/ipywidgets/pull/2767), [#2724](https://github.com/jupyter-widgets/ipywidgets/pull/2724), [#2666](https://github.com/jupyter-widgets/ipywidgets/pull/2666), [#2480](https://github.com/jupyter-widgets/ipywidgets/issues/2480))
 
 #### More styling options
 
@@ -116,7 +114,7 @@ Many style and layout options have been added to core widgets:
 
 ### Selection container titles
 
-The Accordion, Tab, and Stack widgets now have a `.titles` attribute that you can use to get and set titles from the constructor or as an attribute.  ([#2746](https://github.com/jupyter-widgets/ipywidgets/pull/2746), [#3296](https://github.com/jupyter-widgets/ipywidgets/pull/3296), [#3477](https://github.com/jupyter-widgets/ipywidgets/pull/3477))
+The Accordion, Tab, and Stack widgets now have a `.titles` attribute that you can use to get and set titles from the constructor or as an attribute. ([#2746](https://github.com/jupyter-widgets/ipywidgets/pull/2746), [#3296](https://github.com/jupyter-widgets/ipywidgets/pull/3296), [#3477](https://github.com/jupyter-widgets/ipywidgets/pull/3477))
 
 ```python
 from ipywidgets import Tab, IntSlider, Text
@@ -131,7 +129,6 @@ The slider implementation in the core widgets now uses [nouislider](https://refr
 
 By default, ipywidgets 8 enables a collaboration mode, where widget updates from one frontend are reflected back to other frontends, enabling a consistent state between multiple users and fixing synchronization between the kernel and frontend. You may want to disable these update echo messages if they are using too much bandwidth or causing slower interactivity. To disable echo update messages across ipywidgets, set the environment variable `JUPYTER_WIDGETS_ECHO` to `0`. For widget authors, to opt a specific attribute of custom widget out of echo updates (for example, if the attribute contains a lot of data that does not need to be synchronized), tag the attribute with `echo_update=False` metadata (we do this in core for the FileUpload widget's `data` attribute). ([#3195](https://github.com/jupyter-widgets/ipywidgets/pull/3195), [#3343](https://github.com/jupyter-widgets/ipywidgets/pull/3343), [#3394](https://github.com/jupyter-widgets/ipywidgets/pull/3394), [#3407](https://github.com/jupyter-widgets/ipywidgets/pull/3407))
 
-
 #### CDN for html manager
 
 We have made it easier to load widgets from content delivery networks.
@@ -139,7 +136,6 @@ We have made it easier to load widgets from content delivery networks.
 - The default CDN is changed from unpkg to jsDelivr ([#3121](https://github.com/jupyter-widgets/ipywidgets/pull/3121), [#1627](https://github.com/jupyter-widgets/ipywidgets/issues/1627))
 - You can use the `data-jupyter-widgets-cdn-only` attribute to load modules only from CDN ([#2792](https://github.com/jupyter-widgets/ipywidgets/pull/2792), [#2786](https://github.com/jupyter-widgets/ipywidgets/issues/2786))
 - We have updated the webpack public path settings so the HTMLManager and the Jupyter Notebook extensions pull assets from wherever they are loaded, rather than only from CDN. If you author a custom widget, we highly encourage you to apply similar changes to your widget by adapting the changes at https://github.com/jupyter-widgets/widget-cookiecutter/pull/103/files. [#3464](https://github.com/jupyter-widgets/ipywidgets/pull/3464), [#3508](https://github.com/jupyter-widgets/ipywidgets/pull/3508)
-
 
 #### Other changes
 
@@ -210,15 +206,16 @@ To see an overview of the changes to the core widget model specification, see [#
 - Make the base widget manager `.get_model()` method always return a Promise, which is rejected if the requested model is not registered. To test if a model is registered, use the new `.has_model()` method ([#3389](https://github.com/jupyter-widgets/ipywidgets/pull/3389))
 
 ### Documentation improvements
-- Documentation overhaul ([#3104](https://github.com/jupyter-widgets/ipywidgets/pull/3104), 
-[#3096](https://github.com/jupyter-widgets/ipywidgets/issues/3096), [#3099](https://github.com/jupyter-widgets/ipywidgets/pull/3099), 
-[#3076](https://github.com/jupyter-widgets/ipywidgets/issues/3076), [#2824](https://github.com/jupyter-widgets/ipywidgets/pull/2824), 
-[#3246](https://github.com/jupyter-widgets/ipywidgets/pull/3246), [#3243](https://github.com/jupyter-widgets/ipywidgets/pull/3243), 
-[#3103](https://github.com/jupyter-widgets/ipywidgets/pull/3103), [#3165](https://github.com/jupyter-widgets/ipywidgets/pull/3165), 
-[#3283](https://github.com/jupyter-widgets/ipywidgets/pull/3283), [#2927](https://github.com/jupyter-widgets/ipywidgets/pull/2927),
-[#3062](https://github.com/jupyter-widgets/ipywidgets/pull/3062), [#3129](https://github.com/jupyter-widgets/ipywidgets/pull/3129),
-[#3130](https://github.com/jupyter-widgets/ipywidgets/pull/3130), [#3155](https://github.com/jupyter-widgets/ipywidgets/pull/3155),
-)
+
+- Documentation overhaul ([#3104](https://github.com/jupyter-widgets/ipywidgets/pull/3104),
+  [#3096](https://github.com/jupyter-widgets/ipywidgets/issues/3096), [#3099](https://github.com/jupyter-widgets/ipywidgets/pull/3099),
+  [#3076](https://github.com/jupyter-widgets/ipywidgets/issues/3076), [#2824](https://github.com/jupyter-widgets/ipywidgets/pull/2824),
+  [#3246](https://github.com/jupyter-widgets/ipywidgets/pull/3246), [#3243](https://github.com/jupyter-widgets/ipywidgets/pull/3243),
+  [#3103](https://github.com/jupyter-widgets/ipywidgets/pull/3103), [#3165](https://github.com/jupyter-widgets/ipywidgets/pull/3165),
+  [#3283](https://github.com/jupyter-widgets/ipywidgets/pull/3283), [#2927](https://github.com/jupyter-widgets/ipywidgets/pull/2927),
+  [#3062](https://github.com/jupyter-widgets/ipywidgets/pull/3062), [#3129](https://github.com/jupyter-widgets/ipywidgets/pull/3129),
+  [#3130](https://github.com/jupyter-widgets/ipywidgets/pull/3130), [#3155](https://github.com/jupyter-widgets/ipywidgets/pull/3155),
+  )
 - Remove step parameter from widget list notebook ([#3106](https://github.com/jupyter-widgets/ipywidgets/pull/3106))
 - Remove extra requirements from doc to fix RTD build ([#3098](https://github.com/jupyter-widgets/ipywidgets/pull/3098))
 - Align doc requirements for 7.x branch with master ([#3094](https://github.com/jupyter-widgets/ipywidgets/pull/3094))
@@ -232,8 +229,8 @@ To see an overview of the changes to the core widget model specification, see [#
 - Fix debouncing and throttling code ([#3060](https://github.com/jupyter-widgets/ipywidgets/pull/3060))
 - Variable Inspector example used a wrong callback argument signature ([#3302](https://github.com/jupyter-widgets/ipywidgets/pull/3302))
 
-
 ### Repo maintenance
+
 - Visual regression testing using Galata ([#3172](https://github.com/jupyter-widgets/ipywidgets/pull/3172), [#3279](https://github.com/jupyter-widgets/ipywidgets/pull/3279))
 - Reorganize packages in the monorepo, moving the python packages to the `python` folder ([#3301](https://github.com/jupyter-widgets/ipywidgets/pull/3301), [#3316](https://github.com/jupyter-widgets/ipywidgets/pull/3316))
 - Use new custom widget label on issue template ([#3176](https://github.com/jupyter-widgets/ipywidgets/pull/3176))
@@ -251,12 +248,9 @@ To see an overview of the changes to the core widget model specification, see [#
 
 ([GitHub contributors page for this release](https://github.com/jupyter-widgets/ipywidgets/graphs/contributors?from=2019-06-11&to=2022-08-05&type=c))
 
-
 [@afonit](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Aafonit+updated%3A2019-06-11..2022-08-05&type=Issues) | [@alex-rind](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Aalex-rind+updated%3A2019-06-11..2022-08-05&type=Issues) | [@Alexboiboi](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3AAlexboiboi+updated%3A2019-06-11..2022-08-05&type=Issues) | [@azjps](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Aazjps+updated%3A2019-06-11..2022-08-05&type=Issues) | [@blois](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ablois+updated%3A2019-06-11..2022-08-05&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Abollwyvl+updated%3A2019-06-11..2022-08-05&type=Issues) | [@bsyouness](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Absyouness+updated%3A2019-06-11..2022-08-05&type=Issues) | [@casperdcl](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Acasperdcl+updated%3A2019-06-11..2022-08-05&type=Issues) | [@crahan](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Acrahan+updated%3A2019-06-11..2022-08-05&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Adavidbrochart+updated%3A2019-06-11..2022-08-05&type=Issues) | [@deisi](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Adeisi+updated%3A2019-06-11..2022-08-05&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Adependabot+updated%3A2019-06-11..2022-08-05&type=Issues) | [@elliothershberg](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Aelliothershberg+updated%3A2019-06-11..2022-08-05&type=Issues) | [@fperez](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Afperez+updated%3A2019-06-11..2022-08-05&type=Issues) | [@giswqs](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Agiswqs+updated%3A2019-06-11..2022-08-05&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Agithub-actions+updated%3A2019-06-11..2022-08-05&type=Issues) | [@hai-schrodinger](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ahai-schrodinger+updated%3A2019-06-11..2022-08-05&type=Issues) | [@ianhi](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Aianhi+updated%3A2019-06-11..2022-08-05&type=Issues) | [@ibdafna](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Aibdafna+updated%3A2019-06-11..2022-08-05&type=Issues) | [@jasongrout](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ajasongrout+updated%3A2019-06-11..2022-08-05&type=Issues) | [@jbpauly](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ajbpauly+updated%3A2019-06-11..2022-08-05&type=Issues) | [@joequant](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ajoequant+updated%3A2019-06-11..2022-08-05&type=Issues) | [@joseph2rs](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ajoseph2rs+updated%3A2019-06-11..2022-08-05&type=Issues) | [@jpn--](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ajpn--+updated%3A2019-06-11..2022-08-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ajtpio+updated%3A2019-06-11..2022-08-05&type=Issues) | [@keatonb](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Akeatonb+updated%3A2019-06-11..2022-08-05&type=Issues) | [@kedarisetti](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Akedarisetti+updated%3A2019-06-11..2022-08-05&type=Issues) | [@kefirbandi](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Akefirbandi+updated%3A2019-06-11..2022-08-05&type=Issues) | [@maartenbreddels](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Amaartenbreddels+updated%3A2019-06-11..2022-08-05&type=Issues) | [@manuvazquez](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Amanuvazquez+updated%3A2019-06-11..2022-08-05&type=Issues) | [@marimeireles](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Amarimeireles+updated%3A2019-06-11..2022-08-05&type=Issues) | [@MartinKolarik](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3AMartinKolarik+updated%3A2019-06-11..2022-08-05&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3AmartinRenou+updated%3A2019-06-11..2022-08-05&type=Issues) | [@mbektas](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ambektas+updated%3A2019-06-11..2022-08-05&type=Issues) | [@meeseeksdev](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ameeseeksdev+updated%3A2019-06-11..2022-08-05&type=Issues) | [@meeseeksmachine](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ameeseeksmachine+updated%3A2019-06-11..2022-08-05&type=Issues) | [@mgeier](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Amgeier+updated%3A2019-06-11..2022-08-05&type=Issues) | [@MicaelJarniac](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3AMicaelJarniac+updated%3A2019-06-11..2022-08-05&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Aminrk+updated%3A2019-06-11..2022-08-05&type=Issues) | [@MSeal](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3AMSeal+updated%3A2019-06-11..2022-08-05&type=Issues) | [@mwcraig](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Amwcraig+updated%3A2019-06-11..2022-08-05&type=Issues) | [@NichtJens](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3ANichtJens+updated%3A2019-06-11..2022-08-05&type=Issues) | [@nmstoker](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Anmstoker+updated%3A2019-06-11..2022-08-05&type=Issues) | [@partev](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Apartev+updated%3A2019-06-11..2022-08-05&type=Issues) | [@pbugnion](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Apbugnion+updated%3A2019-06-11..2022-08-05&type=Issues) | [@raziqraif](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Araziqraif+updated%3A2019-06-11..2022-08-05&type=Issues) | [@rsheftel](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Arsheftel+updated%3A2019-06-11..2022-08-05&type=Issues) | [@shaperilio](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Ashaperilio+updated%3A2019-06-11..2022-08-05&type=Issues) | [@smeng9](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Asmeng9+updated%3A2019-06-11..2022-08-05&type=Issues) | [@snickell](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Asnickell+updated%3A2019-06-11..2022-08-05&type=Issues) | [@StefanBrand](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3AStefanBrand+updated%3A2019-06-11..2022-08-05&type=Issues) | [@stonebig](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Astonebig+updated%3A2019-06-11..2022-08-05&type=Issues) | [@SylvainCorlay](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3ASylvainCorlay+updated%3A2019-06-11..2022-08-05&type=Issues) | [@thomasaarholt](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Athomasaarholt+updated%3A2019-06-11..2022-08-05&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Atrungleduc+updated%3A2019-06-11..2022-08-05&type=Issues) | [@vidartf](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Avidartf+updated%3A2019-06-11..2022-08-05&type=Issues) | [@willingc](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Awillingc+updated%3A2019-06-11..2022-08-05&type=Issues) | [@zerline](https://github.com/search?q=repo%3Ajupyter-widgets%2Fipywidgets+involves%3Azerline+updated%3A2019-06-11..2022-08-05&type=Issues)
 
-
-7.7.1
------
+## 7.7.1
 
 To see the full list of pull requests, see the [7.7.1 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/36?closed=1) on GitHub.
 
@@ -268,7 +262,8 @@ Highlights include:
 - Fix tests on Python 3.11 [#3480](https://github.com/jupyter-widgets/ipywidgets/pull/3480)
 - Add better front-page docs [#3496](https://github.com/jupyter-widgets/ipywidgets/pull/3496)
 
-7.7
+  7.7
+
 ---
 
 To see the full list of pull requests and issues, see the [7.7 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/35?closed=1) on GitHub.
@@ -452,7 +447,7 @@ If you are developing a custom widget or widget manager, here are some major cha
   - A custom serializer is given the widget instance as its second argument, and a custom deserializer is given the widget manager as its second argument.
   - The Javascript model `.id` attribute has been renamed to `.model_id` to avoid conflicting with the Backbone `.id` attribute. ([#1410](https://github.com/jupyter-widgets/ipywidgets/pull/1410))
 - Regarding widget managers and the syncing message protocol:
-  - The widget protocol was significantly overhauled. The new widget messaging protocol (version 2) is specified in the [version 2 protocol documentation](https://github.com/jupyter-widgets/ipywidgets/blob/master/jupyter-widgets-schema/messages.md).
+  - The widget protocol was significantly overhauled. The new widget messaging protocol (version 2) is specified in the [version 2 protocol documentation](https://github.com/jupyter-widgets/ipywidgets/blob/main/jupyter-widgets-schema/messages.md).
   - Widgets are now displayed with a `display_data` message instead of with a custom comm message. See the [ipywidgets](https://github.com/jupyter-widgets/ipywidgets/blob/20cd0f050090b1b19bb9657b8c3fa42ae384cfca/ipywidgets/widgets/widget.py#L656) implementation for an example. ([#1274](https://github.com/jupyter-widgets/ipywidgets/pull/1274))
   - Custom widget managers are now responsible completely for loading widget model and view classes. Widget managers should provide an output model and view class appropriate for their environment so that the `Output` widget works. ([#1313](https://github.com/jupyter-widgets/ipywidgets/pull/1313))
   - The widget manager `clear_state` method no longer has a `commlessOnly` argument. All models in the widget manager will be closed and cleared when `clear_state` is called. ([#1354](https://github.com/jupyter-widgets/ipywidgets/pull/1354))
@@ -464,7 +459,7 @@ Major user-visible changes in ipywidgets 6.0 include:
 - Rendering of Jupyter interactive widgets in various web contexts
 
   sphinx documentation: http://ipywidgets.readthedocs.io/en/latest/examples/Widget%20List.html
-  nbviewer: http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb
+  nbviewer: http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Widget%20List.ipynb
   Static web pages: http://jupyter.org/widgets
 
 - Addition of a DatePicker widget in the core widget collection.

@@ -1,11 +1,9 @@
-Migrating custom widget libraries
-=================================
+# Migrating custom widget libraries
 
 These are migration guides specifically for developers of third-party
 widgets.
 
-Migrating from 7.x to 8.0
--------------------------
+## Migrating from 7.x to 8.0
 
 In this section, we discuss migrating a custom widget from ipywidgets 7 to
 ipywidgets 8 or supporting both ipywidgets 7 and ipywidgets 8 with the same
@@ -30,7 +28,7 @@ For example migrations, see these PRs:
 
 Start by updating the dependency in your `setup.py` or `setup.cfg` to support 8.x.
 
-*e.g.*
+_e.g._
 
 ```diff
  install_requires=[
@@ -61,7 +59,7 @@ You can also apply the following diff if you only want to support ipywidgets==8 
 
 Note that "@jupyter-widgets/base" version 5 is reserved for **ipywidgets 7 support on JupyterLab 4**, "@jupyter-widgets/base" version 6 is the version released with ipywidgets 8.
 
-The ``ManagerBase`` class has been split into an interface type `IWidgetManager` which remains in the ``@jupyter-widgets/base`` package, and its implementation which has moved to the new ``@jupyter-widgets/base-manager`` package. So if you subclass the ``ManagerBase`` class, you will need to add a new dependency in your ``package.json`` as following, and update your imports accordingly.
+The `ManagerBase` class has been split into an interface type `IWidgetManager` which remains in the `@jupyter-widgets/base` package, and its implementation which has moved to the new `@jupyter-widgets/base-manager` package. So if you subclass the `ManagerBase` class, you will need to add a new dependency in your `package.json` as following, and update your imports accordingly.
 
 ```diff
 + "@jupyter-widgets/base-manager": "^1",
@@ -77,21 +75,21 @@ We highly encourage you to update your widget's webpack configuration for `publi
 
 The Phosphor library has been archived. It has been forked and renamed [Lumino](https://github.com/jupyterlab/lumino), and the maintenance is now done under the JupyterLab governance.
 
-If you used to import classes like ``JupyterPhosphorPanelWidget`` and ``JupyterPhosphorWidget`` from the ``@jupyter-widgets/base`` library, you will need to update them:
+If you used to import classes like `JupyterPhosphorPanelWidget` and `JupyterPhosphorWidget` from the `@jupyter-widgets/base` library, you will need to update them:
 
 ```diff
 - import { JupyterPhosphorPanelWidget, JupyterPhosphorWidget } from '@jupyter-widgets/base';
 + import { JupyterLuminoPanelWidget, JupyterLuminoWidget } from '@jupyter-widgets/base';
 ```
 
-The ``DOMWidgetView.pWidget`` property has been renamed ``DOMWidgetView.luminoWidget`` (though an alias for ``pWidget`` is available for conveniance):
+The `DOMWidgetView.pWidget` property has been renamed `DOMWidgetView.luminoWidget` (though an alias for `pWidget` is available for conveniance):
 
 ```diff
 - this.pWidget
 + this.luminoWidget
 ```
 
-The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidgetView.processLuminoMessage``. If you want to support both ipywidgets 7.x and 8.x, you should implement both methods and call the correct super method:
+The `DOMWidgetView.processPhosphorMessage` method has been renamed `DOMWidgetView.processLuminoMessage`. If you want to support both ipywidgets 7.x and 8.x, you should implement both methods and call the correct super method:
 
 ```diff
 - processPhosphorMessage(msg: Message): void {
@@ -124,7 +122,7 @@ If you're dropping ipywidgets 7.x support, you can simply rename the `processPho
 
 #### Widget manager import
 
-As mentioned before, if you depend on the ``ManagerBase`` class, you will **either** need to update the import:
+As mentioned before, if you depend on the `ManagerBase` class, you will **either** need to update the import:
 
 ```diff
 - import { ManagerBase } from '@jupyter-widgets/base';
@@ -209,13 +207,13 @@ If you need compatibility with ipywidgets 7, continue using the `get tagName` ac
   }
 ```
 
-Migrating from 6.0 to 7.0
--------------------------
+## Migrating from 6.0 to 7.0
 
 For example migrations, see these PRs:
- - [ipyleaflet](https://github.com/ellisonbg/ipyleaflet/pull/66)
- - [jupyter-gmaps](https://github.com/pbugnion/gmaps/pull/166)
- - bqplot: [PR #458](https://github.com/bloomberg/bqplot/pull/458), [PR #497](https://github.com/bloomberg/bqplot/pull/497) and [PR #501](https://github.com/bloomberg/bqplot/pull/501)
+
+- [ipyleaflet](https://github.com/ellisonbg/ipyleaflet/pull/66)
+- [jupyter-gmaps](https://github.com/pbugnion/gmaps/pull/166)
+- bqplot: [PR #458](https://github.com/bloomberg/bqplot/pull/458), [PR #497](https://github.com/bloomberg/bqplot/pull/497) and [PR #501](https://github.com/bloomberg/bqplot/pull/501)
 
 To avoid tying your development cycle to ipywidgets, we recommend starting
 the migration on a branch and keeping that branch open until ipywidgets 7.0
@@ -236,10 +234,11 @@ cycle through the tags until you see the latest 7.0.0 tag.
 Next, we should update the JavaScript dependencies. The most important change
 for widget developers is that the JavaScript package for jupyter-widgets has
 been split between `@jupyter-widgets/base` and `@jupyter-widgets/controls`:
- - `@jupyter-widgets/base` contains the base widget classes and the layout
-classes
- - `@jupyter-widgets/controls` contains the widget classes for the
-user-facing widgets.
+
+- `@jupyter-widgets/base` contains the base widget classes and the layout
+  classes
+- `@jupyter-widgets/controls` contains the widget classes for the
+  user-facing widgets.
 
 In your `package.json`, remove `jupyter-js-widgets` from your dependencies
 and add `@jupyter-widgets/base`. To find the correct version, go to the
@@ -276,16 +275,15 @@ every import of `jupyter-js-widgets` with an import of
 Your imports should now look like one of the following (depending on how you normally import other modules):
 
 ```javascript
-widgets = require('@jupyter-widgets/base')
+widgets = require('@jupyter-widgets/base');
 ```
 
 ```javascript
-require(['@jupyter-widgets/base'], function(widgets) {
-})
+require(['@jupyter-widgets/base'], function (widgets) {});
 ```
 
 ```javascript
-import * as widgets from '@jupyter-widgets/base'
+import * as widgets from '@jupyter-widgets/base';
 ```
 
 All your widget models should also declare the attributes
@@ -293,14 +291,14 @@ All your widget models should also declare the attributes
 
 ```javascript
 var HelloModel = widgets.DOMWidgetModel.extend({
-    defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
-        _model_name : 'HelloModel',
-        _view_name : 'HelloView',
-        _model_module : 'example_module',
-        _view_module : 'example_module',
-        _model_module_version : '~1.0.0',
-        _view_module_version : '~1.0.0'
-    })
+  defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
+    _model_name: 'HelloModel',
+    _view_name: 'HelloView',
+    _model_module: 'example_module',
+    _view_module: 'example_module',
+    _model_module_version: '~1.0.0',
+    _view_module_version: '~1.0.0',
+  }),
 });
 ```
 
@@ -315,10 +313,10 @@ for details.
 Since you probably want to avoid repeating the module version in every
 widget, a common pattern is to import the version from `package.json` and
 prepend a `~`. See
-[ipyvolume](https://github.com/maartenbreddels/ipyvolume/blob/master/js/src/figure.js#L1245)
+[ipyvolume](https://github.com/widgetti/ipyvolume/blob/master/js/src/figure.ts)
 for an example. If you do this, make sure that your webpack configuration
 includes a JSON loader. See the Webpack configuration for
-[ipyvolume](https://github.com/maartenbreddels/ipyvolume/blob/master/js/webpack.config.js#L7)
+[ipyvolume](https://github.com/widgetti/ipyvolume/blob/master/js/webpack.config.js#L7)
 for an example.
 
 ### Updating the notebook extension
@@ -364,7 +362,10 @@ There are now two options for embedding widgets in an HTML page outside of the n
 If you are just embedding the standard widgets that come with ipywidgets, then you can simply include the following script tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed.js" crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed.js"
+  crossorigin="anonymous"
+></script>
 ```
 
 If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.9.0`
@@ -375,13 +376,22 @@ In order to embed third-party widgets, you can use the RequireJS-based embedding
 
 ```html
 <!-- Load require.js. Delete this if your page already loads require.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"
+  integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA="
+  crossorigin="anonymous"
+></script>
 ```
 
 Then include the following script, which defines the embedding libraries and runs the function to render widgets:
+
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js"
+  crossorigin="anonymous"
+></script>
 ```
+
 If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.9.0`
 
 If you need to embed custom widgets without using RequireJS, you'll need to compile your own embedding javascript that includes the third-party libraries.

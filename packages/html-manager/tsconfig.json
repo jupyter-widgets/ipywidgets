@@ -10,7 +10,13 @@
       "path": "../base"
     },
     {
+      "path": "../base-manager"
+    },
+    {
       "path": "../controls"
+    },
+    {
+      "path": "../output"
     }
   ]
 }

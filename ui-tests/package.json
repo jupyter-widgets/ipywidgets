@@ -5,15 +5,17 @@
   "description": "ipywidgets UI Tests",
   "scripts": {
     "start": "jupyter lab --config ./jupyter_server_config.py",
-    "start:detached": "yarn run start&",
+    "start:detached": "jlpm start&",
     "test": "playwright test",
     "test:debug": "PWDEBUG=1 playwright test",
     "test:report": "http-server ./playwright-report -a localhost -o",
-    "test:update": "playwright test --update-snapshots"
+    "test:update": "playwright test --update-snapshots",
+    "deduplicate": "jlpm && yarn-deduplicate -s fewer --fail"
   },
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
-  "dependencies": {
-    "@jupyterlab/galata": "~4.0.2"
+  "devDependencies": {
+    "@jupyterlab/galata": "^4.5.1",
+    "yarn-deduplicate": "^6.0.1"
   }
 }

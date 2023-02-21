@@ -8,14 +8,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-        cache: 'yarn'
-    - name: yarn install, integrity, lint
-      run: |
-        yarn install --frozen-lockfile
-        yarn run integrity
-        yarn run lint:check
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: yarn
+      - name: yarn install, integrity, lint
+        run: |
+          yarn --frozen-lockfile
+          yarn integrity
+          yarn lint:check

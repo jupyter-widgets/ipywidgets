@@ -2,15 +2,14 @@
 
 Jupyter interactive widgets can be serialized and embedded into
 
- - static web pages
- - sphinx documentation
- - html-converted notebooks on nbviewer
+- static web pages
+- sphinx documentation
+- html-converted notebooks on nbviewer
 
 Here, we discuss embedding widgets using the custom widget manager in the `@jupyter-widgets/html-manager` npm package. Two embedders are provided:
 
 1. A basic embedder that only embeds standard controls, but can be used on any web page
 2. An embedder that uses RequireJS, and can embed standard and custom widgets
-
 
 ## Embedding Widgets in HTML Web Pages
 
@@ -19,9 +18,9 @@ that can be embedded into any static web page:
 
 The menu provides three sets of actions
 
- - Save Notebook Widget State and Clear Notebook Widget State
- - Download Widget State
- - Embed Widgets
+- Save Notebook Widget State and Clear Notebook Widget State
+- Download Widget State
+- Embed Widgets
 
 ### Save Notebook Widget State
 
@@ -40,14 +39,14 @@ which embeds the current widgets. In order to support custom widgets, it uses th
 
 This HTML snippet is composed of multiple `<script>` tags embedded into an HTML document:
 
- - The first script tag loads RequireJS from a CDN. If you already have RequireJS on the page, you can delete this script tag.
+- The first script tag loads RequireJS from a CDN. If you already have RequireJS on the page, you can delete this script tag.
 
- - The second script tag loads the RequireJS widget embedder. This defines appropriate modules and then sets up a function to render all of the widget views included on the page. If you are only embedding standard widgets and do not want to use RequireJS, you can replace these first two script tags with a script tag loading the standard embedder.
+- The second script tag loads the RequireJS widget embedder. This defines appropriate modules and then sets up a function to render all of the widget views included on the page. If you are only embedding standard widgets and do not want to use RequireJS, you can replace these first two script tags with a script tag loading the standard embedder.
 
- - The next script tag is a script tag with mime type
-   `application/vnd.jupyter.widget-state+json` that contains the state of all
-   the widget models currently in use. The JSON schema for the content of this
-   script tag is found in the `@jupyter-widgets/schema` npm package.
+- The next script tag is a script tag with mime type
+  `application/vnd.jupyter.widget-state+json` that contains the state of all
+  the widget models currently in use. The JSON schema for the content of this
+  script tag is found in the `@jupyter-widgets/schema` npm package.
 
 - Then there are a number of script tags, each with mime type
   `application/vnd.jupyter.widget-view+json`, corresponding to the views which
@@ -56,7 +55,7 @@ This HTML snippet is composed of multiple `<script>` tags embedded into an HTML 
   content of these script tags is found in the `@jupyter-widgets/schema` npm
   package.
 
-  The *Embed Widgets* action currently creates one of these script tags for each
+  The _Embed Widgets_ action currently creates one of these script tags for each
   view displayed in the notebook. If you'd like to lay out the views, or include
   only some of them, you can delete or include these script tags as you wish.
 
@@ -115,9 +114,9 @@ html_template = """
     <title>Widget export</title>
 
     <!-- Load RequireJS, used by the IPywidgets for dependency management -->
-    <script 
-      src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" 
-      integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"
+      integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA="
       crossorigin="anonymous">
     </script>
 
@@ -125,7 +124,7 @@ html_template = """
     <script
       data-jupyter-widgets-cdn="https://unpkg.com/"
       data-jupyter-widgets-cdn-only
-      src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" 
+      src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js"
       crossorigin="anonymous">
     </script>
 
@@ -253,7 +252,7 @@ If your notebook was saved with the special "Save Notebook Widget State" action
 in the Widgets menu, interactive widgets displayed in your notebook should also
 be rendered on nbviewer.
 
-See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb)
+See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Widget%20List.ipynb)
 example from the documentation.
 
 ## The Case of Custom Widget Libraries
@@ -291,31 +290,30 @@ agnostic to the context in which it is used (Notebook, JupyterLab, static web
 page). For each context, we specialize the base widget manager implemented in
 `@jupyter-widgets/base` to provide the logic for
 
- - where widgets should be displayed,
- - how to retrieve information about their state.
+- where widgets should be displayed,
+- how to retrieve information about their state.
 
 Specifically:
 
- - The `widgetsnbextension` Python package provides the implementation of a specialized widget
-   manager for the classic Jupyter notebook, and the packaging logic as a notebook
-   extension.
- - The `@jupyter-widgets/jupyterlab-manager` npm package provides the implementation of a specialized widget
-   manager for the context of `JupyterLab`, and the packaging logic as a lab
-   extension.
- - The embed manager implemented in the `@jupyter-widgets/html-manager` npm package is a specialization of
-   the base  widget manager used for the static embedding of widgets used by
-   the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
-   discussed above.
+- The `widgetsnbextension` Python package provides the implementation of a specialized widget
+  manager for the classic Jupyter notebook, and the packaging logic as a notebook
+  extension.
+- The `@jupyter-widgets/jupyterlab-manager` npm package provides the implementation of a specialized widget
+  manager for the context of `JupyterLab`, and the packaging logic as a lab
+  extension.
+- The embed manager implemented in the `@jupyter-widgets/html-manager` npm package is a specialization of
+  the base widget manager used for the static embedding of widgets used by
+  the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
+  discussed above.
 
-We provide [additional examples](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples) of specializations of the base widget manager
+We provide [additional examples](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples) of specializations of the base widget manager
 implementing other usages of Jupyter widgets in web contexts.
 
-1. The [`web1`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web1) example is a simplistic example showcasing the use of
+1. The [`web1`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web1) example is a simplistic example showcasing the use of
    Jupyter widgets in a web context.
-2. The [`web2`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web2) example is a simple example making use of the
+2. The [`web2`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web2) example is a simple example making use of the
    `application/vnd.jupyter.widget-state+json` mime type.
-3. The [`web3`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web3) example showcases how communication with a Jupyter kernel can
+3. The [`web3`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web3) example showcases how communication with a Jupyter kernel can
    happen in a web context outside of the notebook or jupyterlab contexts.
-4. The [`web4`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web4) example shows how to embed widgets in an HTML document
+4. The [`web4`](https://github.com/jupyter-widgets/ipywidgets/tree/main/examples/web4) example shows how to embed widgets in an HTML document
    using the HTML widget manager.
-

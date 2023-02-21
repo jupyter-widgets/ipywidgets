@@ -1,18 +1,24 @@
 bqplot
 build
+docutils >=0.19
 ipykernel
-jupyter_client
-jupyterlab>=3,<4
-jupyterlite-sphinx
+ipyleaflet
+jupyter-client
+jupyter-packaging
+jupyterlab >=3,<4
+jupyterlite ==0.1.0b18
 matplotlib
-nbsphinx>=0.5
+myst-nb >=0.17,<0.18
 numpy
-recommonmark
-sphinx>=1.4.6
-sphinx_rtd_theme
 packaging
+pkginfo
+pydata-sphinx-theme
+recommonmark
 scikit-image
 scikit-learn
+sphinx >=1.4.6
+sphinx-autobuild
+sphinx-autodoc-typehints
+sphinx-copybutton
+sphinxext-rediraffe
 sympy
-jupyterlite==0.1.0b14
-jupyterlite-sphinx~=0.7.2

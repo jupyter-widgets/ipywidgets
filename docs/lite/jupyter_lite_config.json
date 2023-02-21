@@ -1,0 +1,17 @@
+{
+  "LiteBuildConfig": {
+    "extra_ignore_contents": [
+      "Layout Example\\.ipynb",
+      "Layout Templates\\.ipynb",
+      "Variable Inspector\\.ipynb"
+    ],
+    "contents": ["../source/examples"]
+  },
+  "PipliteAddon": {
+    "piplite_urls": [
+      "../../python/ipywidgets/dist",
+      "../../python/widgetsnbextension/dist",
+      "../../python/jupyterlab_widgets/dist"
+    ]
+  }
+}
