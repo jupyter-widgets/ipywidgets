@@ -5,7 +5,7 @@ ipykernel
 ipyleaflet
 jupyter-client
 jupyter-packaging
-jupyterlab >=3,<4
+jupyterlab ==4.0.0a34 
 jupyterlite ==0.1.0b18
 matplotlib
 myst-nb >=0.17,<0.18
