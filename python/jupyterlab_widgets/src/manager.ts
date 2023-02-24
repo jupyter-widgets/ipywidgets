@@ -455,9 +455,9 @@ export class WidgetManager extends LabWidgetManager {
    */
   private _saveState(): void {
     const state = this.get_state_sync({ drop_defaults: true });
-    this._context.model.metadata.set('widgets', {
+    this._context.contentsModel?.content.metadata.set('widgets', {
       'application/vnd.jupyter.widget-state+json': state,
-    });
+    }); 
   }
 
   _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
@@ -512,7 +512,7 @@ export class WidgetManager extends LabWidgetManager {
    * Load widget state from notebook metadata
    */
   async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
-    const widget_md = notebook.metadata.get('widgets') as any;
+    const widget_md = notebook.getMetadata('widgets');
     // Restore any widgets from saved state that are not live
     if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
       let state = widget_md[WIDGET_STATE_MIMETYPE];
