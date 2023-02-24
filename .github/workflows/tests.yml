@@ -11,7 +11,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
           cache: 'pip'
           cache-dependency-path: |
             **/setup.cfg
@@ -39,7 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
           cache: 'pip'
           cache-dependency-path: |
             **/setup.cfg
@@ -87,7 +87,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
       - uses: actions/checkout@v3
@@ -118,7 +118,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
           cache: 'pip'
           cache-dependency-path: |
             **/setup.cfg
