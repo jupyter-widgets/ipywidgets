@@ -457,7 +457,7 @@ export class WidgetManager extends LabWidgetManager {
     const state = this.get_state_sync({ drop_defaults: true });
     this._context.contentsModel?.content.metadata.set('widgets', {
       'application/vnd.jupyter.widget-state+json': state,
-    }); 
+    });
   }
 
   _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
