@@ -169,7 +169,7 @@ jobs:
 
       - name: Build and Install ipywidgets
         run: |
-          yarn --frozen-lockfile
+          yarn
           yarn build
 
       - name: Build the extension
