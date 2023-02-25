@@ -188,7 +188,7 @@ jobs:
       - name: Install Test Dependencies
         run: |
           cd ui-tests
-          yarn --frozen-lockfile
+          yarn
           yarn playwright install chromium
 
       - name: Launch JupyterLab
