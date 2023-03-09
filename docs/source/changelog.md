@@ -72,7 +72,7 @@ The new Stack container widget shows only the selected child widget, while other
 from ipywidgets import Stack, Button, IntSlider, Dropdown, VBox, link
 s = Stack([Button(description='Click here'), IntSlider()], selected_index=0)
 d = Dropdown(options=['button', 'slider'])
-link((dropdown, 'index'), (stacked, 'selected_index'))
+link((d, 'index'), (s, 'selected_index'))
 VBox([d, s])
 ```
 
