@@ -136,6 +136,7 @@ class Output(DOMWidget):
                 ip.showtraceback((etype, evalue, tb), tb_offset=0)
             elif (self.comm is not None and
                     getattr(self.comm, "kernel", None) is not None and
+                    # Check if it's ipykernel
                     getattr(self.comm.kernel, "send_response", None) is not None):
                 kernel = self.comm.kernel
                 kernel.send_response(kernel.iopub_socket,
