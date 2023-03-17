@@ -759,7 +759,7 @@ export class WidgetView extends NativeView<WidgetModel> {
 
     this.once('displayed', () => {
       if (typeof this.model.get('_view_count') === 'number') {
-        this.model.set('_view_count', this.model.get('_view_count') + 1);
+        this.model.set('_view_count', (this.model.get('_view_count') || 0) + 1);
         this.model.save_changes();
       }
     });
