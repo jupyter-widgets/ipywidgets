@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from collections.abc import Iterable
 from IPython import get_ipython
 from traitlets import (
-    HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
+    Any, HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
 from json import loads as jsonloads, dumps as jsondumps
 
@@ -479,7 +479,7 @@ class Widget(LoggingHasTraits):
 
     _view_count = Int(None, allow_none=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
-    comm = Instance(object, allow_none=True)
+    comm = Any(allow_none=True)
 
     keys = List(help="The traits which are synced.")
 
