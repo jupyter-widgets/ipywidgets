@@ -236,4 +236,4 @@ def test_append_display_data():
             }
         },
     )
-    assert widget.outputs == expected1, repr(widget.outputs) or widget.outputs == expected2, repr(widget.outputs)
+    assert widget.outputs == (expected1, repr(widget.outputs)) or widget.outputs == (expected2, repr(widget.outputs))
