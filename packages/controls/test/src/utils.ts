@@ -45,7 +45,7 @@ export class MockComm implements widgets.IClassicComm {
 
   close(
     data?: JSONValue,
-    callbacks?: ICallbacks,
+    callbacks?: widgets.ICallbacks,
     metadata?: JSONObject,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string {
