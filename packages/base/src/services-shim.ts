@@ -8,6 +8,7 @@
  */
 
 import { Kernel, KernelMessage } from '@jupyterlab/services';
+import type { JSONValue, JSONObject } from '@lumino/coreutils';
 
 /**
  * Callbacks for services shim comms.
@@ -40,9 +41,9 @@ export interface IClassicComm {
    * @return msg id
    */
   open(
-    data: any,
-    callbacks: any,
-    metadata?: any,
+    data: JSONValue,
+    callbacks?: ICallbacks,
+    metadata?: JSONObject,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string;
 
@@ -55,9 +56,9 @@ export interface IClassicComm {
    * @return message id
    */
   send(
-    data: any,
-    callbacks: any,
-    metadata?: any,
+    data: JSONValue,
+    callbacks?: ICallbacks,
+    metadata?: JSONObject,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string;
 
@@ -70,9 +71,9 @@ export interface IClassicComm {
    * @return msg id
    */
   close(
-    data?: any,
-    callbacks?: any,
-    metadata?: any,
+    data?: JSONValue,
+    callbacks?: ICallbacks,
+    metadata?: JSONObject,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string;
 
@@ -218,9 +219,9 @@ export namespace shims {
        * @return msg id
        */
       open(
-        data: any,
-        callbacks: any,
-        metadata?: any,
+        data: JSONValue,
+        callbacks?: ICallbacks,
+        metadata?: JSONObject,
         buffers?: ArrayBuffer[] | ArrayBufferView[]
       ): string {
         const future = this.jsServicesComm.open(data, metadata, buffers);
@@ -237,9 +238,9 @@ export namespace shims {
        * @return message id
        */
       send(
-        data: any,
-        callbacks: any,
-        metadata?: any,
+        data: JSONValue,
+        callbacks?: ICallbacks,
+        metadata?: JSONObject,
         buffers?: ArrayBuffer[] | ArrayBufferView[]
       ): string {
         const future = this.jsServicesComm.send(data, metadata, buffers);
@@ -255,9 +256,9 @@ export namespace shims {
        * @return msg id
        */
       close(
-        data?: any,
-        callbacks?: any,
-        metadata?: any,
+        data?: JSONValue,
+        callbacks?: ICallbacks,
+        metadata?: JSONObject,
         buffers?: ArrayBuffer[] | ArrayBufferView[]
       ): string {
         const future = this.jsServicesComm.close(data, metadata, buffers);
@@ -288,7 +289,7 @@ export namespace shims {
        */
       _hookupCallbacks(
         future: Kernel.IShellFuture,
-        callbacks: ICallbacks
+        callbacks?: ICallbacks
       ): void {
         if (callbacks) {
           future.onReply = function (msg): void {

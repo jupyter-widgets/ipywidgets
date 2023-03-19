@@ -9,7 +9,7 @@ import $ from 'jquery';
 
 import { NativeView } from './nativeview';
 
-import { JSONObject } from '@lumino/coreutils';
+import { JSONObject, JSONValue } from '@lumino/coreutils';
 
 import { Message, MessageLoop } from '@lumino/messaging';
 
@@ -164,8 +164,8 @@ export class WidgetModel extends Backbone.Model {
    * Send a custom msg over the comm.
    */
   send(
-    content: {},
-    callbacks: {},
+    content: JSONValue,
+    callbacks?: ICallbacks,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): void {
     if (this.comm !== undefined) {
