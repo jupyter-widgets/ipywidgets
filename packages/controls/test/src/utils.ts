@@ -5,6 +5,8 @@ import * as widgets from '@jupyter-widgets/base';
 import * as services from '@jupyterlab/services';
 import { DummyManager } from './dummy-manager';
 
+import type { JSONValue, JSONObject } from '@lumino/coreutils';
+
 let numComms = 0;
 
 export class MockComm implements widgets.IClassicComm {
@@ -30,8 +32,9 @@ export class MockComm implements widgets.IClassicComm {
   }
 
   open(
-    data?: any,
-    metadata?: any,
+    data: JSONValue,
+    callbacks?: widgets.ICallbacks,
+    metadata?: JSONObject,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string {
     if (this._on_open) {
@@ -41,8 +44,9 @@ export class MockComm implements widgets.IClassicComm {
   }
 
   close(
-    data?: any,
-    metadata?: any,
+    data?: JSONValue,
+    callbacks?: ICallbacks,
+    metadata?: JSONObject,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string {
     if (this._on_close) {
@@ -52,8 +56,9 @@ export class MockComm implements widgets.IClassicComm {
   }
 
   send(
-    data?: any,
-    metadata?: any,
+    data: JSONValue,
+    callbacks?: widgets.ICallbacks,
+    metadata?: JSONObject,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): string {
     return '';
