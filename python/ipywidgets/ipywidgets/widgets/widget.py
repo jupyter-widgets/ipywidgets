@@ -10,7 +10,7 @@ import typing
 from contextlib import contextmanager
 from collections.abc import Iterable
 from IPython import get_ipython
-from ipykernel.comm import Comm
+from comm import create_comm
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
@@ -525,7 +525,7 @@ class Widget(LoggingHasTraits):
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
 
-            self.comm = Comm(**args)
+            self.comm = create_comm(**args)
 
     @observe('comm')
     def _comm_changed(self, change):
