@@ -2,6 +2,17 @@
 
 This is a summary of changes in ipywidgets releases. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
+## 8.0.5
+
+Highlights include:
+
+- Fix: propertly typed Comm interface [#3722](https://github.com/jupyter-widgets/ipywidgets/pull/3722)
+- Fix: support the comm package [#3533](https://github.com/jupyter-widgets/ipywidgets/pull/3533)
+- Fix: use of structuredClone allows for binary traits out of the box [#3689](https://github.com/jupyter-widgets/ipywidgets/pull/3689)
+- Fix: combobox update issue [#3681](https://github.com/jupyter-widgets/ipywidgets/issues/3681)
+- Fix: add grey as valid color [#3671](https://github.com/jupyter-widgets/ipywidgets/pull/3671)
+- Fix: deprecation warning when using interact [#3669](https://github.com/jupyter-widgets/ipywidgets/issues/3669)
+
 ## 8.0.4
 
 Highlights include:
@@ -10,7 +21,7 @@ Highlights include:
 - Fix: unintentional deprecation warnings: [#3648](https://github.com/jupyter-widgets/ipywidgets/pull/3648), [#3650](https://github.com/jupyter-widgets/ipywidgets/pull/3650)
 - Fix: registry state lookup failed, making is impossible to create widgets from the frontend: [#3653](https://github.com/jupyter-widgets/ipywidgets/pull/3653)
 
-  8.0.3
+##  8.0.3
 
 ---
 
