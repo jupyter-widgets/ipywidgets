@@ -34,13 +34,18 @@ class DummyComm():
     def close(self, *args, **kwargs):
         pass
 
+class DummyCommManager():
+
+    def unregister_comm(self, comm):
+        pass
+
 
 def dummy_create_comm(**kwargs):
     return DummyComm()
 
 
 def dummy_get_comm_manager(**kwargs):
-    return {}
+    return DummyCommManager()
 
 
 _widget_attrs = {}
