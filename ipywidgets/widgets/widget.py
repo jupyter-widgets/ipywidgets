@@ -18,7 +18,7 @@ except ImportError:
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets import (
-    HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
+    Any, HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
@@ -454,7 +454,7 @@ class Widget(LoggingHasTraits):
 
     _view_count = Int(None, allow_none=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
-    comm = Instance('ipykernel.comm.Comm', allow_none=True)
+    comm = Any(allow_none=True)
 
     keys = List(help="The traits which are synced.")
 
@@ -500,7 +500,15 @@ class Widget(LoggingHasTraits):
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
 
-            self.comm = Comm(**args)
+            try:
+                from comm import create_comm
+            except ImportError:
+                def create_comm(**kwargs):
+                    from ipykernel.comm import Comm
+
+                    return Comm(**kwargs)
+
+            self.comm = create_comm(**args)
 
     @observe('comm')
     def _comm_changed(self, change):
@@ -678,7 +686,7 @@ class Widget(LoggingHasTraits):
         # Send the state to the frontend before the user-registered callbacks
         # are called.
         name = change['name']
-        if self.comm is not None and self.comm.kernel is not None:
+        if self.comm is not None and getattr(self.comm, 'kernel', True) is not None:
             # Make sure this isn't information that the front-end just sent us.
             if name in self.keys and self._should_send_property(name, getattr(self, name)):
                 # Send new state to front-end
@@ -813,7 +821,7 @@ class Widget(LoggingHasTraits):
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
-        if self.comm is not None and self.comm.kernel is not None:
+        if self.comm is not None and (self.comm.kernel is not None if hasattr(self.comm, "kernel") else True):
             self.comm.send(data=msg, buffers=buffers)
 
     def _repr_keys(self):
