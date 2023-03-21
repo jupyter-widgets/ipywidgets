@@ -10,7 +10,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook "nodejs==16.*" "yarn<2" twine jupyterlab=3 jupyter-packaging jq python==3.8
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook "nodejs==16.*" "yarn<2" twine jupyterlab=3 jupyter-packaging jq python==3.9
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git

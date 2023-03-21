@@ -4,6 +4,14 @@ ipywidgets changelog
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
 
+7.7.4
+-----
+
+Highlights include
+
+ - (backport) Fix: add grey as valid color [#3671](https://github.com/jupyter-widgets/ipywidgets/pull/3671) 
+ - (backport) Fix: use of structuredClone allows for binary traits out of the box [#3689](https://github.com/jupyter-widgets/ipywidgets/pull/3689)
+ - (backport) Fix: support the comm package [#3533](https://github.com/jupyter-widgets/ipywidgets/pull/3533)
 
 7.7.3
 -----
