@@ -29,7 +29,7 @@
     "sort-package-json": "lerna exec --stream --parallel sort-package-json && sort-package-json",
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated",
-    "version": "yarn clean && yarn build && lerna version --no-push -m \"Bump version\" ",
+    "bump": "yarn clean && yarn build && lerna version --no-push -m \"Bump version\" ",
     "watch": "lerna run --stream watch"
   },
   "husky": {

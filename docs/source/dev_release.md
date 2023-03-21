@@ -48,7 +48,7 @@ git pull origin main
 git reset --hard origin/main
 git clean -fdx
 yarn install
-yarn version
+yarn run bump
 # Check the latest commit to make sure it is correct
 yarn publish
 ```
