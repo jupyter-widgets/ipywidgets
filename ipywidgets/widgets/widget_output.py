@@ -31,7 +31,7 @@ class Output(DOMWidget):
     context will be captured and displayed in the widget instead of the standard output
     area.
 
-    You can also use the .capture() method to decorate a function or a method. Any output 
+    You can also use the .capture() method to decorate a function or a method. Any output
     produced by the function will then go to the output widget. This is useful for
     debugging widget callbacks, for example.
 
