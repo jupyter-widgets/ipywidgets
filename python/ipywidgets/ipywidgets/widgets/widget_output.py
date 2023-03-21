@@ -111,9 +111,9 @@ class Output(DOMWidget):
         kernel = None
         if ip and getattr(ip, "kernel", None) is not None:
             kernel = ip.kernel
-        elif self.comm is not None and self.comm.kernel is not None:
+        elif self.comm is not None and getattr(self.comm, 'kernel', True) is not None:
             kernel = self.comm.kernel
-        
+
         if kernel:
             parent = None
             if hasattr(kernel, "get_parent"):
@@ -134,7 +134,10 @@ class Output(DOMWidget):
             if ip:
                 kernel = ip
                 ip.showtraceback((etype, evalue, tb), tb_offset=0)
-            elif self.comm is not None and self.comm.kernel is not None:
+            elif (self.comm is not None and
+                    getattr(self.comm, "kernel", None) is not None and
+                    # Check if it's ipykernel
+                    getattr(self.comm.kernel, "send_response", None) is not None):
                 kernel = self.comm.kernel
                 kernel.send_response(kernel.iopub_socket,
                                      u'error',
