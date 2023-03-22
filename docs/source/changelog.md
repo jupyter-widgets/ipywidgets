@@ -21,7 +21,7 @@ Highlights include:
 - Fix: unintentional deprecation warnings: [#3648](https://github.com/jupyter-widgets/ipywidgets/pull/3648), [#3650](https://github.com/jupyter-widgets/ipywidgets/pull/3650)
 - Fix: registry state lookup failed, making is impossible to create widgets from the frontend: [#3653](https://github.com/jupyter-widgets/ipywidgets/pull/3653)
 
-##  8.0.3
+## 8.0.3
 
 ---
 
