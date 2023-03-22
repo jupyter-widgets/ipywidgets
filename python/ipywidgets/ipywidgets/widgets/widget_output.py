@@ -111,7 +111,7 @@ class Output(DOMWidget):
         kernel = None
         if ip and getattr(ip, "kernel", None) is not None:
             kernel = ip.kernel
-        elif self.comm is not None and getattr(self.comm, 'kernel', True) is not None:
+        elif self.comm is not None and getattr(self.comm, 'kernel', None) is not None:
             kernel = self.comm.kernel
 
         if kernel:
