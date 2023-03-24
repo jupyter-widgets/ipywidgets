@@ -14,6 +14,9 @@ module.exports = function (config) {
         { type: 'html', dir: 'test/coverage' },
       ],
     },
+    mochaReporter: {
+      showDiff: true
+    },
     port: 9876,
     colors: true,
     singleRun: true,
