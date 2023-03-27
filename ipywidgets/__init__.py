@@ -29,7 +29,7 @@ except ImportError:
     def get_comm_manager():
         ip = get_ipython()
 
-        if ip is not None and ip.kernel is not None:
+        if ip is not None and getattr(ip, "kernel", None) is not None:
             return get_ipython().kernel.comm_manager
 
 from ._version import version_info, __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
