@@ -4,7 +4,7 @@ module.exports = function (config) {
     frameworks: ['mocha'],
     reporters: ['mocha'],
     mochaReporter: {
-      showDiff: true
+      showDiff: true,
     },
     files: ['test/build/bundle.js'],
     port: 9876,
