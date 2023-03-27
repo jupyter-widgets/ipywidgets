@@ -37,8 +37,9 @@ const IPY_MODEL_ = 'IPY_MODEL_';
 /**
  * A best-effort method for performing deep copies.
  */
-const deepcopy =
-  globalThis.structuredClone || ((x: any) => JSON.parse(JSON.stringify(x)));
+const deepcopyJSON = (x: JSONValue) => JSON.parse(JSON.stringify(x));
+
+const deepcopy = globalThis.structuredClone || deepcopyJSON;
 
 /**
  * Replace model ids with models recursively.
@@ -572,7 +573,7 @@ export class WidgetModel extends Backbone.Model {
 
         if (serialize == null && keySerializers.deserialize === unpack_models) {
           // handle https://github.com/jupyter-widgets/ipywidgets/issues/3735
-          serialize = pack_models;
+          serialize = deepcopyJSON;
         }
 
         if (serialize) {
