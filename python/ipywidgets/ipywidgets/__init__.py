@@ -30,7 +30,7 @@ except ImportError:
     def get_comm_manager():
         ip = get_ipython()
 
-        if ip is not None and ip.kernel is not None:
+        if ip is not None and getattr(ip, "kernel", None) is not None:
             return get_ipython().kernel.comm_manager
 
 from .widgets import *
