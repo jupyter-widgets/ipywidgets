@@ -47,7 +47,8 @@ def load_ipython_extension(ip):
 def register_comm_target(kernel=None):
     """Register the jupyter.widget comm target"""
     comm_manager = get_comm_manager()
-
+    if comm_manager is None:
+        return
     comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
     comm_manager.register_target('jupyter.widget.control', Widget.handle_control_comm_opened)
 
