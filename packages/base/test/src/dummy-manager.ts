@@ -133,11 +133,35 @@ class BinaryWidgetView extends TestWidgetView {
   _rendered = 0;
 }
 
+class ContainerWidget extends TestWidget {
+  static serializers = {
+    ...widgets.WidgetModel.serializers,
+    children: { deserialize: widgets.unpack_models },
+  };
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'ContainerWidget',
+      _view_name: 'ContainerWidgetView',
+      children: [],
+    };
+  }
+}
+
+class ContainerWidgetView extends TestWidgetView {
+  render(): void {
+    this._rendered += 1;
+  }
+  _rendered = 0;
+}
+
 const testWidgets = {
   TestWidget,
   TestWidgetView,
   BinaryWidget,
   BinaryWidgetView,
+  ContainerWidget,
+  ContainerWidgetView,
 };
 
 export class DummyManager implements widgets.IWidgetManager {

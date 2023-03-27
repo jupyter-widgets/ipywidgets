@@ -15,7 +15,7 @@ module.exports = function (config) {
       ],
     },
     mochaReporter: {
-      showDiff: true
+      showDiff: true,
     },
     port: 9876,
     colors: true,

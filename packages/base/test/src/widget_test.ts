@@ -71,6 +71,48 @@ describe('unpack_models', function () {
   });
 });
 
+describe('serialize/deserialize', function () {
+  before(async function () {
+    this.manager = new DummyManager();
+    this.widgetChild = await this.manager.new_widget({
+      model_name: 'WidgetModel',
+      model_module: '@jupyter-widgets/base',
+      model_module_version: '1.2.0',
+      view_name: 'WidgetView',
+      view_module: '@jupyter-widgets/base',
+      view_module_version: '1.2.0',
+      model_id: 'widgetChild',
+    });
+
+    this.widgetContainer = await this.manager.new_widget(
+      {
+        model_name: 'ContainerWidget',
+        model_module: 'test-widgets',
+        model_module_version: '1.2.0',
+        view_name: 'ContainerWidgetView',
+        view_module: 'test-widgets',
+        view_module_version: '1.2.0',
+        model_id: 'widgetContainer',
+      },
+      { children: [`IPY_MODEL_${this.widgetChild.model_id}`] }
+    );
+  });
+  it('serializes', function () {
+    const state = this.widgetContainer.get_state(false);
+    const serializedState = this.widgetContainer.serialize(state);
+    expect(serializedState).to.deep.equal({
+      _model_module: 'test-widgets',
+      _model_module_version: '1.0.0',
+      _model_name: 'ContainerWidget',
+      _view_count: null,
+      _view_module: 'test-widgets',
+      _view_module_version: '1.0.0',
+      _view_name: 'ContainerWidgetView',
+      children: ['IPY_MODEL_widgetChild'],
+    });
+  });
+});
+
 describe('WidgetModel', function () {
   before(async function () {
     this.setup = async function (): Promise<void> {
