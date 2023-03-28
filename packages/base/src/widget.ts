@@ -70,8 +70,12 @@ export function unpack_models(
 
 /** Replace models with ids recursively.
  *
- * If the commonly-used `unpack_models` is given as the `seralize` method,
- * and no `deserialize` is given, this will be used as a default.
+ * If the commonly-used `unpack_models` is given as the `deseralize` method,
+ * pack_models would be the appropriate `serialize`.
+ * However, the default serialize method will have the same effect, when
+ * `unpack_models` is used as the deserialize method.
+ * This is to ensure backwards compatibility, see:
+ *   https://github.com/jupyter-widgets/ipywidgets/pull/3738/commits/f9e27328bb631eb5247a7a6563595d3e655492c7#diff-efb19099381ae8911dd7f69b015a0138d08da7164512c1ee112aa75100bc9be2
  */
 export function pack_models(
   value: WidgetModel | Dict<WidgetModel> | WidgetModel[] | any,
