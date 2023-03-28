@@ -84,6 +84,16 @@ describe('serialize/deserialize', function () {
       model_id: 'widgetChild',
     });
 
+    this.widgetChild2 = await this.manager.new_widget({
+      model_name: 'WidgetModel',
+      model_module: '@jupyter-widgets/base',
+      model_module_version: '1.2.0',
+      view_name: 'WidgetView',
+      view_module: '@jupyter-widgets/base',
+      view_module_version: '1.2.0',
+      model_id: 'widgetChild2',
+    });
+
     this.widgetContainer = await this.manager.new_widget(
       {
         model_name: 'ContainerWidget',
@@ -110,6 +120,16 @@ describe('serialize/deserialize', function () {
       _view_name: 'ContainerWidgetView',
       children: ['IPY_MODEL_widgetChild'],
     });
+  });
+  it('deserializes', async function () {
+    const serializedState = { children: ['IPY_MODEL_widgetChild2'] };
+    const state = await (
+      this.widgetContainer.constructor as typeof WidgetModel
+    )._deserialize_state(serializedState, this.manager);
+    await this.widgetContainer.set_state(state);
+    expect(this.widgetContainer.get('children')).to.deep.equal([
+      this.widgetChild2,
+    ]);
   });
 });
 
