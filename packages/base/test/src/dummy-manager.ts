@@ -1,9 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as widgets from '../../lib';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
+import * as widgets from '../../lib';
 
 import * as sinon from 'sinon';
 void sinon;
@@ -177,4 +177,27 @@ class BinaryWidgetView extends TestWidgetView {
     _rendered = 0;
 }
 
-let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
+class ContainerWidget extends TestWidget {
+  static serializers = {
+    ...widgets.WidgetModel.serializers,
+    children: { deserialize: widgets.unpack_models },
+  };
+  defaults() {
+    return {
+      ...super.defaults(),
+      _model_name: 'ContainerWidget',
+      _view_name: 'ContainerWidgetView',
+      // @ts-ignore
+      children: [],
+    };
+  }
+}
+
+class ContainerWidgetView extends TestWidgetView {
+  render(): void {
+    this._rendered += 1;
+  }
+  _rendered = 0;
+}
+
+let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView, ContainerWidget, ContainerWidgetView};
