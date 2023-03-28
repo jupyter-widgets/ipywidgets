@@ -49,11 +49,10 @@ if v[:2] < (2,7) or (v[0] >= 3 and v[:2] < (3,3)):
 #-----------------------------------------------------------------------------
 
 import os
-from distutils.core import setup
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
+from distutils.core import setup
 from os.path import join as pjoin
-
 
 pjoin = os.path.join
 here = os.path.abspath(os.path.dirname(__file__))
@@ -117,7 +116,7 @@ install_requires = setuptools_args['install_requires'] = [
     # only if notebook 4.x is installed in this
     # interpreter, to allow ipywidgets to be
     # installed on bare kernels.
-    'widgetsnbextension~=3.6.0'
+    'widgetsnbextension~=3.6.4'
 ]
 
 extras_require = setuptools_args['extras_require'] = {

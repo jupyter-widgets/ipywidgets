@@ -1,4 +1,4 @@
-version_info = (3, 6, 3, 'final', 0)
+version_info = (3, 6, 4, 'final', 0)
 
 _specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc', 'final': ''}
 
