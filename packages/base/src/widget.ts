@@ -1,36 +1,48 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import * as backbonePatch from './backbone-patch';
 import * as managerBase from './manager-base';
 import * as utils from './utils';
-import * as backbonePatch from './backbone-patch';
 
 import * as Backbone from 'backbone';
 import $ from 'jquery';
 
 import {
-    NativeView
+  NativeView
 } from './nativeview';
 
-import {
-    Widget, Panel
-} from '@lumino/widgets';
+import { Panel, Widget } from '@lumino/widgets';
+
+import { JSONObject, JSONValue } from '@lumino/coreutils';
+
+import { Dict } from './utils';
 
 import {
-    Message, MessageLoop
+  Message, MessageLoop
 } from '@lumino/messaging';
 
-import {
-    IClassicComm, ICallbacks
-} from './services-shim';
+import { ICallbacks, IClassicComm } from './services-shim';
 
 import {
-    JUPYTER_WIDGETS_VERSION
+  JUPYTER_WIDGETS_VERSION
 } from './version';
 
 import {
-    KernelMessage
+  KernelMessage
 } from '@jupyterlab/services';
+
+/**
+ * The magic key used in the widget graph serialization.
+ */
+const IPY_MODEL_ = 'IPY_MODEL_';
+
+/**
+ * A best-effort method for performing deep copies.
+ */
+const deepcopyJSON = (x: JSONValue) => JSON.parse(JSON.stringify(x));
+
+const deepcopy = (globalThis as any).structuredClone || deepcopyJSON;
 
 /**
  * Replace model ids with models recursively.
@@ -55,6 +67,37 @@ function unpack_models(value: any, manager: managerBase.ManagerBase<any>): Promi
     } else {
         return Promise.resolve(value);
     }
+}
+
+/** Replace models with ids recursively.
+ *
+ * If the commonly-used `unpack_models` is given as the `deseralize` method,
+ * pack_models would be the appropriate `serialize`.
+ * However, the default serialize method will have the same effect, when
+ * `unpack_models` is used as the deserialize method.
+ * This is to ensure backwards compatibility, see:
+ *   https://github.com/jupyter-widgets/ipywidgets/pull/3738/commits/f9e27328bb631eb5247a7a6563595d3e655492c7#diff-efb19099381ae8911dd7f69b015a0138d08da7164512c1ee112aa75100bc9be2
+ */
+export function pack_models(
+  value: WidgetModel | Dict<WidgetModel> | WidgetModel[] | any,
+  widget?: WidgetModel
+): any | Dict<unknown> | string | (Dict<unknown> | string)[] {
+  if (Array.isArray(value)) {
+    const model_ids: string[] = [];
+    for (const model of value) {
+      model_ids.push(pack_models(model, widget));
+    }
+    return model_ids;
+  } else if (value instanceof WidgetModel) {
+    return `${IPY_MODEL_}${value.model_id}`;
+  } else if (value instanceof Object && typeof value !== 'string') {
+    const packed: { [key: string]: string } = {};
+    Object.keys(value).forEach((key) => {
+      packed[key] = pack_models(value[key], widget);
+    });
+  } else {
+    return value;
+  }
 }
 
 
@@ -491,18 +534,24 @@ class WidgetModel extends Backbone.Model {
      * primitive object that is a snapshot of the widget state that may have
      * binary array buffers.
      */
-    serialize(state: {[key: string]: any}) {
-        const deepcopy =
-          (globalThis as any).structuredClone || ((x: any) => JSON.parse(JSON.stringify(x)));
+    serialize(state: {[key: string]: any}) : JSONObject {
         const serializers = (this.constructor as typeof WidgetModel).serializers || {};
         for (const k of Object.keys(state)) {
             try {
-                if (serializers[k] && serializers[k].serialize) {
-                    state[k] = (serializers[k].serialize)(state[k], this);
+                const keySerializers : any = serializers[k] || null;
+                let serialize = keySerializers?.serialize || null;
+                if (serialize == null && keySerializers?.deserialize === unpack_models) {
+                    // handle https://github.com/jupyter-widgets/ipywidgets/issues/3735
+                    serialize = deepcopyJSON;
+                }
+
+                if (serialize) {
+                    state[k] = serialize(state[k], this);
                 } else {
                     // the default serializer just deep-copies the object
                     state[k] = deepcopy(state[k]);
                 }
+
                 if (state[k] && state[k].toJSON) {
                     state[k] = state[k].toJSON();
                 }
