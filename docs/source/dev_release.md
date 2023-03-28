@@ -114,6 +114,12 @@ Using the above script, you can do:
 
 Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin 7.x (and include the tag in the push).
 
+```
+$ git add -p
+$ git commit -m "Release: ipywidgets 7.7.5, widgetsnbextension 3.6.4, jupyterlab_widgets 1.1.4"
+$ git push origin 7.x 7.7.5
+```
+
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
 
 Release Notes

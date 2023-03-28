@@ -4,6 +4,15 @@ ipywidgets changelog
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
 
+7.7.5
+-----
+
+Highlights include
+
+ - Fix: revert removing ipykernel dependency [#3748](https://github.com/jupyter-widgets/ipywidgets/pull/3748)
+ - Fix: structuredClone broke default serializer that depended on JSON/toJSON [#3738](https://github.com/jupyter-widgets/ipywidgets/pull/3738)
+ - Fix: comm/ipykernel/manager runtime issues: [#3740](https://github.com/jupyter-widgets/ipywidgets/pull/3740), [#3737](https://github.com/jupyter-widgets/ipywidgets/pull/3737)
+
 7.7.4
 -----
 
