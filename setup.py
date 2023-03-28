@@ -110,6 +110,7 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
+    'ipykernel>=4.5.1',
     'ipython_genutils~=0.2.0',
     'traitlets>=4.3.1',
     # TODO: Dynamically add this dependency
