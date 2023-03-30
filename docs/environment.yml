@@ -33,7 +33,10 @@ dependencies:
   - scikit-image
   - scikit-learn
   - sympy
-  # jupyterlite dependencies
+  # test
+  - pytest-check-links
+  - requests-cache
+  # jupyterlite
   - doit
   - pkginfo
   - python-libarchive-c

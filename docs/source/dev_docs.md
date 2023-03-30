@@ -91,3 +91,27 @@ all output from a notebook:
 ```bash
 nbstripout "docs/source/examples/Widget List.ipynb"
 ```
+
+## Checking links
+
+After build the docs, it is possible to check all links point to pages (and `#` anchors)
+that actually exist with [`pytest-check-links`][pytest-check-links].
+
+To check all _internal_ links, which is still quite slow:
+
+```bash
+cd docs/build/html
+pytest-check-links -vv --check-anchors --check-links-ignore="^https?://" --links-ext=html
+```
+
+To also check _external_ links, it is good manners to ensure external requests are cached:
+
+```bash
+cd docs/build/html
+pytest-check-links -vv --check-anchors --links-ext=html --check-links-cache
+```
+
+It is possible to configure the cache in more ways: see more on the
+[`pytest-check-links` README][pytest-check-links].
+
+[pytest-check-links]: https://github.com/jupyterlab/pytest-check-links

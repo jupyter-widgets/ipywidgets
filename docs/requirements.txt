@@ -13,7 +13,9 @@ numpy
 packaging
 pkginfo
 pydata-sphinx-theme
+pytest-check-links
 recommonmark
+requests-cache
 scikit-image
 scikit-learn
 sphinx >=1.4.6
