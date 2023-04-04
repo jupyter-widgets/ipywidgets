@@ -88,7 +88,7 @@ Installing from source is more complicated and requires a developer install,
 see the detailed [developer install](docs/source/dev_install.md) instructions.
 
 If you want to install ipywidgets from source, **you will need the
-[yarn](https://yarnpkg.com/) package manager version 1.2.1 or later**.
+[yarn](https://yarnpkg.com/) package manager version 3 or later**.
 To install the latest `main` version from the root directory of the source
 code, run `dev-install.sh`. To only build the Python package enter
 `pip install -e .`.

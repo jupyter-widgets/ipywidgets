@@ -6,16 +6,17 @@
   "scripts": {
     "start": "jupyter lab --config ./jupyter_server_config.py",
     "start:detached": "jlpm start&",
-    "test": "playwright test",
-    "test:debug": "PWDEBUG=1 playwright test",
+    "test": "npx playwright test",
+    "test:debug": "PWDEBUG=1 npx playwright test",
     "test:report": "http-server ./playwright-report -a localhost -o",
-    "test:update": "playwright test --update-snapshots",
+    "test:update": "npx playwright test --update-snapshots",
     "deduplicate": "jlpm && yarn-deduplicate -s fewer --fail"
   },
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@jupyterlab/galata": "^4.5.1",
+    "@jupyterlab/galata": "^5.0.1",
+    "@playwright/test": "^1.32.0",
     "yarn-deduplicate": "^6.0.1"
   }
 }
