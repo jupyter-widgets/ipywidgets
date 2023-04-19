@@ -1,0 +1,17 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "packages/base",
+    "packages/base-manager",
+    "packages/controls",
+    "packages/html-manager",
+    "packages/output",
+    "python/jupyterlab_widgets"
+  ],
+  "githubPages": false,
+  "logLevel": "Verbose",
+  "name": "jupyter-widgets",
+  "out": "docs/typedoc/typedoc",
+  "tsconfig": "tsconfig.typedoc.json"
+}

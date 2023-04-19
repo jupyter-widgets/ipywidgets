@@ -1,0 +1,45 @@
+<div id="demo-sidebar" class="admonition warning">
+  <p class="demo-title admonition-title" role="heading" aria-level="1">
+    <img src="https://jupyterlite.readthedocs.io/en/latest/_static/icon.svg" width="16" />
+    Try Jupyter Widgets
+  </p>
+
+  <div class="demo-app">
+    <label title="Try Widgets in a multi-document UI">
+      <input
+        type="radio"
+        name="demo-app"
+        autocomplete="off"
+        checked
+        value="{{ pathto('try/lab/index') }}?path=Widget%20List.ipynb"
+      >
+      <i class="fas fa-flask"></i> Lab
+    </label>
+    <label title="Try Widgets in a single-document UI">
+      <input
+        type="radio"
+        name="demo-app"
+        autocomplete="off"
+        value="{{ pathto('try/retro/index') }}?path=Widget%20List.ipynb"
+      >
+      <i class="fas fa-book"></i> Notebook
+    </label>
+    <a
+      href="{{ pathto('try/lab/index') }}?path=Widget%20List.ipynb"
+      class="btn btn-primary"
+      target="_blank"
+      title="Try Jupyter Widgets in your browser."
+      id="demo-button"
+    >
+      <i class="fas fa-play"></i>
+      Try Now
+    </a>
+  </div>
+
+
+  <script>$(function() {
+    $('.demo-app input').on('change', (event) => {
+      $("#demo-button").attr("href", (event.currentTarget.value));
+    });
+  });</script>
+</div>

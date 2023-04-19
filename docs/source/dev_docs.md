@@ -1,11 +1,28 @@
 # Develop and Build Documentation
 
-To build the documentation you'll need [Sphinx](http://www.sphinx-doc.org/)
+To build the documentation you'll need [Sphinx](https://www.sphinx-doc.org)
 and a few other packages.
 
-## Setup docs dev environment
+## Setup documentation environment
 
-### Use pip
+### Use `mamba` or `conda` (recommended)
+
+First create a [conda environment](https://conda.pydata.org/docs/using/envs.html#use-environment-from-file) named `ipywidgets_docs` to install all the necessary packages:
+
+```bash
+# create the environment
+mamba env update --file docs/environment.yml
+```
+
+Then, activate the environment.
+
+```bash
+# activate the environment
+conda activate ipywidgets_docs   # Linux and OS X
+activate ipywidgets_docs         # Windows
+```
+
+### Use `pip`
 
 Alternatively, it is also possible to create a virtual environment and activate it with the following commands:
 
@@ -23,23 +40,10 @@ In the environment, install the packages:
 python -m pip install -r docs/requirements.txt
 ```
 
-### Use conda
-
-First create a [conda environment](http://conda.pydata.org/docs/using/envs.html#use-environment-from-file) named `ipywidgets_docs` to install all the necessary packages:
-
-```bash
-# create the environment
-conda create -n ipywidgets_docs -c conda-forge python pip
-```
-
-Use conda to install the packages listed in `docs/requirements.txt`.
-
-Then, activate the conda environment.
-
-```bash
-# activate the environment
-conda activate ipywidgets_docs   # Linux and OS X
-activate ipywidgets_docs         # Windows
+```{hint}
+Building the documentation site requires a working `nodejs` installation, which
+can be installed with your package manager of choice, or directly from the
+[NodeJS website](https://nodejs.org).
 ```
 
 ## Build the documentation
@@ -47,20 +51,35 @@ activate ipywidgets_docs         # Windows
 Once you have installed the required packages, you can build the docs with:
 
 ```bash
-cd docs
-make clean
-make html
+cd docs/source
+sphinx-build -T -E -b html -d ../build/doctrees -D language=en . ../build/html
 ```
 
 After that, the generated HTML files will be available at
 `build/html/index.html`. You may view the docs in your browser by entering
 the following in the terminal: `open build/html/index.html`. Alternatively,
-you can start a webserver using `python3 -m http.server` and navigate to
-<http://localhost:8000/build/html/index.html>.
+you can start the built-in Python web server:
 
-Windows users can find `make.bat` in the `docs` folder.
+```bash
+cd docs/build/html
+python3 -m http.server -b 127.0,0.1
+```
 
-You should also have a look at the [Project Jupyter Documentation Guide](https://jupyter.readthedocs.io/en/latest/contrib_docs/index.html).
+... and navigate to `http://localhost:8000/`.
+
+You should also have a look at the [Project Jupyter Documentation Guide](https://jupyter.readthedocs.io/en/latest/contrib_docs).
+
+## Watch the documentation
+
+It is also possible to launch a web server which watches the sources and automatically
+rebuilds:
+
+```bash
+cd docs/source
+sphinx-autobuild -T -E -b html -d ../build/doctrees -D language=en . ../build/html
+```
+
+... and navigate to `http://localhost:8000/`.
 
 ## Cleaning notebook output for docs
 
@@ -70,5 +89,5 @@ before committing the notebook. For example, the following command will strip
 all output from a notebook:
 
 ```bash
-nbstripout docs/source/examples/Widget\ List.ipynb
+nbstripout "docs/source/examples/Widget List.ipynb"
 ```

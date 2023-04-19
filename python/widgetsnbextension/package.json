@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/notebook-manager",
-  "version": "8.0.5",
+  "version": "8.0.7",
   "private": true,
   "description": "Jupyter Widgets nbextension",
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
@@ -15,17 +15,18 @@
   "author": "Jupyter Project",
   "main": "src/extension.js",
   "scripts": {
-    "build": "webpack",
+    "build": "npm run build:nbextension",
+    "build:nbextension": "webpack",
     "clean": "rimraf widgetsnbextension/static",
     "prepublish": "npm run clean && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "npm run build --watch"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^6.0.2",
-    "@jupyter-widgets/base-manager": "^1.0.3",
-    "@jupyter-widgets/controls": "^5.0.3",
-    "@jupyter-widgets/html-manager": "^1.0.5",
-    "@jupyter-widgets/output": "^6.0.2",
+    "@jupyter-widgets/base": "^6.0.4",
+    "@jupyter-widgets/base-manager": "^1.0.5",
+    "@jupyter-widgets/controls": "^5.0.5",
+    "@jupyter-widgets/html-manager": "^1.0.7",
+    "@jupyter-widgets/output": "^6.0.4",
     "@jupyterlab/services": "^6.0.0",
     "@lumino/messaging": "^1.10.1",
     "@lumino/widgets": "^1.30.0",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "css-loader": "^6.5.1",
+    "requirejs": "^2.3.6",
     "rimraf": "^3.0.2",
     "style-loader": "^3.3.1",
     "webpack": "^5.65.0",

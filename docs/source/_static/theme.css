@@ -1,0 +1,31 @@
+/* index */
+table.indextable tr.cap {
+  background-color: var(--pst-color-on-background) !important;
+}
+
+/* demo */
+#demo-sidebar {
+  margin: 0;
+}
+
+#demo-sidebar .demo-app {
+  display: inline;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 0.75rem 0.25rem 0 0.25rem;
+}
+
+.demo-app > * {
+  flex: 1 auto;
+  white-space: nowrap;
+}
+
+#demo-sidebar .admonition-title::after {
+  display: none;
+}
+
+#demo-sidebar .admonition-title {
+  padding-left: 0.75rem;
+}

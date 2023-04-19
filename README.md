@@ -1,14 +1,14 @@
 # ipywidgets: Interactive HTML Widgets
 
-|    Purpose                        |     Badges                       |
-|----------------------------|----------------------------|
-| **Latest (master: future 8.0)**  | [![Test Status](https://github.com/jupyter-widgets/ipywidgets/actions/workflows/tests.yml/badge.svg?query=branch%3Amaster)](https://github.com/jupyter-widgets/ipywidgets/actions?query=branch%3Amaster) [![Documentation Status: latest](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/latest/?badge=latest) [![Binder:master](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?urlpath=lab/tree/docs%2Fsource%2Fexamples) |
-| **Stable** | [![Version](https://img.shields.io/pypi/v/ipywidgets.svg?logo=pypi)](https://pypi.python.org/pypi/ipywidgets) [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ipywidgets.svg?logo=conda-forge)](https://anaconda.org/conda-forge/ipywidgets) [![Documentation Status](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/stable/?badge=stable) [![Binder:7.x](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/7.x?urlpath=lab/tree/docs%2Fsource%2Fexamples) |
-| **Communication** | [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby) [![Discourse](https://img.shields.io/badge/help_forum-discourse-blue?logo=discourse)](https://discourse.jupyter.org/c/widgets/46) |
-| | |
+| Purpose                         | Badges                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Latest (`main`: future 8.0)** | [![Test Status](https://github.com/jupyter-widgets/ipywidgets/actions/workflows/tests.yml/badge.svg?query=branch%3Amain)](https://github.com/jupyter-widgets/ipywidgets/actions?query=branch%3Amain) [![Documentation Status: latest](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/latest/?badge=latest) [![Binder:main](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/main?urlpath=lab/tree/docs%2Fsource%2Fexamples)                                             |
+| **Stable**                      | [![Version](https://img.shields.io/pypi/v/ipywidgets.svg?logo=pypi)](https://pypi.python.org/pypi/ipywidgets) [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ipywidgets.svg?logo=conda-forge)](https://anaconda.org/conda-forge/ipywidgets) [![Documentation Status](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/stable/?badge=stable) [![Binder:7.x](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/7.x?urlpath=lab/tree/docs%2Fsource%2Fexamples) |
+| **Communication**               | [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby) [![Discourse](https://img.shields.io/badge/help_forum-discourse-blue?logo=discourse)](https://discourse.jupyter.org/c/widgets/46)                                                                                                                                                                                                                                                                                             |
+|                                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 **ipywidgets**, also known as jupyter-widgets or simply widgets, are
-[interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+[interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
 Notebooks come alive when interactive widgets are used. Users gain control of
@@ -21,7 +21,7 @@ ipywidgets to your notebooks, and we're here to help you get started.
 ## Core Interactive Widgets
 
 The fundamental widgets provided by this library are called core interactive
-widgets. A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+widgets. A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Index.ipynb)
 provides an overview of the core interactive widgets, including:
 
 - sliders
@@ -87,14 +87,14 @@ see the detailed [developer install](docs/source/dev_install.md) instructions.
 
 If you want to install ipywidgets from source, **you will need the
 [yarn](https://yarnpkg.com/) package manager version 1.2.1 or later**.
-To install the latest master version from the root directory of the source
-code, run ``dev-install.sh``. To only build the Python package enter
-``pip install -e .``.
+To install the latest `main` version from the root directory of the source
+code, run `dev-install.sh`. To only build the Python package enter
+`pip install -e .`.
 
 ## Usage
 
 See the [examples](docs/source/examples.md) section of the documentation. The widgets are being used in a variety of ways; some uses can be seen in these notebooks:
-[Demo notebook of interactive widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+[Demo notebook of interactive widgets](https://github.com/jupyter-widgets/ipywidgets/blob/main/docs/source/examples/Index.ipynb)
 
 ## Change log
 
@@ -104,15 +104,15 @@ See the [examples](docs/source/examples.md) section of the documentation. The wi
 
 Refer to change log for more detail.
 
-| ipywidgets | JupyterLab       | [Classic Notebook](https://github.com/jupyter/notebook) | [nbclassic](https://github.com/jupyterlab/nbclassic) |
-| ---------- | :--------------: | :--------------: | :---------: |
-| master     |                  |         -        | TBD   |
-| 7.6.3      |                  |                  | 0.2.6 |
-| **Legacy** |                  |                  |   |
-| 6.x        |                  |                  | - |
-| 5.x        |                  | 4.2              | - |
-| 4.1.x      |                  | 4.1              | - |
-| 4.0.x      |                  | 4.0              | - |
+| ipywidgets | JupyterLab | [Classic Notebook](https://github.com/jupyter/notebook) | [nbclassic](https://github.com/jupyterlab/nbclassic) |
+| ---------- | :--------: | :-----------------------------------------------------: | :--------------------------------------------------: |
+| `main`     |            |                            -                            |                         TBD                          |
+| `7.6.3`    |            |                                                         |                        0.2.6                         |
+| **Legacy** |            |                                                         |                                                      |
+| `6.x`      |            |                                                         |                          -                           |
+| `5.x`      |            |                           4.2                           |                          -                           |
+| `4.1.x`    |            |                           4.1                           |                          -                           |
+| `4.0.x`    |            |                           4.0                           |                          -                           |
 
 ## Contributing to ipywidgets
 

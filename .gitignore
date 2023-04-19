@@ -28,7 +28,7 @@ npm-debug.log
 
 # Generated files
 python/widgetsnbextension/widgetsnbextension/static
-python/jupyterlab_widgets/jupyterlab_widgets/labextension/
+python/jupyterlab_widgets/labextension/
 packages/controls/css/nouislider.css
 
 index.built.js
@@ -40,7 +40,12 @@ index.built.js.map
 
 temp/*
 
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 ui-tests/test-results
 ui-tests/playwright-report
+
+**/lite/_output/
+**/lite/.cache
+**/*.doit.*
+**/docs/typedoc/

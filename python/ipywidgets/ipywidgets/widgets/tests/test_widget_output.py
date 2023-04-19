@@ -202,14 +202,14 @@ def test_append_display_data():
 
     # Now try appending an Image.
     image_data = b"foobar"
-    image_data_b64 = 'Zm9vYmFy\n'
 
     widget.append_display_data(Image(image_data, width=123, height=456))
-    expected += (
+    # Old ipykernel/IPython
+    expected1 = expected + (
         {
             'output_type': 'display_data',
             'data': {
-                'image/png': image_data_b64,
+                'image/png': 'Zm9vYmFy\n',
                 'text/plain': '<IPython.core.display.Image object>'
             },
             'metadata': {
@@ -220,4 +220,20 @@ def test_append_display_data():
             }
         },
     )
-    assert widget.outputs == expected, repr(widget.outputs)
+    # Latest ipykernel/IPython
+    expected2 = expected + (
+        {
+            'output_type': 'display_data',
+            'data': {
+                'image/png': 'Zm9vYmFy',
+                'text/plain': '<IPython.core.display.Image object>'
+            },
+            'metadata': {
+                'image/png': {
+                    'width': 123,
+                    'height': 456
+                }
+            }
+        },
+    )
+    assert widget.outputs == expected1 or widget.outputs == expected2

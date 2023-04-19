@@ -13,8 +13,7 @@ from pathlib import Path
 from setuptools import setup
 
 HERE = Path(__file__).parent.resolve()
-IS_REPO = (HERE.parent / '.git').exists()
-LAB_PATH = HERE / "jupyterlab_widgets" / "labextension"
+LAB_PATH = HERE / "labextension"
 
 # The name of the project
 name = "jupyterlab_widgets"

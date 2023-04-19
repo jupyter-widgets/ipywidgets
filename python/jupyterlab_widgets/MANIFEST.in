@@ -6,7 +6,7 @@ include package.json
 include install.json
 include ts*.json
 
-graft jupyterlab_widgets/labextension
+recursive-include labextension *.*
 
 # Javascript files
 prune src

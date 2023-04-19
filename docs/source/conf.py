@@ -1,73 +1,75 @@
 #!/usr/bin/env python3
 #
 
+import os
+import sys
+from pathlib import Path
 
-# -- source files and parsers -----------------------------------
+from packaging.version import Version
 
-source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown',
-    '.ipynb': 'jupyter_notebook',
-}
+HERE = Path(__file__).parent
+LITE = HERE.parent / "lite"
+ROOT = HERE.parent.parent
+JLW = ROOT / "python/jupyterlab_widgets"
+IPYW = ROOT / "python/ipywidgets"
+WIDG = ROOT / "python/widgetsnbextension"
+TYPD = HERE.parent / "typedoc"
+NODM = ROOT / "node_modules"
+TSBI = [
+    p.parent / "tsconfig.tsbuildinfo" for p in ROOT.glob("packages/*/tsconfig.json")
+]
+
+# work around unpickleable functions
+sys.path.append(str(HERE))
+from ipywidgets_docs_utils import jupyterlab_markdown_heading, run_if_needed
+
+# silence debug messages
+os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
+
+def on_config_inited(*args):
+    """rebuild"""
+
+    run_if_needed(["jlpm"], ROOT, [NODM])
+    run_if_needed(["jlpm", "build"], ROOT, TSBI)
+    run_if_needed(["jlpm", "docs"], ROOT, [TYPD / "typedoc/index.html"])
+
+    for pkg_root in [IPYW, WIDG, JLW]:
+        run_if_needed(["pyproject-build"], pkg_root, [pkg_root / "dist"])
+
+    run_if_needed(["jupyter", "lite", "build"], LITE)
+
+def setup(app):
+    app.connect("config-inited", on_config_inited)
 
 
 # -- Sphinx extensions and configuration ------------------------
 
 extensions = [
+    'myst_nb',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
-    'nbsphinx',
-    'jupyterlite_sphinx',
+    'sphinx_autodoc_typehints',
+    'sphinx_copybutton',
+    'sphinx.ext.viewcode',
+    'sphinxext.rediraffe',
     'IPython.sphinxext.ipython_console_highlighting',
-    'recommonmark',
 ]
 
-jupyterlite_config = "jupyter_lite_config.json"
-jupyterlite_dir = "."
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'ipython': ('https://ipython.readthedocs.io/en/stable/', None),
+    'nbconvert': ('https://nbconvert.readthedocs.io/en/stable', None),
+    'nbformat': ('https://nbformat.readthedocs.io/en/stable', None),
+    'traitlets': ('https://traitlets.readthedocs.io/en/stable', None),
+}
 
-# jupyter_lite_config.json ignores these files for the following reasons
-# "examples/Layout Example.ipynb", # bqplot/ipyleaflet dependencies require ipywidgets 7
-# "examples/Layout Templates.ipynb", # bqplot/ipyleaflet dependencies require ipywidgets 7
-# "examples/Variable Inspector.ipynb", # uses ipykernel-specific features
-jupyterlite_contents = "examples"
-
-# intersphinx_mapping = {
-#     'ipython': ('http://ipython.org/ipython-doc/dev/', None),
-#     'nbconvert': ('https://nbconvert.readthedocs.io/en/latest/', None),
-#     'nbformat': ('https://nbformat.readthedocs.io/en/latest/', None),
-#     'jupyter': ('https://jupyter.readthedocs.io/en/latest/', None),
-# }
-
-# prolog based on https://github.com/spatialaudio/nbsphinx/blob/98005a9d6b331b7d6d14221539154df69f7ae51a/doc/conf.py#L38
-nbsphinx_prolog = r"""
-{% set docname_link = env.doc2path(env.docname, base=None).replace(' ', '%20') %}
-{% set docname_display = env.doc2path(env.docname, base=None) %}
-
-.. raw:: html
-
-    <div class="admonition note">
-      This page was generated from
-      <a class="reference external" href="https://github.com/jupyter-widgets/ipywidgets/blob/{{ env.config.release|e }}/docs/source/{{ docname_link|e }}">{{ docname_display|e }}</a>.<br>
-      Interactive online version:
-      <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/{{ env.config.release|e }}?urlpath=lab/tree/docs/source/{{ docname_link|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
-    </div>
-
-.. raw:: latex
-
-    \nbsphinxstartnotebook{\scriptsize\noindent\strut
-    \textcolor{gray}{The following section was generated from
-    \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
-"""
-
-nbsphinx_execute = 'always'
 
 # -- General information -------
 
 _release = {}
 exec(compile(open('../../python/ipywidgets/ipywidgets/_version.py').read(), '../../python/ipywidgets/ipywidgets/_version.py', 'exec'), _release)
-from packaging.version import Version
 v = Version(_release['__version__'])
 version = f'{v.major}.{v.minor}'
 release = _release['__version__']
@@ -77,7 +79,7 @@ release = _release['__version__']
 
 master_doc = 'index'
 project = 'Jupyter Widgets'
-copyright = '2017-2022 Project Jupyter'
+copyright = '2017-2023 Project Jupyter'
 author = 'Jupyter Team'
 
 language = "en"
@@ -100,13 +102,98 @@ exclude_patterns = [
 pygments_style = 'sphinx'
 todo_include_todos = False
 
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "html_image",
+]
+
+myst_heading_anchors = 4
+myst_heading_slug_func = jupyterlab_markdown_heading
+
+nb_execution_mode = "cache"
+
+nb_ipywidgets_js = {
+    "require.js": {},
+    "embed-amd.js": {}
+}
+
+autosummary_generate = True
+autoclass_content = "both"
+autodoc_typehints = "none"
+autodoc_default_options = {
+    "members": True,
+    "show-inheritance": True,
+}
+
+rediraffe_redirects = {
+    "typedoc/index": "_static/typedoc/index",
+    "try/lab/index": "_static/lab/index",
+    "try/retro/index": "_static/retro/tree/index",
+}
 
 # -- html --------------------------
-html_theme = 'sphinx_rtd_theme'
 
-# html_static_path = ['_static']
+html_theme = 'pydata_sphinx_theme'
+
+html_static_path = [
+    '_static',
+    "../../packages/html-manager/dist",
+    '../lite/_output',
+    '../typedoc',
+    '../../node_modules/requirejs/require.js',
+]
+
+html_css_files = [
+    'theme.css',
+]
+
+templates_path = ["_templates"]
+
 htmlhelp_basename = 'ipywidgetsdoc'
 
+html_theme_options = {
+    "icon_links": [
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/ipywidgets",
+            "icon": "fa-solid fa-box",
+        }
+    ],
+    "use_edit_page_button": True,
+    "github_url": "https://github.com/jupyter-widgets/ipywidgets",
+    "navbar_end": [
+        # disabled until widget dark variables are available
+        # "theme-switcher",
+        "navbar-icon-links",
+    ]
+}
+
+html_context = {
+    # disabled until widget dark variables are available
+    "default_mode": "light",
+    "doc_path": "docs",
+    "github_repo": "ipywidgets",
+    "github_user": "jupyter-widgets",
+    "github_version": "main",
+}
+
+html_sidebars = {
+    "index": [
+        "demo.html",
+        "search-field.html",
+        "sidebar-nav-bs-index.html",
+        "sidebar-ethical-ads.html",
+    ],
+    "**": [
+        "search-field.html",
+        "sidebar-nav-bs.html",
+        "demo.html",
+        "sidebar-ethical-ads.html",
+    ]
+}
 
 # -- latex -------------------------
 
@@ -121,7 +208,7 @@ latex_documents = [
 
 texinfo_documents = [
   (master_doc, 'ipywidgets', 'ipywidgets Documentation',
-   author, 'ipywidgets', 'One line description of project.',
+   author, 'ipywidgets', 'Interactive Widgets for Jupyter.',
    'Miscellaneous'),
 ]
 
@@ -133,39 +220,3 @@ epub_title = project
 epub_author = author
 epub_publisher = author
 epub_copyright = copyright
-
-
-# -- Theme options -----------------
-
-# Options are theme-specific and customize the look and feel of the theme.
-html_theme_options = {
-    # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 2,
-    'includehidden': True,
-    'titles_only': False
-}
-
-
-def on_config_inited(*args):
-    import sys
-    import subprocess
-    from pathlib import Path
-    HERE = Path(__file__)
-    ROOT = HERE.parent.parent.parent
-    subprocess.check_call(["jlpm"], cwd=str(ROOT))
-    subprocess.check_call(["jlpm", "build"], cwd=str(ROOT))
-
-    IPYW = ROOT / "python/ipywidgets"
-    subprocess.check_call([sys.executable, "-m", "build"], cwd=str(IPYW))
-
-    WIDG = ROOT / "python/widgetsnbextension"
-    subprocess.check_call([sys.executable, "-m", "build"], cwd=str(WIDG))
-
-    JLW = ROOT / "python/jupyterlab_widgets"
-    subprocess.check_call(["jupyter", "labextension", "build", "."], cwd=str(JLW))
-    subprocess.check_call([sys.executable, "-m", "build"], cwd=str(JLW))
-
-def setup(app):
-    app.connect("config-inited", on_config_inited)

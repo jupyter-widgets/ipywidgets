@@ -624,4 +624,3 @@ def test_state_schema():
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../', 'state.schema.json')) as f:
         schema = json.load(f)
     jsonschema.validate(state, schema)
-

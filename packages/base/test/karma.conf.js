@@ -3,6 +3,9 @@ module.exports = function (config) {
     basePath: '..',
     frameworks: ['mocha'],
     reporters: ['mocha'],
+    mochaReporter: {
+      showDiff: true,
+    },
     files: ['test/build/bundle.js'],
     port: 9876,
     colors: true,

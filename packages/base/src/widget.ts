@@ -9,7 +9,7 @@ import $ from 'jquery';
 
 import { NativeView } from './nativeview';
 
-import { JSONObject } from '@lumino/coreutils';
+import { JSONObject, JSONValue, JSONExt } from '@lumino/coreutils';
 
 import { Message, MessageLoop } from '@lumino/messaging';
 
@@ -30,6 +30,18 @@ import { BufferJSON, Dict } from './utils';
 import { KernelMessage } from '@jupyterlab/services';
 
 /**
+ * The magic key used in the widget graph serialization.
+ */
+const IPY_MODEL_ = 'IPY_MODEL_';
+
+/**
+ * A best-effort method for performing deep copies.
+ */
+const deepcopyJSON = (x: JSONValue) => JSON.parse(JSON.stringify(x));
+
+const deepcopy = globalThis.structuredClone || deepcopyJSON;
+
+/**
  * Replace model ids with models recursively.
  */
 export function unpack_models(
@@ -38,21 +50,52 @@ export function unpack_models(
 ): Promise<WidgetModel | Dict<WidgetModel> | WidgetModel[] | any> {
   if (Array.isArray(value)) {
     const unpacked: any[] = [];
-    value.forEach((sub_value, key) => {
+    for (const sub_value of value) {
       unpacked.push(unpack_models(sub_value, manager));
-    });
+    }
     return Promise.all(unpacked);
   } else if (value instanceof Object && typeof value !== 'string') {
     const unpacked: { [key: string]: any } = {};
-    Object.keys(value).forEach((key) => {
-      unpacked[key] = unpack_models(value[key], manager);
-    });
+    for (const [key, sub_value] of Object.entries(value)) {
+      unpacked[key] = unpack_models(sub_value, manager);
+    }
     return utils.resolvePromisesDict(unpacked);
-  } else if (typeof value === 'string' && value.slice(0, 10) === 'IPY_MODEL_') {
+  } else if (typeof value === 'string' && value.slice(0, 10) === IPY_MODEL_) {
     // get_model returns a promise already
     return manager!.get_model(value.slice(10, value.length));
   } else {
     return Promise.resolve(value);
+  }
+}
+
+/** Replace models with ids recursively.
+ *
+ * If the commonly-used `unpack_models` is given as the `deseralize` method,
+ * pack_models would be the appropriate `serialize`.
+ * However, the default serialize method will have the same effect, when
+ * `unpack_models` is used as the deserialize method.
+ * This is to ensure backwards compatibility, see:
+ *   https://github.com/jupyter-widgets/ipywidgets/pull/3738/commits/f9e27328bb631eb5247a7a6563595d3e655492c7#diff-efb19099381ae8911dd7f69b015a0138d08da7164512c1ee112aa75100bc9be2
+ */
+export function pack_models(
+  value: WidgetModel | Dict<WidgetModel> | WidgetModel[] | any,
+  widget?: WidgetModel
+): any | Dict<unknown> | string | (Dict<unknown> | string)[] {
+  if (Array.isArray(value)) {
+    const model_ids: string[] = [];
+    for (const model of value) {
+      model_ids.push(pack_models(model, widget));
+    }
+    return model_ids;
+  } else if (value instanceof WidgetModel) {
+    return `${IPY_MODEL_}${value.model_id}`;
+  } else if (value instanceof Object && typeof value !== 'string') {
+    const packed: { [key: string]: string } = {};
+    for (const [key, sub_value] of Object.entries(value)) {
+      packed[key] = pack_models(sub_value, widget);
+    }
+  } else {
+    return value;
   }
 }
 
@@ -164,8 +207,8 @@ export class WidgetModel extends Backbone.Model {
    * Send a custom msg over the comm.
    */
   send(
-    content: {},
-    callbacks: {},
+    content: JSONValue,
+    callbacks?: ICallbacks,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): void {
     if (this.comm !== undefined) {
@@ -525,15 +568,25 @@ export class WidgetModel extends Backbone.Model {
    */
   serialize(state: Dict<any>): JSONObject {
     const serializers =
-      (this.constructor as typeof WidgetModel).serializers || {};
+      (this.constructor as typeof WidgetModel).serializers ||
+      JSONExt.emptyObject;
     for (const k of Object.keys(state)) {
       try {
-        if (serializers[k] && serializers[k].serialize) {
-          state[k] = serializers[k].serialize!(state[k], this);
+        const keySerializers = serializers[k] || JSONExt.emptyObject;
+        let { serialize } = keySerializers;
+
+        if (serialize == null && keySerializers.deserialize === unpack_models) {
+          // handle https://github.com/jupyter-widgets/ipywidgets/issues/3735
+          serialize = deepcopyJSON;
+        }
+
+        if (serialize) {
+          state[k] = serialize(state[k], this);
         } else {
           // the default serializer just deep-copies the object
-          state[k] = JSON.parse(JSON.stringify(state[k]));
+          state[k] = deepcopy(state[k]);
         }
+
         if (state[k] && state[k].toJSON) {
           state[k] = state[k].toJSON();
         }
@@ -737,13 +790,13 @@ export class WidgetView extends NativeView<WidgetModel> {
    * Initializer, called at the end of the constructor.
    */
   initialize(parameters: WidgetView.IInitializeParameters): void {
-    this.listenTo(this.model, 'change', () => {
+    this.listenTo(this.model, 'change', (model, options) => {
       const changed = Object.keys(this.model.changedAttributes() || {});
       if (changed[0] === '_view_count' && changed.length === 1) {
         // Just the view count was updated
         return;
       }
-      this.update();
+      this.update(options);
     });
 
     this.options = parameters.options;
