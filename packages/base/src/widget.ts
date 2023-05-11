@@ -34,7 +34,6 @@ import { KernelMessage } from '@jupyterlab/services';
  */
 const IPY_MODEL_ = 'IPY_MODEL_';
 
-const deepcopy = globalThis.structuredClone || JSONExt.deepCopy;
 
 /**
  * Replace model ids with models recursively.
@@ -579,6 +578,7 @@ export class WidgetModel extends Backbone.Model {
           state[k] = serialize(state[k], this);
         } else {
           // the default serializer just deep-copies the object
+          const deepcopy = globalThis.structuredClone || JSONExt.deepCopy;
           state[k] = deepcopy(state[k]);
         }
 
