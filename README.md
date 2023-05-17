@@ -18,7 +18,7 @@ Learning becomes an immersive, fun experience. Researchers can easily see
 how changing inputs to a model impact the results. We hope you will add
 ipywidgets to your notebooks, and we're here to help you get started.
 
-The ipywidgets is a package under the [Jupyter-Widgets](https://github.com/jupyter-widgets) (software subproject)[https://jupyter.org/governance/software_subprojects.html].
+The ipywidgets is a package under the [Jupyter-Widgets](https://github.com/jupyter-widgets) [software subproject](https://jupyter.org/governance/software_subprojects.html).
 
 ## Core Interactive Widgets
 
