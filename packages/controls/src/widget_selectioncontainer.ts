@@ -300,6 +300,7 @@ export class TabView extends DOMWidgetView {
     const tabs = this.luminoWidget;
     tabs.addClass('jupyter-widgets');
     tabs.addClass('widget-container');
+    tabs.addClass('jupyter-widget-tab');
     tabs.addClass('widget-tab');
     tabs.tabsMovable = true;
     tabs.tabBar.insertBehavior = 'none'; // needed for insert behavior, see below.
