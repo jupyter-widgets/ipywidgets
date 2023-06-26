@@ -26,7 +26,7 @@ import { ILoggerRegistry, LogLevel } from '@jupyterlab/logconsole';
 
 import { CodeCell } from '@jupyterlab/cells';
 
-import { toArray, filter } from '@lumino/algorithm';
+import { filter } from '@lumino/algorithm';
 
 import { DisposableDelegate } from '@lumino/disposable';
 
@@ -65,7 +65,9 @@ function* widgetRenderers(
   for (const cell of nb.widgets) {
     if (cell.model.type === 'code') {
       for (const codecell of (cell as CodeCell).outputArea.widgets) {
-        for (const output of toArray(codecell.children())) {
+        // We use Array.from instead of using Lumino 2 (JLab 4) iterator
+        // This is to support Lumino 1 (JLab 3) as well
+        for (const output of Array.from(codecell.children())) {
           if (output instanceof WidgetRenderer) {
             yield output;
           }
@@ -86,9 +88,11 @@ function* outputViews(
     app.shell.widgets(),
     (w) => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
   );
-  for (const view of toArray(linkedViews)) {
-    for (const outputs of toArray(view.children())) {
-      for (const output of toArray(outputs.children())) {
+  // We use Array.from instead of using Lumino 2 (JLab 4) iterator
+  // This is to support Lumino 1 (JLab 3) as well
+  for (const view of Array.from(linkedViews)) {
+    for (const outputs of Array.from(view.children())) {
+      for (const output of Array.from(outputs.children())) {
         if (output instanceof WidgetRenderer) {
           yield output;
         }

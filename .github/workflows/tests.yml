@@ -11,16 +11,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
           cache: 'pip'
           cache-dependency-path: |
             **/setup.cfg
             **/requirements*.txt
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: yarn
       - name: Install dependencies
         run: |
           sudo apt-get install -y pandoc
@@ -39,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
           cache: 'pip'
           cache-dependency-path: |
             **/setup.cfg
@@ -47,36 +42,31 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install jupyterlab~=3.0
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: yarn
+          python -m pip install jupyterlab==4.0.0
       - name: yarn install, build, test
         run: |
-          yarn --frozen-lockfile
-          yarn build
-          yarn build:examples
+          jlpm --immutable
+          jlpm build
+          jlpm build:examples
 
           pushd packages/base
-          yarn test:unit:firefox:headless
+          jlpm test:unit:firefox:headless
           popd
 
           pushd packages/base-manager
-          yarn test:unit:firefox:headless
+          jlpm test:unit:firefox:headless
           popd
 
           pushd packages/controls
-          yarn test:unit:firefox:headless
+          jlpm test:unit:firefox:headless
           popd
 
           pushd packages/html-manager
-          yarn test:unit:firefox:headless
+          jlpm test:unit:firefox:headless
           popd
 
           pushd examples/web1
-          yarn test:firefox:headless
+          jlpm test:firefox:headless
           popd
 
         env:
@@ -87,7 +77,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
       - uses: actions/checkout@v3
@@ -118,27 +108,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
           cache: 'pip'
           cache-dependency-path: |
             **/setup.cfg
             **/requirements*.txt
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: yarn
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install file://$PWD/python/ipywidgets#egg=ipywidgets[test]
+          pip install jupyterlab file://$PWD/python/ipywidgets#egg=ipywidgets[test]
       - name: Install JS dependencies
         run: |
-          yarn
+          jlpm
       - name: Compare spec with latest version
         run: |
           python ./packages/schema/generate-spec.py -f markdown spec.md
-          yarn prettier
+          jlpm prettier
           diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
 
   ui-test:
@@ -159,18 +144,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -U jupyterlab~=3.2 jupyter-packaging~=0.10
-
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: yarn
+          python -m pip install -U jupyterlab==4.0.0 jupyter-packaging~=0.10
 
       - name: Build and Install ipywidgets
         run: |
-          yarn --frozen-lockfile
-          yarn build
+          jlpm --immutable
+          jlpm build
 
       - name: Build the extension
         run: |
@@ -187,25 +166,15 @@ jobs:
 
       - name: Install Test Dependencies
         run: |
-          cd ui-tests
-          yarn --frozen-lockfile
-          yarn playwright install chromium
+          jlpm --immutable
+          npx playwright install chromium
+        working-directory: ui-tests
 
-      - name: Launch JupyterLab
+      - name: Execute integration tests
+        shell: bash -l {0}
+        working-directory: ui-tests
         run: |
-          cd ui-tests
-          yarn start:detached
-
-      - name: Wait for JupyterLab
-        uses: ifaxity/wait-on-action@v1
-        with:
-          resource: http-get://localhost:8888/api
-          timeout: 20000
-
-      - name: Run UI Tests
-        run: |
-          cd ui-tests
-          yarn test
+          npx playwright test
 
       - name: Upload Playwright Test assets
         if: always()
@@ -225,9 +194,9 @@ jobs:
 
       - name: Update snapshots
         if: failure()
+        working-directory: ui-tests
         run: |
-          cd ui-tests
-          yarn test:update
+          jlpm test:update
 
       - name: Upload updated snapshots
         if: failure()
