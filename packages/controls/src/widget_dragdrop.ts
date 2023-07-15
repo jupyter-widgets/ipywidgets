@@ -49,20 +49,20 @@ class DropBoxModel extends CoreDOMWidgetModel {
 
 class DragDropBoxViewBase extends DOMWidgetView {
     child_view: DOMWidgetView | null;
-    pWidget: JupyterLuminoPanelWidget;
+    luminoWidget: JupyterLuminoPanelWidget;
 
     _createElement(tagName: string): HTMLElement {
-        this.pWidget = new JupyterLuminoPanelWidget({ view: this });
-        return this.pWidget.node;
+        this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+        return this.luminoWidget.node;
     }
 
     _setElement(el: HTMLElement): void {
-        if (this.el || el !== this.pWidget.node) {
+        if (this.el || el !== this.luminoWidget.node) {
             // Boxes don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
         }
-        this.el = this.pWidget.node;
-        this.$el = $(this.pWidget.node);
+        this.el = this.luminoWidget.node;
+        this.$el = $(this.luminoWidget.node);
     }
 
     initialize(parameters: WidgetView.IInitializeParameters): void {
@@ -70,9 +70,9 @@ class DragDropBoxViewBase extends DOMWidgetView {
         this.add_child_model(this.model.get('child'));
         this.listenTo(this.model, 'change:child', this.update_child);
 
-        this.pWidget.addClass('jupyter-widgets');
-        this.pWidget.addClass('widget-container');
-        this.pWidget.addClass('widget-draggable-box');
+        this.luminoWidget.addClass('jupyter-widgets');
+        this.luminoWidget.addClass('widget-container');
+        this.luminoWidget.addClass('widget-draggable-box');
     }
 
     add_child_model(model: WidgetModel): Promise<DOMWidgetView> {
@@ -80,7 +80,7 @@ class DragDropBoxViewBase extends DOMWidgetView {
             if (this.child_view && this.child_view !== null) {
                 this.child_view.remove();
             }
-            this.pWidget.addWidget(view.pWidget);
+            this.luminoWidget.addWidget(view.luminoWidget);
             this.child_view = view;
             return view;
         }).catch(reject('Could not add child view to box', true));
