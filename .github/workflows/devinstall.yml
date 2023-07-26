@@ -28,7 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install notebook jupyterlab jupyter_packaging~=0.10
+          python -m pip install notebook jupyterlab notebook~=6.0 jupyter_packaging~=0.10
       - name: Run the dev-install script
         run: |
           ./dev-install.sh
