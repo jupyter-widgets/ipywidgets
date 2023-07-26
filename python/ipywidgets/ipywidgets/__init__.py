@@ -21,17 +21,21 @@ accessible as a `value` attribute.
 from ._version import __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
 
 import os
+import sys
 
 from traitlets import link, dlink
 from IPython import get_ipython
-try:
-    from comm import get_comm_manager
-except ImportError:
+
+# ipykernel <6.18 when the comm package did not exist
+if "ipykernel" in sys.modules and "comm" not in sys.modules:
     def get_comm_manager():
         ip = get_ipython()
 
         if ip is not None and getattr(ip, "kernel", None) is not None:
             return get_ipython().kernel.comm_manager
+# Using the comm package
+else:
+    from comm import get_comm_manager
 
 from .widgets import *
 

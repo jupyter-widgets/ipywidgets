@@ -6,6 +6,7 @@
 in the Jupyter notebook front-end.
 """
 import os
+import sys
 import typing
 from contextlib import contextmanager
 from collections.abc import Iterable
@@ -524,13 +525,14 @@ class Widget(LoggingHasTraits):
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
 
-            try:
-                from comm import create_comm
-            except ImportError:
+            # ipykernel <6.18 when the comm package did not exist
+            if "ipykernel" in sys.modules and "comm" not in sys.modules:
                 def create_comm(**kwargs):
                     from ipykernel.comm import Comm
 
                     return Comm(**kwargs)
+            else:
+                from comm import create_comm
 
             self.comm = create_comm(**args)
 
