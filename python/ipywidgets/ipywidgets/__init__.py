@@ -26,17 +26,6 @@ import sys
 from traitlets import link, dlink
 from IPython import get_ipython
 
-# ipykernel <6.18 when the comm package did not exist
-if "ipykernel" in sys.modules and "comm" not in sys.modules:
-    def get_comm_manager():
-        ip = get_ipython()
-
-        if ip is not None and getattr(ip, "kernel", None) is not None:
-            return get_ipython().kernel.comm_manager
-# Using the comm package
-else:
-    from comm import get_comm_manager
-
 from .widgets import *
 
 
@@ -48,7 +37,8 @@ def load_ipython_extension(ip):
 
 def register_comm_target(kernel=None):
     """Register the jupyter.widget comm target"""
-    comm_manager = get_comm_manager()
+    from . import comm
+    comm_manager = comm.get_comm_manager()
     if comm_manager is None:
         return
     comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
