@@ -19,18 +19,11 @@ accessible as a `value` attribute.
 """
 
 import os
+import sys
 
 from traitlets import link, dlink
 from IPython import get_ipython
 
-try:
-    from comm import get_comm_manager
-except ImportError:
-    def get_comm_manager():
-        ip = get_ipython()
-
-        if ip is not None and getattr(ip, "kernel", None) is not None:
-            return get_ipython().kernel.comm_manager
 
 from ._version import version_info, __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
 from .widgets import *
@@ -46,7 +39,8 @@ def load_ipython_extension(ip):
 
 def register_comm_target(kernel=None):
     """Register the jupyter.widget comm target"""
-    comm_manager = get_comm_manager()
+    from . import comm
+    comm_manager = comm.get_comm_manager()
     if comm_manager is None:
         return
     comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)

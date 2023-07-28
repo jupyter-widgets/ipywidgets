@@ -23,6 +23,7 @@ from traitlets import (
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 from json import loads as jsonloads, dumps as jsondumps
+from .. import comm
 
 from base64 import standard_b64encode
 
@@ -500,15 +501,7 @@ class Widget(LoggingHasTraits):
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
 
-            try:
-                from comm import create_comm
-            except ImportError:
-                def create_comm(**kwargs):
-                    from ipykernel.comm import Comm
-
-                    return Comm(**kwargs)
-
-            self.comm = create_comm(**args)
+            self.comm = comm.create_comm(**args)
 
     @observe('comm')
     def _comm_changed(self, change):

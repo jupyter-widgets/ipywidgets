@@ -7,9 +7,6 @@ import shutil
 
 import traitlets
 
-# This has a byproduct of setting up the comms
-import ipykernel.ipkernel
-
 from ..widgets import IntSlider, IntText, Text, Widget, jslink, HBox, widget_serialization, widget
 from ..embed import embed_data, embed_snippet, embed_minimal_html, dependency_state
 
