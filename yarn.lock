@@ -4356,7 +4356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-import-assertions@npm:^1.7.6":
+"acorn-import-assertions@npm:^1.7.6, acorn-import-assertions@npm:^1.9.0":
   version: 1.9.0
   resolution: "acorn-import-assertions@npm:1.9.0"
   peerDependencies:
@@ -5306,6 +5306,13 @@ __metadata:
     lodash.memoize: ^4.1.2
     lodash.uniq: ^4.5.0
   checksum: 22f4dc65b7aa646de70c778709d77e57eacc843e80a6e2f0ba5b53a9012748f35c2f430df6d234b09415446b006cd663b1a12a8cbbff933f1c58f3b91a0fe3a8
+  languageName: node
+  linkType: hard
+
+"caniuse-lite@npm:^1":
+  version: 1.0.30001511
+  resolution: "caniuse-lite@npm:1.0.30001511"
+  checksum: b7a8176673b15b9fbff689c6df1f38b69b877d68905120c5b1d4a1a6fa73d165f383aa1c818872435c0180681065b7be81c2cfff8303fed4b3cc54bd305fd67e
   languageName: node
   linkType: hard
 
@@ -6812,6 +6819,16 @@ __metadata:
     graceful-fs: ^4.2.4
     tapable: ^2.2.0
   checksum: fff1aaebbf376371e5df4502e111967f6247c37611ad3550e4e7fca657f6dcb29ef7ffe88bf14e5010b78997f1ddd984a8db97af87ee0a5477771398fd326f5b
+  languageName: node
+  linkType: hard
+
+"enhanced-resolve@npm:^5.15.0":
+  version: 5.15.0
+  resolution: "enhanced-resolve@npm:5.15.0"
+  dependencies:
+    graceful-fs: ^4.2.4
+    tapable: ^2.2.0
+  checksum: fbd8cdc9263be71cc737aa8a7d6c57b43d6aa38f6cc75dde6fcd3598a130cc465f979d2f4d01bb3bf475acb43817749c79f8eef9be048683602ca91ab52e4f11
   languageName: node
   linkType: hard
 
@@ -11270,7 +11287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nx@npm:15.9.4, nx@npm:>=14.8.1 < 16":
+"nx@npm:15.9.4, nx@npm:>=14.8.1 < 16, nx@npm:^15":
   version: 15.9.4
   resolution: "nx@npm:15.9.4"
   dependencies:
@@ -13410,7 +13427,6 @@ __metadata:
     sort-package-json: ^2.1.0
     typedoc: ~0.23.24
     typescript: ~4.9.4
-    yarn-deduplicate: ^6.0.1
   languageName: unknown
   linkType: soft
 
@@ -13560,6 +13576,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"schema-utils@npm:^3.2.0":
+  version: 3.3.0
+  resolution: "schema-utils@npm:3.3.0"
+  dependencies:
+    "@types/json-schema": ^7.0.8
+    ajv: ^6.12.5
+    ajv-keywords: ^3.5.2
+  checksum: ea56971926fac2487f0757da939a871388891bc87c6a82220d125d587b388f1704788f3706e7f63a7b70e49fc2db974c41343528caea60444afd5ce0fe4b85c0
+  languageName: node
+  linkType: hard
+
 "schema-utils@npm:^4.0.0":
   version: 4.0.1
   resolution: "schema-utils@npm:4.0.1"
@@ -13630,7 +13657,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.0":
+"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8":
   version: 7.5.1
   resolution: "semver@npm:7.5.1"
   dependencies:
@@ -14710,7 +14737,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.5.0":
+"tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0":
   version: 2.5.0
   resolution: "tslib@npm:2.5.0"
   checksum: ae3ed5f9ce29932d049908ebfdf21b3a003a85653a9a140d614da6b767a93ef94f460e52c3d787f0e4f383546981713f165037dc2274df212ea9f8a4541004e1
@@ -14885,7 +14912,6 @@ __metadata:
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
   languageName: node
   linkType: hard
 
@@ -15489,6 +15515,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webpack@npm:^5":
+  version: 5.88.1
+  resolution: "webpack@npm:5.88.1"
+  dependencies:
+    "@types/eslint-scope": ^3.7.3
+    "@types/estree": ^1.0.0
+    "@webassemblyjs/ast": ^1.11.5
+    "@webassemblyjs/wasm-edit": ^1.11.5
+    "@webassemblyjs/wasm-parser": ^1.11.5
+    acorn: ^8.7.1
+    acorn-import-assertions: ^1.9.0
+    browserslist: ^4.14.5
+    chrome-trace-event: ^1.0.2
+    enhanced-resolve: ^5.15.0
+    es-module-lexer: ^1.2.1
+    eslint-scope: 5.1.1
+    events: ^3.2.0
+    glob-to-regexp: ^0.4.1
+    graceful-fs: ^4.2.9
+    json-parse-even-better-errors: ^2.3.1
+    loader-runner: ^4.2.0
+    mime-types: ^2.1.27
+    neo-async: ^2.6.2
+    schema-utils: ^3.2.0
+    tapable: ^2.1.1
+    terser-webpack-plugin: ^5.3.7
+    watchpack: ^2.4.0
+    webpack-sources: ^3.2.3
+  peerDependenciesMeta:
+    webpack-cli:
+      optional: true
+  bin:
+    webpack: bin/webpack.js
+  checksum: 726e7e05ab2e7c142609a673dd6aa1a711ed97f349418a2a393d650c5ddad172d191257f60e1e37f6b2a77261571c202aabd5ce9240791a686774f0801cf5ec2
+  languageName: node
+  linkType: hard
+
 "webpack@npm:^5.65.0, webpack@npm:^5.76.1":
   version: 5.82.1
   resolution: "webpack@npm:5.82.1"
@@ -15907,20 +15970,6 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^21.1.1
   checksum: 73b572e863aa4a8cbef323dd911d79d193b772defd5a51aab0aca2d446655216f5002c42c5306033968193bdbf892a7a4c110b0d77954a7fdf563e653967b56a
-  languageName: node
-  linkType: hard
-
-"yarn-deduplicate@npm:^6.0.1":
-  version: 6.0.2
-  resolution: "yarn-deduplicate@npm:6.0.2"
-  dependencies:
-    "@yarnpkg/lockfile": ^1.1.0
-    commander: ^10.0.1
-    semver: ^7.5.0
-    tslib: ^2.5.0
-  bin:
-    yarn-deduplicate: dist/cli.js
-  checksum: 2f6c38deaa1139f3a099069dc946a3800e5ba64410d1c45f516dc381e4b1619f0d4f7ad3b38a617e3a85d629ce42e5592105de7089a0da4d0198881ee5390947
   languageName: node
   linkType: hard
 
