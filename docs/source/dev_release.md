@@ -125,10 +125,10 @@ Commit the changes you've made above, and include the uploaded files hashes in t
 
 ```
 git add -p
-git commit -m "Release: ipywidgets 8.0.6, widgetsnbextension 4.0.7, jupyterlab_widgets 3.0.7"
+git commit -m "Release: ipywidgets 8.1.1, widgetsnbextension 4.0.9, jupyterlab_widgets 3.0.9"
 git commit --amend
-git tag 8.0.6
-git push origin main 8.0.6
+git tag 8.1.1
+git push origin main 8.1.1
 ```
 
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
