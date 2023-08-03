@@ -28,14 +28,9 @@ dependencies:
   - bqplot
   - ipykernel
   - ipyleaflet
+  - jupyterlite >=0.1.1,<0.2.0
   - matplotlib-base
   - numpy
   - scikit-image
   - scikit-learn
   - sympy
-  # jupyterlite dependencies
-  - doit
-  - pkginfo
-  - python-libarchive-c
-  - pip:
-      - jupyterlite ==0.1.0b18
