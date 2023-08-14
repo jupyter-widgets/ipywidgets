@@ -41,7 +41,7 @@ Jupyter notebooks for that tutorial are [also available](https://github.com/jupy
 ## Core Jupyter Widgets
 
 Jupyter Widgets is primarily a framework to provide interactive controls (see
-[Widget Basics](examples/Widget%20Basics.ipynb) for more information.
+[Widget Basics](examples/Widget%20Basics.ipynb) for more information).
 The `ipywidgets` package
 also provides a basic, lightweight set of core form controls that _use_ this
 framework. These included controls include a text area, text box, select and

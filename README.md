@@ -18,6 +18,8 @@ Learning becomes an immersive, fun experience. Researchers can easily see
 how changing inputs to a model impact the results. We hope you will add
 ipywidgets to your notebooks, and we're here to help you get started.
 
+The ipywidgets package is under the [Jupyter-Widgets](https://github.com/jupyter-widgets) [software subproject](https://jupyter.org/governance/software_subprojects.html).
+
 ## Core Interactive Widgets
 
 The fundamental widgets provided by this library are called core interactive
@@ -86,7 +88,7 @@ Installing from source is more complicated and requires a developer install,
 see the detailed [developer install](docs/source/dev_install.md) instructions.
 
 If you want to install ipywidgets from source, **you will need the
-[yarn](https://yarnpkg.com/) package manager version 1.2.1 or later**.
+[yarn](https://yarnpkg.com/) package manager version 3 or later**.
 To install the latest `main` version from the root directory of the source
 code, run `dev-install.sh`. To only build the Python package enter
 `pip install -e .`.
