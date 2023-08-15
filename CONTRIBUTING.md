@@ -16,8 +16,6 @@ python -c "import IPython; print(IPython.sys_info())"
 - **All work is submitted through pull requests (PRs)**
   - PRs are submitted as soon as there is code to be discussed
 
-Current developer information can be found in the latest docs [here](https://ipywidgets.readthedocs.io/en/latest/developer_docs.html).
-
 ---
 
 # Check these resources:

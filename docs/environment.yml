@@ -15,7 +15,7 @@ dependencies:
   - jupyter_client
   # docs
   - docutils >=0.19
-  # - jupyterlab-myst
+  - jupyterlab-myst
   - myst-nb >=0.17,<0.18
   - pandoc
   - pydata-sphinx-theme
@@ -28,15 +28,9 @@ dependencies:
   - bqplot
   - ipykernel
   - ipyleaflet
+  - jupyterlite >=0.1.1,<0.2.0
   - matplotlib-base
   - numpy
   - scikit-image
   - scikit-learn
   - sympy
-  # jupyterlite dependencies
-  - doit
-  - pkginfo
-  - python-libarchive-c
-  - pip:
-      - jupyterlite ==0.1.0b18
-      - git+https://github.com/executablebooks/jupyterlab-myst.git@agoose77/feat-jupyterlab-v4-next
