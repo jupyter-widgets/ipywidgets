@@ -34,7 +34,6 @@ import { KernelMessage } from '@jupyterlab/services';
  */
 const IPY_MODEL_ = 'IPY_MODEL_';
 
-
 /**
  * Replace model ids with models recursively.
  */
