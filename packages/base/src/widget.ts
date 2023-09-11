@@ -34,12 +34,6 @@ import { KernelMessage } from '@jupyterlab/services';
  */
 const IPY_MODEL_ = 'IPY_MODEL_';
 
-/**
- * A best-effort method for performing deep copies.
- */
-const deepcopyJSON = (x: JSONValue) => JSON.parse(JSON.stringify(x));
-
-const deepcopy = globalThis.structuredClone || deepcopyJSON;
 
 /**
  * Replace model ids with models recursively.
