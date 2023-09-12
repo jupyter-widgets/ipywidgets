@@ -35,13 +35,6 @@ import { KernelMessage } from '@jupyterlab/services';
 const IPY_MODEL_ = 'IPY_MODEL_';
 
 /**
- * A best-effort method for performing deep copies.
- */
-const deepcopyJSON = (x: JSONValue) => JSON.parse(JSON.stringify(x));
-
-const deepcopy = globalThis.structuredClone || deepcopyJSON;
-
-/**
  * Replace model ids with models recursively.
  */
 export function unpack_models(
@@ -572,21 +565,12 @@ export class WidgetModel extends Backbone.Model {
       JSONExt.emptyObject;
     for (const k of Object.keys(state)) {
       try {
-        const keySerializers = serializers[k] || JSONExt.emptyObject;
-        let { serialize } = keySerializers;
-
-        if (serialize == null && keySerializers.deserialize === unpack_models) {
-          // handle https://github.com/jupyter-widgets/ipywidgets/issues/3735
-          serialize = deepcopyJSON;
-        }
-
-        if (serialize) {
-          state[k] = serialize(state[k], this);
+        if (serializers[k] && serializers[k].serialize) {
+          state[k] = serializers[k].serialize!(state[k], this);
         } else {
           // the default serializer just deep-copies the object
-          state[k] = deepcopy(state[k]);
+          state[k] = JSON.parse(JSON.stringify(state[k]));
         }
-
         if (state[k] && state[k].toJSON) {
           state[k] = state[k].toJSON();
         }
