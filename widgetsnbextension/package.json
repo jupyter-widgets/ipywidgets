@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/notebook-manager",
-  "version": "6.1.5",
+  "version": "6.1.6",
   "private": true,
   "description": "Jupyter Widgets nbextension",
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
