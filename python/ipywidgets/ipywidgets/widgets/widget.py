@@ -445,9 +445,7 @@ class Widget(LoggingHasTraits):
         state = {}
         if widgets is None:
             widgets = _instances.values()
-        print(widgets)
         for widget in widgets:
-            print(widget.model_id)
             state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
         return {'version_major': 2, 'version_minor': 0, 'state': state}
 
@@ -539,7 +537,6 @@ class Widget(LoggingHasTraits):
                 args['comm_id'] = self._model_id
 
             self.comm = comm.create_comm(**args)
-            print(self.comm)
 
     @observe('comm')
     def _comm_changed(self, change):

@@ -58,3 +58,10 @@ def test_control_filter():
     assert important_widget_id in str(comm.messages[1])
     assert random_widget_id in str(comm.messages[1])
 
+    # Invalid case (widget either already closed or does not exist)
+    Widget._handle_control_comm_msg(dict(content=dict(
+        data={'method': 'request_states', 'widget_id': 'no_such_widget'}
+    )))
+    # Should not contain any iPyWidget information in the states
+    assert not comm.messages[2][0][0]['states']
+
