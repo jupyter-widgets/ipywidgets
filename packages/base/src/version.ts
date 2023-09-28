@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 export
-const JUPYTER_WIDGETS_VERSION = '1.2.0';
+const JUPYTER_WIDGETS_VERSION = '1.3.0';
 
 export
 const PROTOCOL_VERSION = '2.1.0';
