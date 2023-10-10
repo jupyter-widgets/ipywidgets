@@ -24,7 +24,7 @@ import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
 
 import { INotebookModel } from '@jupyterlab/notebook';
 
-import type { IRenderMime, IRenderMimeRegistry } from '@jupyterlab/rendermime';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
 import { Kernel, KernelMessage, Session } from '@jupyterlab/services';
 
@@ -224,12 +224,6 @@ export abstract class LabWidgetManager
     if (!cls) {
       throw new Error(`Class ${className} not found in module ${moduleName}`);
     }
-    if (
-      moduleName === '@jupyter-widgets/controls' &&
-      this._rendermime.latexTypesetter
-    ) {
-      void this._patchTypeset(this._rendermime.latexTypesetter);
-    }
     return cls;
   }
 
@@ -320,21 +314,6 @@ export abstract class LabWidgetManager
     const oldComm = new shims.services.Comm(comm);
     await this.handle_comm_open(oldComm, msg);
   };
-
-  /**
-   * Patch typesetting in `@jupyter-widgets/controls` to use the rendermime's typesetter.
-   */
-  protected async _patchTypeset(
-    latexTypesetter: IRenderMime.ILatexTypesetter
-  ): Promise<void> {
-    const controls = await import('@jupyter-widgets/controls/lib/utils');
-    controls.typeset = (element: HTMLElement, text?: string): void => {
-      if (text !== void 0) {
-        element.textContent = text;
-      }
-      latexTypesetter.typeset(element);
-    };
-  }
 
   protected _restored = new Signal<this, void>(this);
   protected _restoredStatus = false;
