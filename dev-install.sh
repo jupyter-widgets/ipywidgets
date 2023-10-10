@@ -32,10 +32,13 @@ echo -n "widgetsnbextension"
 pip install -v -e ./python/widgetsnbextension
 if [[ "$OSTYPE" == "msys" ]]; then
     jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension || true
+    jupyter nbclassic-extension install --overwrite --py $nbExtFlags widgetsnbextension || true
 else
     jupyter nbextension install --overwrite --py --symlink $nbExtFlags widgetsnbextension || true
+    jupyter nbclassic-extension install --overwrite --py --symlink $nbExtFlags widgetsnbextension || true
 fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension || true
+jupyter nbclassic-nbextension enable --py $nbExtFlags widgetsnbextension || true
 
 echo -n "ipywidgets"
 pip install -v -e "./python/ipywidgets[test]"
