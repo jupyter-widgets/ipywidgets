@@ -67,7 +67,7 @@ export class DescriptionView extends DOMWidgetView {
 
   typeset(element: HTMLElement, text?: string): void {
     this.displayed.then(() => {
-      if ((window as any).MathJax) {
+      if ((window as any).MathJax?.Hub?.Queue) {
         return typeset(element, text);
       }
       const widget_manager: any = this.model.widget_manager;
