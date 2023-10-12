@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-
 # For a clean conda environment please read docs/source/dev_install.md
+
+set -x
 
 echo -n "Checking pip... "
 pip --version
@@ -38,7 +39,7 @@ else
     jupyter nbclassic-extension install --overwrite --py --symlink $nbExtFlags widgetsnbextension || true
 fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension || true
-jupyter nbclassic-nbextension enable --py $nbExtFlags widgetsnbextension || true
+jupyter nbclassic-extension enable --py $nbExtFlags widgetsnbextension || true
 
 echo -n "ipywidgets"
 pip install -v -e "./python/ipywidgets[test]"
