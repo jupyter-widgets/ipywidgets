@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/controls",
-  "version": "5.0.5",
+  "version": "5.0.7",
   "description": "Jupyter interactive widgets",
   "repository": {
     "type": "git",
@@ -34,22 +34,23 @@
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^6.0.4",
-    "@lumino/algorithm": "^1.9.1",
-    "@lumino/domutils": "^1.8.1",
-    "@lumino/messaging": "^1.10.1",
-    "@lumino/signaling": "^1.10.1",
-    "@lumino/widgets": "^1.30.0",
+    "@jupyter-widgets/base": "^6.0.6",
+    "@lumino/algorithm": "^1.9.1 || ^2.1",
+    "@lumino/domutils": "^1.8.1 || ^2.1",
+    "@lumino/messaging": "^1.10.1 || ^2.1",
+    "@lumino/signaling": "^1.10.1 || ^2.1",
+    "@lumino/widgets": "^1.30.0 || ^2.1",
     "d3-color": "^3.0.1",
     "d3-format": "^3.0.1",
     "jquery": "^3.1.1",
     "nouislider": "15.4.0"
   },
   "devDependencies": {
-    "@jupyterlab/services": "^6.0.0",
+    "@jupyterlab/services": "^6.0.0 || ^7.0.0",
     "@types/d3-color": "^3.0.2",
     "@types/d3-format": "^3.0.1",
     "@types/expect.js": "^0.3.29",
+    "@types/jquery": "^3.5.16",
     "@types/mathjax": "^0.0.37",
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.2",

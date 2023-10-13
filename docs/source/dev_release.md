@@ -9,7 +9,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs "yarn==1.*" twine jupyterlab=3 jupyter-packaging python-build jq "python==3.9.*"
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn=3 twine jupyterlab=4 jupyter-packaging python-build jq "python==3.9.*"
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
@@ -60,7 +60,7 @@ Lerna will prompt you for version numbers for each of the changed npm packages i
 Go into the `python/jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
 
 ```
-(python/jupyterlab_widgets && pyproject-build . && twine upload dist/*)
+(cd python/jupyterlab_widgets && pyproject-build . && twine upload dist/*)
 ```
 
 Verify that the package is uploaded.
@@ -125,10 +125,10 @@ Commit the changes you've made above, and include the uploaded files hashes in t
 
 ```
 git add -p
-git commit -m "Release: ipywidgets 8.0.6, widgetsnbextension 4.0.7, jupyterlab_widgets 3.0.7"
+git commit -m "Release: ipywidgets 8.1.2, widgetsnbextension 4.0.10, jupyterlab_widgets 3.0.10"
 git commit --amend
-git tag 8.0.6
-git push origin main 8.0.6
+git tag 8.1.2
+git push origin main 8.1.2
 ```
 
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).

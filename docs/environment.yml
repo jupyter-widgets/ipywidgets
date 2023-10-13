@@ -9,7 +9,7 @@ dependencies:
   - pip
   - packaging
   - jupyter-packaging
-  - jupyterlab >=3,<4
+  - jupyterlab >=4,<5
   - nodejs >=18,<19
   # dependencies
   - jupyter_client
@@ -28,14 +28,9 @@ dependencies:
   - bqplot
   - ipykernel
   - ipyleaflet
+  - jupyterlite >=0.1.1,<0.2.0
   - matplotlib-base
   - numpy
   - scikit-image
   - scikit-learn
   - sympy
-  # jupyterlite dependencies
-  - doit
-  - pkginfo
-  - python-libarchive-c
-  - pip:
-      - jupyterlite ==0.1.0b18

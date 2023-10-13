@@ -33,7 +33,13 @@ cd ipywidgets
 
 ### Installing with pip
 
-To do an editable install of the python ipywidgets package into the user site directory with pip, please use
+To do an editable install of the python ipywidgets package into the user site directory with pip, please navigate into the sub-folder `python/ipywidgets` with
+
+```bash
+cd python/ipywidgets
+```
+
+and run
 
 ```bash
 pip install --prefix=$(python -m site --user-base) -e .

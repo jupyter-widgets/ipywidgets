@@ -3,5 +3,6 @@
 set -e
 
 npm install -g yarn
+yarn set version stable
 
 ./dev-install.sh

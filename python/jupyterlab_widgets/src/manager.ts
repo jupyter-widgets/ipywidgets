@@ -455,9 +455,17 @@ export class WidgetManager extends LabWidgetManager {
    */
   private _saveState(): void {
     const state = this.get_state_sync({ drop_defaults: true });
-    this._context.model.metadata.set('widgets', {
-      'application/vnd.jupyter.widget-state+json': state,
-    });
+    if (this._context.model.setMetadata) {
+      this._context.model.setMetadata('widgets', {
+        'application/vnd.jupyter.widget-state+json': state,
+      });
+    } else {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore JupyterLab 3 support
+      this._context.model.metadata.set('widgets', {
+        'application/vnd.jupyter.widget-state+json': state,
+      });
+    }
   }
 
   _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
@@ -512,7 +520,11 @@ export class WidgetManager extends LabWidgetManager {
    * Load widget state from notebook metadata
    */
   async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
-    const widget_md = notebook.metadata.get('widgets') as any;
+    const widget_md = notebook.getMetadata
+      ? (notebook.getMetadata('widgets') as any)
+      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore JupyterLab 3 support
+        notebook.metadata.get('widgets');
     // Restore any widgets from saved state that are not live
     if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
       let state = widget_md[WIDGET_STATE_MIMETYPE];
