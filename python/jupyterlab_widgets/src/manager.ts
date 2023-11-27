@@ -496,6 +496,7 @@ export class WidgetManager extends LabWidgetManager {
     { loadKernel, loadNotebook } = { loadKernel: true, loadNotebook: true }
   ): Promise<void> {
     try {
+      await this.context.sessionContext.ready;
       if (loadKernel) {
         try {
           this._kernelRestoreInProgress = true;
