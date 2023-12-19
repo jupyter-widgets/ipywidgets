@@ -45,7 +45,7 @@ JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 #  https://github.com/jupyter-widgets/ipywidgets/issues/1345
 _instances : typing.MutableMapping[str, "Widget"] = {}
 
-def _widget_to_json(x, obj):
+def _widget_to_json(x, obj=None):
     if isinstance(x, dict):
         return {k: _widget_to_json(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
@@ -55,7 +55,7 @@ def _widget_to_json(x, obj):
     else:
         return x
 
-def _json_to_widget(x, obj):
+def _json_to_widget(x, obj=None):
     if isinstance(x, dict):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
