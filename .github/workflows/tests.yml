@@ -95,10 +95,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install file://$PWD/python/ipywidgets#egg=ipywidgets[test]
       - name: Test with pytest
+        env:
+          SOLARA_TEST_RUNNERS: "jupyter_notebook,jupyter_lab"
         run: |
           pip install pytest
-          cd python/ipywidgets
-          pytest --cov=ipywidgets ipywidgets
+          playwright install
+          pytest --cov=ipywidgets --pyargs ipywidgets
 
   spec:
     name: Message Specification
