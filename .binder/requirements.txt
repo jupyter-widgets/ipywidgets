@@ -1,9 +1,11 @@
 bqplot
 ipyleaflet
 jupyterlab-myst
-jupyterlab==4.0.2
+jupyterlab==4.0.7
 matplotlib
+nbclassic
 networkx
+notebook==7.0.5
 numpy
 pandas
 scikit-image
