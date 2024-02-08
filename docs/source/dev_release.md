@@ -9,7 +9,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn=3 twine jupyterlab=4 jupyter-packaging python-build jq "python==3.9.*"
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs "yarn=3.*" twine jupyterlab=4 jupyter-packaging python-build jq "python==3.9.*"
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
@@ -54,6 +54,18 @@ yarn publish
 ```
 
 Lerna will prompt you for version numbers for each of the changed npm packages in the version step. Lerna will then change the versions appropriately (including the interdependency versions), commit, and tag. The `yarn publish` step then publishes the public packages that were versioned to npm.
+
+## Configure twine username
+
+If you have 2FA on, make sure you have your `~/.pypirc` file set to:
+```
+[pypi]
+username = __token__
+```
+Or set the environment variable
+```
+export TWINE_USERNAME=__token__
+```
 
 ## `jupyterlab_widgets`
 
@@ -125,10 +137,10 @@ Commit the changes you've made above, and include the uploaded files hashes in t
 
 ```
 git add -p
-git commit -m "Release: ipywidgets 8.1.2, widgetsnbextension 4.0.10, jupyterlab_widgets 3.0.10"
+git commit -m "Release: ipywidgets 8.1.3, widgetsnbextension 4.0.11, jupyterlab_widgets 3.0.11"
 git commit --amend
-git tag 8.1.2
-git push origin main 8.1.2
+git tag 8.1.3
+git push origin main 8.1.3
 ```
 
 Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
