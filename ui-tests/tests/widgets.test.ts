@@ -40,7 +40,7 @@ test.describe('Widget Visual Regression', () => {
 
     for (let i = 0; i < cellCount; i++) {
       const image = `widgets-cell-${i}.png`;
-      expect(captures[i]).toMatchSnapshot(image);
+      expect.soft(captures[i]).toMatchSnapshot(image);
     }
   });
 });
