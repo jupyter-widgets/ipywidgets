@@ -1,6 +1,47 @@
 [build-system]
-requires = ["jupyter_packaging~=0.10,<2", "jupyterlab~=4.0"]
+requires = [
+    "jupyter_packaging~=0.10,<2",
+    "jupyterlab~=4.0"
+]
 build-backend = "jupyter_packaging.build_api"
+
+[project]
+name = "jupyterlab_widgets"
+authors = [{name = "Jupyter Development Team", email = "jupyter@googlegroups.com"}]
+description = "Jupyter interactive widgets for JupyterLab"
+license = {text = "BSD-3-Clause"}
+keywords = ["Interactive", "Interpreter", "Shell", "Web", "notebook", "widgets", "Jupyter", "JupyterLab", "JupyterLab3"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Framework :: Jupyter :: JupyterLab :: 3",
+    "Framework :: Jupyter :: JupyterLab :: Extensions",
+    "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
+]
+requires-python = ">=3.7"
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/jupyter-widgets/ipywidgets"
+
+[tool.check-manifest]
+ignore = ["labextension/**", "yarn.lock", ".*", "package-lock.json"]
 
 [tool.jupyter-packaging.options]
 skip-if-exists = ["labextension/package.json"]
@@ -13,5 +54,14 @@ factory = "jupyter_packaging.npm_builder"
 build_cmd = "build:prod"
 npm = ["jlpm"]
 
-[tool.check-manifest]
-ignore = ["labextension/**", "yarn.lock", ".*", "package-lock.json"]
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+platforms = ["Linux", "Mac OS X", "Windows"]
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.setuptools.dynamic]
+version = {attr = "jupyterlab_widgets._version.__version__"}

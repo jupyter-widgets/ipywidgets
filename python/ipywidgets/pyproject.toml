@@ -1,5 +1,71 @@
 [build-system]
-# These are the assumed default build requirements from pip:
-# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
-requires = ["setuptools>=40.8.0", "wheel"]
+requires = ["setuptools>=61.2"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "ipywidgets"
+authors = [{name = "Jupyter Development Team", email = "jupyter@googlegroups.com"}]
+description = "Jupyter interactive widgets"
+keywords = ["Interactive", "Interpreter", "Shell", "Web", "ipython", "widgets", "Jupyter"]
+license = {text = "BSD 3-Clause License"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Framework :: Jupyter",
+]
+urls = {Homepage = "http://jupyter.org"}
+requires-python = ">=3.7"
+dependencies = [
+    "comm>=0.1.3",
+    "ipython>=6.1.0",
+    "traitlets>=4.3.1",
+    "widgetsnbextension~=4.0.10",
+    "jupyterlab_widgets~=3.0.10",
+]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.optional-dependencies]
+test = [
+    "jsonschema",
+    "ipykernel",
+    "pytest>=3.6.0",
+    "pytest-cov",
+    "pytz",
+]
+
+[tool.setuptools]
+zip-safe = false
+# include_package_data = True
+platforms = ["Linux", "Mac OS X", "Windows"]
+license-files = ["LICENSE"]
+include-package-data = false
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.setuptools.package-data]
+ipywidgets = [
+    "state.schema.json",
+    "view.schema.json",
+]
+# Test data needs to be packaged until tests are moved out of module
+"ipywidgets.widgets.tests" = [
+    "data/jupyter-logo-transparent.png"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "ipywidgets._version.__version__"}
