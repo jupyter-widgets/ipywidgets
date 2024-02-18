@@ -1,7 +1,38 @@
 [build-system]
-# These are the assumed default build requirements from pip:
-# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
 requires = ["jupyter_packaging~=0.10,<2"]
+build-backend = "jupyter_packaging.build_api"
+
+[project]
+name = "widgetsnbextension"
+authors = [{name = "Jupyter Development Team", email = "jupyter@googlegroups.com"}]
+description = "Jupyter interactive widgets for Jupyter Notebook"
+license = {text = "BSD 3-Clause License"}
+keywords = ["Interactive", "Interpreter", "Shell", "Web", "notebook", "widgets", "Jupyter"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Framework :: Jupyter",
+]
+urls = {Homepage = "http://jupyter.org"}
+requires-python = ">=3.7"
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[tool.check-manifest]
+ignore = ["widgetnbextension/static/**", "yarn.lock", ".*", "package-lock.json"]
 
 [tool.jupyter-packaging.options]
 skip-if-exists = ["widgetnbextension/static/extension.js"]
@@ -14,5 +45,17 @@ factory = "jupyter_packaging.npm_builder"
 build_cmd = "build"
 npm = ["yarn"]
 
-[tool.check-manifest]
-ignore = ["widgetnbextension/static/**", "yarn.lock", ".*", "package-lock.json"]
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+platforms = ["Linux", "Mac OS X", "Windows"]
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.setuptools.package-data]
+widgetsnbextension = ["widgetsnbextension/static/extension.js"]
+
+[tool.setuptools.dynamic]
+version = {attr = "widgetsnbextension._version.__version__"}
