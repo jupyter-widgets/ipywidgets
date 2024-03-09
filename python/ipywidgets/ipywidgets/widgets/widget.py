@@ -215,18 +215,6 @@ class CallbackDispatcher(LoggingHasTraits):
         elif not remove and callback not in self.callbacks:
             self.callbacks.append(callback)
 
-def _show_traceback(method):
-    """decorator for showing tracebacks"""
-    def m(self, *args, **kwargs):
-        try:
-            return(method(self, *args, **kwargs))
-        except Exception as e:
-            ip = get_ipython()
-            if ip is None:
-                self.log.warning("Exception in widget method %s: %s", method, e, exc_info=True)
-            else:
-                ip.showtraceback()
-    return m
 
 
 class WidgetRegistry:
@@ -549,8 +537,18 @@ class Widget(LoggingHasTraits):
             _instances.pop(change['old'].comm_id, None)
         if change['new']:
             _instances[change['new'].comm_id] = self        
+            
+            # prevent memory leaks by using a weak reference to the widget.
             ref = weakref.ref(self)
-            change['new'].on_msg(lambda msg: ref()._handle_msg(msg))
+            def _handle_msg(msg):
+                widget = ref()
+                if widget:
+                    try:
+                        widget._handle_msg(msg)
+                    except Exception as e:
+                        widget._show_traceback(_handle_msg, e)
+
+            change['new'].on_msg(_handle_msg)
 
 
     @property
@@ -765,7 +763,6 @@ class Widget(LoggingHasTraits):
             return True
 
     # Event handlers
-    @_show_traceback
     def _handle_msg(self, msg):
         """Called when a msg is received from the front-end"""
         data = msg['content']['data']
@@ -790,6 +787,14 @@ class Widget(LoggingHasTraits):
         # Catch remainder.
         else:
             self.log.error('Unknown front-end to back-end widget msg with method "%s"' % method)
+
+    def _show_traceback(self, method, e:Exception):
+            ip = get_ipython()
+            if ip is None:
+                self.log.warning("Exception in widget method %s: %s", method, e, exc_info=True)
+            else:
+                ip.showtraceback()        
+
 
     def _handle_custom_msg(self, content, buffers):
         """Called when a custom msg is received."""
