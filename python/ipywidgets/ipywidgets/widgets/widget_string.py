@@ -13,6 +13,7 @@ from .widget_core import CoreWidget
 from .trait_types import Color, InstanceDict, TypedTuple
 from .utils import deprecation
 from traitlets import Unicode, Bool, Int
+import weakref
 
 
 class _StringStyle(DescriptionStyle, CoreWidget):
@@ -117,7 +118,8 @@ class Text(_String):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._submission_callbacks = CallbackDispatcher()
-        self.on_msg(self._handle_string_msg)
+        ref = weakref.ref(self)
+        self.on_msg(lambda msg: ref()._handle_string_msg(msg))
 
     def _handle_string_msg(self, _, content, buffers):
         """Handle a msg from the front-end.

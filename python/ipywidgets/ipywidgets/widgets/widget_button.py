@@ -14,8 +14,8 @@ from .widget_core import CoreWidget
 from .widget_style import Style
 from .trait_types import Color, InstanceDict
 
+import weakref
 from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
-
 
 @register
 class ButtonStyle(Style, CoreWidget):
@@ -63,7 +63,8 @@ class Button(DOMWidget, CoreWidget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
-        self.on_msg(self._handle_button_msg)
+        ref = weakref.ref(self)
+        self.on_msg(lambda msg: ref()._handle_button_msg(msg))
 
     @validate('icon')
     def _validate_icon(self, proposal):

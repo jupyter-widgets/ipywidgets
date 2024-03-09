@@ -6,13 +6,13 @@
 in the Jupyter notebook front-end.
 """
 import os
-import sys
 import typing
+import weakref
 from contextlib import contextmanager
 from collections.abc import Iterable
 from IPython import get_ipython
 from traitlets import (
-    Any, HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
+    Any, HasTraits, Unicode, Dict, Instance, List, Int, Set, observe, default, Container,
     Undefined)
 from json import loads as jsonloads, dumps as jsondumps
 from .. import comm
@@ -41,9 +41,9 @@ def envset(name, default):
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
 JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
-# we keep a strong reference for every widget created, for a discussion on using weak references see:
+# for a discussion on using weak references see:
 #  https://github.com/jupyter-widgets/ipywidgets/issues/1345
-_instances : typing.MutableMapping[str, "Widget"] = {}
+_instances : typing.MutableMapping[str, "Widget"] = weakref.WeakValueDictionary()
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -461,7 +461,7 @@ class Widget(LoggingHasTraits):
         return state
 
     def get_view_spec(self):
-        return dict(version_major=2, version_minor=0, model_id=self._model_id)
+        return dict(version_major=2, version_minor=0, model_id=self.model_id)
 
     #-------------------------------------------------------------------------
     # Traits
@@ -499,11 +499,12 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     def __init__(self, **kwargs):
         """Public constructor"""
-        self._model_id = kwargs.pop('model_id', None)
+        if 'model_id' in kwargs:
+            self.comm = self._create_comm(kwargs.pop('model_id'))
         super().__init__(**kwargs)
+        self.open()
 
         Widget._call_widget_constructed(self)
-        self.open()
     
     def __copy__(self):
         raise NotImplementedError("Widgets cannot be copied; custom implementation required")
@@ -521,51 +522,56 @@ class Widget(LoggingHasTraits):
 
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
-        if self.comm is None:
-            state, buffer_paths, buffers = _remove_buffers(self.get_state())
+        self.comm
 
-            args = dict(target_name='jupyter.widget',
-                        data={'state': state, 'buffer_paths': buffer_paths},
-                        buffers=buffers,
-                        metadata={'version': __protocol_version__}
-                        )
-            if self._model_id is not None:
-                args['comm_id'] = self._model_id
-
-            self.comm = comm.create_comm(**args)
+    def _create_comm(self, comm_id=None):
+        """Open a new comm to the frontend."""
+        state, buffer_paths, buffers = _remove_buffers(self.get_state())
+        self.comm = comm_ = comm.create_comm(
+            target_name="jupyter.widget",
+            data={"state": state, "buffer_paths": buffer_paths},
+            buffers=buffers,
+            metadata={"version": __protocol_version__},
+            comm_id=comm_id,
+        )        
+        return comm_
+    
+    @default('comm')
+    def _default_comm(self):
+        return self._create_comm()
 
     @observe('comm')
     def _comm_changed(self, change):
         """Called when the comm is changed."""
-        if change['new'] is None:
-            return
-        self._model_id = self.model_id
+        if change['old']:
+            change['old'].on_msg(None)
+            change['old'].close()
+            _instances.pop(change['old'].comm_id, None)
+        if change['new']:
+            _instances[change['new'].comm_id] = self        
+            ref = weakref.ref(self)
+            change['new'].on_msg(lambda msg: ref()._handle_msg(msg))
 
-        self.comm.on_msg(self._handle_msg)
-        _instances[self.model_id] = self
 
     @property
     def model_id(self):
         """Gets the model id of this widget.
 
         If a Comm doesn't exist yet, a Comm will be created automagically."""
-        return self.comm.comm_id
+        return getattr(self.comm, "comm_id", None)
 
     #-------------------------------------------------------------------------
     # Methods
     #-------------------------------------------------------------------------
 
     def close(self):
-        """Close method.
+        """Permanently close the widget.
 
-        Closes the underlying comm.
+        Closes the underlying comm and discards trait values.
         When the comm is closed, all of the widget views are automatically
         removed from the front-end."""
-        if self.comm is not None:
-            _instances.pop(self.model_id, None)
-            self.comm.close()
-            self.comm = None
-            self._repr_mimebundle_ = None
+        self.comm = None
+        self._repr_mimebundle_ = None
 
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end, if it exists.
@@ -815,7 +821,7 @@ class Widget(LoggingHasTraits):
             data['application/vnd.jupyter.widget-view+json'] = {
                 'version_major': 2,
                 'version_minor': 0,
-                'model_id': self._model_id
+                'model_id': self.model_id
             }
             return data
 

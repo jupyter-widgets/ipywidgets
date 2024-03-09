@@ -49,3 +49,4 @@ ui-tests/playwright-report
 **/lite/.cache
 **/*.doit.*
 **/docs/typedoc/
+.yarn/*

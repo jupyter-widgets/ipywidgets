@@ -9,7 +9,7 @@ Propagate changes between widgets on the javascript side.
 from .widget import Widget, register, widget_serialization
 from .widget_core import CoreWidget
 
-from traitlets import Unicode, Tuple, Instance, TraitError
+from traitlets import Unicode, Tuple, Instance
 
 
 class WidgetTraitTuple(Tuple):
@@ -18,7 +18,7 @@ class WidgetTraitTuple(Tuple):
     info_text = "A (Widget, 'trait_name') pair"
 
     def __init__(self, **kwargs):
-        super().__init__(Instance(Widget), Unicode(), **kwargs)
+        super().__init__(Instance(Widget, allow_none=True), Unicode(), **kwargs)
         if "default_value" not in kwargs and not kwargs.get("allow_none", False):
             # This is to keep consistent behavior for spec generation between traitlets 4 and 5
             # Having a default empty container is explicitly not allowed in traitlets 5 when
@@ -29,14 +29,18 @@ class WidgetTraitTuple(Tuple):
     def validate_elements(self, obj, value):
         value = super().validate_elements(obj, value)
         widget, trait_name = value
+        if not widget:
+            obj.close()
+            return value
         trait = widget.traits().get(trait_name)
-        trait_repr = "{}.{}".format(widget.__class__.__name__, trait_name)
         # Can't raise TraitError because the parent will swallow the message
         # and throw it away in a new, less informative TraitError
         if trait is None:
-            raise TypeError("No such trait: %s" % trait_repr)
+            msg = f"No such trait: {widget.__class__.__name__}, {trait_name})"
+            raise TypeError(msg)
         elif not trait.metadata.get('sync'):
-            raise TypeError("%s cannot be synced" % trait_repr)
+            msg = f"Cannot sync: {widget.__class__.__name__}, {trait_name})"
+            raise TypeError(msg)
         return value
 
 
@@ -47,16 +51,19 @@ class Link(CoreWidget):
     source: a (Widget, 'trait_name') tuple for the source trait
     target: a (Widget, 'trait_name') tuple that should be updated
     """
-
+    # maintain a set of links to keep them alive 
+    _all_links = set()
     _model_name = Unicode('LinkModel').tag(sync=True)
     target = WidgetTraitTuple(help="The target (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
     source = WidgetTraitTuple(help="The source (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
+    
+    def __init__(self, source: tuple[Widget, str], target: tuple[Widget, str], **kwargs):
+        super().__init__(source=source, target=target, **kwargs)
+        self._all_links.add(self)
 
-    def __init__(self, source, target, **kwargs):
-        kwargs['source'] = source
-        kwargs['target'] = target
-        super().__init__(**kwargs)
-
+    def close(self):
+        self._all_links.discard(self)
+        super().close()
     # for compatibility with traitlet links
     def unlink(self):
         self.close()
