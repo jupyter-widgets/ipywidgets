@@ -697,9 +697,10 @@ class Widget(LoggingHasTraits):
         # Send the state to the frontend before the user-registered callbacks
         # are called.
         name = change['name']
-        if self.comm is not None and getattr(self.comm, 'kernel', True) is not None:
+        comm = self._trait_values.get('comm')
+        if comm  and getattr(comm, 'kernel', None):
             # Make sure this isn't information that the front-end just sent us.
-            if name in self.keys and self._should_send_property(name, getattr(self, name)):
+            if name in self.keys and self._should_send_property(name, change['new']):
                 # Send new state to front-end
                 self.send_state(key=name)
         super().notify_change(change)
