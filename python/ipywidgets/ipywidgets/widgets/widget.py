@@ -565,7 +565,7 @@ class Widget(LoggingHasTraits):
     def close(self):
         """Permanently close the widget.
 
-        Closes the underlying comm and discards trait values.
+        Closes the underlying comm.
         When the comm is closed, all of the widget views are automatically
         removed from the front-end."""
         self.comm = None
