@@ -538,15 +538,15 @@ class Widget(LoggingHasTraits):
         if change['new']:
             _instances[change['new'].comm_id] = self        
             
-            # prevent memory leaks by using a weak reference to the widget.
+            # prevent memory leaks by using a weak reference to self.
             ref = weakref.ref(self)
             def _handle_msg(msg):
-                widget = ref()
-                if widget:
+                self_ = ref()
+                if self_ is not None:
                     try:
-                        widget._handle_msg(msg)
+                        self_._handle_msg(msg)
                     except Exception as e:
-                        widget._show_traceback(_handle_msg, e)
+                        self_._show_traceback(self_._handle_msg, e)
 
             change['new'].on_msg(_handle_msg)
 
