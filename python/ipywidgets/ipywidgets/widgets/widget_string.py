@@ -119,7 +119,7 @@ class Text(_String):
         super().__init__(*args, **kwargs)
         self._submission_callbacks = CallbackDispatcher()
         ref = weakref.ref(self)
-        self.on_msg(lambda msg: ref()._handle_string_msg(msg))
+        self.on_msg(lambda w, c, b: ref()._handle_string_msg(w, c, b))
 
     def _handle_string_msg(self, _, content, buffers):
         """Handle a msg from the front-end.

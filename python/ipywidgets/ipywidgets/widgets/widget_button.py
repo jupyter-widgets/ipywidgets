@@ -64,7 +64,7 @@ class Button(DOMWidget, CoreWidget):
         super().__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         ref = weakref.ref(self)
-        self.on_msg(lambda msg: ref()._handle_button_msg(msg))
+        self.on_msg(lambda w, c, b: ref()._handle_button_msg(w, c, b))
 
     @validate('icon')
     def _validate_icon(self, proposal):
