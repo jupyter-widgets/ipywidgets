@@ -14,7 +14,7 @@ from .domwidget import DOMWidget
 from .widget_core import CoreWidget
 from .docutils import doc_subst
 from traitlets import Unicode, CaselessStrEnum, TraitType, observe
-
+import sys
 
 _doc_snippets = {}
 _doc_snippets['box_params'] = """
@@ -27,11 +27,19 @@ _doc_snippets['box_params'] = """
         which applies no pre-defined style.
 """
 
-class Children(TraitType[tuple[Widget],tuple[Widget]]):
-    default_value = ()
+# TODO: remove once 3.8 support is dropped.
+if sys.version_info < (3, 9):
+    class Children(TraitType):
+        default_value = ()
 
-    def validate(self, obj:'Box', value):
-        return tuple(v for v in value if isinstance(v, Widget) and not v.closed)
+        def validate(self, obj:'Box', value):
+            return tuple(v for v in value if isinstance(v, Widget) and not v.closed)
+else:    
+    class Children(TraitType[tuple[Widget],tuple[Widget]]):
+        default_value = ()
+
+        def validate(self, obj:'Box', value):
+            return tuple(v for v in value if isinstance(v, Widget) and not v.closed)
             
 
 @register

@@ -57,7 +57,7 @@ class Link(CoreWidget):
     target = WidgetTraitTuple(help="The target (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
     source = WidgetTraitTuple(help="The source (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
     
-    def __init__(self, source: tuple[Widget, str], target: tuple[Widget, str], **kwargs):
+    def __init__(self, source, target, **kwargs):
         super().__init__(source=source, target=target, **kwargs)
         self._all_links.add(self)
 
