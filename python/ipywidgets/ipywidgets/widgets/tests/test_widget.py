@@ -15,6 +15,7 @@ from IPython.utils.capture import capture_output
 from .. import widget
 from ..widget import Widget
 from ..widget_button import Button
+from ..widget_box import VBox
 import copy
 
 import ipywidgets as ipw
@@ -148,3 +149,59 @@ def test_gc_button():
     del b
     gc.collect()
     assert deleted
+
+
+def test_gc_box():
+    # Test Box gc collected and children lifecycle managed.
+    deleted = False
+    b = VBox(children=[Button(description='button')])
+
+    def on_delete():
+        nonlocal deleted
+        deleted = True
+
+    weakref.finalize(b, on_delete)
+    del b
+    gc.collect()
+    assert deleted
+
+def test_gc_box_advanced():
+    # A more advanced test for:
+    # 1. A child widget is removed from the children when it is closed
+    # 2. The children are discarded when the widget is closed.
+
+    deleted = False
+    
+    b = VBox(
+        children=[
+            Button(description="b0"),
+            Button(description="b1"),
+            Button(description="b2"),
+        ]
+    )
+
+    def on_delete():
+        nonlocal deleted
+        deleted = True
+
+    weakref.finalize(b, on_delete)
+    
+    ids = [model_id for w in  b.children if (model_id:=w.model_id)  in widget._instances]
+    assert len(ids) == 3, 'Not all button comms were registered.'
+
+    # keep a strong ref to `b1`
+    b1 = b.children[1] 
+
+    # When a widget is closed it should be removed from the box.children.
+    b.children[0].close()
+    assert len(b.children) == 2, "b0 not removed."
+    # assert 'b0' in deleted
+    
+    # When the ref to box is removed it should be deleted.
+    del b
+    assert deleted, "`b` should have been the only strong ref to the box."
+    # assert not b.children, '`children` should be removed when the widget is closed.'
+    assert not b1.closed, 'A removed widget should remain alive.'
+
+    # b2 shouldn't have any strong references so should be deleted.
+    assert ids[2] not in widget._instances, 'b2 should have been auto deleted.'

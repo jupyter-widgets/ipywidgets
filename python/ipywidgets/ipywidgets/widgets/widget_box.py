@@ -7,13 +7,13 @@ These widgets are containers that can be used to
 group other widgets together and control their
 relative layouts.
 """
+import weakref
 
 from .widget import register, widget_serialization, Widget
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
 from .docutils import doc_subst
-from .trait_types import TypedTuple
-from traitlets import Unicode, CaselessStrEnum, Instance
+from traitlets import Unicode, CaselessStrEnum, TraitType, observe
 
 
 _doc_snippets = {}
@@ -27,6 +27,12 @@ _doc_snippets['box_params'] = """
         which applies no pre-defined style.
 """
 
+class Children(TraitType[tuple[Widget],tuple[Widget]]):
+    default_value = ()
+
+    def validate(self, obj:'Box', value):
+        return tuple(v for v in value if isinstance(v, Widget) and not v.closed)
+            
 
 @register
 @doc_subst(_doc_snippets)
@@ -52,7 +58,7 @@ class Box(DOMWidget, CoreWidget):
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
-    children = TypedTuple(trait=Instance(Widget), help="List of widget children").tag(
+    children = Children(help="List of widget children").tag(
         sync=True, **widget_serialization)
 
     box_style = CaselessStrEnum(
@@ -60,8 +66,34 @@ class Box(DOMWidget, CoreWidget):
         help="""Use a predefined styling for the box.""").tag(sync=True)
 
     def __init__(self, children=(), **kwargs):
-        kwargs['children'] = children
+        if children:
+            kwargs['children'] = children
         super().__init__(**kwargs)
+
+    @observe('children')
+    def _box_observe_children(self, change):
+        # Monitor widgets for when the comm is closed.
+        handler = getattr(self, "_widget_children_comm_handler", None)
+        if not handler:    
+            ref = weakref.ref(self)
+            def handler(change):
+                self_ = ref()
+                if self_ and change['owner']:
+                    # Re-validation will discard all closed widgets.
+                    self_.children = self_.children
+                
+            self._widget_children_comm_handler = handler      
+        if change['new']:
+            w:Widget
+            for w in set(change['new']).difference(change['old'] or ()):
+                w.observe(handler, names='comm')
+        if change['old']:
+            for w in set(change['old']).difference(change['new']):
+                try:
+                    w.unobserve(handler,  names='comm')
+                except ValueError:
+                    pass     
+
 
 @register
 @doc_subst(_doc_snippets)

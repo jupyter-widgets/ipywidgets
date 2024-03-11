@@ -51,6 +51,9 @@ def _widget_to_json(x, obj):
     elif isinstance(x, (list, tuple)):
         return [_widget_to_json(v, obj) for v in x]
     elif isinstance(x, Widget):
+        if x.closed:
+            msg = f"Widget is {x!r}"
+            raise RuntimeError(msg)
         return "IPY_MODEL_" + x.model_id
     else:
         return x
@@ -557,6 +560,14 @@ class Widget(LoggingHasTraits):
 
         If a Comm doesn't exist yet, a Comm will be created automagically."""
         return getattr(self.comm, "comm_id", None)
+    
+    @property
+    def closed(self) -> bool:
+        """Returns True when comms is closed.
+        
+        There is no possibility to re-open once it is closed."""
+        # If comm is None it indicates the comm is closed and the widget is closed. 
+        return self._trait_values.get('comm', False) is None
 
     #-------------------------------------------------------------------------
     # Methods
@@ -706,7 +717,8 @@ class Widget(LoggingHasTraits):
         super().notify_change(change)
 
     def __repr__(self):
-        return self._gen_repr_from_keys(self._repr_keys())
+        rep  =  self._gen_repr_from_keys(self._repr_keys())
+        return  'closed: ' + rep  if  self.closed else rep
 
     #-------------------------------------------------------------------------
     # Support methods
