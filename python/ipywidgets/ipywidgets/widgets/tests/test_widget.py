@@ -95,6 +95,17 @@ def test_widget_copy():
         copy.deepcopy(button)
 
 
+def test_widget_open():
+    button = Button()
+    assert not button.closed
+    model_id = button.model_id
+    assert model_id in widget._instances
+    button.close()
+    assert model_id not in widget._instances
+    with pytest.raises(RuntimeError):
+        button.open()
+    
+
 def test_gc():
     # Ensure the base instance of all widgets can be deleted / garbage collected.
     classes = {}
@@ -195,7 +206,6 @@ def test_gc_box_advanced():
     # When a widget is closed it should be removed from the box.children.
     b.children[0].close()
     assert len(b.children) == 2, "b0 not removed."
-    # assert 'b0' in deleted
     
     # When the ref to box is removed it should be deleted.
     del b

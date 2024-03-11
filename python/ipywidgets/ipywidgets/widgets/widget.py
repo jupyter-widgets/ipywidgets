@@ -513,7 +513,11 @@ class Widget(LoggingHasTraits):
 
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
-        self.comm
+        # Accessing comm will load a default if it isn't already open.
+        if self.comm is None:
+            # None indicates the widget has been closed and shall not be opened.
+            msg = f"This widget is {self!r}."
+            raise RuntimeError(msg)
 
     def _create_comm(self, comm_id=None):
         """Open a new comm to the frontend."""
