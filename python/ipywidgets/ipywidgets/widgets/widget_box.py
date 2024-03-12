@@ -14,7 +14,6 @@ from .domwidget import DOMWidget
 from .widget_core import CoreWidget
 from .docutils import doc_subst
 from traitlets import Unicode, CaselessStrEnum, TraitType, observe
-import sys
 
 _doc_snippets = {}
 _doc_snippets['box_params'] = """
@@ -27,20 +26,12 @@ _doc_snippets['box_params'] = """
         which applies no pre-defined style.
 """
 
-# TODO: remove once 3.8 support is dropped.
-if sys.version_info < (3, 9):
-    class Children(TraitType):
-        default_value = ()
+class Children(TraitType):
+    default_value = ()
 
-        def validate(self, obj:'Box', value):
-            return tuple(v for v in value if isinstance(v, Widget) and not v.closed)
-else:    
-    class Children(TraitType[tuple[Widget],tuple[Widget]]):
-        default_value = ()
+    def validate(self, obj, value):
+        return tuple(v for v in value if getattr(v, '_repr_mimebundle_', None))
 
-        def validate(self, obj:'Box', value):
-            return tuple(v for v in value if isinstance(v, Widget) and not v.closed)
-            
 
 @register
 @doc_subst(_doc_snippets)
@@ -66,13 +57,13 @@ class Box(DOMWidget, CoreWidget):
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
-    children = Children(help="List of widget children").tag(
+    children:"tuple[Widget]" = Children(help="List of widget children").tag(
         sync=True, **widget_serialization)
 
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)
-
+    
     def __init__(self, children=(), **kwargs):
         if children:
             kwargs['children'] = children
@@ -86,22 +77,30 @@ class Box(DOMWidget, CoreWidget):
             ref = weakref.ref(self)
             def handler(change):
                 self_ = ref()
-                if self_ and change['owner']:
-                    # Re-validation will discard all closed widgets.
+                if self_ and change['owner'] in self_.children:
+                    # Re-validate children. 
+                    # tip: Use the context `hold_trait_notifications`
+                    # to close multiple children at once.
                     self_.children = self_.children
                 
             self._widget_children_comm_handler = handler      
         if change['new']:
             w:Widget
             for w in set(change['new']).difference(change['old'] or ()):
-                w.observe(handler, names='comm')
+                try:
+                    w.observe(handler, names='comm')
+                except Exception:
+                    pass
         if change['old']:
             for w in set(change['old']).difference(change['new']):
                 try:
                     w.unobserve(handler,  names='comm')
-                except ValueError:
-                    pass     
-
+                except Exception:
+                    pass
+            
+    def close(self):
+        self.children = ()
+        super().close()
 
 @register
 @doc_subst(_doc_snippets)
@@ -164,3 +163,4 @@ class GridBox(Box):
     """
     _model_name = Unicode('GridBoxModel').tag(sync=True)
     _view_name = Unicode('GridBoxView').tag(sync=True)
+    _box_observe_children = None

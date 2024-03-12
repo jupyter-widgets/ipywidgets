@@ -51,10 +51,12 @@ def _widget_to_json(x, obj):
     elif isinstance(x, (list, tuple)):
         return [_widget_to_json(v, obj) for v in x]
     elif isinstance(x, Widget):
-        if x.closed:
+        if not x._repr_mimebundle_:
             msg = f"Widget is {x!r}"
             raise RuntimeError(msg)
         return "IPY_MODEL_" + x.model_id
+    elif hasattr(x, '_repr_mimebundle_'):
+        return x._repr_mimebundle_()
     else:
         return x
 
@@ -565,13 +567,6 @@ class Widget(LoggingHasTraits):
         If a Comm doesn't exist yet, a Comm will be created automagically."""
         return getattr(self.comm, "comm_id", None)
     
-    @property
-    def closed(self) -> bool:
-        """Returns True when comms is closed.
-        
-        There is no possibility to re-open once it is closed."""
-        # If comm is None it indicates the comm is closed and the widget is closed. 
-        return self._trait_values.get('comm', False) is None
 
     #-------------------------------------------------------------------------
     # Methods
@@ -583,8 +578,8 @@ class Widget(LoggingHasTraits):
         Closes the underlying comm.
         When the comm is closed, all of the widget views are automatically
         removed from the front-end."""
-        self.comm = None
         self._repr_mimebundle_ = None
+        self.comm = None
 
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end, if it exists.
@@ -722,7 +717,7 @@ class Widget(LoggingHasTraits):
 
     def __repr__(self):
         rep  =  self._gen_repr_from_keys(self._repr_keys())
-        return  'closed: ' + rep  if  self.closed else rep
+        return  'closed: ' + rep  if  not self._repr_mimebundle_ else rep
 
     #-------------------------------------------------------------------------
     # Support methods
