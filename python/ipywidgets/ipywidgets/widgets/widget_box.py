@@ -20,6 +20,10 @@ _doc_snippets['box_params'] = """
     children: iterable of Widget instances
         list of widgets to display
 
+    observe_children: bool
+        When enabled, the child comm will be observed. When any widget in children is 
+        the children will be updated discarding closed widgets.
+
     box_style: str
         one of 'success', 'info', 'warning' or 'danger', or ''.
         Applies a predefined style to the box. Defaults to '',
@@ -53,6 +57,7 @@ class Box(DOMWidget, CoreWidget):
     """
     _model_name = Unicode('BoxModel').tag(sync=True)
     _view_name = Unicode('BoxView').tag(sync=True)
+    _children_handlers = weakref.WeakKeyDictionary()
 
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
@@ -64,15 +69,19 @@ class Box(DOMWidget, CoreWidget):
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)
     
-    def __init__(self, children=(), **kwargs):
+    def __init__(self, children=(), *, observe_children=False, **kwargs):
+        if observe_children:
+            self.observe(self._box_observe_children, names='children')
         if children:
             kwargs['children'] = children
         super().__init__(**kwargs)
 
-    @observe('children')
-    def _box_observe_children(self, change):
+
+    @staticmethod
+    def _box_observe_children(change):
+        self:Box = change['owner']
         # Monitor widgets for when the comm is closed.
-        handler = getattr(self, "_widget_children_comm_handler", None)
+        handler = self._children_handlers.get(self)
         if not handler:    
             ref = weakref.ref(self)
             def handler(change):
@@ -83,7 +92,7 @@ class Box(DOMWidget, CoreWidget):
                     # to close multiple children at once.
                     self_.children = self_.children
                 
-            self._widget_children_comm_handler = handler      
+            self._children_handlers[self] = handler      
         if change['new']:
             w:Widget
             for w in set(change['new']).difference(change['old'] or ()):
@@ -100,6 +109,7 @@ class Box(DOMWidget, CoreWidget):
             
     def close(self):
         self.children = ()
+        self._children_handlers.pop(self, None)
         super().close()
 
 @register
@@ -163,4 +173,3 @@ class GridBox(Box):
     """
     _model_name = Unicode('GridBoxModel').tag(sync=True)
     _view_name = Unicode('GridBoxView').tag(sync=True)
-    _box_observe_children = None
