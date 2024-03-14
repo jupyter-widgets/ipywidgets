@@ -58,11 +58,14 @@ Lerna will prompt you for version numbers for each of the changed npm packages i
 ## Configure twine username
 
 If you have 2FA on, make sure you have your `~/.pypirc` file set to:
+
 ```
 [pypi]
 username = __token__
 ```
+
 Or set the environment variable
+
 ```
 export TWINE_USERNAME=__token__
 ```
