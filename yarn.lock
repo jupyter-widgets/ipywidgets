@@ -692,11 +692,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyter-widgets/base-manager@^1.0.7, @jupyter-widgets/base-manager@workspace:packages/base-manager":
+"@jupyter-widgets/base-manager@^1.0.8, @jupyter-widgets/base-manager@workspace:packages/base-manager":
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/base-manager@workspace:packages/base-manager"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
+    "@jupyter-widgets/base": ^6.0.7
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
     "@lumino/coreutils": ^1.11.1 || ^2
     "@types/base64-js": ^1.2.5
@@ -731,7 +731,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyter-widgets/base@^6.0.6, @jupyter-widgets/base@workspace:packages/base":
+"@jupyter-widgets/base@^6.0.7, @jupyter-widgets/base@workspace:packages/base":
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/base@workspace:packages/base"
   dependencies:
@@ -774,11 +774,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyter-widgets/controls@^5.0.7, @jupyter-widgets/controls@workspace:packages/controls":
+"@jupyter-widgets/controls@^5.0.8, @jupyter-widgets/controls@workspace:packages/controls":
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/controls@workspace:packages/controls"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
+    "@jupyter-widgets/base": ^6.0.7
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
     "@lumino/algorithm": ^1.9.1 || ^2.1
     "@lumino/domutils": ^1.8.1 || ^2.1
@@ -829,9 +829,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/example-web1@workspace:examples/web1"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
-    "@jupyter-widgets/base-manager": ^1.0.7
-    "@jupyter-widgets/controls": ^5.0.7
+    "@jupyter-widgets/base": ^6.0.7
+    "@jupyter-widgets/base-manager": ^1.0.8
+    "@jupyter-widgets/controls": ^5.0.8
     chai: ^4.0.0
     css-loader: ^6.5.1
     karma: ^6.3.3
@@ -850,9 +850,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/example-web2@workspace:examples/web2"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
-    "@jupyter-widgets/base-manager": ^1.0.7
-    "@jupyter-widgets/controls": ^5.0.7
+    "@jupyter-widgets/base": ^6.0.7
+    "@jupyter-widgets/base-manager": ^1.0.8
+    "@jupyter-widgets/controls": ^5.0.8
     codemirror: ^5.48.0
     css-loader: ^6.5.1
     font-awesome: ^4.7.0
@@ -865,9 +865,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/example-web3@workspace:examples/web3"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
-    "@jupyter-widgets/controls": ^5.0.7
-    "@jupyter-widgets/html-manager": ^1.0.9
+    "@jupyter-widgets/base": ^6.0.7
+    "@jupyter-widgets/controls": ^5.0.8
+    "@jupyter-widgets/html-manager": ^1.0.10
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
     "@types/codemirror": ^5.60.0
     "@types/node": ^17.0.2
@@ -887,7 +887,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/example-web4@workspace:examples/web4"
   dependencies:
-    "@jupyter-widgets/html-manager": ^1.0.9
+    "@jupyter-widgets/html-manager": ^1.0.10
     css-loader: ^6.5.1
     font-awesome: ^4.7.0
     style-loader: ^3.3.1
@@ -895,16 +895,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyter-widgets/html-manager@^1.0.9, @jupyter-widgets/html-manager@workspace:packages/html-manager":
+"@jupyter-widgets/html-manager@^1.0.10, @jupyter-widgets/html-manager@workspace:packages/html-manager":
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/html-manager@workspace:packages/html-manager"
   dependencies:
     "@fortawesome/fontawesome-free": ^5.12.0
-    "@jupyter-widgets/base": ^6.0.6
-    "@jupyter-widgets/base-manager": ^1.0.7
-    "@jupyter-widgets/controls": ^5.0.7
-    "@jupyter-widgets/output": ^6.0.6
-    "@jupyter-widgets/schema": ^0.5.3
+    "@jupyter-widgets/base": ^6.0.7
+    "@jupyter-widgets/base-manager": ^1.0.8
+    "@jupyter-widgets/controls": ^5.0.8
+    "@jupyter-widgets/output": ^6.0.7
+    "@jupyter-widgets/schema": ^0.5.4
     "@jupyterlab/outputarea": ^3.0.0 || ^4.0.0
     "@jupyterlab/rendermime": ^3.0.0 || ^4.0.0
     "@jupyterlab/rendermime-interfaces": ^3.0.0 || ^4.0.0
@@ -941,10 +941,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/jupyterlab-manager@workspace:python/jupyterlab_widgets"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
-    "@jupyter-widgets/base-manager": ^1.0.7
-    "@jupyter-widgets/controls": ^5.0.7
-    "@jupyter-widgets/output": ^6.0.6
+    "@jupyter-widgets/base": ^6.0.7
+    "@jupyter-widgets/base-manager": ^1.0.8
+    "@jupyter-widgets/controls": ^5.0.8
+    "@jupyter-widgets/output": ^6.0.7
     "@jupyterlab/application": ^3.0.0 || ^4.0.0
     "@jupyterlab/builder": ^3.0.0 || ^4.0.0
     "@jupyterlab/cells": ^3.0.0 || ^4.0.0
@@ -987,11 +987,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/notebook-manager@workspace:python/widgetsnbextension"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
-    "@jupyter-widgets/base-manager": ^1.0.7
-    "@jupyter-widgets/controls": ^5.0.7
-    "@jupyter-widgets/html-manager": ^1.0.9
-    "@jupyter-widgets/output": ^6.0.6
+    "@jupyter-widgets/base": ^6.0.7
+    "@jupyter-widgets/base-manager": ^1.0.8
+    "@jupyter-widgets/controls": ^5.0.8
+    "@jupyter-widgets/html-manager": ^1.0.10
+    "@jupyter-widgets/output": ^6.0.7
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
     "@lumino/messaging": ^1.10.1 || ^2.1
     "@lumino/widgets": ^1.30.0 || ^2.1
@@ -1005,17 +1005,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyter-widgets/output@^6.0.6, @jupyter-widgets/output@workspace:packages/output":
+"@jupyter-widgets/output@^6.0.7, @jupyter-widgets/output@workspace:packages/output":
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/output@workspace:packages/output"
   dependencies:
-    "@jupyter-widgets/base": ^6.0.6
+    "@jupyter-widgets/base": ^6.0.7
     rimraf: ^3.0.2
     typescript: ~4.9.4
   languageName: unknown
   linkType: soft
 
-"@jupyter-widgets/schema@^0.5.3, @jupyter-widgets/schema@workspace:packages/schema":
+"@jupyter-widgets/schema@^0.5.4, @jupyter-widgets/schema@workspace:packages/schema":
   version: 0.0.0-use.local
   resolution: "@jupyter-widgets/schema@workspace:packages/schema"
   languageName: unknown
@@ -14908,11 +14908,11 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A~4.9.4#~builtin<compat/typescript>":
   version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"
+  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 1f8f3b6aaea19f0f67cba79057674ba580438a7db55057eb89cc06950483c5d632115c14077f6663ea76fd09fce3c190e6414bb98582ec80aa5a4eaf345d5b68
+  checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
   languageName: node
   linkType: hard
 
