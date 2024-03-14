@@ -8,6 +8,8 @@ from unittest import TestCase
 
 from traitlets import TraitError
 
+import pytest
+
 import ipywidgets as widgets
 
 
@@ -68,7 +70,7 @@ class TestBox(TestCase):
         assert model_id not in widgets.widget._instances
 
 
-    def test_box_gc_advanced(self):
+    def test_gc_advanced(self):
         # A more advanced test for:
         # 1. A child widget is removed from the children when it is closed
         # 2. The children are discarded when the widget is closed.
@@ -107,3 +109,19 @@ class TestBox(TestCase):
 
         # b2 shouldn't have any strong references so should be deleted.
         assert ids[2] not in widgets.widget._instances, 'b2 should have been auto deleted.'
+
+
+    def test_repr_mimebundle(self):
+
+        b1 = widgets.Button()
+        
+        class wrapper:
+            _repr_mimebundle_ = b1._repr_mimebundle_
+
+        w = wrapper()
+        with pytest.raises(NotImplementedError):
+            b = widgets.Box([b1, w])
+
+
+
+        

@@ -46,17 +46,23 @@ JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 _instances : typing.MutableMapping[str, "Widget"] = weakref.WeakValueDictionary()
 
 def _widget_to_json(x, obj):
-    if isinstance(x, dict):
-        return {k: _widget_to_json(v, obj) for k, v in x.items()}
-    elif isinstance(x, (list, tuple)):
-        return [_widget_to_json(v, obj) for v in x]
-    elif isinstance(x, Widget):
+    if isinstance(x, Widget):
         if not x._repr_mimebundle_:
+            # a closed widget will not be found at the frontend so raise an error here. 
             msg = f"Widget is {x!r}"
             raise RuntimeError(msg)
-        return "IPY_MODEL_" + x.model_id
-    elif hasattr(x, '_repr_mimebundle_'):
-        return x._repr_mimebundle_()
+        # _model_id provides faster access if a comm is already open which typically it is. 
+        return "IPY_MODEL_" +  x._model_id or x.model_id
+    elif isinstance(x, (list, tuple)):
+        return [_widget_to_json(v, obj) for v in x]
+    elif isinstance(x, dict):
+        return {k: _widget_to_json(v, obj) for k, v in x.items()}
+    elif hasattr(x, "_repr_mimebundle_"):
+        msg = (
+            "Support for _repr_mimebundle_ not yet implemented in the Box widget."
+            f"The object may be viewed with Output widget instead. Invalid object: {x!r}"
+        )
+        raise NotImplementedError(msg)
     else:
         return x
 
@@ -297,7 +303,8 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
     _control_comm = None
-
+    _model_id = ''
+    
     @_staticproperty
     def widgets():
         # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
@@ -545,6 +552,7 @@ class Widget(LoggingHasTraits):
             change['old'].close()
             _instances.pop(change['old'].comm_id, None)
         if change['new']:
+            self._model_id = change['new'].comm_id
             _instances[change['new'].comm_id] = self        
             
             # prevent memory leaks by using a weak reference to self.
@@ -558,6 +566,9 @@ class Widget(LoggingHasTraits):
                         self_._show_traceback(self_._handle_msg, e)
 
             change['new'].on_msg(_handle_msg)
+        else:
+            self._model_id = ''
+
 
 
     @property
