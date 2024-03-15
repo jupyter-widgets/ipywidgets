@@ -51,7 +51,7 @@ def _widget_to_json(x, obj):
             # a closed widget will not be found at the frontend so raise an error here. 
             msg = f"Widget is {x!r}"
             raise RuntimeError(msg)
-        # _model_id provides faster access if a comm is already open which typically it is. 
+        # _model_id provides faster access if its comm is already open. 
         return "IPY_MODEL_" +  x._model_id or x.model_id
     elif isinstance(x, (list, tuple)):
         return [_widget_to_json(v, obj) for v in x]
@@ -59,8 +59,9 @@ def _widget_to_json(x, obj):
         return {k: _widget_to_json(v, obj) for k, v in x.items()}
     elif hasattr(x, "_repr_mimebundle_"):
         msg = (
-            "Support for _repr_mimebundle_ not yet implemented in the Box widget."
-            f"The object may be viewed with Output widget instead. Invalid object: {x!r}"
+            f"{x!r} is not a widget, but provides a `_repr_mimebundle_` attribute. "
+            "Support for direct `_repr_mimebundle_` has not been implemented yet. In the "
+            "meantime, it should be possible to view the object wih an `Output` widget."
         )
         raise NotImplementedError(msg)
     else:
