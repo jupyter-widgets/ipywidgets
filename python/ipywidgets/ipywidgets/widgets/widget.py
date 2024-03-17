@@ -462,7 +462,10 @@ class Widget(LoggingHasTraits):
         return state
 
     def get_view_spec(self):
-        return dict(version_major=2, version_minor=0, model_id=self.model_id)
+        if not self._repr_mimebundle_:
+            msg = f"This widget is {self!r}"
+            raise RuntimeError(msg)
+        return {"version_major":2, "version_minor":0, "model_id":self._model_id or self.model_id}
 
     #-------------------------------------------------------------------------
     # Traits

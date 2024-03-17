@@ -99,10 +99,15 @@ def test_widget_open():
     button = Button()
     model_id = button.model_id
     assert model_id in widget._instances
+    spec = button.get_view_spec()
+    assert list(spec) == ['version_major', 'version_minor', 'model_id']
+    assert spec['model_id']
     button.close()
     assert model_id not in widget._instances
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match='This widget is closed'):
         button.open()
+    with pytest.raises(RuntimeError, match='This widget is closed'):
+        button.get_view_spec()
     
 
 def test_gc():
