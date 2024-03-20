@@ -413,7 +413,10 @@ export abstract class ManagerBase implements IWidgetManager {
           resolve(null);
         });
 
-        initComm.on_close(() => reject('Control comm was closed too early'));
+        initComm.on_close(() => {
+          if (data.method !== 'update_states')
+            reject('Control comm was closed too early');
+        });
 
         // Send a states request msg
         initComm.send({ method: 'request_states' }, {});

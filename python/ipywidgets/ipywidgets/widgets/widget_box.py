@@ -7,25 +7,34 @@ These widgets are containers that can be used to
 group other widgets together and control their
 relative layouts.
 """
+import weakref
 
 from .widget import register, widget_serialization, Widget
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
 from .docutils import doc_subst
-from .trait_types import TypedTuple
-from traitlets import Unicode, CaselessStrEnum, Instance
-
+from traitlets import Unicode, CaselessStrEnum, TraitType, observe
 
 _doc_snippets = {}
 _doc_snippets['box_params'] = """
     children: iterable of Widget instances
         list of widgets to display
 
+    observe_children: bool
+        When enabled, the child comm will be observed. When any widget in children is 
+        the children will be updated discarding closed widgets.
+
     box_style: str
         one of 'success', 'info', 'warning' or 'danger', or ''.
         Applies a predefined style to the box. Defaults to '',
         which applies no pre-defined style.
 """
+
+class Children(TraitType):
+    default_value = ()
+
+    def validate(self, obj, value):
+        return tuple(v for v in value if getattr(v, '_repr_mimebundle_', None))
 
 
 @register
@@ -48,20 +57,60 @@ class Box(DOMWidget, CoreWidget):
     """
     _model_name = Unicode('BoxModel').tag(sync=True)
     _view_name = Unicode('BoxView').tag(sync=True)
+    _children_handlers = weakref.WeakKeyDictionary()
 
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
-    children = TypedTuple(trait=Instance(Widget), help="List of widget children").tag(
+    children:"tuple[Widget]" = Children(help="List of widget children").tag(
         sync=True, **widget_serialization)
 
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)
-
-    def __init__(self, children=(), **kwargs):
-        kwargs['children'] = children
+    
+    def __init__(self, children=(), *, observe_children=False, **kwargs):
+        if observe_children:
+            self.observe(self._box_observe_children, names='children')
+        if children:
+            kwargs['children'] = children
         super().__init__(**kwargs)
+
+
+    @staticmethod
+    def _box_observe_children(change):
+        self:Box = change['owner']
+        # Monitor widgets for when the comm is closed.
+        handler = self._children_handlers.get(self)
+        if not handler:    
+            ref = weakref.ref(self)
+            def handler(change):
+                self_ = ref()
+                if self_ and change['owner'] in self_.children:
+                    # Re-validate children. 
+                    # tip: Use the context `hold_trait_notifications`
+                    # to close multiple children at once.
+                    self_.children = self_.children
+                
+            self._children_handlers[self] = handler      
+        if change['new']:
+            w:Widget
+            for w in set(change['new']).difference(change['old'] or ()):
+                try:
+                    w.observe(handler, names='comm')
+                except Exception:
+                    pass
+        if change['old']:
+            for w in set(change['old']).difference(change['new']):
+                try:
+                    w.unobserve(handler,  names='comm')
+                except Exception:
+                    pass
+            
+    def close(self):
+        self.children = ()
+        self._children_handlers.pop(self, None)
+        super().close()
 
 @register
 @doc_subst(_doc_snippets)
