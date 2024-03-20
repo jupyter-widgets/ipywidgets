@@ -859,8 +859,9 @@ class Widget(LoggingHasTraits):
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
-        if self.comm is not None and (self.comm.kernel is not None if hasattr(self.comm, "kernel") else True):
-            self.comm.send(data=msg, buffers=buffers)
+        comm = self.comm
+        if comm is not None and getattr(comm, "kernel", True):
+            comm.send(data=msg, buffers=buffers)
 
     def _repr_keys(self):
         traits = self.traits()
