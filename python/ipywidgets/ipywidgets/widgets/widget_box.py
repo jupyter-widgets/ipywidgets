@@ -29,12 +29,20 @@ _doc_snippets['box_params'] = """
         Applies a predefined style to the box. Defaults to '',
         which applies no pre-defined style.
 """
+import sys
+if sys.version_info < (3, 11):
+    class Children(TraitType):
+        default_value = ()
 
-class Children(TraitType):
-    default_value = ()
+        def validate(self, obj, value):
+            return tuple(v for v in value if getattr(v, '_repr_mimebundle_', None))
+else:
+    import typing
+    class Children(TraitType[tuple[Widget,...], typing.Iterable[Widget]]):
+        default_value = ()
 
-    def validate(self, obj, value):
-        return tuple(v for v in value if getattr(v, '_repr_mimebundle_', None))
+        def validate(self, obj, value):
+            return tuple(v for v in value if getattr(v, '_repr_mimebundle_', None))
 
 
 @register
