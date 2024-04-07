@@ -67,6 +67,9 @@ class Box(DOMWidget, CoreWidget):
     _view_name = Unicode('BoxView').tag(sync=True)
     _children_handlers = weakref.WeakKeyDictionary()
 
+    # Tooltip is not allowed for containers (override for DOMWidget). 
+    tooltip = None 
+
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
