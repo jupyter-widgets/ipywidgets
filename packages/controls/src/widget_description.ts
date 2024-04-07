@@ -99,7 +99,7 @@ export class DescriptionView extends DOMWidgetView {
 
   updateTooltip(): void {
     if (!this.label) return;
-    this.label.title = this.model.get('tooltip');
+    this.label.title = this.model.get('tooltip') || '';
   }
 
   label: HTMLLabelElement;

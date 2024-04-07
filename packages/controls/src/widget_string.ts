@@ -379,13 +379,10 @@ export class TextareaView extends StringView {
   }
 
   updateTooltip(): void {
+    super.updateTooltip();
     if (!this.textbox) return; // we might be constructing the parent
-    const title = this.model.get('tooltip');
-    if (!title) {
-      this.textbox.removeAttribute('title');
-    } else if (this.model.get('description').length === 0) {
-      this.textbox.setAttribute('title', title);
-    }
+    const title = this.model.get('tooltip') || '';
+    this.textbox.setAttribute('title', title);
   }
 
   events(): { [e: string]: string } {
@@ -505,13 +502,10 @@ export class TextView extends StringView {
   }
 
   updateTooltip(): void {
+    super.updateTooltip();
     if (!this.textbox) return; // we might be constructing the parent
-    const title = this.model.get('tooltip');
-    if (!title) {
-      this.textbox.removeAttribute('title');
-    } else if (this.model.get('description').length === 0) {
-      this.textbox.setAttribute('title', title);
-    }
+    const title = this.model.get('tooltip') || '';
+    this.textbox.setAttribute('title', title);
   }
 
   update(options?: any): void {
