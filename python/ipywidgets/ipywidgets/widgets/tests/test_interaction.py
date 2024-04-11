@@ -19,8 +19,6 @@ from ipywidgets import (interact, interact_manual, interactive,
 # Utility stuff
 #-----------------------------------------------------------------------------
 
-from .utils import setup, teardown
-
 def f(**kwargs):
     pass
 
