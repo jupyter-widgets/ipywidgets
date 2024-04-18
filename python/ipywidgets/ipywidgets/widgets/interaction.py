@@ -4,7 +4,7 @@
 """Interact with functions using widgets."""
 
 from collections.abc import Iterable, Mapping
-from enum import EnumType
+from enum import EnumMeta as EnumType
 from inspect import signature, Parameter
 from inspect import getcallargs
 from inspect import getfullargspec as check_argspec
