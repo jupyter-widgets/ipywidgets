@@ -3,12 +3,9 @@
 
 import gc
 import weakref
-
 from unittest import TestCase
 
 from traitlets import TraitError
-
-import pytest
 
 import ipywidgets as widgets
 
@@ -51,77 +48,5 @@ class TestBox(TestCase):
         del b
         gc.collect()
         assert deleted        
-
-    def test_child_closed_not_observe_childen(self):
-
-        b1 = widgets.Button(description='button')
-        b = widgets.Box([b1], observe_children=False)
-        b1.close()
-        assert b1 in b.children
-
-    def test_child_closed_observe_childen(self):
-
-        b1 = widgets.Button(description='button')
-        b = widgets.Box([b1], observe_children=True)
-        b1.close()
-        assert b1 not in b.children
-        model_id = b.model_id
-        del b
-        assert model_id not in widgets.widget._instances
-
-
-    def test_gc_advanced(self):
-        # A more advanced test for:
-        # 1. A child widget is removed from the children when it is closed
-        # 2. The children are discarded when the widget is closed.
-
-        deleted = False
-        
-        b = widgets.VBox(
-            children=[
-                widgets.Button(description="b0"),
-                widgets.Button(description="b1"),
-                widgets.Button(description="b2"),
-            ], observe_children=True
-        )
-
-        def on_delete():
-            nonlocal deleted
-            deleted = True
-
-        weakref.finalize(b, on_delete)
-        
-        ids = [model_id for w in  b.children if (model_id:=w.model_id)  in widgets.widget._instances]
-        assert len(ids) == 3, 'Not all button comms were registered.'
-
-        # keep a strong ref to `b1`
-        b1 = b.children[1] 
-
-        # When a widget is closed it should be removed from the box.children.
-        b.children[0].close()
-        assert len(b.children) == 2, "b0 not removed."
-        
-        # When the ref to box is removed it should be deleted.
-        del b
-        assert deleted, "`b` should have been the only strong ref to the box."
-        # assert not b.children, '`children` should be removed when the widget is closed.'
-        assert b1.comm, 'A removed widget should remain alive.'
-
-        # b2 shouldn't have any strong references so should be deleted.
-        assert ids[2] not in widgets.widget._instances, 'b2 should have been auto deleted.'
-
-
-    def test_repr_mimebundle(self):
-
-        b1 = widgets.Button()
-        
-        class wrapper:
-            _repr_mimebundle_ = b1._repr_mimebundle_
-
-        w = wrapper()
-        with pytest.raises(NotImplementedError):
-            b = widgets.Box([b1, w])
-
-
 
         

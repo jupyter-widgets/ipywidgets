@@ -1,3 +1,4 @@
+
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
@@ -7,42 +8,33 @@ These widgets are containers that can be used to
 group other widgets together and control their
 relative layouts.
 """
+from __future__ import annotations
+
+import typing
 import weakref
 
-from .widget import register, widget_serialization, Widget
-from .domwidget import DOMWidget
-from .widget_core import CoreWidget
+from traitlets import CaselessStrEnum, TraitType, Unicode
+
 from .docutils import doc_subst
-from traitlets import Unicode, CaselessStrEnum, TraitType, observe
+from .domwidget import DOMWidget
+from .widget import Widget, register, widget_serialization
+from .widget_core import CoreWidget
 
 _doc_snippets = {}
 _doc_snippets['box_params'] = """
     children: iterable of Widget instances
         list of widgets to display
 
-    observe_children: bool
-        When enabled, the child comm will be observed. When any widget in children is 
-        the children will be updated discarding closed widgets.
-
     box_style: str
         one of 'success', 'info', 'warning' or 'danger', or ''.
         Applies a predefined style to the box. Defaults to '',
         which applies no pre-defined style.
 """
-import sys
-if sys.version_info < (3, 11):
-    class Children(TraitType):
-        default_value = ()
+class Children(TraitType["tuple[Widget,...]", typing.Iterable[Widget]]):
+    default_value = ()
 
-        def validate(self, obj, value):
-            return tuple(v for v in value if getattr(v, '_repr_mimebundle_', None))
-else:
-    import typing
-    class Children(TraitType[tuple[Widget,...], typing.Iterable[Widget]]):
-        default_value = ()
-
-        def validate(self, obj, value):
-            return tuple(v for v in value if getattr(v, '_repr_mimebundle_', None))
+    def validate(self, obj, value):
+        return tuple(v for v in value if isinstance(v, Widget) and v.comm)
 
 
 @register
@@ -80,43 +72,11 @@ class Box(DOMWidget, CoreWidget):
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)
     
-    def __init__(self, children=(), *, observe_children=False, **kwargs):
-        if observe_children:
-            self.observe(self._box_observe_children, names='children')
+    def __init__(self, children=(), **kwargs):
         if children:
             kwargs['children'] = children
         super().__init__(**kwargs)
 
-
-    @staticmethod
-    def _box_observe_children(change):
-        self:Box = change['owner']
-        # Monitor widgets for when the comm is closed.
-        handler = self._children_handlers.get(self)
-        if not handler:    
-            ref = weakref.ref(self)
-            def handler(change):
-                self_ = ref()
-                if self_ and change['owner'] in self_.children:
-                    # Re-validate children. 
-                    # tip: Use the context `hold_trait_notifications`
-                    # to close multiple children at once.
-                    self_.children = self_.children
-                
-            self._children_handlers[self] = handler      
-        if change['new']:
-            w:Widget
-            for w in set(change['new']).difference(change['old'] or ()):
-                try:
-                    w.observe(handler, names='comm')
-                except Exception:
-                    pass
-        if change['old']:
-            for w in set(change['old']).difference(change['new']):
-                try:
-                    w.unobserve(handler,  names='comm')
-                except Exception:
-                    pass
             
     def close(self):
         self.children = ()

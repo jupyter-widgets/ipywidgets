@@ -704,7 +704,7 @@ __metadata:
     "@types/chai-as-promised": ^7.1.0
     "@types/expect.js": ^0.3.29
     "@types/mocha": ^9.0.0
-    "@types/sanitize-html": ^2.6.0
+    "@types/sanitize-html": ^2.11.0
     "@types/sinon": ^10.0.2
     "@types/sinon-chai": ^3.2.2
     base64-js: ^1.2.1
@@ -723,7 +723,7 @@ __metadata:
     mocha: ^9.0.0
     npm-run-all: ^4.1.5
     rimraf: ^3.0.2
-    sanitize-html: ^2.3
+    sanitize-html: ^2.13.0
     sinon: ^12.0.1
     sinon-chai: ^3.3.0
     typescript: ~4.9.4
@@ -737,7 +737,7 @@ __metadata:
   dependencies:
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
     "@lumino/coreutils": ^1.11.1 || ^2.1
-    "@lumino/messaging": ^1.10.1 || ^2.1
+    "@lumino/messaging": ^1.10.1 || ^2.0.1
     "@lumino/widgets": ^1.30.0 || ^2.1
     "@types/backbone": 1.4.14
     "@types/base64-js": ^1.2.5
@@ -780,9 +780,9 @@ __metadata:
   dependencies:
     "@jupyter-widgets/base": ^6.0.7
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
-    "@lumino/algorithm": ^1.9.1 || ^2.1
+    "@lumino/algorithm": ^1.9.2 || ^2.0.1
     "@lumino/domutils": ^1.8.1 || ^2.1
-    "@lumino/messaging": ^1.10.1 || ^2.1
+    "@lumino/messaging": ^1.10.1 || ^2.0.1
     "@lumino/signaling": ^1.10.1 || ^2.1
     "@lumino/widgets": ^1.30.0 || ^2.1
     "@types/d3-color": ^3.0.2
@@ -908,12 +908,12 @@ __metadata:
     "@jupyterlab/outputarea": ^3.0.0 || ^4.0.0
     "@jupyterlab/rendermime": ^3.0.0 || ^4.0.0
     "@jupyterlab/rendermime-interfaces": ^3.0.0 || ^4.0.0
-    "@lumino/messaging": ^1.10.1 || ^2.1
+    "@lumino/messaging": ^1.10.1 || ^2.0.1
     "@lumino/widgets": ^1.30.0 || ^2.1
     "@types/jquery": ^3.5.16
     "@types/mocha": ^9.0.0
     "@types/node": ^17.0.2
-    "@types/sanitize-html": ^2.6.0
+    "@types/sanitize-html": ^2.11.0
     ajv: ^8.6.0
     chai: ^4.0.0
     css-loader: ^6.5.1
@@ -959,7 +959,7 @@ __metadata:
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
     "@jupyterlab/settingregistry": ^3.0.0 || ^4.0.0
     "@jupyterlab/translation": ^3.0.0 || ^4.0.0
-    "@lumino/algorithm": ^1.11.1 || ^2.0.0
+    "@lumino/algorithm": ^1.9.2 || ^2.0.1
     "@lumino/coreutils": ^1.11.1 || ^2.1
     "@lumino/disposable": ^1.10.1 || ^2.1
     "@lumino/properties": ^1.8.1 || ^2.1
@@ -993,7 +993,7 @@ __metadata:
     "@jupyter-widgets/html-manager": ^1.0.10
     "@jupyter-widgets/output": ^6.0.7
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
-    "@lumino/messaging": ^1.10.1 || ^2.1
+    "@lumino/messaging": ^1.10.1 || ^2.0.1
     "@lumino/widgets": ^1.30.0 || ^2.1
     backbone: 1.4.0
     css-loader: ^6.5.1
@@ -2634,17 +2634,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lumino/algorithm@npm:^1.11.1 || ^2.0.0, @lumino/algorithm@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@lumino/algorithm@npm:2.0.0"
-  checksum: 663edf536e94397b449c6a2643a735e602fbb396dec86b56ad1193a768dce27c6e7da5ad0384aa90086ea44cbb64dde3f9d565e9fd81858f1eb0c6b4253f3b94
+"@lumino/algorithm@npm:^1.9.2 || ^2.0.1, @lumino/algorithm@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@lumino/algorithm@npm:2.0.1"
+  checksum: cbf7fcf6ee6b785ea502cdfddc53d61f9d353dcb9659343511d5cd4b4030be2ff2ca4c08daec42f84417ab0318a3d9972a17319fa5231693e109ab112dcf8000
   languageName: node
   linkType: hard
 
-"@lumino/algorithm@npm:^1.9.1 || ^2.1, @lumino/algorithm@npm:^1.9.2":
-  version: 1.9.2
-  resolution: "@lumino/algorithm@npm:1.9.2"
-  checksum: a89e7c63504236119634858e271db1cc649684d30ced5a6ebe2788af7c0837f1e05a6fd3047d8525eb756c42ce137f76b3688f75fd3ef915b71cd4f213dfbb96
+"@lumino/algorithm@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@lumino/algorithm@npm:2.0.0"
+  checksum: 663edf536e94397b449c6a2643a735e602fbb396dec86b56ad1193a768dce27c6e7da5ad0384aa90086ea44cbb64dde3f9d565e9fd81858f1eb0c6b4253f3b94
   languageName: node
   linkType: hard
 
@@ -2659,21 +2659,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lumino/collections@npm:^1.9.3":
-  version: 1.9.3
-  resolution: "@lumino/collections@npm:1.9.3"
-  dependencies:
-    "@lumino/algorithm": ^1.9.2
-  checksum: 1c87a12743eddd6f6b593e47945a5645e2f99ad61c5192499b0745e48ee9aff263c7145541e77dfeea4c9f50bdd017fddfa47bfc60e718de4f28533ce45bf8c3
-  languageName: node
-  linkType: hard
-
 "@lumino/collections@npm:^2.0.0":
   version: 2.0.0
   resolution: "@lumino/collections@npm:2.0.0"
   dependencies:
     "@lumino/algorithm": ^2.0.0
   checksum: 4a7fc3571e92a1368a1ef01300ad7b6e0d4ff13cb78b89533d5962eea66d4a7550e15d8b80fa3ab1816b1a89382f35015f9dddf72ab04654c17e5b516b845d8f
+  languageName: node
+  linkType: hard
+
+"@lumino/collections@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@lumino/collections@npm:2.0.1"
+  dependencies:
+    "@lumino/algorithm": ^2.0.1
+  checksum: 8a29b7973a388a33c5beda0819dcd2dc2aad51a8406dcfd4581b055a9f77a39dc5800f7a8b4ae3c0bb97ae7b56a7a869e2560ffb7a920a28e93b477ba05907d6
   languageName: node
   linkType: hard
 
@@ -2739,13 +2739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lumino/messaging@npm:^1.10.1 || ^2.1":
-  version: 1.10.3
-  resolution: "@lumino/messaging@npm:1.10.3"
+"@lumino/messaging@npm:^1.10.1 || ^2.0.1":
+  version: 2.0.1
+  resolution: "@lumino/messaging@npm:2.0.1"
   dependencies:
-    "@lumino/algorithm": ^1.9.2
-    "@lumino/collections": ^1.9.3
-  checksum: 1131e80379fa9b8a9b5d3418c90e25d4be48e2c92ec711518190772f9e8845a695bef45daddd06a129168cf6f158c8ad80ae86cb245f566e9195bbd9a0843b7a
+    "@lumino/algorithm": ^2.0.1
+    "@lumino/collections": ^2.0.1
+  checksum: 964c4651c374b17452b4252b7d71500b32d2ecd87c192fc5bcf5d3bd1070661d78d07edcac8eca7d1d6fd50aa25992505485e1296d6dd995691b8e349b652045
   languageName: node
   linkType: hard
 
@@ -3646,12 +3646,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sanitize-html@npm:^2.6.0":
-  version: 2.9.0
-  resolution: "@types/sanitize-html@npm:2.9.0"
+"@types/sanitize-html@npm:^2.11.0":
+  version: 2.11.0
+  resolution: "@types/sanitize-html@npm:2.11.0"
   dependencies:
     htmlparser2: ^8.0.0
-  checksum: b60f42b740bbfb1b1434ce8b43925a38ecc608b60aa654fd009d2e22e33f324b61d370768c55bd2fd98e03de08518ffa8911d61606c483526fb931bb8b59d1b0
+  checksum: a901d55d31cd946a7fce0130cc7cf6bcf56602af9c87291be77d8149c60e7afc47c83ca74c67c2d84e6ba029fe9bbd6f14f89a8cb30fbd185766eebc5722c251
   languageName: node
   linkType: hard
 
@@ -13501,9 +13501,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sanitize-html@npm:^2.3":
-  version: 2.10.0
-  resolution: "sanitize-html@npm:2.10.0"
+"sanitize-html@npm:^2.13.0":
+  version: 2.13.0
+  resolution: "sanitize-html@npm:2.13.0"
   dependencies:
     deepmerge: ^4.2.2
     escape-string-regexp: ^4.0.0
@@ -13511,7 +13511,7 @@ __metadata:
     is-plain-object: ^5.0.0
     parse-srcset: ^1.0.2
     postcss: ^8.3.11
-  checksum: 0cb2bb330ed966a4d667b1890322dd868a67f527f87c04d7e3be1688fcfda20f7452a9a7744870751f51e255742e7264a287d9bcfcd64d4cd74a3c99f99c73d2
+  checksum: d88602328306dbbddb9c5e2a5798783a3b38977a7ef40bf81dae31220d7fb583149c1046a33ec6817e9d96d172b1aaa9ea159776eb1ee08f6a0571150114c9bf
   languageName: node
   linkType: hard
 
