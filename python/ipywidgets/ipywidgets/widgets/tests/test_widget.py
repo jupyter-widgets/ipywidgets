@@ -110,57 +110,97 @@ def test_widget_open():
         button.get_view_spec()
     
 
-def test_gc():
+def test_weakrefernce():
     # Ensure the base instance of all widgets can be deleted / garbage collected.
-    classes = {}
-    for name, obj in ipw.__dict__.items():
-        try:
-            if issubclass(obj, ipw.Widget):
-                classes[name] = obj
-        except Exception:
-            pass
-    assert classes, "No Widget classes were found!"
-    added = set()
-    collected = set()
-    objs = weakref.WeakSet()
-    options = ({}, {"options": [1, 2, 4]}, {"n_rows": 1}, {"options": ["A"]})
-    for n, obj in classes.items():
-        w = None
-        for kw in options:
+    ipw.enable_weakrefence()
+    try:
+        classes = {}
+        for name, obj in ipw.__dict__.items():
             try:
-                w = obj(**kw)
-                w.comm
-                added.add(n)
-                break
+                if issubclass(obj, ipw.Widget):
+                    classes[name] = obj
             except Exception:
                 pass
-        if w:
-            def on_delete(name=n):
-                collected.add(name)
+        assert classes, "No Widget classes were found!"
+        added = set()
+        collected = set()
+        objs = weakref.WeakSet()
+        options = ({}, {"options": [1, 2, 4]}, {"n_rows": 1}, {"options": ["A"]})
+        for n, obj in classes.items():
+            w = None
+            for kw in options:
+                try:
+                    w = obj(**kw)
+                    w.comm
+                    added.add(n)
+                    break
+                except Exception:
+                    pass
+            if w:
+                def on_delete(name=n):
+                    collected.add(name)
 
-            weakref.finalize(w, on_delete)
-            objs.add(w)
-            # w should be the only strong ref to the widget. 
-            # calling `del` should invoke its immediate deletion calling the `__del__` method.
-            del w
-    assert added, "No widgets were tested!"
-    gc.collect()
-    diff = added.difference(collected)
-    assert not diff, f"Widgets not garbage collected: {diff}"
+                weakref.finalize(w, on_delete)
+                objs.add(w)
+                # w should be the only strong ref to the widget. 
+                # calling `del` should invoke its immediate deletion calling the `__del__` method.
+                del w
+        assert added, "No widgets were tested!"
+        gc.collect()
+        diff = added.difference(collected)
+        assert not diff, f"Widgets not garbage collected: {diff}"
+    finally:
+        ipw.disable_weakrefence()
+    
 
+@pytest.mark.parametrize('weakref_enabled',[ True, False])
+def test_button_weakreference(weakref_enabled:bool):
+    try:
+        click_count = 0
+        deleted = False
+        
+        def on_delete():
+            nonlocal deleted
+            deleted = True
 
-def test_gc_button():
-    deleted = False
-    b = Button()
-    b.on_click(lambda x: setattr(x, "clicked", True))
+        class TestButton(Button):
+            def my_click (self, b):
+                nonlocal click_count
+                click_count += 1
 
-    def on_delete():
-        nonlocal deleted
-        deleted = True
+        b = TestButton(description='button')
+        weakref.finalize(b, on_delete)
+        b_ref = weakref.ref(b)
+        assert b in widget._instances.values()
 
-    b.click()
-    assert getattr(b, "clicked")
-    weakref.finalize(b, on_delete)
-    del b
-    gc.collect()
-    assert deleted
+        b.on_click(b.my_click)
+        b.on_click(lambda x: setattr(x, "clicked", True))
+
+        b.click()
+        assert click_count == 1
+
+        if weakref_enabled:
+            ipw.enable_weakrefence()
+            assert b in widget._instances.values(), "Instances not transferred"
+            ipw.disable_weakrefence()
+            assert b in widget._instances.values(), "Instances not transferred"
+            ipw.enable_weakrefence()
+            assert b in widget._instances.values(), "Instances not transferred"
+
+        b.click()
+        assert click_count == 2
+        assert getattr(b, "clicked")
+
+        del b
+        gc.collect()
+        if weakref_enabled:
+            assert deleted
+        else:
+            assert not deleted
+            assert b_ref() in widget._instances.values()
+            b_ref().close()
+            gc.collect()
+            assert deleted, 'Closing should remove the last strong reference.'
+            
+    finally:
+        ipw.disable_weakrefence()

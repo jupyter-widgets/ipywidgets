@@ -35,18 +35,27 @@ class TestBox(TestCase):
             widgets.Box(box_style='invalid')
 
 
-    def test_gc(test):
+    def test_gc(self):
+        widgets.enable_weakrefence()
         # Test Box gc collected and children lifecycle managed.
-        deleted = False
-        b = widgets.VBox(children=[widgets.Button(description='button')])
+        try:
+            deleted = False
+            class TestButton(widgets.Button):
+                def my_click (self, b):
+                    pass
+            button = TestButton(description='button')
+            button.on_click(button.my_click)
+            
+            b = widgets.VBox(children=[button])
 
-        def on_delete():
-            nonlocal deleted
-            deleted = True
+            def on_delete():
+                nonlocal deleted
+                deleted = True
 
-        weakref.finalize(b, on_delete)
-        del b
-        gc.collect()
-        assert deleted        
-
+            weakref.finalize(b, on_delete)
+            del b
+            gc.collect()
+            assert deleted        
+        finally:
+            widgets.disable_weakrefence()
         

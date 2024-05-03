@@ -43,7 +43,29 @@ CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
 JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 # for a discussion on using weak references see:
 #  https://github.com/jupyter-widgets/ipywidgets/issues/1345
-_instances : typing.MutableMapping[str, "Widget"] = weakref.WeakValueDictionary()
+_instances : typing.MutableMapping[str, "Widget"] = {}
+
+def enable_weakrefence():
+    """Use a WeakValueDictionary instead of a standard dictionary to map 
+    `comm_id` to `widget` for every widget instance.
+
+    By default widgets are mapped using a standard dictionary. Use this feature
+    to permit widget garbage collection. 
+    """
+    global _instances
+    if not isinstance(_instances, weakref.WeakValueDictionary):
+        _instances  = weakref.WeakValueDictionary(_instances)
+
+def disable_weakrefence():
+    """Use a Dictionary to map `comm_id` to `widget` for every widget instance.
+    
+    Note: this is the default setting and maintains a strong reference to the 
+    the widget preventing automatic garbage collection. If the close method
+    is called, the widget will remove itself enabling garbage collection.
+    """
+    global _instances
+    if  isinstance(_instances, weakref.WeakValueDictionary):
+        _instances  = dict(_instances)
 
 def _widget_to_json(x, obj):
     if isinstance(x, Widget):
