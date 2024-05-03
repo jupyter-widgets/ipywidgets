@@ -152,7 +152,7 @@ def test_gc():
 def test_gc_button():
     deleted = False
     b = Button()
-    b.on_click(lambda x: setattr(b, "clicked", True))
+    b.on_click(lambda x: setattr(x, "clicked", True))
 
     def on_delete():
         nonlocal deleted
