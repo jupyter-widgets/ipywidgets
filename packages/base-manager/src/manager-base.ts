@@ -217,7 +217,7 @@ export abstract class ManagerBase implements IWidgetManager {
   async get_model(model_id: string): Promise<WidgetModel> {
     const modelPromise = this._models[model_id];
     if (modelPromise === undefined) {
-      throw new Error('widget model not found');
+      throw new Error(`widget model '${model_id}' not found`);
     }
     return modelPromise;
   }
