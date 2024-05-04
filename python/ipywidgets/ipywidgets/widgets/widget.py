@@ -485,7 +485,7 @@ class Widget(LoggingHasTraits):
 
     def get_view_spec(self):
         if not self._repr_mimebundle_:
-            msg = f"This widget is {self!r}"
+            msg = f"This widget is closed {self!r}"
             raise RuntimeError(msg)
         return {"version_major":2, "version_minor":0, "model_id":self._model_id or self.model_id}
 
@@ -551,7 +551,7 @@ class Widget(LoggingHasTraits):
         # Accessing comm will load a default if it isn't already open.
         if self.comm is None:
             # None indicates the widget has been closed and shall not be opened.
-            msg = f"This widget is {self!r}."
+            msg = f"This widget is closed {self!r}."
             raise RuntimeError(msg)
 
     def _create_comm(self, comm_id=None):

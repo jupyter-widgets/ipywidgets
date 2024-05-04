@@ -381,8 +381,7 @@ export class TextareaView extends StringView {
   updateTooltip(): void {
     super.updateTooltip();
     if (!this.textbox) return; // we might be constructing the parent
-    const title = this.model.get('tooltip') || '';
-    this.textbox.setAttribute('title', title);
+    this.textbox.setAttribute('title', this.tooltip);
   }
 
   events(): { [e: string]: string } {
@@ -504,8 +503,7 @@ export class TextView extends StringView {
   updateTooltip(): void {
     super.updateTooltip();
     if (!this.textbox) return; // we might be constructing the parent
-    const title = this.model.get('tooltip') || '';
-    this.textbox.setAttribute('title', title);
+    this.textbox.setAttribute('title', this.tooltip);
   }
 
   update(options?: any): void {
