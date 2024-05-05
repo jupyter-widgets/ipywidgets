@@ -33,8 +33,18 @@ _doc_snippets['box_params'] = """
 class Children(TraitType["tuple[Widget,...]", typing.Iterable[Widget]]):
     default_value = ()
 
-    def validate(self, obj, value):
-        return tuple(v for v in value if isinstance(v, Widget) and v.comm)
+    def validate(self, obj:Box, value:typing.Iterable[Widget]):
+        invalid = []
+        valid = []
+        for v in value:
+            if isinstance(v, Widget) and v._repr_mimebundle_:
+                valid.append(v)
+            else:
+                invalid.append(v)
+        if invalid:
+            msg  = f"Invalid items found: {invalid}"
+            raise TypeError(msg)
+        return tuple(valid)
 
 
 @register
