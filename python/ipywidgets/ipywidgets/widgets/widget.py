@@ -576,10 +576,13 @@ class Widget(LoggingHasTraits):
         if change['old']:
             change['old'].on_msg(None)
             change['old'].close()
-            _instances.pop(change['old'].comm_id, None)
+            # On python shutdown _instances can be None
+            if isinstance(_instances, dict):
+                _instances.pop(change['old'].comm_id, None)
         if change['new']:
             self._model_id = change['new'].comm_id
-            _instances[change['new'].comm_id] = self        
+            if isinstance(_instances, dict):
+                _instances[change['new'].comm_id] = self        
             
             # prevent memory leaks by using a weak reference to self.
             ref = weakref.ref(self)
