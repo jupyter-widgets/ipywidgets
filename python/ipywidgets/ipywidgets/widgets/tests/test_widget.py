@@ -104,9 +104,9 @@ def test_widget_open():
     assert spec["model_id"]
     button.close()
     assert model_id not in widget._instances
-    with pytest.raises(RuntimeError, match="This widget is closed"):
+    with pytest.raises(RuntimeError, match="Widget is closed"):
         button.open()
-    with pytest.raises(RuntimeError, match="This widget is closed"):
+    with pytest.raises(RuntimeError, match="Widget is closed"):
         button.get_view_spec()
 
 

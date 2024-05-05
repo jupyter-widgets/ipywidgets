@@ -91,9 +91,6 @@ export class BoxView extends DOMWidgetView {
     this.set_box_style();
   }
 
-  updateTooltip(): void {
-    return;
-  }
   update_children(): void {
     this.children_views
       ?.update(this.model.get('children'))

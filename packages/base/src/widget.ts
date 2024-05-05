@@ -1098,14 +1098,14 @@ export class DOMWidgetView extends WidgetView {
     const title = this.tooltip;
     if (!title) {
       this.el.removeAttribute('title');
-    } else if (this.model.get('description').length === 0) {
+    } else if (!this.model.get('description')) {
       this.el.setAttribute('title', title);
     }
   }
 
   get tooltip() {
     return (
-      this.model.get('tooltip') ?? (this.model.get('description') || 'null')
+      this.model.get('tooltip') ?? (this.model.get('description'))
     );
   }
 

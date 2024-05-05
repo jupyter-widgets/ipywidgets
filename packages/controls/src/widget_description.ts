@@ -98,6 +98,7 @@ export class DescriptionView extends DOMWidgetView {
   }
 
   updateTooltip(): void {
+    super.updateTooltip();
     if (!this.label) return;
     this.label.title = this.tooltip;
   }

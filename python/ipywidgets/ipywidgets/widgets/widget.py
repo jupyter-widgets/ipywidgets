@@ -69,23 +69,11 @@ def disable_weakrefence():
 
 def _widget_to_json(x, obj):
     if isinstance(x, Widget):
-        if not x._repr_mimebundle_:
-            # a closed widget will not be found at the frontend so raise an error here. 
-            msg = f"Widget is {x!r}"
-            raise RuntimeError(msg)
-        # _model_id provides faster access if its comm is already open. 
-        return "IPY_MODEL_" +  x._model_id or x.model_id
+        return f"IPY_MODEL_{x.model_id}"
     elif isinstance(x, (list, tuple)):
         return [_widget_to_json(v, obj) for v in x]
     elif isinstance(x, dict):
         return {k: _widget_to_json(v, obj) for k, v in x.items()}
-    elif hasattr(x, "_repr_mimebundle_"):
-        msg = (
-            f"{x!r} is not a widget, but provides a `_repr_mimebundle_` attribute. "
-            "Support for direct `_repr_mimebundle_` has not been implemented yet. In the "
-            "meantime, it should be possible to view the object wih an `Output` widget."
-        )
-        raise NotImplementedError(msg)
     else:
         return x
 
@@ -326,7 +314,6 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
     _control_comm = None
-    _model_id = ''
     
     @_staticproperty
     def widgets():
@@ -484,10 +471,7 @@ class Widget(LoggingHasTraits):
         return state
 
     def get_view_spec(self):
-        if not self._repr_mimebundle_:
-            msg = f"This widget is closed {self!r}"
-            raise RuntimeError(msg)
-        return {"version_major":2, "version_minor":0, "model_id":self._model_id or self.model_id}
+        return {"version_major":2, "version_minor":0, "model_id": self.model_id}
 
     #-------------------------------------------------------------------------
     # Traits
@@ -548,11 +532,7 @@ class Widget(LoggingHasTraits):
 
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
-        # Accessing comm will load a default if it isn't already open.
-        if self.comm is None:
-            # None indicates the widget has been closed and shall not be opened.
-            msg = f"This widget is closed {self!r}."
-            raise RuntimeError(msg)
+        assert self.model_id
 
     def _create_comm(self, comm_id=None):
         """Open a new comm to the frontend."""
@@ -580,7 +560,6 @@ class Widget(LoggingHasTraits):
             if isinstance(_instances, dict):
                 _instances.pop(change['old'].comm_id, None)
         if change['new']:
-            self._model_id = change['new'].comm_id
             if isinstance(_instances, dict):
                 _instances[change['new'].comm_id] = self        
             
@@ -595,8 +574,6 @@ class Widget(LoggingHasTraits):
                         self_._show_traceback(self_._handle_msg, e)
 
             change['new'].on_msg(_handle_msg)
-        else:
-            self._model_id = ''
 
 
 
@@ -605,6 +582,10 @@ class Widget(LoggingHasTraits):
         """Gets the model id of this widget.
 
         If a Comm doesn't exist yet, a Comm will be created automagically."""
+        if not self._repr_mimebundle_:
+            # a closed widget will not be found at the frontend so raise an error here. 
+            msg = f"Widget is closed: {self!r}"
+            raise RuntimeError(msg)
         return getattr(self.comm, "comm_id", None)
     
 
@@ -756,8 +737,9 @@ class Widget(LoggingHasTraits):
         super().notify_change(change)
 
     def __repr__(self):
-        rep  =  self._gen_repr_from_keys(self._repr_keys())
-        return  'closed: ' + rep  if  not self._repr_mimebundle_ else rep
+        if  not self._repr_mimebundle_:
+            return f'<closed:{self.__class__.__name__}>'
+        return  self._gen_repr_from_keys(self._repr_keys())
 
     #-------------------------------------------------------------------------
     # Support methods

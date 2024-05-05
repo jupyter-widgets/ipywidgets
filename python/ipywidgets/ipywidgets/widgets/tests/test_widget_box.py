@@ -36,17 +36,24 @@ def test_construction_invalid_style():
         widgets.Box(box_style="invalid")
 
 
-def test_box_invalid_children():
-    box = widgets.Box()
-    closed_button = widgets.Button(description="Closed")
+def test_box_validate_mode():
+    slider = widgets.IntSlider()
+    closed_button = widgets.Button()
     closed_button.close()
+    with pytest.raises(TraitError, match="Invalid or closed items found.*"):
+        widgets.Box(
+        children=[closed_button, slider, "Not a widget"]
+        )
+    box = widgets.Box(
+        children=[closed_button, slider, "Not a widget"],
+        validate_mode="log_error",
+    )
+    assert len (box.children) == 1, "Invalid items should be dropped."
+    assert slider in box.children
 
-    with pytest.raises(TypeError):
-        box.children = ["Not a widget"]
-    with pytest.raises(TypeError):
-        box.children = [closed_button]
-    with pytest.raises(TypeError):
-        box.children = [closed_button]
+    box.validate_mode = "raise"
+    with pytest.raises(TraitError):
+        box.children += ("Not a widget", closed_button)
 
 
 def test_box_gc():

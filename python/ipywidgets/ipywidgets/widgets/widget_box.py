@@ -11,9 +11,8 @@ relative layouts.
 from __future__ import annotations
 
 import typing
-import weakref
 
-from traitlets import CaselessStrEnum, TraitType, Unicode
+from traitlets import CaselessStrEnum, TraitError, TraitType, Unicode
 
 from .docutils import doc_subst
 from .domwidget import DOMWidget
@@ -29,21 +28,33 @@ _doc_snippets['box_params'] = """
         one of 'success', 'info', 'warning' or 'danger', or ''.
         Applies a predefined style to the box. Defaults to '',
         which applies no pre-defined style.
+
+    validate_mode: str 
+        one of 'raise', 'warning', error'.
+        How invalid children will be treated.
+        'raise' will raise a trait error.
+        'warning' and 'error' will log an error using box.log dropping
+        the invalid items from children.
 """
+
 class Children(TraitType["tuple[Widget,...]", typing.Iterable[Widget]]):
     default_value = ()
 
-    def validate(self, obj:Box, value:typing.Iterable[Widget]):
-        invalid = []
-        valid = []
+    def validate(self, obj: Box, value: typing.Iterable[Widget]):
+        valid, invalid = [], []
         for v in value:
             if isinstance(v, Widget) and v._repr_mimebundle_:
                 valid.append(v)
             else:
                 invalid.append(v)
         if invalid:
-            msg  = f"Invalid items found: {invalid}"
-            raise TypeError(msg)
+            msg = f"Invalid or closed items found: {invalid}"
+            if obj.validate_mode == "log_warning":
+                obj.log.warning(msg)
+            elif obj.validate_mode == "log_error":
+                obj.log.error(msg)
+            else:
+                raise TraitError(msg)
         return tuple(valid)
 
 
@@ -67,16 +78,15 @@ class Box(DOMWidget, CoreWidget):
     """
     _model_name = Unicode('BoxModel').tag(sync=True)
     _view_name = Unicode('BoxView').tag(sync=True)
-    _children_handlers = weakref.WeakKeyDictionary()
-
-    # Tooltip is not allowed for containers (override for DOMWidget). 
-    tooltip = None 
+    tooltip = Unicode('', allow_none=True, help='A tooltip caption.').tag(sync=True)
+    validate_mode = CaselessStrEnum(['raise', 'log_warning', 'log_error'], 'raise')
 
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
-    children = Children(help="List of widget children").tag(
-        sync=True, **widget_serialization)
+    children = Children(help='List of widget children').tag(
+        sync=True, **widget_serialization
+    )
 
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
@@ -84,14 +94,9 @@ class Box(DOMWidget, CoreWidget):
     
     def __init__(self, children=(), **kwargs):
         if children:
-            kwargs['children'] = children
+            kwargs["children"] = children
         super().__init__(**kwargs)
 
-            
-    def close(self):
-        self.children = ()
-        self._children_handlers.pop(self, None)
-        super().close()
 
 @register
 @doc_subst(_doc_snippets)
