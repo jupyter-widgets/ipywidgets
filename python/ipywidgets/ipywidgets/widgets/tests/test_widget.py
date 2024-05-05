@@ -3,22 +3,22 @@
 
 """Test Widget."""
 
+import copy
+import gc
 import inspect
 import weakref
-import gc
 
 import pytest
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import display
 from IPython.utils.capture import capture_output
 
+import ipywidgets as ipw
+
 from .. import widget
 from ..widget import Widget
 from ..widget_button import Button
-from ..widget_box import VBox
-import copy
 
-import ipywidgets as ipw
 
 def test_no_widget_view():
     # ensure IPython shell is instantiated
@@ -100,75 +100,124 @@ def test_widget_open():
     model_id = button.model_id
     assert model_id in widget._instances
     spec = button.get_view_spec()
-    assert list(spec) == ['version_major', 'version_minor', 'model_id']
-    assert spec['model_id']
+    assert list(spec) == ["version_major", "version_minor", "model_id"]
+    assert spec["model_id"]
     button.close()
     assert model_id not in widget._instances
-    with pytest.raises(RuntimeError, match='This widget is closed'):
+    with pytest.raises(RuntimeError, match="This widget is closed"):
         button.open()
-    with pytest.raises(RuntimeError, match='This widget is closed'):
+    with pytest.raises(RuntimeError, match="This widget is closed"):
         button.get_view_spec()
-    
 
-def test_weakrefernce():
+
+@pytest.mark.parametrize(
+    "class_name",
+    [
+        "Accordion",
+        "AppLayout",
+        "Audio",
+        "BoundedFloatText",
+        "BoundedIntText",
+        "Box",
+        "Button",
+        "ButtonStyle",
+        "Checkbox",
+        "ColorPicker",
+        "ColorsInput",
+        "Combobox",
+        "Controller",
+        "CoreWidget",
+        "DOMWidget",
+        "DatePicker",
+        "DatetimePicker",
+        "Dropdown",
+        "FileUpload",
+        "FloatLogSlider",
+        "FloatProgress",
+        "FloatRangeSlider",
+        "FloatSlider",
+        "FloatText",
+        "FloatsInput",
+        "GridBox",
+        "HBox",
+        "HTML",
+        "HTMLMath",
+        "Image",
+        "IntProgress",
+        "IntRangeSlider",
+        "IntSlider",
+        "IntText",
+        "IntsInput",
+        "Label",
+        "Layout",
+        "NaiveDatetimePicker",
+        "Output",
+        "Password",
+        "Play",
+        "RadioButtons",
+        "Select",
+        "SelectMultiple",
+        "SelectionRangeSlider",
+        "SelectionSlider",
+        "SliderStyle",
+        "Stack",
+        "Style",
+        "Tab",
+        "TagsInput",
+        "Text",
+        "Textarea",
+        "TimePicker",
+        "ToggleButton",
+        "ToggleButtons",
+        "ToggleButtonsStyle",
+        "TwoByTwoLayout",
+        "VBox",
+        "Valid",
+        "ValueWidget",
+        "Video",
+        "Widget",
+    ],
+)
+def test_weakreference(class_name):
     # Ensure the base instance of all widgets can be deleted / garbage collected.
     ipw.enable_weakrefence()
+    cls = getattr(ipw, class_name)
+    if class_name in ['SelectionRangeSlider', 'SelectionSlider']:
+        kwgs = {"options": [1, 2, 4]}
+    else:
+        kwgs = {}
     try:
-        classes = {}
-        for name, obj in ipw.__dict__.items():
-            try:
-                if issubclass(obj, ipw.Widget):
-                    classes[name] = obj
-            except Exception:
-                pass
-        assert classes, "No Widget classes were found!"
-        added = set()
-        collected = set()
-        objs = weakref.WeakSet()
-        options = ({}, {"options": [1, 2, 4]}, {"n_rows": 1}, {"options": ["A"]})
-        for n, obj in classes.items():
-            w = None
-            for kw in options:
-                try:
-                    w = obj(**kw)
-                    w.comm
-                    added.add(n)
-                    break
-                except Exception:
-                    pass
-            if w:
-                def on_delete(name=n):
-                    collected.add(name)
-
-                weakref.finalize(w, on_delete)
-                objs.add(w)
-                # w should be the only strong ref to the widget. 
-                # calling `del` should invoke its immediate deletion calling the `__del__` method.
-                del w
-        assert added, "No widgets were tested!"
+        w = cls(**kwgs)
+        deleted = False
+        def on_delete():
+            nonlocal deleted
+            deleted = True
+        weakref.finalize(w, on_delete)
+        # w should be the only strong ref to the widget.
+        # calling `del` should invoke its immediate deletion calling the `__del__` method.
+        del w
         gc.collect()
-        diff = added.difference(collected)
-        assert not diff, f"Widgets not garbage collected: {diff}"
+        assert deleted
     finally:
         ipw.disable_weakrefence()
-    
 
-@pytest.mark.parametrize('weakref_enabled',[ True, False])
-def test_button_weakreference(weakref_enabled:bool):
+
+@pytest.mark.parametrize("weakref_enabled", [True, False])
+def test_button_weakreference(weakref_enabled: bool):
     try:
         click_count = 0
         deleted = False
-        
+
         def on_delete():
             nonlocal deleted
             deleted = True
 
         class TestButton(Button):
-            def my_click (self, b):
+            def my_click(self, b):
                 nonlocal click_count
                 click_count += 1
 
-        b = TestButton(description='button')
+        b = TestButton(description="button")
         weakref.finalize(b, on_delete)
         b_ref = weakref.ref(b)
         assert b in widget._instances.values()
@@ -200,7 +249,7 @@ def test_button_weakreference(weakref_enabled:bool):
             assert b_ref() in widget._instances.values()
             b_ref().close()
             gc.collect()
-            assert deleted, 'Closing should remove the last strong reference.'
-            
+            assert deleted, "Closing should remove the last strong reference."
+
     finally:
         ipw.disable_weakrefence()
