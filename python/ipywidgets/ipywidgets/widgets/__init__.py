@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget, CallbackDispatcher, register, widget_serialization, enable_weakrefence, disable_weakrefence
+from .widget import Widget, CallbackDispatcher, register, widget_serialization, enable_weakreference, disable_weakreference
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 

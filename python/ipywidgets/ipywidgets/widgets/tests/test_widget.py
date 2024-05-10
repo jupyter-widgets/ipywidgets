@@ -182,7 +182,7 @@ def test_widget_open():
 def test_weakreference(class_name, enable_weakref):
     # Ensure the base instance of all widgets can be deleted / garbage collected.
     if enable_weakref:
-        ipw.enable_weakrefence()
+        ipw.enable_weakreference()
     cls = getattr(ipw, class_name)
     if class_name in ['SelectionRangeSlider', 'SelectionSlider']:
         kwgs = {"options": [1, 2, 4]}
@@ -204,7 +204,7 @@ def test_weakreference(class_name, enable_weakref):
         assert deleted
     finally:
         if enable_weakref:
-            ipw.disable_weakrefence()
+            ipw.disable_weakreference()
 
 
 @pytest.mark.parametrize("weakref_enabled", [True, False])
@@ -234,11 +234,11 @@ def test_button_weakreference(weakref_enabled: bool):
         assert click_count == 1
 
         if weakref_enabled:
-            ipw.enable_weakrefence()
+            ipw.enable_weakreference()
             assert b in widget._instances.values(), "Instances not transferred"
-            ipw.disable_weakrefence()
+            ipw.disable_weakreference()
             assert b in widget._instances.values(), "Instances not transferred"
-            ipw.enable_weakrefence()
+            ipw.enable_weakreference()
             assert b in widget._instances.values(), "Instances not transferred"
 
         b.click()
@@ -257,4 +257,4 @@ def test_button_weakreference(weakref_enabled: bool):
             assert deleted, "Closing should remove the last strong reference."
 
     finally:
-        ipw.disable_weakrefence()
+        ipw.disable_weakreference()

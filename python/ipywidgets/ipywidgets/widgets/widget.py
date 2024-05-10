@@ -45,7 +45,7 @@ JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 #  https://github.com/jupyter-widgets/ipywidgets/issues/1345
 _instances : typing.MutableMapping[str, "Widget"] = {}
 
-def enable_weakrefence():
+def enable_weakreference():
     """Use a WeakValueDictionary instead of a standard dictionary to map 
     `comm_id` to `widget` for every widget instance.
 
@@ -56,7 +56,7 @@ def enable_weakrefence():
     if not isinstance(_instances, weakref.WeakValueDictionary):
         _instances  = weakref.WeakValueDictionary(_instances)
 
-def disable_weakrefence():
+def disable_weakreference():
     """Use a Dictionary to map `comm_id` to `widget` for every widget instance.
     
     Note: this is the default setting and maintains a strong reference to the 
