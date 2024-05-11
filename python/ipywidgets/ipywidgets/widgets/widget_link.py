@@ -6,6 +6,8 @@
 Propagate changes between widgets on the javascript side.
 """
 
+from __future__ import annotations
+
 from .widget import Widget, register, widget_serialization
 from .widget_core import CoreWidget
 
@@ -51,25 +53,19 @@ class Link(CoreWidget):
     source: a (Widget, 'trait_name') tuple for the source trait
     target: a (Widget, 'trait_name') tuple that should be updated
     """
-    # maintain a set of links to keep them alive 
-    _all_links = set()
     _model_name = Unicode('LinkModel').tag(sync=True)
     target = WidgetTraitTuple(help="The target (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
     source = WidgetTraitTuple(help="The source (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
-    
-    def __init__(self, source, target, **kwargs):
-        super().__init__(source=source, target=target, **kwargs)
-        self._all_links.add(self)
 
-    def close(self):
-        self._all_links.discard(self)
-        super().close()
+    def __init__(self, source: tuple[Widget, str], target: tuple[Widget, str], **kwargs):
+        super().__init__(source=source, target=target, **kwargs)
+
     # for compatibility with traitlet links
     def unlink(self):
         self.close()
 
 
-def jslink(attr1, attr2):
+def jslink(attr1: tuple[Widget, str], attr2: tuple[Widget, str]):
     """Link two widget attributes on the frontend so they remain in sync.
 
     The link is created in the front-end and does not rely on a roundtrip
@@ -99,7 +95,7 @@ class DirectionalLink(Link):
     _model_name = Unicode('DirectionalLinkModel').tag(sync=True)
 
 
-def jsdlink(source, target):
+def jsdlink(source: tuple[Widget, str], target: tuple[Widget, str]):
     """Link a source widget attribute with a target widget attribute.
 
     The link is created in the front-end and does not rely on a roundtrip
