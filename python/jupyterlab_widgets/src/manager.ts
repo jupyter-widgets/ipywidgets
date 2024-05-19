@@ -2,20 +2,20 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  shims,
+  ExportData,
+  ExportMap,
+  ICallbacks,
   IClassicComm,
   IWidgetRegistryData,
-  ExportMap,
-  ExportData,
   WidgetModel,
   WidgetView,
-  ICallbacks,
+  shims,
 } from '@jupyter-widgets/base';
 
 import {
+  IStateOptions,
   ManagerBase,
   serialize_state,
-  IStateOptions,
 } from '@jupyter-widgets/base-manager';
 
 import { IDisposable } from '@lumino/disposable';
@@ -26,7 +26,18 @@ import { INotebookModel } from '@jupyterlab/notebook';
 
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
-import { Kernel, KernelMessage, Session } from '@jupyterlab/services';
+import { ObservableList, ObservableMap } from '@jupyterlab/observables';
+
+import * as nbformat from '@jupyterlab/nbformat';
+
+import { ILoggerRegistry, LogLevel } from '@jupyterlab/logconsole';
+
+import {
+  Kernel,
+  KernelConnection,
+  KernelMessage,
+  Session,
+} from '@jupyterlab/services';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 
@@ -35,6 +46,11 @@ import { ISignal, Signal } from '@lumino/signaling';
 import { valid } from 'semver';
 
 import { SemVerCache } from './semvercache';
+
+import Backbone from 'backbone';
+
+import * as base from '@jupyter-widgets/base';
+import { WidgetRenderer } from './renderer';
 
 /**
  * The mime type for a widget view.
@@ -330,23 +346,39 @@ export abstract class LabWidgetManager
     this,
     KernelMessage.IIOPubMessage
   >(this);
+  static WIDGET_REGISTRY = new ObservableList<base.IWidgetRegistryData>();
 }
 
 /**
- * A widget manager that returns Lumino widgets.
+ * A singleton widget manager per kernel for the lifecycle of the kernel.
  */
 export class KernelWidgetManager extends LabWidgetManager {
   constructor(
     kernel: Kernel.IKernelConnection,
     rendermime: IRenderMimeRegistry
   ) {
+    const instance = Private.kernelWidgetManagers.get(kernel.id);
+    if (instance) {
+      instance.attachToRendermime(rendermime);
+      return instance;
+    }
     super(rendermime);
-    this._kernel = kernel;
+    this.attachToRendermime(rendermime);
+    Private.kernelWidgetManagers.set(kernel.id, this);
+    this._kernel = new KernelConnection({ model: kernel.model });
+    this.loadCustomWidgetDefinitions();
+    LabWidgetManager.WIDGET_REGISTRY.changed.connect(() =>
+      this.loadCustomWidgetDefinitions()
+    );
+    this._kernel.registerCommTarget(
+      this.comm_target_name,
+      this._handleCommOpen
+    );
 
-    kernel.statusChanged.connect((sender, args) => {
+    this._kernel.statusChanged.connect((sender, args) => {
       this._handleKernelStatusChange(args);
     });
-    kernel.connectionStatusChanged.connect((sender, args) => {
+    this._kernel.connectionStatusChanged.connect((sender, args) => {
       this._handleKernelConnectionStatusChange(args);
     });
 
@@ -405,24 +437,50 @@ export class KernelWidgetManager extends LabWidgetManager {
     return this._kernel;
   }
 
+  loadCustomWidgetDefinitions() {
+    for (const data of LabWidgetManager.WIDGET_REGISTRY) {
+      this.register(data);
+    }
+  }
+
+  filterModelState(serialized_state: any): any {
+    return this.filterExistingModelState(serialized_state);
+  }
+
+  attachToRendermime(rendermime: IRenderMimeRegistry) {
+    rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
+    rendermime.addFactory(
+      {
+        safe: false,
+        mimeTypes: [WIDGET_VIEW_MIMETYPE],
+        createRenderer: (options) => new WidgetRenderer(options, this),
+      },
+      -10
+    );
+  }
+
   private _kernel: Kernel.IKernelConnection;
+  protected _kernelRestoreInProgress = false;
 }
 
 /**
- * A widget manager that returns phosphor widgets.
+ * Monitor kernel of the Context swapping the kernel manager on demand.
+ * A better name would be `NotebookManagerSwitcher'.
  */
-export class WidgetManager extends LabWidgetManager {
+export class WidgetManager extends Backbone.Model implements IDisposable {
   constructor(
     context: DocumentRegistry.IContext<INotebookModel>,
     rendermime: IRenderMimeRegistry,
     settings: WidgetManager.Settings
   ) {
-    super(rendermime);
+    super();
+    this._rendermime = rendermime;
     this._context = context;
+    this._settings = settings;
 
-    context.sessionContext.kernelChanged.connect((sender, args) => {
-      this._handleKernelChanged(args);
-    });
+    context.sessionContext.kernelChanged.connect((sender, args) =>
+      this.updateWidgetManager()
+    );
 
     context.sessionContext.statusChanged.connect((sender, args) => {
       this._handleKernelStatusChange(args);
@@ -432,17 +490,11 @@ export class WidgetManager extends LabWidgetManager {
       this._handleKernelConnectionStatusChange(args);
     });
 
-    if (context.sessionContext.session?.kernel) {
-      this._handleKernelChanged({
-        name: 'kernel',
-        oldValue: null,
-        newValue: context.sessionContext.session?.kernel,
-      });
-    }
+    this.updateWidgetManager();
+    this.setDirty();
 
     this.restoreWidgets(this._context!.model);
 
-    this._settings = settings;
     context.saveState.connect((sender, saveState) => {
       if (saveState === 'started' && settings.saveState) {
         this._saveState();
@@ -454,7 +506,7 @@ export class WidgetManager extends LabWidgetManager {
    * Save the widget state to the context model.
    */
   private _saveState(): void {
-    const state = this.get_state_sync({ drop_defaults: true });
+    const state = this.widgetManager.get_state_sync({ drop_defaults: true });
     if (this._context.model.setMetadata) {
       this._context.model.setMetadata('widgets', {
         'application/vnd.jupyter.widget-state+json': state,
@@ -465,6 +517,44 @@ export class WidgetManager extends LabWidgetManager {
       this._context.model.metadata.set('widgets', {
         'application/vnd.jupyter.widget-state+json': state,
       });
+    }
+  }
+
+  updateWidgetManager() {
+    if (this._widgetManager) {
+      this.widgetManager.onUnhandledIOPubMessage.disconnect(
+        this.onUnhandledIOPubMessage,
+        this
+      );
+    }
+    if (this.kernel) {
+      this._widgetManager = getWidgetManager(this.kernel, this.rendermime);
+      this._widgetManager.onUnhandledIOPubMessage.connect(
+        this.onUnhandledIOPubMessage,
+        this
+      );
+    }
+  }
+
+  onUnhandledIOPubMessage(
+    sender: LabWidgetManager,
+    msg: KernelMessage.IIOPubMessage
+  ) {
+    if (WidgetManager.loggerRegistry) {
+      const logger = WidgetManager.loggerRegistry.getLogger(this.context.path);
+      let level: LogLevel = 'warning';
+      if (
+        KernelMessage.isErrorMsg(msg) ||
+        (KernelMessage.isStreamMsg(msg) && msg.content.name === 'stderr')
+      ) {
+        level = 'error';
+      }
+      const data: nbformat.IOutput = {
+        ...msg.content,
+        output_type: msg.header.msg_type,
+      };
+      // logger.rendermime = this.content.rendermime;
+      logger.log({ type: 'output', data, level });
     }
   }
 
@@ -483,9 +573,41 @@ export class WidgetManager extends LabWidgetManager {
   }
 
   _handleKernelStatusChange(status: Kernel.Status): void {
-    if (status === 'restarting') {
-      this.disconnect();
+    this.setDirty();
+  }
+
+  get widgetManager(): KernelWidgetManager {
+    return this._widgetManager;
+  }
+
+  /**
+   * A signal emitted when state is restored to the widget manager.
+   *
+   * #### Notes
+   * This indicates that previously-unavailable widget models might be available now.
+   */
+  get restored(): ISignal<this, void> {
+    return this._restored;
+  }
+
+  /**
+   * Whether the state has been restored yet or not.
+   */
+  get restoredStatus(): boolean {
+    return this._restoredStatus;
+  }
+
+  /**
+   *
+   * @param renderers
+   */
+  updateWidgetRenderers(renderers: IterableIterator<WidgetRenderer>) {
+    if (this.kernel) {
+      for (const r of renderers) {
+        r.manager = this.widgetManager;
+      }
     }
+    // Do we need to handle for if there isn't a kernel?
   }
 
   /**
@@ -500,7 +622,6 @@ export class WidgetManager extends LabWidgetManager {
       if (loadKernel) {
         try {
           this._kernelRestoreInProgress = true;
-          await this._loadFromKernel();
         } finally {
           this._kernelRestoreInProgress = false;
         }
@@ -529,9 +650,19 @@ export class WidgetManager extends LabWidgetManager {
     // Restore any widgets from saved state that are not live
     if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
       let state = widget_md[WIDGET_STATE_MIMETYPE];
-      state = this.filterExistingModelState(state);
-      await this.set_state(state);
+      state = this.widgetManager.filterModelState(state);
+      await this.widgetManager.set_state(state);
     }
+  }
+
+  /**
+   * Get whether the manager is disposed.
+   *
+   * #### Notes
+   * This is a read-only property.
+   */
+  get isDisposed(): boolean {
+    return this._isDisposed;
   }
 
   /**
@@ -543,7 +674,6 @@ export class WidgetManager extends LabWidgetManager {
     }
 
     this._context = null!;
-    super.dispose();
   }
 
   /**
@@ -562,11 +692,15 @@ export class WidgetManager extends LabWidgetManager {
     return this._context.sessionContext?.session?.kernel ?? null;
   }
 
+  get rendermime(): IRenderMimeRegistry {
+    return this._rendermime;
+  }
+
   /**
    * Register a widget model.
    */
   register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
-    super.register_model(model_id, modelPromise);
+    this.widgetManager.register_model(model_id, modelPromise);
     this.setDirty();
   }
 
@@ -575,7 +709,7 @@ export class WidgetManager extends LabWidgetManager {
    * @return Promise that resolves when the widget state is cleared.
    */
   async clear_state(): Promise<void> {
-    await super.clear_state();
+    // await this.widgetManager.clear_state();
     this.setDirty();
   }
 
@@ -589,13 +723,65 @@ export class WidgetManager extends LabWidgetManager {
       this._context!.model.dirty = true;
     }
   }
-
+  static loggerRegistry: ILoggerRegistry | null;
+  protected _restored = new Signal<this, void>(this);
+  protected _restoredStatus = false;
+  private _isDisposed = false;
   private _context: DocumentRegistry.IContext<INotebookModel>;
+  private _rendermime: IRenderMimeRegistry;
   private _settings: WidgetManager.Settings;
+  private _widgetManager: KernelWidgetManager;
+  protected _kernelRestoreInProgress = false;
 }
 
 export namespace WidgetManager {
   export type Settings = {
     saveState: boolean;
   };
+}
+
+/**
+ * Get the widget manager for the kernel. Calling this will ensure
+ * widgets to work in a kernel.
+ * With the widgetManager use the method `widgetManager.attachToRendermime`
+ * against any rendermime.
+ * @param kernel A kernel connection to which the widget manager is associated.
+ * @returns LabWidgetManager
+ */
+export function getWidgetManager(
+  kernel: Kernel.IKernelConnection,
+  rendermime: IRenderMimeRegistry
+): KernelWidgetManager {
+  if (!Private.kernelWidgetManagers.has(kernel.id)) {
+    new KernelWidgetManager(kernel, rendermime);
+  }
+  const wManager = Private.kernelWidgetManagers.get(kernel.id);
+  if (!wManager) {
+    throw new Error('Failed to create LabWidgetManager');
+  }
+  if (wManager.rendermime !== rendermime) {
+    wManager.attachToRendermime(rendermime);
+  }
+  return wManager;
+}
+
+/**
+ * Get the widgetManager that owns the model id=model_id.
+ * @param model_id An existing model_id
+ * @returns KernelWidgetManager
+ */
+export function findWidgetManager(model_id: string): KernelWidgetManager {
+  for (const wManager of Private.kernelWidgetManagers.values()) {
+    if (wManager.has_model(model_id)) {
+      return wManager;
+    }
+  }
+  throw new Error(`A widget manager was not found for model_id ${model_id}'`);
+}
+
+/**
+ * A namespace for private data
+ */
+namespace Private {
+  export const kernelWidgetManagers = new ObservableMap<KernelWidgetManager>();
 }

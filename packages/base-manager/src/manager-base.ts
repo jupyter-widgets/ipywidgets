@@ -214,7 +214,11 @@ export abstract class ManagerBase implements IWidgetManager {
    *
    * If you would like to synchronously test if a model exists, use .has_model().
    */
-  async get_model(model_id: string): Promise<WidgetModel> {
+  async get_model(model_id: string, timeout = 1000): Promise<WidgetModel> {
+    let count = 0;
+    while (!this._models[model_id] && count++ < timeout / 10) {
+      await sleep(10);
+    }
     const modelPromise = this._models[model_id];
     if (modelPromise === undefined) {
       throw new Error(`widget model '${model_id}' not found`);
@@ -918,6 +922,8 @@ export function serialize_state(
   });
   return { version_major: 2, version_minor: 0, state: state };
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 namespace Private {
   /**

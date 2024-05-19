@@ -2,7 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-import * as nbformat from '@jupyterlab/nbformat';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 
@@ -10,19 +9,18 @@ import {
   INotebookModel,
   INotebookTracker,
   Notebook,
-  NotebookPanel,
 } from '@jupyterlab/notebook';
 
 import {
-  JupyterFrontEndPlugin,
   JupyterFrontEnd,
+  JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
-import { ILoggerRegistry, LogLevel } from '@jupyterlab/logconsole';
+import { ILoggerRegistry } from '@jupyterlab/logconsole';
 
 import { CodeCell } from '@jupyterlab/cells';
 
@@ -34,9 +32,13 @@ import { AttachedProperty } from '@lumino/properties';
 
 import { WidgetRenderer } from './renderer';
 
-import { WidgetManager, WIDGET_VIEW_MIMETYPE } from './manager';
+import {
+  LabWidgetManager,
+  WidgetManager,
+  WIDGET_VIEW_MIMETYPE,
+} from './manager';
 
-import { OutputModel, OutputView, OUTPUT_WIDGET_VERSION } from './output';
+import { OUTPUT_WIDGET_VERSION, OutputModel, OutputView } from './output';
 
 import * as base from '@jupyter-widgets/base';
 
@@ -46,10 +48,7 @@ import { JUPYTER_CONTROLS_VERSION } from '@jupyter-widgets/controls/lib/version'
 
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
-import { KernelMessage } from '@jupyterlab/services';
 import { ITranslator, nullTranslator } from '@jupyterlab/translation';
-
-const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
 /**
  * The cached settings.
@@ -117,26 +116,11 @@ export function registerWidgetManager(
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
     wManager = new WidgetManager(context, rendermime, SETTINGS);
-    WIDGET_REGISTRY.forEach((data) => wManager!.register(data));
     Private.widgetManagerProperty.set(context, wManager);
   }
-
-  for (const r of renderers) {
-    r.manager = wManager;
+  if (wManager.kernel) {
+    wManager.updateWidgetRenderers(renderers);
   }
-
-  // Replace the placeholder widget renderer with one bound to this widget
-  // manager.
-  rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
-  rendermime.addFactory(
-    {
-      safe: false,
-      mimeTypes: [WIDGET_VIEW_MIMETYPE],
-      createRenderer: (options) => new WidgetRenderer(options, wManager),
-    },
-    -10
-  );
-
   return new DisposableDelegate(() => {
     if (rendermime) {
       rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
@@ -183,33 +167,6 @@ function activateWidgetExtension(
   const { commands } = app;
   const trans = (translator ?? nullTranslator).load('jupyterlab_widgets');
 
-  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel): void => {
-    if (!loggerRegistry) {
-      return;
-    }
-
-    const wManager = Private.widgetManagerProperty.get(nb.context);
-    if (wManager) {
-      wManager.onUnhandledIOPubMessage.connect(
-        (sender: WidgetManager, msg: KernelMessage.IIOPubMessage) => {
-          const logger = loggerRegistry.getLogger(nb.context.path);
-          let level: LogLevel = 'warning';
-          if (
-            KernelMessage.isErrorMsg(msg) ||
-            (KernelMessage.isStreamMsg(msg) && msg.content.name === 'stderr')
-          ) {
-            level = 'error';
-          }
-          const data: nbformat.IOutput = {
-            ...msg.content,
-            output_type: msg.header.msg_type,
-          };
-          logger.rendermime = nb.content.rendermime;
-          logger.log({ type: 'output', data, level });
-        }
-      );
-    }
-  };
   if (settingRegistry !== null) {
     settingRegistry
       .load(managerPlugin.id)
@@ -221,7 +178,7 @@ function activateWidgetExtension(
         console.error(reason.message);
       });
   }
-
+  WidgetManager.loggerRegistry = loggerRegistry;
   // Add a placeholder widget renderer.
   rendermime.addFactory(
     {
@@ -242,8 +199,6 @@ function activateWidgetExtension(
           outputViews(app, panel.context.path)
         )
       );
-
-      bindUnhandledIOPubMessageSignal(panel);
     });
     tracker.widgetAdded.connect((sender, panel) => {
       registerWidgetManager(
@@ -254,8 +209,6 @@ function activateWidgetExtension(
           outputViews(app, panel.context.path)
         )
       );
-
-      bindUnhandledIOPubMessageSignal(panel);
     });
   }
 
@@ -284,7 +237,7 @@ function activateWidgetExtension(
 
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
-      WIDGET_REGISTRY.push(data);
+      LabWidgetManager.WIDGET_REGISTRY.push(data);
     },
   };
 }
@@ -356,17 +309,19 @@ export const controlWidgetsPlugin: JupyterFrontEndPlugin<void> = {
  */
 export const outputWidgetPlugin: JupyterFrontEndPlugin<void> = {
   id: `@jupyter-widgets/jupyterlab-manager:output-${OUTPUT_WIDGET_VERSION}`,
-  requires: [base.IJupyterWidgetRegistry],
+  requires: [base.IJupyterWidgetRegistry, IRenderMimeRegistry],
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
-    registry: base.IJupyterWidgetRegistry
+    registry: base.IJupyterWidgetRegistry,
+    rendermime: IRenderMimeRegistry
   ): void => {
-    registry.registerWidget({
-      name: '@jupyter-widgets/output',
-      version: OUTPUT_WIDGET_VERSION,
-      exports: { OutputModel, OutputView },
-    });
+    (OutputModel.rendermime = rendermime),
+      registry.registerWidget({
+        name: '@jupyter-widgets/output',
+        version: OUTPUT_WIDGET_VERSION,
+        exports: { OutputModel, OutputView },
+      });
   },
 };
 
