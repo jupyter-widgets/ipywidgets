@@ -3,6 +3,8 @@
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
+import { DocumentRegistry } from '@jupyterlab/docregistry';
+
 import * as nbformat from '@jupyterlab/nbformat';
 
 import {
@@ -12,6 +14,7 @@ import {
 } from '@jupyterlab/console';
 
 import {
+  INotebookModel,
   INotebookTracker,
   Notebook,
   NotebookPanel,
@@ -224,7 +227,54 @@ async function registerWidgetHandler(
   });
 }
 
-export async function registerWidgetManager(
+// Kept for backward compat ipywidgets<=8, but not used here anymore
+export function registerWidgetManager(
+  context: DocumentRegistry.IContext<INotebookModel>,
+  rendermime: IRenderMimeRegistry,
+  renderers: IterableIterator<WidgetRenderer>
+): DisposableDelegate {
+  let wManager: WidgetManager;
+  const managerReady = getWidgetManagerOwner(context.sessionContext).then(
+    (wManagerOwner) => {
+      const currentManager = Private.widgetManagerProperty.get(
+        wManagerOwner
+      ) as WidgetManager;
+      if (!currentManager) {
+        wManager = new WidgetManager(context, rendermime, SETTINGS);
+        WIDGET_REGISTRY.forEach((data) => wManager!.register(data));
+        Private.widgetManagerProperty.set(wManagerOwner, wManager);
+      } else {
+        wManager = currentManager;
+      }
+
+      for (const r of renderers) {
+        r.manager = wManager;
+      }
+
+      // Replace the placeholder widget renderer with one bound to this widget
+      // manager.
+      rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
+      rendermime.addFactory(
+        {
+          safe: false,
+          mimeTypes: [WIDGET_VIEW_MIMETYPE],
+          createRenderer: (options) => new WidgetRenderer(options, wManager),
+        },
+        -10
+      );
+    }
+  );
+
+  return new DisposableDelegate(async () => {
+    await managerReady;
+    if (rendermime) {
+      rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
+    }
+    wManager!.dispose();
+  });
+}
+
+export async function registerNotebookWidgetManager(
   panel: NotebookPanel,
   renderers: IterableIterator<WidgetRenderer>
 ): Promise<DisposableDelegate> {
@@ -367,11 +417,11 @@ function activateWidgetExtension(
         outputViews(app, panel.context.path)
       );
     tracker.forEach(async (panel) => {
-      await registerWidgetManager(panel, rendererIterator(panel));
+      await registerNotebookWidgetManager(panel, rendererIterator(panel));
       bindUnhandledIOPubMessageSignal(panel);
     });
     tracker.widgetAdded.connect(async (sender, panel) => {
-      await registerWidgetManager(panel, rendererIterator(panel));
+      await registerNotebookWidgetManager(panel, rendererIterator(panel));
       bindUnhandledIOPubMessageSignal(panel);
     });
   }
