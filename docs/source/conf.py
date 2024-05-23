@@ -131,7 +131,7 @@ autodoc_default_options = {
 rediraffe_redirects = {
     "typedoc/index": "_static/typedoc/index",
     "try/lab/index": "_static/lab/index",
-    "try/retro/index": "_static/retro/tree/index",
+    "try/notebook/index": "_static/tree/index",
 }
 
 # -- html --------------------------
