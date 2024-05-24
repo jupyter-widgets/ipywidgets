@@ -28,7 +28,8 @@ dependencies:
   - bqplot
   - ipykernel
   - ipyleaflet
-  - jupyterlite >=0.3.0,<0.4.0
+  - jupyterlite-core >=0.3.0,<0.4.0
+  - jupyterlite-pyodide-kernel
   - matplotlib-base
   - numpy
   - scikit-image
