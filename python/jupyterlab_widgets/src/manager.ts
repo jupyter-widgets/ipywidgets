@@ -32,12 +32,7 @@ import * as nbformat from '@jupyterlab/nbformat';
 
 import { ILoggerRegistry, LogLevel } from '@jupyterlab/logconsole';
 
-import {
-  Kernel,
-  KernelConnection,
-  KernelMessage,
-  Session,
-} from '@jupyterlab/services';
+import { Kernel, KernelMessage, Session } from '@jupyterlab/services';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 
@@ -365,7 +360,7 @@ export class KernelWidgetManager extends LabWidgetManager {
     super(rendermime);
     this.attachToRendermime(rendermime);
     Private.kernelWidgetManagers.set(kernel.id, this);
-    this._kernel = new KernelConnection({ model: kernel.model });
+    this._kernel = kernel;
     this.loadCustomWidgetDefinitions();
     LabWidgetManager.WIDGET_REGISTRY.changed.connect(() =>
       this.loadCustomWidgetDefinitions()
@@ -375,12 +370,11 @@ export class KernelWidgetManager extends LabWidgetManager {
       this._handleCommOpen
     );
 
-    this._kernel.statusChanged.connect((sender, args) => {
-      this._handleKernelStatusChange(args);
-    });
-    this._kernel.connectionStatusChanged.connect((sender, args) => {
-      this._handleKernelConnectionStatusChange(args);
-    });
+    this._kernel.statusChanged.connect(this._handleKernelStatusChange, this);
+    this._kernel.connectionStatusChanged.connect(
+      this._handleKernelConnectionStatusChange,
+      this
+    );
 
     this._handleKernelChanged({
       name: 'kernel',
@@ -390,18 +384,29 @@ export class KernelWidgetManager extends LabWidgetManager {
     this.restoreWidgets();
   }
 
-  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
-    if (status === 'connected') {
-      // Only restore if we aren't currently trying to restore from the kernel
-      // (for example, in our initial restore from the constructor).
-      if (!this._kernelRestoreInProgress) {
-        this.restoreWidgets();
-      }
+  _handleKernelConnectionStatusChange(
+    sender: Kernel.IKernelConnection,
+    status: Kernel.ConnectionStatus
+  ): void {
+    switch (status) {
+      case 'connected':
+        // Only restore if we aren't currently trying to restore from the kernel
+        // (for example, in our initial restore from the constructor).
+        if (!this._kernelRestoreInProgress) {
+          this.restoreWidgets();
+        }
+        break;
+      case 'disconnected':
+        this.dispose();
     }
   }
 
-  _handleKernelStatusChange(status: Kernel.Status): void {
+  _handleKernelStatusChange(
+    sender: Kernel.IKernelConnection,
+    status: Kernel.Status
+  ): void {
     if (status === 'restarting') {
+      this.clear_state();
       this.disconnect();
     }
   }
@@ -478,17 +483,20 @@ export class WidgetManager extends Backbone.Model implements IDisposable {
     this._context = context;
     this._settings = settings;
 
-    context.sessionContext.kernelChanged.connect((sender, args) =>
-      this.updateWidgetManager()
+    context.sessionContext.kernelChanged.connect(
+      this._handleKernelChange,
+      this
     );
 
-    context.sessionContext.statusChanged.connect((sender, args) => {
-      this._handleKernelStatusChange(args);
-    });
+    context.sessionContext.statusChanged.connect(
+      this._handleStatusChange,
+      this
+    );
 
-    context.sessionContext.connectionStatusChanged.connect((sender, args) => {
-      this._handleKernelConnectionStatusChange(args);
-    });
+    context.sessionContext.connectionStatusChanged.connect(
+      this._handleConnectionStatusChange,
+      this
+    );
 
     this.updateWidgetManager();
     this.setDirty();
@@ -558,7 +566,10 @@ export class WidgetManager extends Backbone.Model implements IDisposable {
     }
   }
 
-  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
+  _handleConnectionStatusChange(
+    sender: any,
+    status: Kernel.ConnectionStatus
+  ): void {
     if (status === 'connected') {
       // Only restore if we aren't currently trying to restore from the kernel
       // (for example, in our initial restore from the constructor).
@@ -572,7 +583,11 @@ export class WidgetManager extends Backbone.Model implements IDisposable {
     }
   }
 
-  _handleKernelStatusChange(status: Kernel.Status): void {
+  _handleKernelChange(sender: any, kernel: any): void {
+    this.updateWidgetManager();
+    this.setDirty();
+  }
+  _handleStatusChange(sender: any, status: Kernel.Status): void {
     this.setDirty();
   }
 
