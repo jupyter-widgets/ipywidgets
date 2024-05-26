@@ -35,7 +35,7 @@
   "dependencies": {
     "@jupyterlab/services": "^6.0.0 || ^7.0.0",
     "@lumino/coreutils": "^1.11.1 || ^2.1",
-    "@lumino/messaging": "^1.10.1 || ^2.1",
+    "@lumino/messaging": "^1.10.1 || ^2.0.1",
     "@lumino/widgets": "^1.30.0 || ^2.1",
     "@types/backbone": "1.4.14",
     "@types/lodash": "^4.14.134",
@@ -55,7 +55,6 @@
     "chai": "^4.0.0",
     "chai-as-promised": "^7.0.0",
     "expect.js": "^0.3.1",
-    "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^6.3.3",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.3",

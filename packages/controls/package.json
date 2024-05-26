@@ -34,10 +34,10 @@
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^6.0.8",
-    "@lumino/algorithm": "^1.9.1 || ^2.1",
+    "@jupyter-widgets/base": "^6.0.7",
+    "@lumino/algorithm": "^1.9.2 || ^2.0.1",
     "@lumino/domutils": "^1.8.1 || ^2.1",
-    "@lumino/messaging": "^1.10.1 || ^2.1",
+    "@lumino/messaging": "^1.10.1 || ^2.0.1",
     "@lumino/signaling": "^1.10.1 || ^2.1",
     "@lumino/widgets": "^1.30.0 || ^2.1",
     "d3-color": "^3.0.1",
@@ -57,7 +57,6 @@
     "chai": "^4.0.0",
     "css-loader": "^6.5.1",
     "expect.js": "^0.3.1",
-    "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^6.3.3",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.3",
