@@ -87,6 +87,7 @@ export function pack_models(
     for (const [key, sub_value] of Object.entries(value)) {
       packed[key] = pack_models(sub_value, widget);
     }
+    return packed;
   } else {
     return value;
   }
