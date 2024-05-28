@@ -1105,9 +1105,7 @@ export class DOMWidgetView extends WidgetView {
   }
 
   get tooltip() {
-    return (
-      this.model.get('tooltip') ?? (this.model.get('description'))
-    );
+    return this.model.get('tooltip') ?? this.model.get('description');
   }
 
   /**
