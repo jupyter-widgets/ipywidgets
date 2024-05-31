@@ -942,7 +942,6 @@ __metadata:
     "@jupyter-widgets/controls": ^5.0.9
     "@jupyter-widgets/output": ^6.0.8
     "@jupyterlab/application": ^3.0.0 || ^4.0.0
-    "@jupyterlab/apputils": ^3.0.0 || ^4.0.0
     "@jupyterlab/builder": ^3.0.0 || ^4.0.0
     "@jupyterlab/cells": ^3.0.0 || ^4.0.0
     "@jupyterlab/console": ^3.0.0 || ^4.0.0
@@ -951,17 +950,19 @@ __metadata:
     "@jupyterlab/mainmenu": ^3.0.0 || ^4.0.0
     "@jupyterlab/nbformat": ^3.0.0 || ^4.0.0
     "@jupyterlab/notebook": ^3.0.0 || ^4.0.0
+    "@jupyterlab/observables": ^5.2.1
     "@jupyterlab/outputarea": ^3.0.0 || ^4.0.0
     "@jupyterlab/rendermime": ^3.0.0 || ^4.0.0
     "@jupyterlab/rendermime-interfaces": ^3.0.0 || ^4.0.0
     "@jupyterlab/services": ^6.0.0 || ^7.0.0
     "@jupyterlab/settingregistry": ^3.0.0 || ^4.0.0
     "@jupyterlab/translation": ^3.0.0 || ^4.0.0
-    "@lumino/algorithm": ^1 || ^2
-    "@lumino/coreutils": ^1 || ^2
-    "@lumino/disposable": ^1 || ^2
-    "@lumino/signaling": ^1 || ^2
-    "@lumino/widgets": ^1 || ^2
+    "@lumino/algorithm": ^1.11.1 || ^2.0.0
+    "@lumino/coreutils": ^1.11.1 || ^2.1
+    "@lumino/disposable": ^1.10.1 || ^2.1
+    "@lumino/properties": ^2.0.1
+    "@lumino/signaling": ^1.10.1 || ^2.1
+    "@lumino/widgets": ^1.30.0 || ^2.1
     "@types/backbone": 1.4.14
     "@types/jquery": ^3.5.16
     "@types/semver": ^7.3.6
@@ -1083,9 +1084,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/apputils@npm:^3.0.0 || ^4.0.0, @jupyterlab/apputils@npm:^4.3.5":
-  version: 4.3.5
-  resolution: "@jupyterlab/apputils@npm:4.3.5"
+"@jupyterlab/apputils@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "@jupyterlab/apputils@npm:4.3.1"
   dependencies:
     "@jupyterlab/coreutils": ^6.2.5
     "@jupyterlab/observables": ^5.2.5
