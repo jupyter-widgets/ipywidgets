@@ -59,6 +59,7 @@ class Output(DOMWidget):
 
     msg_id = Unicode('', help="Parent message id of messages to capture").tag(sync=True)
     outputs = TypedTuple(trait=Dict(), help="The output messages synced from the frontend.").tag(sync=True)
+    tooltip = Unicode('', allow_none=True, help="A tooltip caption.").tag(sync=True)
 
     __counter = 0
 

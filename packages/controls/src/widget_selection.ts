@@ -68,13 +68,9 @@ export class SelectionView extends DescriptionView {
   }
 
   updateTooltip(): void {
+    super.updateTooltip();
     if (!this.listbox) return; // we might be constructing the parent
-    const title = this.model.get('tooltip');
-    if (!title) {
-      this.listbox.removeAttribute('title');
-    } else if (this.model.get('description').length === 0) {
-      this.listbox.setAttribute('title', title);
-    }
+    this.listbox.setAttribute('title', this.tooltip);
   }
 
   listbox: HTMLSelectElement;
