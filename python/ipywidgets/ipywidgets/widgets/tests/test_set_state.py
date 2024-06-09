@@ -6,7 +6,7 @@ from unittest import mock
 
 from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int, TraitError, observe
 
-from .utils import setup, teardown
+from .utils import dummy_comm_fixture  # noqa: F401
 
 import ipywidgets
 from ipywidgets import Widget
@@ -81,7 +81,7 @@ class TruncateDataWidget(SimpleWidget):
 # Actual tests:
 #
 
-def test_set_state_simple(echo):
+def test_set_state_simple(echo, dummy_comm_fixture):
     w = SimpleWidget()
     w.set_state(dict(
         a=True,
@@ -92,7 +92,7 @@ def test_set_state_simple(echo):
     assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_transformer(echo):
+def test_set_state_transformer(echo, dummy_comm_fixture):
     w = TransformerWidget()
     w.set_state(dict(
         d=[True, False, True]
@@ -119,7 +119,7 @@ def test_set_state_transformer(echo):
     assert w.comm.messages == expected
 
 
-def test_set_state_data(echo):
+def test_set_state_data(echo, dummy_comm_fixture):
     w = DataWidget()
     data = memoryview(b'x'*30)
     w.set_state(dict(
@@ -129,7 +129,7 @@ def test_set_state_data(echo):
     assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_data_truncate(echo):
+def test_set_state_data_truncate(echo, dummy_comm_fixture):
     w = TruncateDataWidget()
     data = memoryview(b'x'*30)
     w.set_state(dict(
@@ -153,7 +153,7 @@ def test_set_state_data_truncate(echo):
     assert buffers[0] == data[:20].tobytes()
 
 
-def test_set_state_numbers_int(echo):
+def test_set_state_numbers_int(echo, dummy_comm_fixture):
     # JS does not differentiate between float/int.
     # Instead, it formats exact floats as ints in JSON (1.0 -> '1').
 
@@ -169,7 +169,7 @@ def test_set_state_numbers_int(echo):
     assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_numbers_float(echo):
+def test_set_state_numbers_float(echo, dummy_comm_fixture):
     w = NumberWidget()
     # Set floats to int-like floats
     w.set_state(dict(
@@ -181,7 +181,7 @@ def test_set_state_numbers_float(echo):
     assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_float_to_float(echo):
+def test_set_state_float_to_float(echo, dummy_comm_fixture):
     w = NumberWidget()
     # Set floats to float
     w.set_state(dict(
@@ -192,7 +192,7 @@ def test_set_state_float_to_float(echo):
     assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_cint_to_float(echo):
+def test_set_state_cint_to_float(echo, dummy_comm_fixture):
     w = NumberWidget()
 
     # Set CInt to float
@@ -223,7 +223,7 @@ def _x_test_set_state_int_to_int_like():
     assert len(w.comm.messages) == 0
 
 
-def test_set_state_int_to_float(echo):
+def test_set_state_int_to_float(echo, dummy_comm_fixture):
     w = NumberWidget()
 
     # Set Int to float
@@ -232,7 +232,7 @@ def test_set_state_int_to_float(echo):
             i = 3.5
         ))
 
-def test_property_lock(echo):
+def test_property_lock(echo, dummy_comm_fixture):
     # when this widget's value is set to 42, it sets itself to 2, and then back to 42 again (and then stops)
     class AnnoyingWidget(Widget):
         value = Float().tag(sync=True)
@@ -262,7 +262,7 @@ def test_property_lock(echo):
     calls = []
     widget._send.assert_has_calls(calls)
 
-def test_hold_sync(echo):
+def test_hold_sync(echo, dummy_comm_fixture):
     # when this widget's value is set to 42, it sets the value to 2, and also sets a different trait value
     class AnnoyingWidget(Widget):
         value = Float().tag(sync=True)
@@ -298,7 +298,7 @@ def test_hold_sync(echo):
 
 
 
-def test_echo():
+def test_echo(dummy_comm_fixture):
     # we always echo values back to the frontend
     class ValueWidget(Widget):
         value = Float().tag(sync=True)
@@ -319,7 +319,7 @@ def test_echo():
     widget._send.assert_has_calls(calls)
 
 
-def test_echo_single():
+def test_echo_single(dummy_comm_fixture):
     # we always echo multiple changes back in 1 update
     class ValueWidget(Widget):
         value = Float().tag(sync=True)
@@ -359,7 +359,7 @@ def test_echo_single():
     widget._send.assert_has_calls(calls)
 
 
-def test_no_echo(echo):
+def test_no_echo(dummy_comm_fixture):
     # in cases where values coming from the frontend are 'heavy', we might want to opt out
     class ValueWidget(Widget):
         value = Float().tag(sync=True, echo_update=False)

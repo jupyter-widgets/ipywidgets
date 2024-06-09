@@ -1,6 +1,8 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+import pytest
+
 from ipywidgets import Widget
 import ipywidgets.widgets.widget
 
@@ -95,3 +97,12 @@ def teardown():
 
 def call_method(method, *args, **kwargs):
     method(*args, **kwargs)
+
+
+@pytest.fixture
+def dummy_comm_fixture():
+    setup()
+    try:
+        yield
+    finally:
+        teardown()
