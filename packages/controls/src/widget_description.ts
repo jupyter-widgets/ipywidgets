@@ -41,6 +41,7 @@ export class DescriptionModel extends DOMWidgetModel {
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION,
       description: '',
+      description_displayed: true,
       description_allow_html: false,
     };
   }
@@ -82,6 +83,11 @@ export class DescriptionView extends DOMWidgetView {
   }
 
   updateDescription(): void {
+    if (!this.model.get('description_displayed')) {
+      this.label.style.display = 'none';
+      return;
+    }
+
     const description = this.model.get('description');
     if (description.length === 0) {
       this.label.style.display = 'none';
