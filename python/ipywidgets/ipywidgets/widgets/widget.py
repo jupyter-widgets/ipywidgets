@@ -399,6 +399,10 @@ class Widget(LoggingHasTraits):
                     'model_module_version': widget._model_module_version,
                     'state': widget.get_state(drop_defaults=drop_defaults),
                 }
+            if 'widget_id' in data:
+                # In this case, we only want 1 widget state
+                id = data['widget_id']
+                full_state = {k: v for k, v in full_state.items() if k == id}
             full_state, buffer_paths, buffers = _remove_buffers(full_state)
             cls._control_comm.send(dict(
                 method='update_states',

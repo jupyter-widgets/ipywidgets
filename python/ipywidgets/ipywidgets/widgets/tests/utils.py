@@ -2,7 +2,10 @@
 # Distributed under the terms of the Modified BSD License.
 
 from ipywidgets import Widget
+from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int
+
 import ipywidgets.widgets.widget
+import uuid
 
 # The new comm package is not available in our Python 3.7 CI (older ipykernel version)
 try:
@@ -15,11 +18,11 @@ import ipykernel.comm
 
 
 class DummyComm():
-    comm_id = 'a-b-c-d'
     kernel = 'Truthy'
 
     def __init__(self, *args, **kwargs):
         super().__init__()
+        self.comm_id = uuid.uuid4().hex
         self.messages = []
 
     def open(self, *args, **kwargs):
@@ -95,3 +98,56 @@ def teardown():
 
 def call_method(method, *args, **kwargs):
     method(*args, **kwargs)
+
+
+# A widget with simple traits (list + tuple to ensure both are handled)
+class SimpleWidget(Widget):
+    a = Bool().tag(sync=True)
+    b = Tuple(Bool(), Bool(), Bool(), default_value=(False, False, False)).tag(sync=True)
+    c = List(Bool()).tag(sync=True)
+
+
+# A widget with various kinds of number traits
+class NumberWidget(Widget):
+    f = Float().tag(sync=True)
+    cf = CFloat().tag(sync=True)
+    i = Int().tag(sync=True)
+    ci = CInt().tag(sync=True)
+
+
+
+# A widget where the data might be changed on reception:
+def transform_fromjson(data, widget):
+    # Switch the two last elements when setting from json, if the first element is True
+    # and always set first element to False
+    if not data[0]:
+        return data
+    return [False] + data[1:-2] + [data[-1], data[-2]]
+
+class TransformerWidget(Widget):
+    d = List(Bool()).tag(sync=True, from_json=transform_fromjson)
+
+
+# A widget that has a buffer:
+class DataInstance():
+    def __init__(self, data=None):
+        self.data = data
+
+def mview_serializer(instance, widget):
+    return { 'data': memoryview(instance.data) if instance.data else None }
+
+def bytes_serializer(instance, widget):
+    return { 'data': bytearray(memoryview(instance.data).tobytes()) if instance.data else None }
+
+def deserializer(json_data, widget):
+    return DataInstance( memoryview(json_data['data']).tobytes() if json_data else None )
+
+class DataWidget(SimpleWidget):
+    d = Instance(DataInstance, args=()).tag(sync=True, to_json=mview_serializer, from_json=deserializer)
+
+# A widget that has a buffer that might be changed on reception:
+def truncate_deserializer(json_data, widget):
+    return DataInstance( json_data['data'][:20].tobytes() if json_data else None )
+
+class TruncateDataWidget(SimpleWidget):
+    d = Instance(DataInstance, args=()).tag(sync=True, to_json=bytes_serializer, from_json=truncate_deserializer)
