@@ -288,6 +288,7 @@ export class RadioButtonsModel extends SelectionModel {
       tooltips: [],
       icons: [],
       button_style: '',
+			orientation:'vertical',
     };
   }
 }
@@ -305,17 +306,24 @@ export class RadioButtonsView extends DescriptionView {
     this.el.appendChild(this.container);
     this.container.classList.add('widget-radio-box');
 
-    this.update();
+		this.update();
   }
 
   /**
    * Update the contents of this view
    *
-   * Called when the model is changed.  The model may have been
-   * changed by another view or by a state update from the back-end.
+	 * Called when the model is changed.  The model may have been
+	 * changed by another view or by a state update from the back-end.
    */
-  update(options?: any): void {
-    const items: string[] = this.model.get('_options_labels');
+	update(options?: any): void {
+		if (this.model.get('orientation') === 'vertical') {
+			this.container.classList.remove('widget-radio-box-horizontal');
+			this.container.classList.add('widget-radio-box-vertical');
+		} else {
+			this.container.classList.remove('widget-radio-box-vertical');
+			this.container.classList.add('widget-radio-box-horizontal');
+		}
+		const items: string[] = this.model.get('_options_labels');
     const radios = Array.from(
       this.container.querySelectorAll<HTMLInputElement>('input[type="radio"]')
     ).map((x) => x.value);
