@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/controls",
-  "version": "3.1.6",
+  "version": "3.1.7",
   "description": "Jupyter interactive widgets",
   "repository": {
     "type": "git",
