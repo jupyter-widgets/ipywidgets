@@ -420,7 +420,7 @@
     flex-shrink: 1;
     outline: none !important;
 }
-    
+
 .widget-text input[type="text"], .widget-text input[type="password"], .widget-textarea textarea {
     padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2);
 }
@@ -893,13 +893,15 @@
     flex-direction: column;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar {
+.jupyter-widgets.widget-tab > .p-TabBar,
+.jupyter-widgets.widget-tab > .lm-TabBar {
     /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
     overflow-x: visible;
     overflow-y: visible;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content {
+.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content,
+.jupyter-widgets.widget-tab > .lm-TabBar > .lm-TabBar-content {
     /* Make sure that the tab grows from bottom up */
     align-items: flex-end;
     min-width: 0;
@@ -918,12 +920,14 @@
     overflow: auto;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar {
+.jupyter-widgets.widget-tab > .p-TabBar,
+.jupyter-widgets.widget-tab > .lm-TabBar {
     font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tab {
     flex: 0 1 var(--jp-widgets-horizontal-tab-width);
     min-width: 35px;
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
@@ -937,7 +941,8 @@
     position: relative;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tab.lm-mod-current {
     color: var(--jp-ui-font-color0);
     /* We want the background to match the tab content background */
     background: var(--jp-layout-color1);
@@ -946,7 +951,8 @@
     overflow: visible;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tab.lm-mod-current:before {
     position: absolute;
     top: calc(-1 * var(--jp-border-width));
     left: calc(-1 * var(--jp-border-width));
@@ -956,29 +962,36 @@
     background: var(--jp-brand-color1);
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tab:first-child {
     margin-left: 0;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:hover:not(.p-mod-current) {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:hover:not(.p-mod-current),
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tab:hover:not(.lm-mod-current) {
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon {
+.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-mod-closable > .lm-TabBar-tabCloseIcon {
     margin-left: 4px;
 }
 
 /* This font-awesome strategy may not work across FA4 and FA5, but we don't
 actually support closable tabs, so it really doesn't matter */
-.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon:before {
+.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon:before,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-mod-closable > .lm-TabBar-tabCloseIcon:before {
     font-family: FontAwesome;
     content: '\f00d'; /* close */
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon,
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel,
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tabIcon,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tabLabel,
+.jupyter-widgets.widget-tab > .lm-TabBar .lm-TabBar-tabCloseIcon {
     line-height: var(--jp-widgets-horizontal-tab-height);
 }
 
