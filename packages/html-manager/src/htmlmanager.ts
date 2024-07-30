@@ -112,6 +112,13 @@ export class HTMLManager extends ManagerBase {
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
     return new Promise((resolve, reject) => {
+      if (
+        moduleName === '@jupyter-widgets/base' ||
+        moduleName === '@jupyter-widgets/controls'
+      ) {
+        moduleVersion = `^${moduleVersion}`;
+      }
+
       if (moduleName === '@jupyter-widgets/base') {
         const best = maxSatisfying(['1.2.0', '2.0.0'], moduleVersion);
 
