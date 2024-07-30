@@ -12,4 +12,4 @@ export function requirePromise(pkg: string | string[]): Promise<any> {
       require(pkg, resolve, reject);
     }
   });
-};
+}

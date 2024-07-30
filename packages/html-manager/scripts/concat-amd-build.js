@@ -4,7 +4,14 @@
 var fs = require('fs');
 
 // Make a script file that defines all of the relevant AMD modules
-var files = ['base.js', 'controls.js', 'base7.js', 'controls7.js', 'index.js', 'libembed-amd.js'];
+var files = [
+  'base.js',
+  'controls.js',
+  'base7.js',
+  'controls7.js',
+  'index.js',
+  'libembed-amd.js',
+];
 var output = files
   .map((f) => {
     return fs.readFileSync('./dist/amd/' + f).toString();
