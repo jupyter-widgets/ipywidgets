@@ -2,7 +2,22 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as libembed from './libembed';
-import { requirePromise } from './utils';
+
+/**
+ * Load a package using requirejs and return a promise
+ *
+ * @param pkg Package name or names to load
+ */
+const requirePromise = function (pkg: string | string[]): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const require = (window as any).requirejs;
+    if (require === undefined) {
+      reject('Requirejs is needed, please ensure it is loaded on the page.');
+    } else {
+      require(pkg, resolve, reject);
+    }
+  });
+};
 
 let cdn = 'https://cdn.jsdelivr.net/npm/';
 let onlyCDN = false;
