@@ -63,7 +63,6 @@ describe('Output widget', function () {
     expect(elt.querySelectorAll('table').length).to.equal(1);
   });
 
-
   it('renders widgets ipywidgets 7', async function () {
     const modelState = {
       _view_module: '@jupyter-widgets/output',

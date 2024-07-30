@@ -15,7 +15,6 @@ import {
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
-import { requirePromise } from './utils';
 
 export class HTMLManager extends ManagerBase {
   constructor(options?: {
@@ -118,10 +117,10 @@ export class HTMLManager extends ManagerBase {
 
         if (best === '1.2.0') {
           // ipywidgets 7 model
-          requirePromise(['@jupyter-widgets/base7']).then(resolve);
+          resolve(require('@jupyter-widgets/base7'));
         } else {
           // ipywidgets 8 model
-          requirePromise(['@jupyter-widgets/base']).then(resolve);
+          resolve(require('@jupyter-widgets/base'));
         }
       } else if (moduleName === '@jupyter-widgets/controls') {
         const best = maxSatisfying(['1.5.0', '2.0.0'], moduleVersion);
@@ -138,7 +137,7 @@ export class HTMLManager extends ManagerBase {
           ) {
             require('@jupyter-widgets/controls7/css/labvariables.css');
           }
-          requirePromise(['@jupyter-widgets/controls7']).then(resolve);
+          resolve(require('@jupyter-widgets/controls7'));
         } else {
           // ipywidgets 8 controls JS and CSS
           require('@jupyter-widgets/controls/css/widgets-base.css');
@@ -151,7 +150,8 @@ export class HTMLManager extends ManagerBase {
           ) {
             require('@jupyter-widgets/controls/css/labvariables.css');
           }
-          requirePromise(['@jupyter-widgets/controls']).then(resolve);
+
+          resolve(require('@jupyter-widgets/controls'));
         }
       } else if (moduleName === '@jupyter-widgets/output') {
         resolve(outputWidgets);
