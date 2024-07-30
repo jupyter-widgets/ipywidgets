@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as libembed from './libembed';
+import { requirePromise } from './utils';
 
 let cdn = 'https://cdn.jsdelivr.net/npm/';
 let onlyCDN = false;
@@ -12,22 +13,6 @@ Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
   cdn = script.getAttribute('data-jupyter-widgets-cdn') || cdn;
   onlyCDN = onlyCDN || script.hasAttribute('data-jupyter-widgets-cdn-only');
 });
-
-/**
- * Load a package using requirejs and return a promise
- *
- * @param pkg Package name or names to load
- */
-const requirePromise = function (pkg: string | string[]): Promise<any> {
-  return new Promise((resolve, reject) => {
-    const require = (window as any).requirejs;
-    if (require === undefined) {
-      reject('Requirejs is needed, please ensure it is loaded on the page.');
-    } else {
-      require(pkg, resolve, reject);
-    }
-  });
-};
 
 function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
   let packageName = moduleName;

@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as widgets from '@jupyter-widgets/controls';
+import { maxSatisfying } from 'semver';
 import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 import { ManagerBase } from '@jupyter-widgets/base-manager';
@@ -15,6 +15,7 @@ import {
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
+import { requirePromise } from './utils';
 
 export class HTMLManager extends ManagerBase {
   constructor(options?: {
@@ -38,7 +39,7 @@ export class HTMLManager extends ManagerBase {
     window.addEventListener('resize', () => {
       this._viewList.forEach((view) => {
         MessageLoop.postMessage(
-          view.luminoWidget,
+          view.luminoWidget || view.pWidget,
           LuminoWidget.Widget.ResizeMessage.UnknownSize
         );
       });
@@ -66,7 +67,7 @@ export class HTMLManager extends ManagerBase {
       v.render();
     }
 
-    LuminoWidget.Widget.attach(v.luminoWidget, el);
+    LuminoWidget.Widget.attach(v.luminoWidget || v.pWidget, el);
     this._viewList.add(v);
     v.once('remove', () => {
       this._viewList.delete(v);
@@ -113,9 +114,45 @@ export class HTMLManager extends ManagerBase {
   ): Promise<typeof WidgetModel | typeof WidgetView> {
     return new Promise((resolve, reject) => {
       if (moduleName === '@jupyter-widgets/base') {
-        resolve(base);
+        const best = maxSatisfying(['1.2.0', '2.0.0'], moduleVersion);
+
+        if (best === '1.2.0') {
+          // ipywidgets 7 model
+          requirePromise(['@jupyter-widgets/base7']).then(resolve);
+        } else {
+          // ipywidgets 8 model
+          requirePromise(['@jupyter-widgets/base']).then(resolve);
+        }
       } else if (moduleName === '@jupyter-widgets/controls') {
-        resolve(widgets);
+        const best = maxSatisfying(['1.5.0', '2.0.0'], moduleVersion);
+
+        if (best === '1.5.0') {
+          // ipywidgets 7 controls JS and CSS
+          require('@jupyter-widgets/controls7/css/widgets-base.css');
+
+          // If lab variables are not found, we set them (we don't want to reset the variables if they are already defined)
+          if (
+            getComputedStyle(document.documentElement).getPropertyValue(
+              '--jp-layout-color0'
+            ) === ''
+          ) {
+            require('@jupyter-widgets/controls7/css/labvariables.css');
+          }
+          requirePromise(['@jupyter-widgets/controls7']).then(resolve);
+        } else {
+          // ipywidgets 8 controls JS and CSS
+          require('@jupyter-widgets/controls/css/widgets-base.css');
+
+          // If lab variables are not found, we set them (we don't want to reset the variables if they are already defined)
+          if (
+            getComputedStyle(document.documentElement).getPropertyValue(
+              '--jp-layout-color0'
+            ) === ''
+          ) {
+            require('@jupyter-widgets/controls/css/labvariables.css');
+          }
+          requirePromise(['@jupyter-widgets/controls']).then(resolve);
+        }
       } else if (moduleName === '@jupyter-widgets/output') {
         resolve(outputWidgets);
       } else if (this.loader !== undefined) {
