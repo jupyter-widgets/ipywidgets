@@ -1242,6 +1242,13 @@ export class DOMWidgetView extends WidgetView {
     return this.luminoWidget;
   }
 
+  /**
+   * @deprecated Use {@link luminoWidget} instead (Since 8.0).
+   */
+  set pWidget(value: Widget) {
+    this.luminoWidget = value;
+  }
+
   el: HTMLElement; // Override typing
   '$el': any;
   luminoWidget: Widget;
