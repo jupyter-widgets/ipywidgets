@@ -139,9 +139,19 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   private _saveState() {
     const state = this.get_state_sync({ drop_defaults: true });
-    this._context.model.metadata.set('widgets', {
-      'application/vnd.jupyter.widget-state+json' : state
-    });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore JupyterLab 4 support
+    if (this._context.model.setMetadata) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore JupyterLab 4 support
+      this._context.model.setMetadata('widgets', {
+        'application/vnd.jupyter.widget-state+json': state,
+      });
+    } else {
+      this._context.model.metadata.set('widgets', {
+        'application/vnd.jupyter.widget-state+json' : state
+      });
+    }
   }
 
   /**
@@ -228,7 +238,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Load widget state from notebook metadata
    */
   async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
-    const widget_md = notebook.metadata.get('widgets') as any;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore JupyterLab 4 support
+    const widget_md = notebook.getMetadata
+      ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore JupyterLab 4 support
+        (notebook.getMetadata('widgets') as any)
+        : notebook.metadata.get('widgets');
     // Restore any widgets from saved state that are not live
     if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
       let state = widget_md[WIDGET_STATE_MIMETYPE];
