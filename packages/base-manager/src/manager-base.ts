@@ -427,10 +427,6 @@ export abstract class ManagerBase implements IWidgetManager {
 
       initComm.close();
     } catch (error) {
-      console.warn(
-        'Failed to fetch ipywidgets through the "jupyter.widget.control" comm channel, fallback to fetching individual model state. Reason:',
-        error
-      );
       // Fall back to the old implementation for old ipywidgets backend versions (ipywidgets<=7.6)
       return this._loadFromKernelModels();
     }
