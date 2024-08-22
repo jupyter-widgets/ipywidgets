@@ -981,7 +981,6 @@
   flex-direction: column;
 }
 
-
 /* <DEPRECATED> */
 .widget-radio-box-horizontal, /* </DEPRECATED> */
 .jupyter-widget-radio-box-horizontal {
@@ -998,7 +997,7 @@
 
 .widget-radio-box-horizontal label,
 .jupyter-widget-radio-box-horizontal label {
-	margin: 0 calc(var(--jp-widgets-input-padding) * 2) 0 0;
+  margin: 0 calc(var(--jp-widgets-input-padding) * 2) 0 0;
 }
 
 /* <DEPRECATED> */
