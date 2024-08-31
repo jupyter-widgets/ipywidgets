@@ -3,8 +3,7 @@
 
 from traitlets import Bool, Tuple, List
 
-
-from .utils import dummy_comm_fixture
+from .utils import setup
 
 from ..widget import Widget
 
@@ -14,9 +13,7 @@ from ..._version import __control_protocol_version__
 # A widget with simple traits
 class SimpleWidget(Widget):
     a = Bool().tag(sync=True)
-    b = Tuple(Bool(), Bool(), Bool(), default_value=(False, False, False)).tag(
-        sync=True
-    )
+    b = Tuple(Bool(), Bool(), Bool(), default_value=(False, False, False)).tag(sync=True)
     c = List(Bool()).tag(sync=True)
 
 
