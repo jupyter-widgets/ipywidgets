@@ -17,13 +17,13 @@ class SimpleWidget(Widget):
     c = List(Bool()).tag(sync=True)
 
 
-def test_empty_send_state(dummy_comm_fixture):
+def test_empty_send_state():
     w = SimpleWidget()
     w.send_state([])
     assert w.comm.messages == []
 
 
-def test_empty_hold_sync(dummy_comm_fixture):
+def test_empty_hold_sync():
     w = SimpleWidget()
     with w.hold_sync():
         pass
