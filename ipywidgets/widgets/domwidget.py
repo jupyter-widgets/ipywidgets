@@ -15,7 +15,7 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
-    layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
+    layout = InstanceDict(Layout, allow_none=True).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
         """
