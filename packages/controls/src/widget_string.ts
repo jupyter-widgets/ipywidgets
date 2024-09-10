@@ -378,12 +378,6 @@ export class TextareaView extends StringView {
     }
   }
 
-  updateTooltip(): void {
-    super.updateTooltip();
-    if (!this.textbox) return; // we might be constructing the parent
-    this.textbox.setAttribute('title', this.tooltip);
-  }
-
   events(): { [e: string]: string } {
     return {
       'keydown input': 'handleKeyDown',
@@ -498,12 +492,6 @@ export class TextView extends StringView {
     } else if (tabbable === null) {
       this.textbox.removeAttribute('tabIndex');
     }
-  }
-
-  updateTooltip(): void {
-    super.updateTooltip();
-    if (!this.textbox) return; // we might be constructing the parent
-    this.textbox.setAttribute('title', this.tooltip);
   }
 
   update(options?: any): void {

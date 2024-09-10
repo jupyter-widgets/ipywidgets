@@ -67,12 +67,6 @@ export class SelectionView extends DescriptionView {
     }
   }
 
-  updateTooltip(): void {
-    super.updateTooltip();
-    if (!this.listbox) return; // we might be constructing the parent
-    this.listbox.setAttribute('title', this.tooltip);
-  }
-
   listbox: HTMLSelectElement;
 }
 

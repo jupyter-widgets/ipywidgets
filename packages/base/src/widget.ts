@@ -1101,16 +1101,12 @@ export class DOMWidgetView extends WidgetView {
   }
 
   updateTooltip(): void {
-    const title = this.tooltip;
-    if (!title) {
-      this.el.removeAttribute('title');
-    } else if (!this.model.get('description')) {
+    const title = this.model.get('tooltip') ?? this.model.get('description');
+    if (title) {
       this.el.setAttribute('title', title);
+    } else {
+      this.el.removeAttribute('title');
     }
-  }
-
-  get tooltip() {
-    return this.model.get('tooltip') ?? this.model.get('description');
   }
 
   /**
