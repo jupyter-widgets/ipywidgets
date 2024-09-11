@@ -77,8 +77,7 @@ class Box(DOMWidget, CoreWidget):
     >>> widgets.Box([title_widget, slider])
     """
     _model_name = Unicode('BoxModel').tag(sync=True)
-    _view_name = Unicode('BoxView').tag(sync=True)
-    tooltip = Unicode('', allow_none=True, help='A tooltip caption.').tag(sync=True)
+    _view_name = Unicode("BoxView").tag(sync=True)
     validate_mode = CaselessStrEnum(['raise', 'log_warning', 'log_error'], 'raise')
 
     # Child widgets in the container.
