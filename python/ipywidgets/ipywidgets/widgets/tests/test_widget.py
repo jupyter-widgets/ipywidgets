@@ -3,17 +3,21 @@
 
 """Test Widget."""
 
+import copy
+import gc
 import inspect
+import weakref
 
 import pytest
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import display
 from IPython.utils.capture import capture_output
 
+import ipywidgets as ipw
+
 from .. import widget
 from ..widget import Widget
 from ..widget_button import Button
-import copy
 
 
 def test_no_widget_view():
@@ -89,3 +93,168 @@ def test_widget_copy():
         copy.copy(button)
     with pytest.raises(NotImplementedError):
         copy.deepcopy(button)
+
+
+def test_widget_open():
+    button = Button()
+    model_id = button.model_id
+    assert model_id in widget._instances
+    spec = button.get_view_spec()
+    assert list(spec) == ["version_major", "version_minor", "model_id"]
+    assert spec["model_id"]
+    button.close()
+    assert model_id not in widget._instances
+    with pytest.raises(RuntimeError, match="Widget is closed"):
+        button.open()
+    with pytest.raises(RuntimeError, match="Widget is closed"):
+        button.get_view_spec()
+
+
+@pytest.mark.parametrize(
+    "class_name",
+    [
+        "Accordion",
+        "AppLayout",
+        "Audio",
+        "BoundedFloatText",
+        "BoundedIntText",
+        "Box",
+        "Button",
+        "ButtonStyle",
+        "Checkbox",
+        "ColorPicker",
+        "ColorsInput",
+        "Combobox",
+        "Controller",
+        "CoreWidget",
+        "DOMWidget",
+        "DatePicker",
+        "DatetimePicker",
+        "Dropdown",
+        "FileUpload",
+        "FloatLogSlider",
+        "FloatProgress",
+        "FloatRangeSlider",
+        "FloatSlider",
+        "FloatText",
+        "FloatsInput",
+        "GridBox",
+        "HBox",
+        "HTML",
+        "HTMLMath",
+        "Image",
+        "IntProgress",
+        "IntRangeSlider",
+        "IntSlider",
+        "IntText",
+        "IntsInput",
+        "Label",
+        "Layout",
+        "NaiveDatetimePicker",
+        "Output",
+        "Password",
+        "Play",
+        "RadioButtons",
+        "Select",
+        "SelectMultiple",
+        "SelectionRangeSlider",
+        "SelectionSlider",
+        "SliderStyle",
+        "Stack",
+        "Style",
+        "Tab",
+        "TagsInput",
+        "Text",
+        "Textarea",
+        "TimePicker",
+        "ToggleButton",
+        "ToggleButtons",
+        "ToggleButtonsStyle",
+        "TwoByTwoLayout",
+        "VBox",
+        "Valid",
+        "ValueWidget",
+        "Video",
+        "Widget",
+    ],
+)
+@pytest.mark.parametrize("enable_weakref", [True, False])
+def test_weakreference(class_name, enable_weakref):
+    # Ensure the base instance of all widgets can be deleted / garbage collected.
+    if enable_weakref:
+        ipw.enable_weakreference()
+    cls = getattr(ipw, class_name)
+    if class_name in ['SelectionRangeSlider', 'SelectionSlider']:
+        kwgs = {"options": [1, 2, 4]}
+    else:
+        kwgs = {}
+    try:
+        w = cls(**kwgs)
+        deleted = False
+        def on_delete():
+            nonlocal deleted
+            deleted = True
+        weakref.finalize(w, on_delete)
+        # w should be the only strong ref to the widget.
+        # calling `del` should invoke its immediate deletion calling the `__del__` method.
+        if not enable_weakref:
+            w.close()
+        del w
+        gc.collect()
+        assert deleted
+    finally:
+        if enable_weakref:
+            ipw.disable_weakreference()
+
+
+@pytest.mark.parametrize("weakref_enabled", [True, False])
+def test_button_weakreference(weakref_enabled: bool):
+    try:
+        click_count = 0
+        deleted = False
+
+        def on_delete():
+            nonlocal deleted
+            deleted = True
+
+        class TestButton(Button):
+            def my_click(self, b):
+                nonlocal click_count
+                click_count += 1
+
+        b = TestButton(description="button")
+        weakref.finalize(b, on_delete)
+        b_ref = weakref.ref(b)
+        assert b in widget._instances.values()
+
+        b.on_click(b.my_click)
+        b.on_click(lambda x: setattr(x, "clicked", True))
+
+        b.click()
+        assert click_count == 1
+
+        if weakref_enabled:
+            ipw.enable_weakreference()
+            assert b in widget._instances.values(), "Instances not transferred"
+            ipw.disable_weakreference()
+            assert b in widget._instances.values(), "Instances not transferred"
+            ipw.enable_weakreference()
+            assert b in widget._instances.values(), "Instances not transferred"
+
+        b.click()
+        assert click_count == 2
+        assert getattr(b, "clicked")
+
+        del b
+        gc.collect()
+        if weakref_enabled:
+            assert deleted
+        else:
+            assert not deleted
+            assert b_ref() in widget._instances.values()
+            b_ref().close()
+            gc.collect()
+            assert deleted, "Closing should remove the last strong reference."
+
+    finally:
+        ipw.disable_weakreference()
