@@ -224,8 +224,12 @@ export class WidgetModel extends Backbone.Model {
       return Promise.resolve();
     }
     this._closed = true;
-    if (this.comm && !comm_closed) {
-      this.comm.close();
+    if (this.comm && !comm_closed && this.comm_live) {
+      try {
+        this.comm.close();
+      } catch (err) {
+        // Do Nothing
+      }
     }
     this.stopListening();
     this.trigger('destroy', this);
@@ -249,8 +253,11 @@ export class WidgetModel extends Backbone.Model {
    * Handle when a widget comm is closed.
    */
   _handle_comm_closed(msg: KernelMessage.ICommCloseMsg): void {
+    this.comm_live = false;
     this.trigger('comm:close');
-    this.close(true);
+    if (!this._closed) {
+      this.close(true);
+    }
   }
 
   /**
