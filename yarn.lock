@@ -748,8 +748,8 @@ __metadata:
     tslint: ^5.20.1
     typescript: ~5
     url-loader: ^3.0.0
-    webpack: ^4.41.5
-    webpack-cli: ^3.3.4
+    webpack: ^5
+    webpack-cli: ^5
   languageName: unknown
   linkType: soft
 
@@ -18387,7 +18387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:^5.0.1":
+"webpack-cli@npm:^5, webpack-cli@npm:^5.0.1":
   version: 5.1.4
   resolution: "webpack-cli@npm:5.1.4"
   dependencies:
@@ -18510,7 +18510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.76.1":
+"webpack@npm:^5, webpack@npm:^5.76.1":
   version: 5.95.0
   resolution: "webpack@npm:5.95.0"
   dependencies:
