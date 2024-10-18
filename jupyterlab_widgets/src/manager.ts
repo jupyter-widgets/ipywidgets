@@ -143,11 +143,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     // @ts-ignore JupyterLab 4 support
     if (this._context.model.setMetadata) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore JupyterLab 4 support
       this._context.model.setMetadata('widgets', {
         'application/vnd.jupyter.widget-state+json': state,
       });
     } else {
+      // @ts-ignore JupyterLab 3 support
       this._context.model.metadata.set('widgets', {
         'application/vnd.jupyter.widget-state+json' : state
       });
@@ -242,8 +242,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     // @ts-ignore JupyterLab 4 support
     const widget_md = notebook.getMetadata
       ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore JupyterLab 4 support
         (notebook.getMetadata('widgets') as any)
+        // @ts-ignore JupyterLab 3 support
         : notebook.metadata.get('widgets');
     // Restore any widgets from saved state that are not live
     if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
