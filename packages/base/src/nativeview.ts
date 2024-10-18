@@ -79,7 +79,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     // if available, falling back to `setAttribute` for the catch-all.
     _setAttributes(attrs: {[key: string]: string}) {
       for (let attr in attrs) {
-        attr in this.el ? this.el[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
+        attr in this.el ? (this.el as any)[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
       }
     }
 

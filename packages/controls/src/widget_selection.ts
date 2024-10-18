@@ -100,6 +100,7 @@ class DropdownView extends DescriptionView {
         }
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             'change select': '_handle_change'
@@ -194,6 +195,7 @@ class SelectView extends DescriptionView {
         }
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             'change select': '_handle_change'
@@ -332,6 +334,7 @@ class RadioButtonsView extends DescriptionView {
         e.container.style.marginBottom = extraMargin + 'px';
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             'click input[type="radio"]': '_handle_click'
@@ -526,6 +529,7 @@ class ToggleButtonsView extends DescriptionView {
         }
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             'click button': '_handle_click'
@@ -681,6 +685,7 @@ class SelectionSliderView extends DescriptionView {
         return super.update(options);
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             'slide': 'handleSliderChange',

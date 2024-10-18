@@ -8,6 +8,7 @@
     "jsx": "react",
     "module": "esnext",
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "noEmitOnError": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
