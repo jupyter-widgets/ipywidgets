@@ -30,6 +30,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-${{ matrix.python }}
 
+    - name: Update yarn
+      run: npm install --global yarn@^3
+
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
       run: echo "::set-output name=dir::$(yarn cache dir)"
