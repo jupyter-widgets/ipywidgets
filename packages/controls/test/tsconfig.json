@@ -4,8 +4,8 @@
     "types": ["mocha"],
     "outDir": "build",
     "rootDir": "src",
-    "lib": ["dom", "es5", "es2015.promise", "es2015.iterable"],
-    "target": "es5" 
+    "lib": ["dom", "es2018"],
+    "target": "es2018"
   },
   "include": ["src/**/*"]
 }
