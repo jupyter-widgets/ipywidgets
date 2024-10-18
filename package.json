@@ -17,7 +17,7 @@
     "updated": "lerna updated"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^3.0.0",
+    "@jupyterlab/buildutils": "^4",
     "lerna": "^3.2.1"
   }
 }

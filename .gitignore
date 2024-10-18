@@ -33,4 +33,6 @@ index.built.js.map
 
 temp/*
 
+.yarn
+
 tsconfig.tsbuildinfo
