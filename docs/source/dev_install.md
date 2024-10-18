@@ -17,12 +17,12 @@ To install ipywidgets from git, you will need:
     version of the notebook, checkout the appropriate tag.
   + See the
     [Compatibility table](https://github.com/jupyter-widgets/ipywidgets#compatibility)
-    
+
 - the latest [JupyterLab release](https://github.com/jupyterlab/jupyterlab/releases)
 
 
 
-### Installing With Conda 
+### Installing With Conda
 
 ```bash
 conda create -c conda-forge -n ipywidgets yarn notebook
@@ -41,10 +41,10 @@ Rebuilding after making changes
 
 To build and test changes, run the following commands in the ipywidgets repository root directory, empty your browser's cache, and refresh the page.
 
-        yarn run clean
-        yarn run build
+        jlpm run clean
+        jlpm run build
 
-If your changes are confined to one package (for example, just in the widgetsnbextension package), then it may be sufficient to just run `yarn run build` in that specific directory.
+If your changes are confined to one package (for example, just in the widgetsnbextension package), then it may be sufficient to just run `jlpm run build` in that specific directory.
 
 Tips and troubleshooting
 ------------------------

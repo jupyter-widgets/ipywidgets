@@ -1,5 +1,5 @@
 echo `yarn -v`
 echo `node -v`
-yarn
-yarn run build
-yarn run build:examples
+jlpm
+jlpm run build
+jlpm run build:examples

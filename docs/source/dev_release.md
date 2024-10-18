@@ -47,8 +47,8 @@ git checkout 7.x
 git pull origin 7.x
 git reset --hard origin/7.x
 git clean -fdx
-yarn install
-yarn run publish
+jlpm install
+npm publish
 ```
 
 Lerna will prompt you for version numbers for each of the changed npm packages. Lerna will then change the versions appropriately (including the interdependency versions), commit, tag, and publish the new packages to npm.
