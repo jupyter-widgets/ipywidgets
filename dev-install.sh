@@ -40,12 +40,6 @@ jlpm run build
 echo -n "widgetsnbextension"
 cd widgetsnbextension
 pip install -v -e .
-if [[ "$OSTYPE" == "msys" ]]; then
-    jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension || true
-else
-    jupyter nbextension install --overwrite --py --symlink $nbExtFlags widgetsnbextension || true
-fi
-jupyter nbextension enable --py $nbExtFlags widgetsnbextension || true
 cd ..
 
 if test "$skip_jupyter_lab" != yes; then
