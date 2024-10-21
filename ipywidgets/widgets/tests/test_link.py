@@ -4,7 +4,7 @@
 import pytest
 
 from .. import jslink, jsdlink, ToggleButton
-from .utils import setup, teardown
+from .utils import setup
 
 def test_jslink_args():
     with pytest.raises(TypeError):

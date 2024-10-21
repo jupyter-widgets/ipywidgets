@@ -25,7 +25,7 @@ from ipython_genutils.py3compat import annotate
 # Utility stuff
 #-----------------------------------------------------------------------------
 
-from .utils import setup, teardown
+from .utils import setup
 
 def f(**kwargs):
     pass
