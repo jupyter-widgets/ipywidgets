@@ -142,7 +142,6 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore JupyterLab 4 support
     if (this._context.model.setMetadata) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       this._context.model.setMetadata('widgets', {
         'application/vnd.jupyter.widget-state+json': state,
       });
