@@ -101,6 +101,7 @@ class CheckboxView extends DescriptionView {
         this.label.style.display = indent ? '' : 'none';
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             'click input[type="checkbox"]': '_handle_click'
@@ -211,6 +212,7 @@ class ToggleButtonView extends DOMWidgetView {
         return super.update();
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
@@ -237,6 +239,7 @@ class ToggleButtonView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
+    // @ts-ignore
     get tagName() {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the

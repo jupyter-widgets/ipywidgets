@@ -78,11 +78,11 @@ class StyleView extends WidgetView {
             let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
             if (value === null) {
                 for (let i = 0; i !== elements.length; ++i) {
-                    elements[i].style.removeProperty(attribute);
+                    (elements[i] as HTMLElement).style.removeProperty(attribute);
                 }
             } else {
                 for (let i = 0; i !== elements.length; ++i) {
-                    elements[i].style[attribute] = value;
+                    ((elements[i] as HTMLElement).style as any)[attribute] = value;
                 }
             }
         } else {
@@ -112,7 +112,7 @@ class StyleView extends WidgetView {
                 let selector  = styleProperties[trait].selector;
                 let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
                 for (let i = 0; i !== elements.length; ++i) {
-                    elements[i].style.removeProperty(attribute);
+                    (elements[i] as HTMLElement).style.removeProperty(attribute);
                 }
             } else {
                 console.warn('Style not removed because a parent view does not exist');

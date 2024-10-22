@@ -110,6 +110,7 @@ class ButtonView extends DOMWidgetView {
     /**
      * Dictionary of events and handlers
      */
+    // @ts-ignore
     events(): {[e: string]: string} {
         // TODO: return typing not needed in Typescript later than 1.8.x
         // See http://stackoverflow.com/questions/22077023/why-cant-i-indirectly-return-an-object-literal-to-satisfy-an-index-signature-re and https://github.com/Microsoft/TypeScript/pull/7029
@@ -130,6 +131,7 @@ class ButtonView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
+    // @ts-ignore
     get tagName() {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the

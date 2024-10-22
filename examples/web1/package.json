@@ -9,11 +9,11 @@
   "scripts": {
     "build": "webpack",
     "clean": "rimraf built",
-    "test": "npm run test:firefox && npm run test:chrome",
-    "test:chrome": "npm run test:default",
+    "test": "jlpm run test:firefox && jlpm run test:chrome",
+    "test:chrome": "jlpm run test:default",
     "test:default": "karma start karma.config.js --log-level debug",
-    "test:firefox": "npm run test:default -- --browsers Firefox",
-    "test:firefox:headless": "npm run test:default -- --browsers FirefoxHeadless"
+    "test:firefox": "jlpm run test:default -- --browsers Firefox",
+    "test:firefox:headless": "jlpm run test:default -- --browsers FirefoxHeadless"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^4.1.6",

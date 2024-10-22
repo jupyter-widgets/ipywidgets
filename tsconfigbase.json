@@ -8,13 +8,14 @@
     "jsx": "react",
     "module": "esnext",
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "noEmitOnError": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "preserveWatchOutput": true,
     "resolveJsonModule": true,
     // "strict": true,
-    "target": "es2017",
+    "target": "es2018",
     "types": []
   }
 }

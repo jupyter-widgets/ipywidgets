@@ -9,7 +9,7 @@ except ImportError:
 
 from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int, TraitError, observe
 
-from .utils import setup, teardown
+from .utils import setup
 
 import ipywidgets
 from ipywidgets import Widget

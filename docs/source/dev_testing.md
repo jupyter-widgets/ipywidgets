@@ -7,6 +7,6 @@ To run the Python tests:
 
 To run the Javascript tests in each package directory:
 
-    yarn test
+    jlpm test
 
 This will run the test suite using `karma` with 'debug' level logging.

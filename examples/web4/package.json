@@ -9,7 +9,7 @@
   "scripts": {
     "build": "webpack",
     "clean": "rimraf built",
-    "test": "npm run test:default",
+    "test": "jlpm run test:default",
     "test:default": "echo \"No test specified\""
   },
   "dependencies": {

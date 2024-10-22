@@ -132,7 +132,7 @@ class LayoutView extends WidgetView {
             if (value === null) {
                 parent.el.style.removeProperty(this.css_name(trait));
             } else {
-                parent.el.style[this.css_name(trait)] = value;
+                parent.el.style[(this.css_name as any)(trait)] = value;
             }
         } else {
             console.warn('Style not applied because a parent view does not exist');
@@ -153,7 +153,7 @@ class LayoutView extends WidgetView {
                     parent.el.style.removeProperty(this.css_name(trait));
                 }
             } else {
-                parent.el.style[this.css_name(trait)] = value;
+                parent.el.style[(this.css_name as any)(trait)] = value;
             }
         } else {
             console.warn('Style not applied because a parent view does not exist');

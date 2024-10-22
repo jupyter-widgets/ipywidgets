@@ -43,13 +43,13 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: |
-        python -m pip install jupyterlab~=3.0
+        python -m pip install jupyterlab~=4.0
         python -m pip install jupyter_packaging~=0.7.9
     - name: Build the extension
       run: |
-        yarn install --frozen-lockfile
-        yarn run build
-        yarn run build:examples
+        jlpm install --frozen-lockfile
+        jlpm run build
+        jlpm run build:examples
 
         # First install the dev jupyterlab_widgets, since it is a dependency
         pushd jupyterlab_widgets
@@ -67,17 +67,17 @@ jobs:
     - name: Run JS tests
       run: |
         pushd packages/base
-        yarn run test:unit:firefox:headless
+        jlpm run test:unit:firefox:headless
         popd
 
         pushd packages/controls
-        yarn run test:unit:firefox:headless
+        jlpm run test:unit:firefox:headless
         popd
 
         pushd packages/html-manager
-        yarn run test:unit:firefox:headless
+        jlpm run test:unit:firefox:headless
         popd
 
         pushd examples/web1
-        yarn run test:firefox:headless
+        jlpm run test:firefox:headless
         popd

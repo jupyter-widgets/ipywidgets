@@ -108,6 +108,7 @@ class DatePickerView extends DescriptionView {
         return super.update();
     }
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         // Typescript doesn't understand that these functions are called, so we
         // specifically use them here so it knows they are being used.

@@ -97,6 +97,7 @@ class ImageView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
+    // @ts-ignore
     get tagName() {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the

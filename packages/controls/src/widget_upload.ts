@@ -39,6 +39,7 @@ export class FileUploadView extends DOMWidgetView {
     fileInput: HTMLInputElement;
     fileReader: FileReader;
 
+    // @ts-ignore
     get tagName() {
         return 'button';
     }

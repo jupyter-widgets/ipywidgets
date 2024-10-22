@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo -n "Checking JupyterLab (assuming JupyterLab >=3)... "
+echo -n "Checking JupyterLab (assuming JupyterLab >=4)... "
 jupyter lab --version 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "no, skipping installation of widgets for jupyterlab"
@@ -34,18 +34,12 @@ set -e
 nbExtFlags="--sys-prefix $1"
 
 echo -n "Installing and building all yarn packages"
-yarn install
-yarn run build
+jlpm install
+jlpm run build
 
 echo -n "widgetsnbextension"
 cd widgetsnbextension
 pip install -v -e .
-if [[ "$OSTYPE" == "msys" ]]; then
-    jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension || true
-else
-    jupyter nbextension install --overwrite --py --symlink $nbExtFlags widgetsnbextension || true
-fi
-jupyter nbextension enable --py $nbExtFlags widgetsnbextension || true
 cd ..
 
 if test "$skip_jupyter_lab" != yes; then

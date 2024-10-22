@@ -221,6 +221,7 @@ abstract class BaseIntSliderView extends DescriptionView {
      */
     abstract stringToValue(text: string): number | number[];
 
+    // @ts-ignore
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
@@ -544,6 +545,7 @@ class IntTextView extends DescriptionView {
         return super.update();
     }
 
+    // @ts-ignore
     events() {
         return {
             'keydown input'  : 'handleKeyDown',

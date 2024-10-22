@@ -209,6 +209,7 @@ class TextareaView extends DescriptionView {
         return super.update();
     }
 
+    // @ts-ignore
     events() {
         return {
             'keydown input': 'handleKeyDown',
@@ -326,6 +327,7 @@ class TextView extends DescriptionView {
         return super.update();
     }
 
+    // @ts-ignore
     events() {
         return {
             'keydown input': 'handleKeyDown',
