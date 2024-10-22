@@ -48,10 +48,24 @@ git pull origin 7.x
 git reset --hard origin/7.x
 git clean -fdx
 jlpm install
-npm publish
+yarn publish
 ```
 
 Lerna will prompt you for version numbers for each of the changed npm packages. Lerna will then change the versions appropriately (including the interdependency versions), commit, tag, and publish the new packages to npm.
+
+### Fix NPM tags!!!
+
+NPM is stupid, it can't see you just published versions that are prior to the latest (You are on the 7.x branch, so not publishing the latest of ipywidgets packages). It will mark your packages as "latest", this will have the impact of breaking users flow because e.g. they will now pull an outdated html-manager in nbconvert.
+
+You need to fix the tags for all the packages you just publish with e.g. (PLEASE VERIFY VERSION NUMBERS, CHECKING THE ACTUAL LATEST):
+
+```
+npm dist-tag add @jupyter-widgets/jupyterlab-manager@5.0.13 latest
+npm dist-tag add @jupyter-widgets/base@6.0.10 latest
+npm dist-tag add @jupyter-widgets/controls@5.0.11 latest
+npm dist-tag add @jupyter-widgets/html-manager@1.0.13 latest
+npm dist-tag add @jupyter-widgets/output@6.0.10 latest
+```
 
 ### jupyterlab_widgets
 
@@ -110,6 +124,14 @@ Using the above script, you can do:
 ./scripts/hashes dist/*
 ./scripts/hashes widgetsnbextension/dist/*
 ./scripts/hashes jupyterlab_widgets/dist/*
+```
+
+Or when using Fedora:
+
+```
+./scripts/hashes_fedora dist/*
+./scripts/hashes_fedora widgetsnbextension/dist/*
+./scripts/hashes_fedora jupyterlab_widgets/dist/*
 ```
 
 Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin 7.x (and include the tag in the push).
