@@ -46,8 +46,8 @@
     "@jupyterlab/outputarea": "^3.0.0 || ^4.0.0",
     "@jupyterlab/rendermime": "^3.0.0 || ^4.0.0",
     "@jupyterlab/rendermime-interfaces": "^3.0.0 || ^4.0.0",
-    "@lumino/messaging": "^1.10.1 || ^2.1",
-    "@lumino/widgets": "^1.30.0 || ^2.1",
+    "@lumino/messaging": "^1 || ^2",
+    "@lumino/widgets": "^1 || ^2",
     "ajv": "^8.6.0",
     "jquery": "^3.1.1",
     "semver": "^7.3.5"
