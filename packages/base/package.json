@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/base",
-  "version": "4.1.6",
+  "version": "4.1.7",
   "description": "Jupyter interactive widgets",
   "repository": {
     "type": "git",
