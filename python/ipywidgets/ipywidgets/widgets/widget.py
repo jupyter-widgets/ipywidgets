@@ -471,7 +471,7 @@ class Widget(LoggingHasTraits):
         return state
 
     def get_view_spec(self):
-        return {"version_major":2, "version_minor":0, "model_id": self._model_id}
+        return {"version_major": 2, "version_minor": 0, "model_id": self.model_id}
 
     #-------------------------------------------------------------------------
     # Traits
@@ -494,6 +494,8 @@ class Widget(LoggingHasTraits):
     comm = Any(allow_none=True)
 
     keys = List(help="The traits which are synced.")
+
+    _model_id: None | str = None
 
     @default('keys')
     def _default_keys(self):
@@ -537,7 +539,7 @@ class Widget(LoggingHasTraits):
 
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
-        assert self._model_id
+        assert self.model_id
 
 
     def _create_comm(self, comm_id=None):
@@ -564,7 +566,8 @@ class Widget(LoggingHasTraits):
                 _instances.pop(change['old'].comm_id, None)
         if change['new']:
             if isinstance(_instances, dict):
-                _instances[change['new'].comm_id] = self        
+                _instances[change["new"].comm_id] = self
+                self._model_id = change["new"].comm_id
             
             # prevent memory leaks by using a weak reference to self.
             ref = weakref.ref(self)
@@ -578,14 +581,8 @@ class Widget(LoggingHasTraits):
 
             change['new'].on_msg(_handle_msg)
 
-
-
     @property
     def model_id(self):
-        return self._model_id
-    
-    @property
-    def _model_id(self):
         """Gets the model id of this widget.
 
         If a Comm doesn't exist yet, a Comm will be created automagically."""
@@ -864,10 +861,10 @@ class Widget(LoggingHasTraits):
             # http://tools.ietf.org/html/rfc6838
             # and the currently registered mimetypes at
             # http://www.iana.org/assignments/media-types/media-types.xhtml.
-            data['application/vnd.jupyter.widget-view+json'] = {
-                'version_major': 2,
-                'version_minor': 0,
-                'model_id': self._model_id
+            data["application/vnd.jupyter.widget-view+json"] = {
+                "version_major": 2,
+                "version_minor": 0,
+                "model_id": self.model_id,
             }
             return data
 
