@@ -5,7 +5,6 @@
 
 import copy
 import gc
-import inspect
 import weakref
 
 import pytest
@@ -15,7 +14,6 @@ from IPython.utils.capture import capture_output
 
 import ipywidgets as ipw
 
-from .. import widget
 from ..widget import Widget
 from ..widget_button import Button
 
@@ -62,29 +60,12 @@ def test_close_all():
     # create a couple of widgets
     widgets = [Button() for i in range(10)]
 
-    assert len(widget._instances) > 0, "expect active widgets"
-    assert widget._instances[widgets[0].model_id] is widgets[0]
+    assert len(Widget._instances) > 0, "expect active widgets"
+    assert Widget._instances[widgets[0].model_id] is widgets[0]
     # close all the widgets
     Widget.close_all()
 
-    assert len(widget._instances) == 0, "active widgets should be cleared"
-
-
-def test_compatibility():
-    button = Button()
-    assert widget._instances[button.model_id] is button
-    with pytest.deprecated_call() as record:
-        assert widget._instances is widget.Widget.widgets
-        assert widget._instances is widget.Widget._active_widgets
-        assert widget._registry is widget.Widget.widget_types
-        assert widget._registry is widget.Widget._widget_types
-
-        Widget.close_all()
-        assert not widget.Widget.widgets
-        assert not widget.Widget._active_widgets
-    caller_path = inspect.stack(context=0)[1].filename
-    assert all(x.filename == caller_path for x in record)
-    assert len(record) == 6
+    assert len(Widget._instances) == 0, "active widgets should be cleared"
 
 
 def test_widget_copy():
@@ -98,12 +79,12 @@ def test_widget_copy():
 def test_widget_open():
     button = Button()
     model_id = button.model_id
-    assert model_id in widget._instances
+    assert model_id in Widget._instances
     spec = button.get_view_spec()
     assert list(spec) == ["version_major", "version_minor", "model_id"]
     assert spec["model_id"]
     button.close()
-    assert model_id not in widget._instances
+    assert model_id not in Widget._instances
     with pytest.raises(RuntimeError, match="Widget is closed"):
         button.open()
     with pytest.raises(RuntimeError, match="Widget is closed"):
@@ -225,7 +206,7 @@ def test_button_weakreference(weakref_enabled: bool):
         b = TestButton(description="button")
         weakref.finalize(b, on_delete)
         b_ref = weakref.ref(b)
-        assert b in widget._instances.values()
+        assert b in Widget._instances.values()
 
         b.on_click(b.my_click)
         b.on_click(lambda x: setattr(x, "clicked", True))
@@ -235,11 +216,11 @@ def test_button_weakreference(weakref_enabled: bool):
 
         if weakref_enabled:
             ipw.enable_weakreference()
-            assert b in widget._instances.values(), "Instances not transferred"
+            assert b in Widget._instances.values(), "Instances not transferred"
             ipw.disable_weakreference()
-            assert b in widget._instances.values(), "Instances not transferred"
+            assert b in Widget._instances.values(), "Instances not transferred"
             ipw.enable_weakreference()
-            assert b in widget._instances.values(), "Instances not transferred"
+            assert b in Widget._instances.values(), "Instances not transferred"
 
         b.click()
         assert click_count == 2
@@ -251,7 +232,7 @@ def test_button_weakreference(weakref_enabled: bool):
             assert deleted
         else:
             assert not deleted
-            assert b_ref() in widget._instances.values()
+            assert b_ref() in Widget._instances.values()
             b_ref().close()
             gc.collect()
             assert deleted, "Closing should remove the last strong reference."

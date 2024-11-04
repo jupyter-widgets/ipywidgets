@@ -57,7 +57,6 @@ def test_box_validate_mode():
 
 
 def test_box_gc():
-    widgets.VBox._active_widgets
     widgets.enable_weakreference()
     # Test Box gc collected and children lifecycle managed.
     try:
@@ -80,6 +79,5 @@ def test_box_gc():
         del b
         gc.collect()
         assert deleted
-        widgets.VBox._active_widgets
     finally:
         widgets.disable_weakreference()

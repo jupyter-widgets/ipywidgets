@@ -19,8 +19,6 @@ from .. import comm
 
 from base64 import standard_b64encode
 
-from .utils import deprecation, _get_frame
-
 from .._version import __protocol_version__, __control_protocol_version__, __jupyter_widgets_base_version__
 
 import inspect
@@ -43,29 +41,24 @@ CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
 JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 # for a discussion on using weak references see:
 #  https://github.com/jupyter-widgets/ipywidgets/issues/1345
-_instances : typing.MutableMapping[str, "Widget"] = {}
 
 def enable_weakreference():
-    """Use a WeakValueDictionary instead of a standard dictionary to map 
-    `comm_id` to `widget` for every widget instance.
+    """Use a WeakValueDictionary to store references to Widget instances.
 
-    By default widgets are mapped using a standard dictionary. Use this feature
-    to permit widget garbage collection. 
+    A strong reference must be kept to widgets. 
     """
-    global _instances
-    if not isinstance(_instances, weakref.WeakValueDictionary):
-        _instances  = weakref.WeakValueDictionary(_instances)
+    if not isinstance(Widget._instances, weakref.WeakValueDictionary):
+        Widget._instances = weakref.WeakValueDictionary(Widget._instances)
 
 def disable_weakreference():
-    """Use a Dictionary to map `comm_id` to `widget` for every widget instance.
-    
-    Note: this is the default setting and maintains a strong reference to the 
-    the widget preventing automatic garbage collection. If the close method
-    is called, the widget will remove itself enabling garbage collection.
+    """Use a standard dictionary to store references to Widget instances (default behavior).
+
+    Note: this is the default setting and maintains a strong reference to the
+    the widget preventing automatic garbage collection. When the widget is closed
+    it can be garbage collected.
     """
-    global _instances
-    if  isinstance(_instances, weakref.WeakValueDictionary):
-        _instances  = dict(_instances)
+    if isinstance(Widget._instances, weakref.WeakValueDictionary):
+        Widget._instances = dict(Widget._instances)
 
 def _widget_to_json(x, obj):
     if isinstance(x, Widget):
@@ -82,8 +75,8 @@ def _json_to_widget(x, obj):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_json_to_widget(v, obj) for v in x]
-    elif isinstance(x, str) and x.startswith('IPY_MODEL_') and x[10:] in _instances:
-        return _instances[x[10:]]
+    elif isinstance(x, str) and x.startswith("IPY_MODEL_") and x[10:] in Widget._instances:
+        return Widget._instances[x[10:]]
     else:
         return x
 
@@ -314,50 +307,12 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
     _control_comm = None
-    
-    @_staticproperty
-    def widgets():
-        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
-        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
-        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
-        frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
-            deprecation("Widget.widgets is deprecated.")
-        return _instances
 
-    @_staticproperty
-    def _active_widgets():
-        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
-        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
-        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
-        frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
-            deprecation("Widget._active_widgets is deprecated.")
-        return _instances
-
-    @_staticproperty
-    def _widget_types():
-        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
-        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
-        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
-        frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
-            deprecation("Widget._widget_types is deprecated.")
-        return _registry
-
-    @_staticproperty
-    def widget_types():
-        # Because this is a static attribute, it will be accessed when initializing this class. In that case, since a user
-        # did not explicitly try to use this attribute, we do not want to throw a deprecation warning.
-        # So we check if the thing calling this static property is one of the known initialization functions in traitlets.
-        frame = _get_frame(2)
-        if not (frame.f_code.co_filename == TRAITLETS_FILE and (frame.f_code.co_name in ('getmembers', 'setup_instance', 'setup_class'))):
-            deprecation("Widget.widget_types is deprecated.")
-        return _registry
+    _instances: typing.ClassVar[typing.MutableMapping[str, "Widget"]] = {}
 
     @classmethod
     def close_all(cls):
-        for widget in list(_instances.values()):
+        for widget in list(Widget._instances.values()):
             widget.close()
 
     @staticmethod
@@ -399,7 +354,7 @@ class Widget(LoggingHasTraits):
         if method == 'request_states':
             # Send back the full widgets state
             cls.get_manager_state()
-            widgets = _instances.values()
+            widgets = cls._instances.values()
             full_state = {}
             drop_defaults = False
             for widget in widgets:
@@ -440,8 +395,8 @@ class Widget(LoggingHasTraits):
             _put_buffers(state, data['buffer_paths'], msg['buffers'])
         widget.set_state(state)
 
-    @staticmethod
-    def get_manager_state(drop_defaults=False, widgets=None):
+    @classmethod
+    def get_manager_state(cls, drop_defaults=False, widgets=None):
         """Returns the full state for a widget manager for embedding
 
         :param drop_defaults: when True, it will not include default value
@@ -450,7 +405,7 @@ class Widget(LoggingHasTraits):
         """
         state = {}
         if widgets is None:
-            widgets = _instances.values()
+            widgets = cls._instances.values()
         for widget in widgets:
             state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
         return {'version_major': 2, 'version_minor': 0, 'state': state}
@@ -561,14 +516,11 @@ class Widget(LoggingHasTraits):
         if change['old']:
             change['old'].on_msg(None)
             change['old'].close()
-            # On python shutdown _instances can be None
-            if isinstance(_instances, dict):
-                _instances.pop(change['old'].comm_id, None)
+            self._instances.pop(change['old'].comm_id, None)
         if change['new']:
-            if isinstance(_instances, dict):
-                _instances[change["new"].comm_id] = self
-                self._model_id = change["new"].comm_id
-            
+            self._instances[change["new"].comm_id] = self
+            self._model_id = change["new"].comm_id
+
             # prevent memory leaks by using a weak reference to self.
             ref = weakref.ref(self)
             def _handle_msg(msg):
