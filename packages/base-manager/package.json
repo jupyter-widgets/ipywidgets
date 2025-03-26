@@ -14,7 +14,8 @@
     "lib/**/*.map",
     "lib/**/*.d.ts",
     "lib/**/*.js",
-    "css/*.css"
+    "css/*.css",
+    "src"
   ],
   "scripts": {
     "build": "npm run build:src",

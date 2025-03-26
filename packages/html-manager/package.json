@@ -19,7 +19,8 @@
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "dist/",
-    "css/*.css"
+    "css/*.css",
+    "src"
   ],
   "scripts": {
     "build": "npm run build:src && webpack && npm run build:embed-amd",

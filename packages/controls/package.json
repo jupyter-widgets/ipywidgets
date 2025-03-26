@@ -15,7 +15,8 @@
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "css/*.css",
-    "dist/"
+    "dist/",
+    "src"
   ],
   "scripts": {
     "build": "npm run build:src && npm run build:css",
