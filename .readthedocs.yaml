@@ -10,3 +10,5 @@ python:
       path: ./python/ipywidgets
 conda:
   environment: docs/environment.yml
+sphinx:
+  configuration: docs/source/conf.py
