@@ -15,10 +15,12 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
+    "lib/**/*.map",
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "dist/",
-    "css/*.css"
+    "css/*.css",
+    "src"
   ],
   "scripts": {
     "build": "npm run build:src && webpack && npm run build:embed-amd",

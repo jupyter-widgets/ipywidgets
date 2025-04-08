@@ -11,10 +11,12 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
+    "lib/**/*.map",
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "css/*.css",
-    "dist/"
+    "dist/",
+    "src"
   ],
   "scripts": {
     "build": "npm run build:src && npm run build:css",
