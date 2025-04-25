@@ -65,6 +65,7 @@ Examples of custom widget libraries built upon ipywidgets are
 - [pythreejs](https://github.com/jupyter-widgets/pythreejs) a Jupyter - Three.js wrapper,
   bringing Three.js to the notebook.
 - [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) a leaflet widget for Jupyter.
+- [ipyaudio](https://github.com/pengzhendong/ipyaudio) an audio player and recorder for Jupyter.
 
 ## Install
 
