@@ -58,8 +58,29 @@ import '@jupyter-widgets/controls/css/widgets-base.css';
 import { KernelMessage } from '@jupyterlab/services';
 import { ITranslator, nullTranslator } from '@jupyterlab/translation';
 import { ISessionContext } from '@jupyterlab/apputils';
+import { ISignal, Signal } from '@lumino/signaling';
 
-const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
+class WidgetRegistry {
+
+  get widgets(): base.IWidgetRegistryData[] {
+    return [...this._registry];
+  }
+
+  push(data: base.IWidgetRegistryData) {
+    this._registry.push(data);
+    this._registeredWidget.emit(data);
+  }
+
+  get registeredWidget(): ISignal<WidgetRegistry, base.IWidgetRegistryData> {
+    return this._registeredWidget;
+  }
+
+  private _registeredWidget = new Signal<WidgetRegistry, base.IWidgetRegistryData>(this);
+
+  private _registry: base.IWidgetRegistryData[] = [];
+}
+
+const WIDGET_REGISTRY = new WidgetRegistry();
 
 /**
  * The cached settings.
@@ -178,7 +199,10 @@ async function registerWidgetHandler(
 
   if (!wManager) {
     wManager = widgetManagerFactory();
-    WIDGET_REGISTRY.forEach((data) => wManager!.register(data));
+    WIDGET_REGISTRY.widgets.forEach((data) => wManager!.register(data));
+    WIDGET_REGISTRY.registeredWidget.connect((_, data) => {
+      wManager!.register(data);
+    });
     Private.widgetManagerProperty.set(wManagerOwner, wManager);
     currentOwner = wManagerOwner;
     content.disposed.connect((_) => {
@@ -241,7 +265,10 @@ export function registerWidgetManager(
       ) as WidgetManager;
       if (!currentManager) {
         wManager = new WidgetManager(context, rendermime, SETTINGS);
-        WIDGET_REGISTRY.forEach((data) => wManager!.register(data));
+        WIDGET_REGISTRY.widgets.forEach((data) => wManager!.register(data));
+        WIDGET_REGISTRY.registeredWidget.connect((_, data) => {
+          wManager!.register(data);
+        });
         Private.widgetManagerProperty.set(wManagerOwner, wManager);
       } else {
         wManager = currentManager;
