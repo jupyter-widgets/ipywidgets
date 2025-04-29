@@ -61,7 +61,6 @@ import { ISessionContext } from '@jupyterlab/apputils';
 import { ISignal, Signal } from '@lumino/signaling';
 
 class WidgetRegistry {
-
   get widgets(): base.IWidgetRegistryData[] {
     return [...this._registry];
   }
@@ -75,7 +74,10 @@ class WidgetRegistry {
     return this._registeredWidget;
   }
 
-  private _registeredWidget = new Signal<WidgetRegistry, base.IWidgetRegistryData>(this);
+  private _registeredWidget = new Signal<
+    WidgetRegistry,
+    base.IWidgetRegistryData
+  >(this);
 
   private _registry: base.IWidgetRegistryData[] = [];
 }
