@@ -68,8 +68,31 @@ import {
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
 import { KernelMessage } from '@jupyterlab/services';
+import { ISignal, Signal } from '@lumino/signaling';
 
-const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
+class WidgetRegistry {
+  get widgets(): base.IWidgetRegistryData[] {
+    return [...this._registry];
+  }
+
+  push(data: base.IWidgetRegistryData) {
+    this._registry.push(data);
+    this._widgetRegistered.emit(data);
+  }
+
+  get widgetRegistered(): ISignal<WidgetRegistry, base.IWidgetRegistryData> {
+    return this._widgetRegistered;
+  }
+
+  private _widgetRegistered = new Signal<
+    WidgetRegistry,
+    base.IWidgetRegistryData
+  >(this);
+
+  private _registry: base.IWidgetRegistryData[] = [];
+}
+
+const WIDGET_REGISTRY = new WidgetRegistry();
 
 /**
  * The cached settings.
@@ -126,7 +149,10 @@ export function registerWidgetManager(
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
     wManager = new WidgetManager(context, rendermime, SETTINGS);
-    WIDGET_REGISTRY.forEach(data => wManager.register(data));
+    WIDGET_REGISTRY.widgets.forEach(data => wManager.register(data));
+    WIDGET_REGISTRY.widgetRegistered.connect((_, data) => {
+      wManager.register(data);
+    });
     Private.widgetManagerProperty.set(context, wManager);
   }
 
