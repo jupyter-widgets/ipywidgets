@@ -1,17 +1,65 @@
+[project]
+name = "jupyterlab_widgets"
+description = "Jupyter interactive widgets for JupyterLab"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.7"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Jupyter Development Team", email = "jupyter@googlegroups.com" }
+]
+keywords = [
+    "Interactive", "Interpreter", "Shell", "Web", "notebook",
+    "widgets", "Jupyter", "JupyterLab", "JupyterLab3"
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Framework :: Jupyter :: JupyterLab :: 3",
+    "Framework :: Jupyter :: JupyterLab :: Extensions",
+    "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt"
+]
+urls = { Homepage = "https://github.com/jupyter-widgets/ipywidgets" }
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "jupyterlab_widgets/_version.py"
+
 [build-system]
-requires = ["jupyter_packaging~=0.10,<2", "jupyterlab~=4.0"]
-build-backend = "jupyter_packaging.build_api"
-
-[tool.jupyter-packaging.options]
-skip-if-exists = ["labextension/package.json"]
-ensured-targets = ["labextension/package.json"]
-
-[tool.jupyter-packaging.builder]
-factory = "jupyter_packaging.npm_builder"
-
-[tool.jupyter-packaging.build-args]
-build_cmd = "build:prod"
-npm = ["jlpm"]
+requires = ["hatchling>=1.5.0", "jupyterlab~=4.0"]
+build-backend = "hatchling.build"
 
 [tool.check-manifest]
 ignore = ["labextension/**", "yarn.lock", ".*", "package-lock.json"]
+
+[tool.hatch.build.hooks.jupyter-builder]
+ensured-targets = [
+    "labextension/package.json",
+]
+dependencies = [
+    "hatch-jupyter-builder>=0.8.1",
+]
+build-function = "hatch_jupyter_builder.npm_builder"
+skip-if-exists = ["labextension/static/style.js"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"install.json" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/install.json"
+"labextension" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager"
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+path = "."
+build_cmd = "build:prod"
+npm = [
+    "jlpm",
+]
