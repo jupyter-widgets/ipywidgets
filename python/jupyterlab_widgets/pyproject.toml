@@ -53,6 +53,7 @@ dependencies = [
     "hatch-jupyter-builder>=0.8.1",
 ]
 build-function = "hatch_jupyter_builder.npm_builder"
+skip-if-exists = ["labextension/static/style.js"]
 
 [tool.hatch.build.targets.wheel.shared-data]
 "install.json" = "share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/install.json"
