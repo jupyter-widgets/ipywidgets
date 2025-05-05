@@ -67,14 +67,14 @@ class WidgetRegistry {
 
   push(data: base.IWidgetRegistryData) {
     this._registry.push(data);
-    this._registeredWidget.emit(data);
+    this._widgetRegistered.emit(data);
   }
 
-  get registeredWidget(): ISignal<WidgetRegistry, base.IWidgetRegistryData> {
-    return this._registeredWidget;
+  get widgetRegistered(): ISignal<WidgetRegistry, base.IWidgetRegistryData> {
+    return this._widgetRegistered;
   }
 
-  private _registeredWidget = new Signal<
+  private _widgetRegistered = new Signal<
     WidgetRegistry,
     base.IWidgetRegistryData
   >(this);
@@ -202,7 +202,7 @@ async function registerWidgetHandler(
   if (!wManager) {
     wManager = widgetManagerFactory();
     WIDGET_REGISTRY.widgets.forEach((data) => wManager!.register(data));
-    WIDGET_REGISTRY.registeredWidget.connect((_, data) => {
+    WIDGET_REGISTRY.widgetRegistered.connect((_, data) => {
       wManager!.register(data);
     });
     Private.widgetManagerProperty.set(wManagerOwner, wManager);
@@ -268,7 +268,7 @@ export function registerWidgetManager(
       if (!currentManager) {
         wManager = new WidgetManager(context, rendermime, SETTINGS);
         WIDGET_REGISTRY.widgets.forEach((data) => wManager!.register(data));
-        WIDGET_REGISTRY.registeredWidget.connect((_, data) => {
+        WIDGET_REGISTRY.widgetRegistered.connect((_, data) => {
           wManager!.register(data);
         });
         Private.widgetManagerProperty.set(wManagerOwner, wManager);
