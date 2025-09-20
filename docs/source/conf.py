@@ -155,6 +155,7 @@ templates_path = ["_templates"]
 htmlhelp_basename = 'ipywidgetsdoc'
 
 html_theme_options = {
+    "announcement": "🚀 Join us in San Diego · JupyterCon 2025 · Nov 4-5 · <a href=\"https://events.linuxfoundation.org/jupytercon/program/schedule/?ajs_aid=53afb00d-be65-4a99-9112-28cdaac99463\">SCHEDULE</a> · <a href=\"https://events.linuxfoundation.org/jupytercon/register/?ajs_aid=53afb00d-be65-4a99-9112-28cdaac99463\">REGISTER NOW</a>",
     "icon_links": [
         {
             "name": "PyPI",
@@ -220,3 +221,6 @@ epub_title = project
 epub_author = author
 epub_publisher = author
 epub_copyright = copyright
+
+def setup(app):
+    app.add_css_file("https://docs.jupyter.org/en/latest/_static/jupyter.css")
