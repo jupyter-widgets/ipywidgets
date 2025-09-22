@@ -24,3 +24,5 @@ To build the ipywidgets documentation:
    ```
 
 4. Open the documentation from the build directory: `docs/build/html`
+
+A small change to check CI/CD building the docs.
