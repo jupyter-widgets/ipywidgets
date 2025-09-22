@@ -40,6 +40,8 @@ def on_config_inited(*args):
 
 def setup(app):
     app.connect("config-inited", on_config_inited)
+    app.add_css_file("https://docs.jupyter.org/en/latest/_static/jupyter.css")
+
 
 
 # -- Sphinx extensions and configuration ------------------------
@@ -221,6 +223,3 @@ epub_title = project
 epub_author = author
 epub_publisher = author
 epub_copyright = copyright
-
-def setup(app):
-    app.add_css_file("https://docs.jupyter.org/en/latest/_static/jupyter.css")
