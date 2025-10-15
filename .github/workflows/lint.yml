@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: '3.13'
           architecture: 'x64'
 
       - name: Install dependencies

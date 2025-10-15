@@ -41,7 +41,7 @@ def show_inline_matplotlib_plots():
 
     try:
         import matplotlib as mpl
-        from ipykernel.pylab.backend_inline import flush_figures
+        from matplotlib_inline.backend_inline import flush_figures
     except ImportError:
         return
 

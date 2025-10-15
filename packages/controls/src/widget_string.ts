@@ -380,8 +380,8 @@ export class TextareaView extends StringView {
 
   events(): { [e: string]: string } {
     return {
-      'keydown input': 'handleKeyDown',
-      'keypress input': 'handleKeypress',
+      'keydown textarea': 'handleKeyDown',
+      'keypress textarea': 'handleKeypress',
       'input textarea': 'handleChanging',
       'change textarea': 'handleChanged',
     };
