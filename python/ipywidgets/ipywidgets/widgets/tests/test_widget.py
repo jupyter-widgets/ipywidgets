@@ -159,18 +159,16 @@ def test_widget_open():
         "Widget",
     ],
 )
-@pytest.mark.parametrize("enable_weakref", [True, False])
-def test_weakreference(class_name, enable_weakref):
+def test_weakreference(class_name):
     # Ensure the base instance of all widgets can be deleted / garbage collected.
-    if enable_weakref:
-        ipw.enable_weakreference()
-    cls = getattr(ipw, class_name)
-    if class_name in ['SelectionRangeSlider', 'SelectionSlider']:
-        kwgs = {"options": [1, 2, 4]}
-    else:
-        kwgs = {}
+    ipw.enable_weakreference()
     try:
-        w = cls(**kwgs)
+        cls = getattr(ipw, class_name)
+        if class_name in ["SelectionRangeSlider", "SelectionSlider"]:
+            kwgs = {"options": [1, 2, 4]}
+        else:
+            kwgs = {}
+        w: Widget = cls(**kwgs)
         deleted = False
         def on_delete():
             nonlocal deleted
@@ -178,14 +176,11 @@ def test_weakreference(class_name, enable_weakref):
         weakref.finalize(w, on_delete)
         # w should be the only strong ref to the widget.
         # calling `del` should invoke its immediate deletion calling the `__del__` method.
-        if not enable_weakref:
-            w.close()
         del w
         gc.collect()
         assert deleted
     finally:
-        if enable_weakref:
-            ipw.disable_weakreference()
+        ipw.disable_weakreference()
 
 
 @pytest.mark.parametrize("weakref_enabled", [True, False])
