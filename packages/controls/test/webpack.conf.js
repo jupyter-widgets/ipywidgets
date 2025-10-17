@@ -17,6 +17,7 @@ module.exports = {
         generator: { filename: '[name].[ext]' },
       },
       { test: /\.ipynb$/, type: 'json' },
+      { test: /\.svg$/, type: 'asset/resource' },
     ],
   },
   mode: 'development',

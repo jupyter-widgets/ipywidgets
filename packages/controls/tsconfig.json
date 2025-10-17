@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
-    "types": ["mathjax", "node"]
+    "types": ["node"]
   },
   "include": ["src/**/*"],
   "references": [
