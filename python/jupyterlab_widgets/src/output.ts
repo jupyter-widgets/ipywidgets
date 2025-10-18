@@ -3,21 +3,23 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import { JupyterLuminoPanelWidget } from '@jupyter-widgets/base';
-
-import { Panel } from '@lumino/widgets';
-
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
 import { KernelWidgetManager } from './manager';
 
-import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
+import {
+  OutputArea,
+  SimplifiedOutputArea,
+  OutputAreaModel,
+} from '@jupyterlab/outputarea';
 
 import * as nbformat from '@jupyterlab/nbformat';
 
 import { KernelMessage } from '@jupyterlab/services';
 
 import $ from 'jquery';
+
+import type { Message } from '@lumino/messaging';
 
 export const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
 
@@ -105,7 +107,15 @@ export class OutputModel extends outputBase.OutputModel {
 
 export class OutputView extends outputBase.OutputView {
   _createElement(tagName: string): HTMLElement {
-    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+    this.luminoWidget = new JupyterOutputArea({
+      view: this,
+      rendermime: OutputModel.rendermime,
+      contentFactory: OutputArea.defaultContentFactory,
+      model: this.model.outputs,
+      promptOverlay: false,
+    });
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('jupyter-widget-output');
     return this.luminoWidget.node;
   }
 
@@ -119,34 +129,41 @@ export class OutputView extends outputBase.OutputView {
     this.$el = $(this.luminoWidget.node);
   }
 
-  /**
-   * Called when view is rendered.
-   */
-  render(): void {
-    super.render();
-    this._outputView = new OutputArea({
-      rendermime: OutputModel.rendermime,
-      contentFactory: OutputArea.defaultContentFactory,
-      model: this.model.outputs,
-    });
-
-    // TODO: why is this a readonly property now?
-    // this._outputView.model = this.model.outputs;
-    // TODO: why is this on the model now?
-    // this._outputView.trusted = true;
-    this.luminoWidget.insertWidget(0, this._outputView);
-
-    this.luminoWidget.addClass('jupyter-widgets');
-    this.luminoWidget.addClass('widget-output');
-    this.update(); // Set defaults.
-  }
-
-  remove(): any {
-    this._outputView.dispose();
-    return super.remove();
-  }
-
   model: OutputModel;
-  _outputView: OutputArea;
-  luminoWidget: Panel;
+  luminoWidget: JupyterOutputArea;
+}
+
+class JupyterOutputArea extends SimplifiedOutputArea {
+  constructor(options: JupyterOutputArea.IOptions & OutputArea.IOptions) {
+    const view = options.view;
+    delete (options as any).view;
+    super(options);
+    this._view = view;
+  }
+
+  processMessage(msg: Message): void {
+    super.processMessage(msg);
+    this._view?.processLuminoMessage(msg);
+  }
+  /**
+   * Dispose the widget.
+   *
+   * This causes the view to be destroyed as well with 'remove'
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+    super.dispose();
+    this._view?.remove();
+    this._view = null!;
+  }
+
+  private _view: OutputView;
+}
+
+export namespace JupyterOutputArea {
+  export interface IOptions {
+    view: OutputView;
+  }
 }
