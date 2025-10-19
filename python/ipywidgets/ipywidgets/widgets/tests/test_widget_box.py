@@ -55,3 +55,30 @@ def test_box_validate_mode():
     with pytest.raises(TraitError):
         box.children += ("Not a widget", closed_button)
 
+
+def test_box_gc():
+    widgets.enable_weakreference()
+    # Test Box gc collected and children lifecycle managed.
+    try:
+        deleted = False
+
+        class TestButton(widgets.Button):
+            def my_click(self, b):
+                pass
+
+        button = TestButton(description="button")
+        button.on_click(button.my_click)
+
+        b = widgets.VBox(children=[button])
+
+        def on_delete():
+            nonlocal deleted
+            deleted = True
+
+        weakref.finalize(b, on_delete)
+        del b
+        gc.collect()
+        assert deleted
+    finally:
+        pass
+        widgets.disable_weakreference()
