@@ -60,12 +60,12 @@ def test_close_all():
     # create a couple of widgets
     widgets = [Button() for i in range(10)]
 
-    assert len(Widget._instances) > 0, "expect active widgets"
-    assert Widget._instances[widgets[0].model_id] is widgets[0]
+    assert len(Widget.all_widgets()) > 0, "expect active widgets"
+    assert Widget.all_widgets()[widgets[0].model_id] is widgets[0]
     # close all the widgets
     Widget.close_all()
 
-    assert len(Widget._instances) == 0, "active widgets should be cleared"
+    assert len(Widget.all_widgets()) == 0, "active widgets should be cleared"
 
 
 def test_widget_copy():
@@ -79,12 +79,12 @@ def test_widget_copy():
 def test_widget_open():
     button = Button()
     model_id = button.model_id
-    assert model_id in Widget._instances
+    assert model_id in Widget.all_widgets()
     spec = button.get_view_spec()
     assert list(spec) == ["version_major", "version_minor", "model_id"]
     assert spec["model_id"]
     button.close()
-    assert model_id not in Widget._instances
+    assert model_id not in Widget.all_widgets()
     with pytest.raises(RuntimeError, match="Widget is closed"):
         button.open()
     with pytest.raises(RuntimeError, match="Widget is closed"):
@@ -159,16 +159,18 @@ def test_widget_open():
         "Widget",
     ],
 )
-def test_weakreference(class_name):
+@pytest.mark.parametrize("enable_weakref", [True, False])
+def test_weakreference(class_name, enable_weakref):
     # Ensure the base instance of all widgets can be deleted / garbage collected.
-    ipw.enable_weakreference()
+    if enable_weakref:
+        ipw.enable_weakreference()
+    cls = getattr(ipw, class_name)
+    if class_name in ["SelectionRangeSlider", "SelectionSlider"]:
+        kwgs = {"options": [1, 2, 4]}
+    else:
+        kwgs = {}
     try:
-        cls = getattr(ipw, class_name)
-        if class_name in ["SelectionRangeSlider", "SelectionSlider"]:
-            kwgs = {"options": [1, 2, 4]}
-        else:
-            kwgs = {}
-        w: Widget = cls(**kwgs)
+        w = cls(**kwgs)
         deleted = False
         def on_delete():
             nonlocal deleted
@@ -176,11 +178,14 @@ def test_weakreference(class_name):
         weakref.finalize(w, on_delete)
         # w should be the only strong ref to the widget.
         # calling `del` should invoke its immediate deletion calling the `__del__` method.
+        if not enable_weakref:
+            w.close()
         del w
         gc.collect()
         assert deleted
     finally:
-        ipw.disable_weakreference()
+        if enable_weakref:
+            ipw.disable_weakreference()
 
 
 @pytest.mark.parametrize("weakref_enabled", [True, False])
@@ -201,7 +206,7 @@ def test_button_weakreference(weakref_enabled: bool):
         b = TestButton(description="button")
         weakref.finalize(b, on_delete)
         b_ref = weakref.ref(b)
-        assert b in Widget._instances.values()
+        assert b in Widget.all_widgets().values()
 
         b.on_click(b.my_click)
         b.on_click(lambda x: setattr(x, "clicked", True))
@@ -211,11 +216,11 @@ def test_button_weakreference(weakref_enabled: bool):
 
         if weakref_enabled:
             ipw.enable_weakreference()
-            assert b in Widget._instances.values(), "Instances not transferred"
+            assert b in Widget.all_widgets().values(), "Instances not transferred"
             ipw.disable_weakreference()
-            assert b in Widget._instances.values(), "Instances not transferred"
+            assert b in Widget.all_widgets().values(), "Instances not transferred"
             ipw.enable_weakreference()
-            assert b in Widget._instances.values(), "Instances not transferred"
+            assert b in Widget.all_widgets().values(), "Instances not transferred"
 
         b.click()
         assert click_count == 2
@@ -227,7 +232,7 @@ def test_button_weakreference(weakref_enabled: bool):
             assert deleted
         else:
             assert not deleted
-            assert b_ref() in Widget._instances.values()
+            assert b_ref() in Widget.all_widgets().values()
             b_ref().close()
             gc.collect()
             assert deleted, "Closing should remove the last strong reference."
