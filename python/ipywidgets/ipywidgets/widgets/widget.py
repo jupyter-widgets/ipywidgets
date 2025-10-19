@@ -41,13 +41,16 @@ JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 # for a discussion on using weak references see:
 #  https://github.com/jupyter-widgets/ipywidgets/issues/1345
 
+# A global to store all widget instances so that it can be swapped out when
+# enabling/disabling weakreferences
 _widget_instances = {}
 
 
 def enable_weakreference():
-    """Use a WeakValueDictionary to store references to Widget instances.
+    """Configure the module to only maintain a weakreference between the comm_id and widget for all widgets.
 
-    A strong reference must be kept to widgets. 
+    With this enabled the user must maintain a strong reference to widgets. The
+    advantage being that memory leaks prevented in long running programs.
     """
     global _widget_instances
     if not isinstance(_widget_instances, weakref.WeakValueDictionary):
@@ -56,11 +59,10 @@ def enable_weakreference():
 
 
 def disable_weakreference():
-    """Use a standard dictionary to store references to Widget instances (default behavior).
+    """Configure the module to only maintain a strong reference between the comm_id and widget for all widgets.
 
-    Note: this is the default setting and maintains a strong reference to the
-    the widget preventing automatic garbage collection. When the widget is closed
-    it can be garbage collected.
+    !!! Note:
+        This is the default behavior. The method `Widget.close` should be called when it is no longer required.
     """
     global _widget_instances
     if isinstance(_widget_instances, weakref.WeakValueDictionary):
