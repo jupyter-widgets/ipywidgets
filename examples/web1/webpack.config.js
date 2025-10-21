@@ -10,6 +10,9 @@ module.exports = {
     path: path.resolve(__dirname, 'built'),
   },
   module: {
-    rules: [{ test: /\.css$/i, use: ['style-loader', 'css-loader'] }],
+    rules: [
+      { test: /\.css$/i, use: ['style-loader', 'css-loader'] },
+      { test: /\.svg$/, type: 'asset/resource' },
+    ],
   },
 };

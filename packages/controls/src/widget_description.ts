@@ -66,18 +66,7 @@ export class DescriptionView extends DOMWidgetView {
   }
 
   typeset(element: HTMLElement, text?: string): void {
-    this.displayed.then(() => {
-      const widget_manager: any = this.model.widget_manager;
-      const latexTypesetter = widget_manager._rendermime?.latexTypesetter;
-      if (latexTypesetter) {
-        if (text !== void 0) {
-          element.textContent = text;
-        }
-        latexTypesetter.typeset(element);
-      } else {
-        return typeset(element, text);
-      }
-    });
+    this.displayed.then(() => typeset(element, text));
   }
 
   updateDescription(): void {
