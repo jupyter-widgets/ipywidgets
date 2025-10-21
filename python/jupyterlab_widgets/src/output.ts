@@ -3,19 +3,23 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import { JupyterLuminoPanelWidget } from '@jupyter-widgets/base';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
-import { Panel } from '@lumino/widgets';
+import { KernelWidgetManager } from './manager';
 
-import { LabWidgetManager, WidgetManager } from './manager';
-
-import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
+import {
+  OutputArea,
+  SimplifiedOutputArea,
+  OutputAreaModel,
+} from '@jupyterlab/outputarea';
 
 import * as nbformat from '@jupyterlab/nbformat';
 
-import { KernelMessage, Session } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab/services';
 
 import $ from 'jquery';
+
+import type { Message } from '@lumino/messaging';
 
 export const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
 
@@ -33,37 +37,16 @@ export class OutputModel extends outputBase.OutputModel {
       return false;
     };
 
-    // if the context is available, react on kernel changes
-    if (this.widget_manager instanceof WidgetManager) {
-      this.widget_manager.context.sessionContext.kernelChanged.connect(
-        (sender, args) => {
-          this._handleKernelChanged(args);
-        }
-      );
-    }
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
     this.listenTo(this, 'change:outputs', this.setOutputs);
     this.setOutputs();
   }
 
   /**
-   * Register a new kernel
-   */
-  _handleKernelChanged({
-    oldValue,
-  }: Session.ISessionConnection.IKernelChangedArgs): void {
-    const msgId = this.get('msg_id');
-    if (msgId && oldValue) {
-      oldValue.removeMessageHook(msgId, this._msgHook);
-      this.set('msg_id', null);
-    }
-  }
-
-  /**
    * Reset the message id.
    */
   reset_msg_id(): void {
-    const kernel = this.widget_manager.kernel;
+    const kernel = (this.widget_manager as KernelWidgetManager).kernel;
     const msgId = this.get('msg_id');
     const oldMsgId = this.previous('msg_id');
 
@@ -117,15 +100,22 @@ export class OutputModel extends outputBase.OutputModel {
     }
   }
 
-  widget_manager: LabWidgetManager;
-
   private _msgHook: (msg: KernelMessage.IIOPubMessage) => boolean;
   private _outputs: OutputAreaModel;
+  static rendermime: IRenderMimeRegistry;
 }
 
 export class OutputView extends outputBase.OutputView {
   _createElement(tagName: string): HTMLElement {
-    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+    this.luminoWidget = new JupyterOutputArea({
+      view: this,
+      rendermime: OutputModel.rendermime,
+      contentFactory: OutputArea.defaultContentFactory,
+      model: this.model.outputs,
+      promptOverlay: false,
+    });
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('jupyter-widget-output');
     return this.luminoWidget.node;
   }
 
@@ -139,33 +129,41 @@ export class OutputView extends outputBase.OutputView {
     this.$el = $(this.luminoWidget.node);
   }
 
-  /**
-   * Called when view is rendered.
-   */
-  render(): void {
-    super.render();
-    this._outputView = new OutputArea({
-      rendermime: this.model.widget_manager.rendermime,
-      contentFactory: OutputArea.defaultContentFactory,
-      model: this.model.outputs,
-    });
-    // TODO: why is this a readonly property now?
-    // this._outputView.model = this.model.outputs;
-    // TODO: why is this on the model now?
-    // this._outputView.trusted = true;
-    this.luminoWidget.insertWidget(0, this._outputView);
-
-    this.luminoWidget.addClass('jupyter-widgets');
-    this.luminoWidget.addClass('widget-output');
-    this.update(); // Set defaults.
-  }
-
-  remove(): any {
-    this._outputView.dispose();
-    return super.remove();
-  }
-
   model: OutputModel;
-  _outputView: OutputArea;
-  luminoWidget: Panel;
+  luminoWidget: JupyterOutputArea;
+}
+
+class JupyterOutputArea extends SimplifiedOutputArea {
+  constructor(options: JupyterOutputArea.IOptions & OutputArea.IOptions) {
+    const view = options.view;
+    delete (options as any).view;
+    super(options);
+    this._view = view;
+  }
+
+  processMessage(msg: Message): void {
+    super.processMessage(msg);
+    this._view?.processLuminoMessage(msg);
+  }
+  /**
+   * Dispose the widget.
+   *
+   * This causes the view to be destroyed as well with 'remove'
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+    super.dispose();
+    this._view?.remove();
+    this._view = null!;
+  }
+
+  private _view: OutputView;
+}
+
+export namespace JupyterOutputArea {
+  export interface IOptions {
+    view: OutputView;
+  }
 }

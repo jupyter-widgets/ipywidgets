@@ -66,18 +66,7 @@ export class DescriptionView extends DOMWidgetView {
   }
 
   typeset(element: HTMLElement, text?: string): void {
-    this.displayed.then(() => {
-      const widget_manager: any = this.model.widget_manager;
-      const latexTypesetter = widget_manager._rendermime?.latexTypesetter;
-      if (latexTypesetter) {
-        if (text !== void 0) {
-          element.textContent = text;
-        }
-        latexTypesetter.typeset(element);
-      } else {
-        return typeset(element, text);
-      }
-    });
+    this.displayed.then(() => typeset(element, text));
   }
 
   updateDescription(): void {
@@ -94,11 +83,6 @@ export class DescriptionView extends DOMWidgetView {
       this.typeset(this.label);
       this.label.style.display = '';
     }
-  }
-
-  updateTooltip(): void {
-    if (!this.label) return;
-    this.label.title = this.model.get('tooltip');
   }
 
   label: HTMLLabelElement;
