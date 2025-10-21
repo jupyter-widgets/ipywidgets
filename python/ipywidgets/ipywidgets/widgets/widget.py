@@ -422,9 +422,12 @@ class Widget(LoggingHasTraits):
         """
         state = {}
         if widgets is None:
-            widgets = _widget_instances.values()
+            widgets = tuple(_widget_instances.values())
         for widget in widgets:
-            state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
+            try:
+                state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
+            except Exception:
+                pass
         return {'version_major': 2, 'version_minor': 0, 'state': state}
 
     def _get_embed_state(self, drop_defaults=False):
@@ -621,7 +624,24 @@ class Widget(LoggingHasTraits):
         traits = self.traits()
         for k in keys:
             to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
-            value = to_json(getattr(self, k), self)
+            try:
+                value = to_json(getattr(self, k), self)
+            except RuntimeError as e:
+                if k == "children" and isinstance((children := getattr(self, k)), tuple):
+                    # A special case to handle invalid children
+                    children_ = []
+                    for c in children:
+                        try:
+                            to_json(c, self)
+                        except Exception:
+                            self.log.debug("Dropping invalid child item:%r", c)
+                            continue
+                        else:
+                            children_.append(c)
+                    value = to_json(children_, self)
+                else:
+                    self.log.exception("Unable to trait %s from %r", k, self, exc_info=e)
+                    continue
             if not drop_defaults or not self._compare(value, traits[k].default_value):
                 state[k] = value
         return state
