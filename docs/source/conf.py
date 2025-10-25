@@ -39,6 +39,13 @@ def on_config_inited(*args):
     run_if_needed(["jupyter", "lite", "build"], LITE)
 
 def setup(app):
+    # Enable Plausible.io stats
+    app.add_js_file("https://plausible.io/js/pa-EonBdQ5HHvW-hAayNOJ9_.js", loading_method="async")
+    app.add_js_file(
+        filename=None,
+        body="window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init({hashBasedRouting:true})",
+    )
+
     app.connect("config-inited", on_config_inited)
     app.add_css_file("https://docs.jupyter.org/en/latest/_static/jupyter.css")
 
