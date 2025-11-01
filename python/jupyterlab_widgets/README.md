@@ -1,10 +1,10 @@
 # Jupyter Widgets JupyterLab Extension
 
-A JupyterLab 3.0 extension for Jupyter/IPython widgets.
+A JupyterLab extension for Jupyter/IPython widgets.
 
 ## Installation
 
-To enable ipywidgets support in JupyterLab 3.x:
+To enable ipywidgets support in JupyterLab 3.x or 4.x:
 
 ```bash
 pip install jupyterlab_widgets
