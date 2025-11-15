@@ -1,12 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-
+import { MathJaxTypesetter } from '@jupyterlab/mathjax-extension';
 export { uuid, resolvePromisesDict } from '@jupyter-widgets/base';
 
+const typesetter = new MathJaxTypesetter();
 /**
- * Apply MathJax rendering to an element, and optionally set its text.
- *
- * If MathJax is not available, make no changes.
+ * Apply MathJax rendering to an element, if `text` is provided it will replace element.textContent.
  *
  * Parameters
  * ----------
@@ -17,9 +16,7 @@ export function typeset(element: HTMLElement, text?: string): void {
   if (text !== void 0) {
     element.textContent = text;
   }
-  if ((window as any).MathJax !== void 0) {
-    MathJax!.Hub!.Queue(['Typeset', MathJax.Hub, element]);
-  }
+  typesetter.typeset(element);
 }
 
 /**
