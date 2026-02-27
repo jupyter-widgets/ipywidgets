@@ -251,7 +251,7 @@ class _BoundedIntRange(_IntRange):
         elif not isinstance(kwargs['value'], tuple):
             try:
                 kwargs['value'] = tuple(kwargs['value'])
-            except:
+            except Exception:
                 raise TypeError(
                     "A 'range' must be able to be cast to a tuple. The input of type"
                     " {} could not be cast to a tuple".format(type(kwargs['value']))
