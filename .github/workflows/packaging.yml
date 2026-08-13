@@ -83,7 +83,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, windows]
-        python: ['3.9', '3.13']
+        python: ['3.10', '3.13']
         dist: ['ipywidgets*.tar.gz']
         include:
           - python: '3.13'
