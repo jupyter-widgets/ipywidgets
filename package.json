@@ -8,9 +8,8 @@
   ],
   "scripts": {
     "build": "lerna run build --stream --ignore \"@jupyter-widgets/example-*\"",
-    "build:examples": "lerna run build --stream --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "build:examples": "lerna run build --stream --scope \"@jupyter-widgets/example-*\" --include-dependencies",
     "build:labextension": "lerna run --stream build:labextension",
-    "build:lib": "lerna run build --stream --scope \"@jupyter-widgets/meta\"",
     "build:nbextension": "lerna run --stream build:nbextension",
     "build:test": "lerna run build:test --stream --ignore \"@jupyter-widgets/example-*\"",
     "clean": "lerna run --stream clean",
@@ -42,7 +41,7 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.6.0",
     "glob": "^10.2.4",
-    "lerna": "^5.4.3",
+    "lerna": "^10.0.0",
     "prettier": "^2.8.3",
     "rimraf": "^5.0.1",
     "sort-package-json": "^2.1.0",
@@ -50,7 +49,7 @@
     "typescript": "~6.0.3"
   },
   "engines": {
-    "node": ">=18 <25",
+    "node": ">=22.13 <25",
     "npm": "please-use-yarn",
     "yarn": ">=3"
   }
