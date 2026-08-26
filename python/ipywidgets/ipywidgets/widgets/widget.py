@@ -565,7 +565,6 @@ class Widget(LoggingHasTraits):
             _instances.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
-            self._repr_mimebundle_ = None
 
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end, if it exists.
@@ -798,26 +797,6 @@ class Widget(LoggingHasTraits):
     def _trait_from_json(x, self):
         """Convert json values to objects."""
         return x
-
-    def _repr_mimebundle_(self, **kwargs):
-        plaintext = repr(self)
-        if len(plaintext) > 110:
-            plaintext = plaintext[:110] + '…'
-        data = {
-            'text/plain': plaintext,
-        }
-        if self._view_name is not None:
-            # The 'application/vnd.jupyter.widget-view+json' mimetype has not been registered yet.
-            # See the registration process and naming convention at
-            # http://tools.ietf.org/html/rfc6838
-            # and the currently registered mimetypes at
-            # http://www.iana.org/assignments/media-types/media-types.xhtml.
-            data['application/vnd.jupyter.widget-view+json'] = {
-                'version_major': 2,
-                'version_minor': 0,
-                'model_id': self._model_id
-            }
-            return data
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""

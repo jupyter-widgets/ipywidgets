@@ -70,3 +70,23 @@ class DOMWidget(Widget):
         # We also need to include _dom_classes in repr for reproducibility
         if self._dom_classes:
             yield '_dom_classes'
+
+    def _repr_mimebundle_(self, **kwargs):
+        plaintext = repr(self)
+        if len(plaintext) > 110:
+            plaintext = plaintext[:110] + '…'
+        data = {
+            'text/plain': plaintext,
+        }
+        if self._view_name is not None:
+            # The 'application/vnd.jupyter.widget-view+json' mimetype has not been registered yet.
+            # See the registration process and naming convention at
+            # http://tools.ietf.org/html/rfc6838
+            # and the currently registered mimetypes at
+            # http://www.iana.org/assignments/media-types/media-types.xhtml.
+            data['application/vnd.jupyter.widget-view+json'] = {
+                'version_major': 2,
+                'version_minor': 0,
+                'model_id': self._model_id
+            }
+        return data
