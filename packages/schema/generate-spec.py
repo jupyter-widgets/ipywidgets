@@ -92,10 +92,6 @@ def trait_type(trait, widget_list):
                                                      widgets.Widget):
         w_type = 'reference'
         attributes['widget'] = trait.klass.__name__
-        # ADD the widget to this documenting list
-        if (trait.klass not in [i[1] for i in widget_list]
-                and trait.klass is not widgets.Widget):
-            widget_list.append((trait.klass.__name__, trait.klass))
     elif isinstance(trait, Any):
         # In our case, these all happen to be values that are converted to
         # strings
