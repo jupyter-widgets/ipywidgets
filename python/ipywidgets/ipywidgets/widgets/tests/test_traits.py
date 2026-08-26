@@ -57,8 +57,8 @@ class TestColor(TraitTestBase):
         'var(--my-color,)', # CSS variable with empty fallback
         'var(--my-color-æ)', # CSS variable with non-ascii characters
         'var(--my-color-\u1234)', # CSS variable with unicode characters
-        r'var(--my-color-\\1234)', # CSS variable escaped hex character
-        'var(--my-color-\.)', # CSS variable with escaped characters
+        r'var(--my-color-\1234)', # CSS variable escaped hex character
+        r'var(--my-color-\.)', # CSS variable with escaped characters
         'var(--my-color,black)', # CSS variable with named color fallback
         'var(--my-color, black)', # CSS variable with named color fallback
         'var(--my-color, rgb(20, 70, 50))', # CSS variable with rgb color fallback
