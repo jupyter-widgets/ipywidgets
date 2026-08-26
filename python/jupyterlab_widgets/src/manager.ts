@@ -287,9 +287,9 @@ export abstract class LabWidgetManager
   }
 
   /**
-   * Synchronously get the state of the live widgets in the widget manager.
+   * Synchronously get the state of the widget models in the widget manager.
    *
-   * This includes all of the live widget models, and follows the format given in
+   * This includes all of the widget models, and follows the format given in
    * the @jupyter-widgets/schema package.
    *
    * @param options - The options for what state to return.
@@ -298,9 +298,7 @@ export abstract class LabWidgetManager
   get_state_sync(options: IStateOptions = {}): ReadonlyPartialJSONValue {
     const models = [];
     for (const model of this._modelsSync.values()) {
-      if (model.comm_live) {
-        models.push(model);
-      }
+      models.push(model);
     }
     return serialize_state(models, options);
   }
