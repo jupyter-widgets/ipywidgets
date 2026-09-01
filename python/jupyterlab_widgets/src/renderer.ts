@@ -56,16 +56,18 @@ export class WidgetRenderer
       // Presume we have a DOMWidgetModel. Should we check for sure?
       wModel = (await manager.get_model(source.model_id)) as DOMWidgetModel;
     } catch (err) {
+      // Store the model for a possible rerender
+      this._rerenderMimeModel = model;
+
       if (manager.restoredStatus) {
-        // The manager has been restored, so this error won't be going away.
+        // The manager has been restored, so this error won't be going away
+        // until the manager restores again (e.g. after a kernel restart).
         this.node.textContent = 'Error displaying widget: model not found';
         this.addClass('jupyter-widgets');
         console.error(err);
         return;
       }
 
-      // Store the model for a possible rerender
-      this._rerenderMimeModel = model;
       return;
     }
 
@@ -108,12 +110,19 @@ export class WidgetRenderer
 
   private _rerender(): void {
     if (this._rerenderMimeModel) {
+      // Consume the model before rendering: `renderModel` only clears it
+      // after awaiting the model, so two restores in quick succession would
+      // otherwise both render, adding two views to this panel. A retry that
+      // fails re-arms it from `renderModel`.
+      const model = this._rerenderMimeModel;
+      this._rerenderMimeModel = null;
+
       // Clear the error message
       this.node.textContent = '';
       this.removeClass('jupyter-widgets');
 
       // Attempt to rerender.
-      this.renderModel(this._rerenderMimeModel);
+      void this.renderModel(model);
     }
   }
 
