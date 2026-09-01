@@ -52,6 +52,12 @@ export const CONTROL_COMM_PROTOCOL_VERSION = '1.0.0';
 export const CONTROL_COMM_TIMEOUT = 4000;
 
 /**
+ * Default time (in ms) that `get_model` waits for an unregistered model id to
+ * be registered before rejecting.
+ */
+export const DEFAULT_GET_MODEL_TIMEOUT = 2000;
+
+/**
  * Sanitize HTML-formatted descriptions.
  */
 function default_inline_sanitize(s: string): string {
@@ -210,33 +216,115 @@ export abstract class ManagerBase implements IWidgetManager {
    * Get a promise for a model by model id.
    *
    * #### Notes
-   * If the model is not found, the returned Promise object is rejected.
+   * If the model is not registered yet, waits for it to be registered, for up
+   * to `get_model_timeout` milliseconds. This covers architectures in which a
+   * widget-view output can reach the renderer before the `comm_open` message
+   * creating its model has been processed. If the wait expires,
+   * `_recoverMissingModel` is given one chance to produce the model, which
+   * covers a `comm_open` that was dropped rather than merely delayed. If the
+   * model is still not registered after that, the returned Promise object is
+   * rejected.
    *
    * If you would like to synchronously test if a model exists, use .has_model().
    */
   async get_model(model_id: string): Promise<WidgetModel> {
-    let modelPromise = this._models[model_id];
+    const modelPromise = this._models[model_id];
 
     if (modelPromise === undefined) {
-      // If we don't have the model yet, try multiple times for 2 seconds
-      const timeout = 2000;
-      const interval = 100;
-      const start = Date.now();
-
-      while (Date.now() - start < timeout) {
-        modelPromise = this._models[model_id];
-
-        if (modelPromise !== undefined) {
-          return modelPromise;
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, interval));
-      }
-
-      throw new Error('widget model not found');
+      return this._wait_for_model(model_id);
     }
 
     return modelPromise;
+  }
+
+  /**
+   * Wait for a model to be registered, with `get_model_timeout` as a safety
+   * valve for model ids that never appear.
+   */
+  private _wait_for_model(model_id: string): Promise<WidgetModel> {
+    let pending = this._pendingModels.get(model_id);
+
+    if (pending === undefined) {
+      const delegate = new PromiseDelegate<WidgetModel>();
+      let cancelTimeout = (): void => undefined;
+
+      const timeout = this.get_model_timeout;
+      if (timeout !== Infinity) {
+        const timer = setTimeout(() => {
+          void this._finalize_missing_model(model_id, delegate);
+        }, timeout);
+        cancelTimeout = (): void => clearTimeout(timer);
+        // Backstop for a request that settles some other way. This is not
+        // enough on its own: the delegate settles with the model promise, so
+        // it is still pending while a slow model is being created.
+        delegate.promise.then(cancelTimeout, cancelTimeout);
+      }
+
+      pending = { delegate, cancelTimeout };
+      this._pendingModels.set(model_id, pending);
+    }
+
+    return pending.delegate.promise;
+  }
+
+  /**
+   * Settle a model request whose wait expired: give the manager a chance to
+   * recover the model, then resolve or reject the request.
+   */
+  private async _finalize_missing_model(
+    model_id: string,
+    delegate: PromiseDelegate<WidgetModel>
+  ): Promise<void> {
+    // Never recover a model the manager already has: a waiter that was
+    // removed without its timeout being cancelled must not cost a restore.
+    if (this._models[model_id] === undefined) {
+      // The waiter stays registered while the recovery runs, so a model it
+      // registers resolves this request through `register_model`, and
+      // requests for this id arriving meanwhile share this single attempt.
+      try {
+        await this._recoverMissingModel(model_id);
+      } catch {
+        // Recovery is best effort: fall through to the final check below.
+      }
+    }
+    const current = this._pendingModels.get(model_id);
+    if (current !== undefined && current.delegate === delegate) {
+      this._pendingModels.delete(model_id);
+      current.cancelTimeout();
+    }
+    const modelPromise = this._models[model_id];
+    if (modelPromise !== undefined) {
+      delegate.resolve(modelPromise);
+    } else {
+      delegate.reject(new Error('widget model not found'));
+    }
+  }
+
+  /**
+   * Give the manager one chance to produce a model that was never registered.
+   *
+   * #### Notes
+   * `get_model` calls this once, after waiting `get_model_timeout` for the id
+   * to be registered and before rejecting. A bounded wait only recovers a
+   * model whose `comm_open` is late; it does not recover one the transport
+   * dropped, which happens when a kernel message channel misses what was
+   * published before it subscribed. Recovering those means re-reading the
+   * kernel's widget state.
+   *
+   * This is a no-op here because `ManagerBase` cannot know how a subclass
+   * restores that state. Requesting it directly (through `_loadFromKernel`)
+   * would run behind the subclass's back: it would race whatever guard the
+   * subclass uses to serialize its own restores, and it would skip the
+   * bookkeeping and signals a completed restore emits, so nothing would
+   * notice the models it recovered. Subclasses that own a restore lifecycle
+   * should override this to drive it, and should rate-limit themselves: this
+   * is called once per missing model id, and a page can have many.
+   *
+   * Errors thrown here are ignored; `get_model` re-checks the registry either
+   * way.
+   */
+  protected async _recoverMissingModel(model_id: string): Promise<void> {
+    // No-op: see the note above.
   }
 
   /**
@@ -346,6 +434,16 @@ export abstract class ManagerBase implements IWidgetManager {
 
   register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
     this._models[model_id] = modelPromise;
+    const pending = this._pendingModels.get(model_id);
+    if (pending !== undefined) {
+      // Resolve `get_model` calls waiting for this model to be registered,
+      // and stop their timeout here rather than when they settle: they settle
+      // with `modelPromise`, which can take longer to resolve than the
+      // timeout when the model's module is loaded cold.
+      this._pendingModels.delete(model_id);
+      pending.cancelTimeout();
+      pending.delegate.resolve(modelPromise);
+    }
     modelPromise.then((model) => {
       model.once('comm:close', () => {
         delete this._models[model_id];
@@ -787,6 +885,15 @@ export abstract class ManagerBase implements IWidgetManager {
   readonly comm_target_name = 'jupyter.widget';
 
   /**
+   * Time (in ms) that `get_model` waits for an unregistered model id to be
+   * registered before giving `_recoverMissingModel` a chance to produce it
+   * and, failing that, rejecting with a 'widget model not found' error. Set
+   * to `Infinity` to wait indefinitely, which also means recovery never
+   * runs.
+   */
+  get_model_timeout: number = DEFAULT_GET_MODEL_TIMEOUT;
+
+  /**
    * Load a class and return a promise to the loaded object.
    */
   protected abstract loadClass(
@@ -880,6 +987,13 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   private _models: { [key: string]: Promise<WidgetModel> } =
     Object.create(null);
+
+  /**
+   * Waiters for model ids requested through `get_model` before being
+   * registered. Entries are removed, and their timeout cancelled, when the
+   * model is registered or when the wait times out.
+   */
+  private _pendingModels = new Map<string, Private.IPendingModel>();
 }
 
 export interface IStateOptions {
@@ -936,5 +1050,20 @@ namespace Private {
   export interface ICommUpdateData {
     comm: IClassicComm;
     msg: services.KernelMessage.ICommMsgMsg;
+  }
+
+  /**
+   * A `get_model` request for a model that is not registered yet.
+   */
+  export interface IPendingModel {
+    /**
+     * The request to settle once the model is registered, or given up on.
+     */
+    delegate: PromiseDelegate<WidgetModel>;
+
+    /**
+     * Stop the timeout that would otherwise attempt a recovery for this id.
+     */
+    cancelTimeout: () => void;
   }
 }

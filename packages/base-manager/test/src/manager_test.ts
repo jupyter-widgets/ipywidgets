@@ -147,8 +147,201 @@ describe('ManagerBase', function () {
       expect(await manager.get_model(model.model_id)).to.be.equal(model);
     });
 
-    it('returns rejected promise when model is not registered', function () {
-      expect(this.managerBase.get_model('not-defined')).to.be.rejected;
+    it('returns rejected promise when model is not registered', async function () {
+      const manager = this.managerBase;
+      manager.get_model_timeout = 20;
+      await expect(manager.get_model('not-defined')).to.be.rejectedWith(
+        'widget model not found'
+      );
+    });
+
+    it('resolves as soon as the model is registered, without polling', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        const recover = sinon.spy(manager, '_recoverMissingModel');
+        // Request the model before it is registered.
+        const modelPromise = manager.get_model('u-u-i-d');
+        const model = await manager.new_model(this.modelOptions);
+        // The fake clock never advances, so resolution cannot depend on
+        // timers firing: the pending request must be resolved by
+        // registration itself, without any recovery attempt.
+        expect(await modelPromise).to.be.equal(model);
+        expect(recover.called).to.be.false;
+        expect(manager._pendingModels.size).to.equal(0);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('resolves all pending requests for the same model id', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        const first = manager.get_model('u-u-i-d');
+        const second = manager.get_model('u-u-i-d');
+        const model = await manager.new_model(this.modelOptions);
+        expect(await first).to.be.equal(model);
+        expect(await second).to.be.equal(model);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('waits indefinitely, and never recovers, when the timeout is Infinity', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        manager.get_model_timeout = Infinity;
+        const recover = sinon.spy(manager, '_recoverMissingModel');
+        const modelPromise = manager.get_model('u-u-i-d');
+        await clock.tickAsync(60000);
+        expect(recover.called).to.be.false;
+        const model = await manager.new_model(this.modelOptions);
+        expect(await modelPromise).to.be.equal(model);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('does not recover a model that was registered with a slow model promise', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        const recover = sinon.spy(manager, '_recoverMissingModel');
+        const modelPromise = manager.get_model('u-u-i-d');
+
+        // Registered in time, but the model itself takes longer to build than
+        // the timeout, as a cold widget module load does. The request is only
+        // settled when that model promise settles, so the timeout must be
+        // cancelled by the registration and not by the request settling.
+        let finishModel: (model: any) => void = () => undefined;
+        const slowModel = new Promise<any>((resolve) => {
+          finishModel = resolve;
+        });
+        manager.register_model('u-u-i-d', slowModel);
+
+        await clock.tickAsync(5000);
+        expect(recover.called).to.be.false;
+
+        const model = { model_id: 'u-u-i-d', once: (): void => undefined };
+        finishModel(model);
+        expect(await modelPromise).to.be.equal(model);
+        expect(manager._pendingModels.size).to.equal(0);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('asks the manager to recover the model when the wait expires, and resolves with what it registers', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        // A dropped comm_open leaves a model the kernel knows about but the
+        // manager never registered: recovering the kernel state registers it.
+        const recover = sinon
+          .stub(manager, '_recoverMissingModel')
+          .callsFake(async () => {
+            await manager.new_model(this.modelOptions);
+          });
+        const modelPromise = manager.get_model('u-u-i-d');
+        await clock.tickAsync(2000);
+        const model = await modelPromise;
+        expect(model.model_id).to.equal('u-u-i-d');
+        expect(recover.calledOnceWith('u-u-i-d')).to.be.true;
+        expect(manager._pendingModels.size).to.equal(0);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('rejects after the default timeout when recovery registers nothing', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        // The default `_recoverMissingModel` is a no-op.
+        const recover = sinon.spy(manager, '_recoverMissingModel');
+        const rejection = expect(
+          manager.get_model('not-defined')
+        ).to.be.rejectedWith('widget model not found');
+        await clock.tickAsync(2000);
+        await rejection;
+        expect(recover.calledOnce).to.be.true;
+        expect(manager._pendingModels.size).to.equal(0);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('rejects with the same error when recovery fails', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        sinon
+          .stub(manager, '_recoverMissingModel')
+          .rejects(new Error('no kernel connection'));
+        const rejection = expect(
+          manager.get_model('not-defined')
+        ).to.be.rejectedWith('widget model not found');
+        await clock.tickAsync(2000);
+        await rejection;
+        expect(manager._pendingModels.size).to.equal(0);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('makes a single recovery attempt for concurrent requests for one model id', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        let finishRecovery: () => void = () => undefined;
+        const recovery = new Promise<void>((resolve) => {
+          finishRecovery = resolve;
+        });
+        const recover = sinon
+          .stub(manager, '_recoverMissingModel')
+          .returns(recovery);
+        const first = expect(manager.get_model('missing')).to.be.rejectedWith(
+          'widget model not found'
+        );
+        const second = expect(manager.get_model('missing')).to.be.rejectedWith(
+          'widget model not found'
+        );
+        await clock.tickAsync(2000);
+        // Both requests share one waiter, so they share its recovery.
+        expect(recover.calledOnce).to.be.true;
+        finishRecovery();
+        await clock.tickAsync(0);
+        await first;
+        await second;
+        expect(manager._pendingModels.size).to.equal(0);
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('asks to recover each missing model id, leaving rate limiting to the manager', async function () {
+      const clock = sinon.useFakeTimers();
+      try {
+        const manager = this.managerBase;
+        const recover = sinon.stub(manager, '_recoverMissingModel').resolves();
+        const first = expect(manager.get_model('missing-a')).to.be.rejectedWith(
+          'widget model not found'
+        );
+        const second = expect(
+          manager.get_model('missing-b')
+        ).to.be.rejectedWith('widget model not found');
+        await clock.tickAsync(2000);
+        await first;
+        await second;
+        expect(recover.callCount).to.equal(2);
+        expect(recover.getCall(0).args[0]).to.equal('missing-a');
+        expect(recover.getCall(1).args[0]).to.equal('missing-b');
+        expect(manager._pendingModels.size).to.equal(0);
+      } finally {
+        clock.restore();
+      }
     });
   });
 

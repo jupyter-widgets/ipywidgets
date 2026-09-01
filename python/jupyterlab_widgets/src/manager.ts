@@ -48,6 +48,14 @@ export const WIDGET_STATE_MIMETYPE =
   'application/vnd.jupyter.widget-state+json';
 
 /**
+ * Minimum time (in ms) between two restores triggered by a missing model.
+ *
+ * A page whose models are permanently missing asks to recover each of them,
+ * so recovery restores are rate-limited rather than run per model.
+ */
+export const MISSING_MODEL_RESTORE_COOLDOWN = 30000;
+
+/**
  * A widget manager that returns Lumino widgets.
  */
 export abstract class LabWidgetManager
@@ -107,6 +115,60 @@ export abstract class LabWidgetManager
     }
 
     return super._loadFromKernel();
+  }
+
+  /**
+   * Re-read the widget state after a model turned out to be missing.
+   *
+   * #### Notes
+   * `get_model` calls `_recoverMissingModel` once per missing model id, and
+   * subclasses route it here so that recovery goes through `restoreWidgets`
+   * rather than around it: `restoreWidgets` holds `_kernelRestoreInProgress`
+   * while it runs and emits `restored` when it succeeds, and calling
+   * `_loadFromKernel` directly would do neither, racing a reconnect-triggered
+   * restore and leaving renderers that are waiting on `restored` asleep.
+   *
+   * The `restore` callback is supplied by the subclass because the signature
+   * of `restoreWidgets` differs between them; everything deciding *whether*
+   * to restore lives here, so the two subclasses share one policy.
+   */
+  protected async _restoreForMissingModel(
+    restore: () => Promise<void>
+  ): Promise<void> {
+    // Before the first restore completes, one is already on its way.
+    if (!this._restoredStatus) {
+      return;
+    }
+    // A restore already running will emit `restored` when it finishes.
+    if (this._kernelRestoreInProgress) {
+      return;
+    }
+    // Several models are typically missing together: they share one restore.
+    if (this._missingModelRestore) {
+      await this._missingModelRestore;
+      return;
+    }
+    if (
+      Date.now() - this._lastMissingModelRestore <
+      MISSING_MODEL_RESTORE_COOLDOWN
+    ) {
+      return;
+    }
+    this._lastMissingModelRestore = Date.now();
+    const done = (): void => {
+      this._lastMissingModelRestore = Date.now();
+      this._missingModelRestore = null;
+    };
+    const pending = restore().then(done, (error) => {
+      done();
+      throw error;
+    });
+    this._missingModelRestore = pending;
+    try {
+      await pending;
+    } catch {
+      // Recovery is best effort; `get_model` reports the missing model.
+    }
   }
 
   /**
@@ -319,6 +381,13 @@ export abstract class LabWidgetManager
   protected _restoredStatus = false;
   protected _kernelRestoreInProgress = false;
 
+  /**
+   * The restore triggered by a missing model that is currently running, and
+   * when the last one ran, so recovery is single-flight and rate-limited.
+   */
+  private _missingModelRestore: Promise<void> | null = null;
+  private _lastMissingModelRestore = -Infinity;
+
   private _isDisposed = false;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
   private _rendermime: IRenderMimeRegistry;
@@ -372,6 +441,13 @@ export class KernelWidgetManager extends LabWidgetManager {
     if (status === 'restarting') {
       this.disconnect();
     }
+  }
+
+  /**
+   * Restore from the kernel to recover a model that was never registered.
+   */
+  protected async _recoverMissingModel(model_id: string): Promise<void> {
+    return this._restoreForMissingModel(() => this.restoreWidgets());
   }
 
   /**
@@ -486,6 +562,22 @@ export class WidgetManager extends LabWidgetManager {
     if (status === 'restarting') {
       this.disconnect();
     }
+  }
+
+  /**
+   * Restore from the kernel to recover a model that was never registered.
+   *
+   * #### Notes
+   * Only the kernel state is re-read: the notebook metadata is the state this
+   * manager already loaded, so it cannot hold a model the kernel does not.
+   */
+  protected async _recoverMissingModel(model_id: string): Promise<void> {
+    return this._restoreForMissingModel(() =>
+      this.restoreWidgets(this._context.model, {
+        loadKernel: true,
+        loadNotebook: false,
+      })
+    );
   }
 
   /**
