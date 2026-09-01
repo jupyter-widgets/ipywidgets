@@ -275,6 +275,13 @@ export abstract class LabWidgetManager
         this._modelsSync.delete(model_id);
       });
     });
+
+    if (this._restoredStatus) {
+      // A model registered after the restore is a model some renderer may
+      // have already failed to find: `restored` is what wakes those, and
+      // nothing else emits it once the restore is done.
+      this._restored.emit();
+    }
   }
 
   /**
