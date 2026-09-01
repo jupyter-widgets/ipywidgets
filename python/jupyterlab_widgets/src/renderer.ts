@@ -110,12 +110,19 @@ export class WidgetRenderer
 
   private _rerender(): void {
     if (this._rerenderMimeModel) {
+      // Consume the model before rendering: `renderModel` only clears it
+      // after awaiting the model, so two restores in quick succession would
+      // otherwise both render, adding two views to this panel. A retry that
+      // fails re-arms it from `renderModel`.
+      const model = this._rerenderMimeModel;
+      this._rerenderMimeModel = null;
+
       // Clear the error message
       this.node.textContent = '';
       this.removeClass('jupyter-widgets');
 
       // Attempt to rerender.
-      this.renderModel(this._rerenderMimeModel);
+      void this.renderModel(model);
     }
   }
 
