@@ -43,6 +43,9 @@ build-backend = "hatchling.build"
 [tool.check-manifest]
 ignore = ["labextension/**", "yarn.lock", ".*", "package-lock.json"]
 
+[tool.hatch.build]
+exclude = ["**/.gitignore"]
+
 [tool.hatch.build.hooks.jupyter-builder]
 ensured-targets = [
     "labextension/package.json",
