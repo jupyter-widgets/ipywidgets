@@ -233,7 +233,12 @@ export abstract class ManagerBase implements IWidgetManager {
         await new Promise((resolve) => setTimeout(resolve, interval));
       }
 
-      throw new Error('widget model not found');
+      const registeredModels = Object.keys(this._models);
+      let message = `widget model not found: ${model_id}`;
+      if (registeredModels.length > 0) {
+        message += `; registered models: ${registeredModels.join(', ')}`;
+      }
+      throw new Error(message);
     }
 
     return modelPromise;
