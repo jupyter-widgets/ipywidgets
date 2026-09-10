@@ -52,7 +52,7 @@ test.describe('Widget Visual Regression', () => {
     await page.notebook.openByPath(`${tmpPath}/${notebook}`);
     await page.notebook.activate(notebook);
 
-    const widgetOutput = page.locator('.jp-Notebook .widget-output');
+    const widgetOutput = page.locator('.jupyter-widget-output');
     await page.notebook.runCellByCell({
       onAfterCellRun: async (cellIndex: number) => {
         if (cellIndex === 1) {

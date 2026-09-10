@@ -236,7 +236,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     format = args.format
 
-    widgets_to_document = sorted(widgets.Widget._widget_types.items())
+    widgets_to_document = sorted(widgets.widget._registry.items())
     spec = create_spec(widgets_to_document)
 
     if args.output:
