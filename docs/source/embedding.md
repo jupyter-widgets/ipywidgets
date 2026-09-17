@@ -91,6 +91,52 @@ in the Python standard library, or just open it in your web browser (by
 double-clicking on the file, or by writing `file:///path/to/file` in your
 browser search bar).
 
+### Customizing the `embed_minimal_html` Template
+
+By default, `embed_minimal_html` wraps the widget views in a minimal built-in
+HTML page. If you only need to tweak the surrounding page (for example, to
+add a heading or a `<meta>` tag) without dropping down to the lower-level
+`embed_data`/`embed_snippet` functions described below, pass your own
+`template` string to `embed_minimal_html`:
+
+```python
+from ipywidgets import IntSlider
+from ipywidgets.embed import embed_minimal_html
+
+slider = IntSlider(value=40)
+
+my_template = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{title}</title>
+</head>
+<body>
+<h1>My exported widgets</h1>
+{snippet}
+</body>
+</html>
+"""
+
+embed_minimal_html(
+    'export.html',
+    views=[slider],
+    title='Widgets export',
+    template=my_template,
+)
+```
+
+The `template` string must be a valid Python [format
+string](https://docs.python.org/3/library/string.html#format-string-syntax)
+containing exactly two placeholders:
+
+- `{title}`, replaced with the `title` argument, and
+- `{snippet}`, replaced with the generated `<script>` tags for the widget
+  state and views (the same snippet produced by `embed_snippet`).
+
+If `template` is not provided, `embed_minimal_html` falls back to its
+built-in minimal template shown above.
+
 You will sometimes want greater granularity than that afforded by
 `embed_minimal_html`. Often, you want to control the structure of the HTML
 document in which the widgets are embedded. For this, use `embed_data` to get
