@@ -130,6 +130,22 @@ class Text(_String):
         if content.get('event', '') == 'submit':
             self._submission_callbacks(self)
 
+    def _on_submit(self, callback, remove=False):
+        """(Un)Register a callback for the front-end submit event.
+
+        Internal API. Triggered when the user presses enter in the text box,
+        and only then - unlike observing ``value``, which also fires when the
+        user navigates away from a widget with ``continuous_update=False``.
+
+        Parameters
+        ----------
+        callback: callable
+            Will be called with exactly one argument: the Widget instance
+        remove: bool (optional)
+            Whether to unregister the callback
+        """
+        self._submission_callbacks.register_callback(callback, remove=remove)
+
     def on_submit(self, callback, remove=False):
         """(Un)Register a callback to handle text submission.
 
@@ -143,7 +159,7 @@ class Text(_String):
             Whether to unregister the callback
         """
         deprecation("on_submit is deprecated. Instead, set the .continuous_update attribute to False and observe the value changing with: mywidget.observe(callback, 'value').")
-        self._submission_callbacks.register_callback(callback, remove=remove)
+        self._on_submit(callback, remove=remove)
 
 
 @register

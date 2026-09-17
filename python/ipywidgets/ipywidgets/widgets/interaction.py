@@ -208,11 +208,13 @@ class interactive(VBox):
             self.manual_button.on_click(self.update)
 
             # Also register input handlers on text areas, so the user can hit return to
-            # invoke execution.
+            # invoke execution. We listen for the front-end submit event rather than
+            # observing `value`, which would also fire when the user merely navigates
+            # away from the text box (gh-3997). `continuous_update` is deliberately left
+            # alone, so the value is already synced by the time the submit event arrives.
             for w in self.kwargs_widgets:
                 if isinstance(w, Text):
-                    w.continuous_update = False
-                    w.observe(self.update, names='value')
+                    w._on_submit(self.update)
         else:
             for widget in self.kwargs_widgets:
                 widget.observe(self.update, names='value')

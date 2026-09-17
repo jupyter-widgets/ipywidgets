@@ -476,6 +476,36 @@ def test_interact_manual_nocall():
     c.children[0].value = 10
     assert callcount == 0
 
+def test_interact_manual_text_only_runs_on_submit():
+    # gh-3997: a Text widget must not run the function when the user merely
+    # navigates away from it, only when they press enter (or click the button).
+    calls = []
+    def calltest(x, y):
+        calls.append((x, y))
+    w = interact.options(manual=True)(calltest, x='a', y='b').widget
+    first, second = w.kwargs_widgets
+    check_widget(first, cls=widgets.Text)
+    check_widget(second, cls=widgets.Text)
+
+    # Value changes on their own (what a blur/tab commit looks like on the
+    # kernel side) must not trigger execution.
+    first.value = 'x'
+    second.value = 'y'
+    assert calls == []
+
+    # The front-end submit event (enter pressed) does, with the current values,
+    # from whichever text box the user pressed enter in.
+    second._handle_custom_msg({'event': 'submit'}, [])
+    assert calls == [('x', 'y')]
+
+    first._handle_custom_msg({'event': 'submit'}, [])
+    assert calls == [('x', 'y'), ('x', 'y')]
+
+    # ... and so does the button.
+    w.manual_button.click()
+    assert calls == [('x', 'y'), ('x', 'y'), ('x', 'y')]
+
+
 def test_interact_call():
     w = interact.widget(f)
     w.update()

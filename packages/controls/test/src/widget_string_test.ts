@@ -117,3 +117,59 @@ describe('ComboboxView', function () {
     }
   });
 });
+
+describe('TextView', function () {
+  beforeEach(async function () {
+    this.manager = new DummyManager();
+    this.model = await this.manager.new_model(
+      {
+        model_name: 'TextModel',
+        model_module: '@jupyter-widgets/controls',
+        model_module_version: '1.0.0',
+        model_id: 'u-u-i-d',
+      },
+      { description: 'test-text-model', continuous_update: false }
+    );
+  });
+
+  it('commits the value before sending the submit event', function () {
+    const view = new widgets.TextView({ model: this.model });
+    view.render();
+    const sent: { content: any; value: string }[] = [];
+    view.send = function (content: any): void {
+      sent.push({ content, value: view.model.get('value') });
+    };
+
+    view.textbox.value = 'abc';
+    const event = new KeyboardEvent('keypress', {
+      bubbles: true,
+      cancelable: true,
+    });
+    Object.defineProperty(event, 'keyCode', { value: 13 });
+    view.textbox.dispatchEvent(event);
+
+    expect(this.model.get('value')).to.equal('abc');
+    expect(sent.length).to.equal(1);
+    expect(sent[0].content).to.eql({ event: 'submit' });
+    // The submit event must not race ahead of the value it submits.
+    expect(sent[0].value).to.equal('abc');
+  });
+
+  it('does not send a submit event for other keys', function () {
+    const view = new widgets.TextView({ model: this.model });
+    view.render();
+    const sent: any[] = [];
+    view.send = function (content: any): void {
+      sent.push(content);
+    };
+
+    const event = new KeyboardEvent('keypress', {
+      bubbles: true,
+      cancelable: true,
+    });
+    Object.defineProperty(event, 'keyCode', { value: 65 });
+    view.textbox.dispatchEvent(event);
+
+    expect(sent.length).to.equal(0);
+  });
+});

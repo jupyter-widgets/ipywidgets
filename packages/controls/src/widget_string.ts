@@ -556,7 +556,10 @@ export class TextView extends StringView {
     e.stopPropagation();
     // The submit message is deprecated in widgets 7
     if (e.keyCode === 13) {
-      // Return key
+      // Return key. Commit the value before sending the submit event: the DOM
+      // change event only fires *after* keypress, so otherwise the kernel sees
+      // the submit event while the model still holds the previous value.
+      this.handleChanged(e);
       this.send({ event: 'submit' });
     }
   }
