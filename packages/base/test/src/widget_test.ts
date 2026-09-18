@@ -548,6 +548,14 @@ describe('WidgetModel', function () {
       expect(serialized_state.b).to.equal(null);
     });
 
+    it('preserves NaN values when deep-copying (does not use JSON round-trip)', function () {
+      const state_with_nan = {
+        a: NaN,
+      };
+      const serialized_state = this.widget.serialize(state_with_nan);
+      expect(Number.isNaN(serialized_state.a)).to.be.true;
+    });
+
     it('calls custom serializers with appropriate arguments', function () {
       this.widget.serialize({ spy: 'value' });
       const spy = this.widget.constructor.serializers.spy.serialize;
