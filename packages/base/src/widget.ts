@@ -109,6 +109,40 @@ export interface IBackboneModelOptions extends Backbone.ModelSetOptions {
   widget_manager: any;
 }
 
+/**
+ * Deep-copy a value for the default (non-custom) widget state serializer.
+ *
+ * This intentionally does not use `JSON.parse(JSON.stringify(value))`:
+ * that approach silently mangles values that aren't valid JSON (for
+ * example `NaN` becomes `null`). It also intentionally does not use
+ * Lumino's `JSONExt.deepCopy`, since that recurses into plain values with
+ * no `.toJSON()` hook and no cycle detection, which would overflow the
+ * call stack on circular references (e.g. a widget's back-reference to
+ * its manager). Instead, this recursively copies plain arrays/objects
+ * itself, while calling `.toJSON()` on any nested value that defines it
+ * (e.g. Backbone models, such as widget instances appearing in a
+ * `children` array), so that values with circular references are
+ * flattened before being copied rather than recursed into.
+ */
+function deepCopyValue(value: any): any {
+  if (value && typeof value.toJSON === 'function') {
+    return deepCopyValue(value.toJSON());
+  }
+  if (Array.isArray(value)) {
+    return value.map(deepCopyValue);
+  }
+  if (value !== null && typeof value === 'object') {
+    const copy: Dict<any> = {};
+    for (const key of Object.keys(value)) {
+      copy[key] = deepCopyValue(value[key]);
+    }
+    return copy;
+  }
+  // Primitives (including NaN) are returned as-is, unlike a JSON
+  // round-trip which would coerce NaN to null.
+  return value;
+}
+
 export class WidgetModel extends Backbone.Model {
   /**
    * The default attributes.
@@ -570,7 +604,7 @@ export class WidgetModel extends Backbone.Model {
           state[k] = serializers[k].serialize!(state[k], this);
         } else {
           // the default serializer just deep-copies the object
-          state[k] = JSON.parse(JSON.stringify(state[k]));
+          state[k] = deepCopyValue(state[k]);
         }
         if (state[k] && state[k].toJSON) {
           state[k] = state[k].toJSON();
