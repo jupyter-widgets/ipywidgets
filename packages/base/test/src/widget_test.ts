@@ -245,7 +245,7 @@ describe('WidgetModel', function () {
       const callbacks = { iopub: {} };
       const buffers = [new Int8Array([1, 2, 3])];
 
-      // send two messages to make sure the throttle does not affect sending.
+      // send two messages to make sure that consecutive sends both go through.
       widget.send(data1, callbacks, buffers);
       widget.send(data2, callbacks, buffers);
       expect(send).to.be.calledTwice;
@@ -704,100 +704,38 @@ describe('WidgetModel', function () {
       await this.setup();
     });
 
-    it('respects the message throttle', function () {
-      // reuse the callback, similar to .touch in views, which will
-      // expose an bug of calling onstatus multiple times
+    it('does not throttle sync messages', function () {
       const callbacks = this.widget.callbacks();
       this.widget.set('a', 'sync test');
-      expect(this.widget._pending_msgs).to.equal(0);
       this.widget.save_changes(callbacks);
-      expect(this.widget._pending_msgs).to.equal(1);
       this.widget.set('a', 'another sync test');
       this.widget.set('b', 'change b');
       this.widget.save_changes(callbacks);
       this.widget.set('b', 'change b again');
       this.widget.save_changes(callbacks);
-      expect(this.widget._pending_msgs).to.equal(1);
 
-      // check that one sync message went through
-      expect(this.comm.send).to.be.calledOnce;
-      expect(this.comm.send).to.be.calledWith({
+      // Each save sends a message immediately, without buffering.
+      expect(this.comm.send).to.be.calledThrice;
+      expect(this.comm.send.getCall(0)).to.be.calledWith({
         method: 'update',
         state: { a: 'sync test' },
         buffer_paths: [],
       });
-      expect(this.widget._msg_buffer).to.deep.equal({
-        a: 'another sync test',
-        b: 'change b again',
-      });
-      expect(this.widget._msg_buffer_callbacks).to.not.equals(null);
-      // have the comm send a status idle message
-      this.comm.send.lastCall.args[1].iopub.status({
-        content: {
-          execution_state: 'idle',
-        },
-      });
-      // we directly get a new pending message
-      expect(this.widget._pending_msgs).to.equal(1);
-      expect(this.widget._msg_buffer).to.equal(null);
-      expect(this.widget._msg_buffer_callbacks).to.equals(null);
-
-      // check that the other sync message went through with the updated values
-      expect(this.comm.send.secondCall).to.be.calledWith({
+      expect(this.comm.send.getCall(1)).to.be.calledWith({
         method: 'update',
         state: {
           a: 'another sync test',
+          b: 'change b',
+        },
+        buffer_paths: [],
+      });
+      expect(this.comm.send.getCall(2)).to.be.calledWith({
+        method: 'update',
+        state: {
           b: 'change b again',
         },
         buffer_paths: [],
       });
-      this.comm.send.lastCall.args[1].iopub.status({
-        content: {
-          execution_state: 'idle',
-        },
-      });
-      expect(this.widget._pending_msgs).to.equal(0);
-
-      // repeat again
-      this.comm.send.resetHistory();
-
-      this.widget.set('a', 'sync test - 2');
-      this.widget.save_changes(callbacks);
-      expect(this.widget._pending_msgs).to.equal(1);
-      this.widget.set('a', 'another sync test - 2');
-      this.widget.set('b', 'change b - 2');
-      this.widget.save_changes(callbacks);
-      this.widget.set('b', 'change b again - 2');
-      this.widget.save_changes(callbacks);
-      expect(this.widget._pending_msgs).to.equal(1);
-      expect(this.comm.send).to.be.calledOnce;
-      expect(this.comm.send).to.be.calledWith({
-        method: 'update',
-        state: { a: 'sync test - 2' },
-        buffer_paths: [],
-      });
-      this.comm.send.lastCall.args[1].iopub.status({
-        content: {
-          execution_state: 'idle',
-        },
-      });
-      // again, directly a new message
-      expect(this.widget._pending_msgs).to.equal(1);
-
-      expect(this.comm.send.secondCall).to.be.calledWith({
-        method: 'update',
-        state: {
-          a: 'another sync test - 2',
-          b: 'change b again - 2',
-        },
-        buffer_paths: [],
-      });
-      this.comm.send.lastCall.args[1].iopub.status({
-        content: {
-          execution_state: 'idle',
-        },
-      });
-      expect(this.widget._pending_msgs).to.equal(0);
     });
 
     it('Initial values are *not* sent on creation', function () {

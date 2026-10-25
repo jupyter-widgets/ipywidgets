@@ -167,9 +167,6 @@ export class WidgetModel extends Backbone.Model {
 
     this._closed = false;
     this._state_lock = null;
-    this._msg_buffer = null;
-    this._msg_buffer_callbacks = null;
-    this._pending_msgs = 0;
 
     // _buffered_state_diff must be created *after* the super.initialize
     // call above. See the note in the set() method below.
@@ -286,16 +283,6 @@ export class WidgetModel extends Backbone.Model {
                 } else {
                   // we got our echo confirmation, so stop looking for it
                   this._expectedEchoMsgIds.delete(attrName);
-                  // Start accepting echo updates unless we plan to send out a new state soon
-                  if (
-                    this._msg_buffer !== null &&
-                    Object.prototype.hasOwnProperty.call(
-                      this._msg_buffer,
-                      attrName
-                    )
-                  ) {
-                    delete state[attrName];
-                  }
                 }
               });
             }
@@ -361,36 +348,6 @@ export class WidgetModel extends Backbone.Model {
       return state;
     } else {
       return { ...fullState };
-    }
-  }
-
-  /**
-   * Handle status msgs.
-   *
-   * execution_state : ('busy', 'idle', 'starting')
-   */
-  _handle_status(msg: KernelMessage.IStatusMsg): void {
-    if (this.comm !== void 0) {
-      if (msg.content.execution_state === 'idle') {
-        this._pending_msgs--;
-        // Sanity check for logic errors that may push this below zero.
-        if (this._pending_msgs < 0) {
-          console.error(
-            `Jupyter Widgets message throttle: Pending messages < 0 (=${this._pending_msgs}), which is unexpected. Resetting to 0 to continue.`
-          );
-          this._pending_msgs = 0; // do not break message throttling in case of unexpected errors
-        }
-        // Send buffer if one is waiting and we are below the throttle.
-        if (this._msg_buffer !== null && this._pending_msgs < 1) {
-          const msgId = this.send_sync_message(
-            this._msg_buffer,
-            this._msg_buffer_callbacks
-          );
-          this.rememberLastUpdateFor(msgId);
-          this._msg_buffer = null;
-          this._msg_buffer_callbacks = null;
-        }
-      }
     }
   }
 
@@ -513,35 +470,17 @@ export class WidgetModel extends Backbone.Model {
       // so we can listen for status messages, etc...
       const callbacks = options.callbacks || this.callbacks();
 
-      // Check throttle.
-      if (this._pending_msgs >= 1) {
-        // The throttle has been exceeded, buffer the current msg so
-        // it can be sent once the kernel has finished processing
-        // some of the existing messages.
-        // Combine updates if it is a 'patch' sync, otherwise replace updates
-        switch (method) {
-          case 'patch':
-            this._msg_buffer = utils.assign(this._msg_buffer || {}, msgState);
-            break;
-          case 'update':
-          case 'create':
-            this._msg_buffer = msgState;
-            break;
-          default:
-            throw 'unrecognized syncing method';
-        }
-        this._msg_buffer_callbacks = callbacks;
-      } else {
-        // We haven't exceeded the throttle, send the message like
-        // normal.
-        const msgId = this.send_sync_message(attrs, callbacks);
-        this.rememberLastUpdateFor(msgId);
-        // Since the comm is a one-way communication, assume the message
-        // arrived and was processed successfully.
-        // Don't call options.success since we don't have a model back from
-        // the server. Note that this means we don't have the Backbone
-        // 'sync' event.
-      }
+      // Send the message. State updates are not throttled: the
+      // kernel-side and frontend state must not diverge, and comm
+      // messages may be dispatched by the kernel without a busy/idle
+      // status cycle, so no release signal can be relied upon.
+      const msgId = this.send_sync_message(attrs, callbacks);
+      this.rememberLastUpdateFor(msgId);
+      // Since the comm is a one-way communication, assume the message
+      // arrived and was processed successfully.
+      // Don't call options.success since we don't have a model back from
+      // the server. Note that this means we don't have the Backbone
+      // 'sync' event.
     }
   }
   rememberLastUpdateFor(msgId: string) {
@@ -594,24 +533,9 @@ export class WidgetModel extends Backbone.Model {
       return '';
     }
     try {
-      // Make a 2-deep copy so we don't modify the caller's callbacks object.
-      callbacks = {
-        shell: { ...callbacks.shell },
-        iopub: { ...callbacks.iopub },
-        input: callbacks.input,
-      };
-      // Save the caller's status callback so we can call it after we handle the message.
-      const statuscb = callbacks.iopub.status;
-      callbacks.iopub.status = (msg: KernelMessage.IStatusMsg): void => {
-        this._handle_status(msg);
-        if (statuscb) {
-          statuscb(msg);
-        }
-      };
-
       // split out the binary buffers
       const split = utils.remove_buffers(state);
-      const msgId = this.comm.send(
+      return this.comm.send(
         {
           method: 'update',
           state: split.state,
@@ -621,8 +545,6 @@ export class WidgetModel extends Backbone.Model {
         {},
         split.buffers
       );
-      this._pending_msgs++;
-      return msgId;
     } catch (e) {
       console.error('Could not send widget sync message', e);
     }
@@ -730,14 +652,12 @@ export class WidgetModel extends Backbone.Model {
   private _state_lock: any;
   private _buffered_state_diff: any;
   private _buffered_state_diff_synced: any;
-  private _msg_buffer: any;
-  private _msg_buffer_callbacks: any;
-  private _pending_msgs: number;
   // keep track of the msg id for each attr for updates we send out so
   // that we can ignore old messages that we send in order to avoid
   // 'drunken' sliders going back and forward
   private _expectedEchoMsgIds: Map<string, string>;
-  // because we don't know the attrs in _handle_status, we keep track of what we will send
+  // the attrs that will be sent in the next sync message, so that we can
+  // remember the msg id for each of them
   private _attrsToUpdate: Set<string>;
 }
 
