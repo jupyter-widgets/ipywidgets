@@ -1,5 +1,7 @@
 import { DummyManager, MockComm } from './dummy-manager';
 
+import { CONTROL_COMM_TIMEOUT } from '../../lib';
+
 import * as widgets from '@jupyter-widgets/base';
 
 import { expect } from 'chai';
@@ -149,6 +151,84 @@ describe('ManagerBase', function () {
 
     it('returns rejected promise when model is not registered', function () {
       expect(this.managerBase.get_model('not-defined')).to.be.rejected;
+    });
+
+    describe('when the model is not registered', function () {
+      beforeEach(function () {
+        this.clock = sinon.useFakeTimers();
+        this.comm = new MockComm();
+        sinon.stub(this.managerBase, '_create_comm').resolves(this.comm);
+      });
+
+      afterEach(function () {
+        this.clock.restore();
+      });
+
+      it('creates the model from the state requested from the kernel', async function () {
+        const manager = this.managerBase;
+        const comm = this.comm;
+        sinon.stub(comm, 'send').callsFake(() => {
+          setTimeout(() =>
+            comm._process_msg({
+              parent_header: { msg_id: 'request-id' },
+              content: {
+                data: {
+                  method: 'update',
+                  state: {
+                    _model_name: 'TestWidget',
+                    _model_module: 'test-widgets',
+                    _model_module_version: '1.0.0',
+                  },
+                  buffer_paths: [],
+                },
+              },
+            })
+          );
+          return 'request-id';
+        });
+
+        const promises = [
+          manager.get_model('u-u-i-d'),
+          manager.get_model('u-u-i-d'),
+        ];
+        await this.clock.tickAsync(2100);
+        const [model1, model2] = await Promise.all(promises);
+
+        expect(model1.model_id).to.equal('u-u-i-d');
+        expect(model1.comm).to.equal(comm);
+        expect(model2).to.equal(model1);
+        expect(manager.has_model('u-u-i-d')).to.be.true;
+        expect(manager._create_comm).to.have.been.calledOnce;
+        expect(manager._create_comm).to.have.been.calledWith(
+          'jupyter.widget',
+          'u-u-i-d'
+        );
+        expect(comm.send).to.have.been.calledOnce;
+        expect(comm.send).to.have.been.calledWith({ method: 'request_state' });
+      });
+
+      it('rejects when the kernel does not know the model', async function () {
+        sinon.stub(this.comm, 'send').callsFake((data: any, callbacks: any) => {
+          setTimeout(() =>
+            callbacks.iopub.status({ content: { execution_state: 'idle' } })
+          );
+          return 'request-id';
+        });
+
+        const result = expect(
+          this.managerBase.get_model('not-defined')
+        ).to.be.rejectedWith('widget model not found');
+        await this.clock.tickAsync(2100);
+        await result;
+      });
+
+      it('rejects when the kernel does not reply', async function () {
+        const result = expect(
+          this.managerBase.get_model('not-defined')
+        ).to.be.rejectedWith('widget model not found');
+        await this.clock.tickAsync(2100 + CONTROL_COMM_TIMEOUT);
+        await result;
+      });
     });
   });
 

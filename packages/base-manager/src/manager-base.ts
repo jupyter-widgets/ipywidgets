@@ -22,6 +22,7 @@ import {
   resolvePromisesDict,
   ISerializedState,
   reject,
+  shims,
   uuid,
   PROTOCOL_VERSION,
   IWidgetManager,
@@ -210,12 +211,14 @@ export abstract class ManagerBase implements IWidgetManager {
    * Get a promise for a model by model id.
    *
    * #### Notes
-   * If the model is not found, the returned Promise object is rejected.
+   * If the model is not registered after a short wait, its state is requested
+   * from the kernel. If the kernel does not know it either, the returned
+   * Promise object is rejected.
    *
    * If you would like to synchronously test if a model exists, use .has_model().
    */
   async get_model(model_id: string): Promise<WidgetModel> {
-    let modelPromise = this._models[model_id];
+    let modelPromise = this._models[model_id] ?? this._modelRequests[model_id];
 
     if (modelPromise === undefined) {
       // If we don't have the model yet, try multiple times for 2 seconds
@@ -224,7 +227,7 @@ export abstract class ManagerBase implements IWidgetManager {
       const start = Date.now();
 
       while (Date.now() - start < timeout) {
-        modelPromise = this._models[model_id];
+        modelPromise = this._models[model_id] ?? this._modelRequests[model_id];
 
         if (modelPromise !== undefined) {
           return modelPromise;
@@ -233,10 +236,67 @@ export abstract class ManagerBase implements IWidgetManager {
         await new Promise((resolve) => setTimeout(resolve, interval));
       }
 
-      throw new Error('widget model not found');
+      // The comm_open message may be lost, ask the kernel for the model.
+      return this._requestModel(model_id);
     }
 
     return modelPromise;
+  }
+
+  /**
+   * Request the state of an unknown model from the kernel and create the
+   * model from the reply. Concurrent calls for a model share one request.
+   */
+  private _requestModel(model_id: string): Promise<WidgetModel> {
+    let request = this._modelRequests[model_id];
+    if (request === undefined) {
+      request = this._fetchModel(model_id);
+      this._modelRequests[model_id] = request;
+      const done = () => {
+        delete this._modelRequests[model_id];
+      };
+      request.then(done, done);
+    }
+    return request;
+  }
+
+  private async _fetchModel(model_id: string): Promise<WidgetModel> {
+    let comm: IClassicComm | undefined;
+    let reply: services.KernelMessage.ICommMsgMsg | undefined;
+    try {
+      comm = await this._create_comm(this.comm_target_name, model_id);
+      reply = await Private.requestState(comm);
+    } catch {
+      // Handled below
+    }
+
+    // The model may have been registered in the meantime (e.g. late comm_open)
+    const modelPromise = this._models[model_id];
+    if (modelPromise !== undefined) {
+      return modelPromise;
+    }
+
+    if (comm === undefined || reply === undefined) {
+      // Release the client side comm so that it can be created again later,
+      // without sending a comm_close that would close the kernel widget.
+      if (comm instanceof shims.services.Comm) {
+        comm.jsServicesComm.dispose();
+      }
+      throw new Error('widget model not found');
+    }
+
+    const data = reply.content.data as any;
+    put_buffers(data.state, data.buffer_paths || [], reply.buffers || []);
+    return this.new_model(
+      {
+        model_name: data.state._model_name,
+        model_module: data.state._model_module,
+        model_module_version: data.state._model_module_version,
+        model_id: model_id,
+        comm: comm,
+      },
+      data.state
+    );
   }
 
   /**
@@ -467,9 +527,11 @@ export abstract class ManagerBase implements IWidgetManager {
     // Create comms for all new widgets.
     const widget_comms = await Promise.all(
       Object.keys(states).map(async (widget_id) => {
-        const comm = this.has_model(widget_id)
-          ? undefined
-          : await this._create_comm('jupyter.widget', widget_id);
+        // Models being requested by get_model already have a comm
+        const comm =
+          this.has_model(widget_id) || widget_id in this._modelRequests
+            ? undefined
+            : await this._create_comm('jupyter.widget', widget_id);
         return { widget_id, comm };
       })
     );
@@ -526,7 +588,7 @@ export abstract class ManagerBase implements IWidgetManager {
     // For each comm id that we do not know about, create the comm, and request the state.
     const widgets_info = await Promise.all(
       Object.keys(comm_ids).map(async (comm_id) => {
-        if (this.has_model(comm_id)) {
+        if (this.has_model(comm_id) || comm_id in this._modelRequests) {
           return;
         }
 
@@ -880,6 +942,12 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   private _models: { [key: string]: Promise<WidgetModel> } =
     Object.create(null);
+
+  /**
+   * Dictionary of model ids and pending kernel requests for their state
+   */
+  private _modelRequests: { [key: string]: Promise<WidgetModel> } =
+    Object.create(null);
 }
 
 export interface IStateOptions {
@@ -936,5 +1004,45 @@ namespace Private {
   export interface ICommUpdateData {
     comm: IClassicComm;
     msg: services.KernelMessage.ICommMsgMsg;
+  }
+
+  /**
+   * Send a `request_state` message on a widget comm and resolve with the
+   * kernel's `update` reply.
+   *
+   * Rejects if the kernel goes idle without replying (it does not know the
+   * comm), or does not reply in time.
+   */
+  export function requestState(
+    comm: IClassicComm
+  ): Promise<services.KernelMessage.ICommMsgMsg> {
+    return new Promise((resolve, reject) => {
+      let msg_id = '';
+      comm.on_msg((msg: services.KernelMessage.ICommMsgMsg) => {
+        if (
+          (msg.parent_header as any).msg_id === msg_id &&
+          msg.content.data.method === 'update'
+        ) {
+          resolve(msg);
+        }
+      });
+      msg_id = comm.send(
+        { method: 'request_state' },
+        {
+          iopub: {
+            status: (msg) => {
+              const status = msg as services.KernelMessage.IStatusMsg;
+              if (status.content.execution_state === 'idle') {
+                reject(new Error('Kernel did not send the widget state'));
+              }
+            },
+          },
+        }
+      );
+      setTimeout(
+        () => reject(new Error('Kernel did not send the widget state in time')),
+        CONTROL_COMM_TIMEOUT
+      );
+    });
   }
 }
