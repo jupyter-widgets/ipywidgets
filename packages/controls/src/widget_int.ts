@@ -570,6 +570,7 @@ export class IntTextView extends DescriptionView {
     this.textbox.type = 'number';
     this.textbox.required = true;
     this.textbox.id = this.label.htmlFor = uuid();
+    this.textbox.classList.add('widget-input');
     this.el.appendChild(this.textbox);
 
     this.update(); // Set defaults.
